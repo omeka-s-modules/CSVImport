@@ -30,6 +30,10 @@ class IndexController extends AbstractActionController
             $csvFile->getTempPath();
             $csvFile->moveToTemp($tmpFile);
             $csvFile->loadFromTempPath();
+            $headers = $csvFile->getHeaders();
+            $data = $csvFile->getDataRows();
+            print_r($data);
+            die();
             
         }
         

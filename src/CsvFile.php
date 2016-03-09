@@ -28,17 +28,29 @@ class CsvFile implements ServiceLocatorAwareInterface
     {
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
-        $this->fileObject->setFlags(SplFileObject::READ_CSV);
+        $this->fileObject->setFlags(SplFileObject::SKIP_EMPTY);
     }
 
     public function getHeaders()
     {
-
+        $line = $this->fileObject->fgetcsv();
+        
     }
 
     public function getDataRows()
     {
-
+        if ($this->fileObject->key() !== 1) {
+            $this->fileObject->rewind();
+            $this->fileObject->seek(1);
+        }
+        $rows = [];
+        while (! $this->fileObject->eof()) {
+            $row = $this->fileObject->fgetcsv();
+            if(!empty($row)) {
+                $rows[] = $row; 
+            }
+        }
+        return $rows;
     }
 
     /**
@@ -62,6 +74,10 @@ class CsvFile implements ServiceLocatorAwareInterface
         $this->tempPath = tempnam($tempDir, 'omeka');
         return $this->tempPath;
     }
+    
+    /**
+     * Use this to set the known (already-uploaded) csv file's path to where omekas puts it.
+     */
 
     public function setTempPath($tempPath)
     {
