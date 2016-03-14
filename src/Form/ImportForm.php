@@ -8,6 +8,8 @@ class ImportForm extends AbstractForm
     public function buildForm()
     {
         $translator = $this->getTranslator();
+        
+        $this->setAttribute('action', 'csvimport/map');
         $this->add(array(
                 'name' => 'csv',
                 'type' => 'file',

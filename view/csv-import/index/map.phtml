@@ -1,0 +1,20 @@
+<?php
+//$form->prepare();
+$escapeHtml = $this->plugin('escapeHtml');
+$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
+//$this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
+$this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
+?>
+
+<?php echo $this->pageTitle($this->translate('Map Elements · CSV Import')); ?>
+<?php //echo $this->form()->openTag($form); ?>
+<div id='mapping-data'>
+
+</div>
+<?php //echo $this->form()->closeTag($form); ?>
+
+<?php
+echo $this->resourceClassSelector('Select class to map. Click an Omeka 2 item type as the target, then select the resource class for it. Omeka S items can have only one resource class.', true);    
+echo $this->propertySelector('Select property to map. Click an Omeka 2 element as the target, then select the properties for it.', true);
+    
+?>

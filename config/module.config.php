@@ -11,6 +11,11 @@ return array(
             OMEKA_PATH . '/modules/CSVImport/view',
         ),
     ),
+    'view_helpers' => array(
+        'invokables' => array(
+        'resourceClassSelector'    => 'CSVImport\View\Helper\ResourceClassSelector',
+        )
+    ),
     'entity_manager' => array(
         'mapping_classes_paths' => array(
             OMEKA_PATH . '/modules/CSVImport/src/Entity',
@@ -46,11 +51,11 @@ return array(
                             'map-elements' => array(
                                 'type'    => 'Literal',
                                 'options' => array(
-                                    'route' => '/map-elements',
+                                    'route' => '/map',
                                     'defaults' => array(
                                         '__NAMESPACE__' => 'CSVImport\Controller',
                                         'controller'    => 'Index',
-                                        'action'        => 'map-elements',
+                                        'action'        => 'map',
                                     ),
                                 )
                             ),

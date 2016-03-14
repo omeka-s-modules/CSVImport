@@ -13,7 +13,13 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $form = new ImportForm($this->getServiceLocator());
-        
+        $view->form = $form;
+        return $view;
+    }
+    
+    public function mapAction()
+    {
+        $view = new ViewModel;
         $request = $this->getRequest();
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
@@ -36,8 +42,6 @@ class IndexController extends AbstractActionController
             die();
             
         }
-        
-        $view->form = $form;
         return $view;
     }
     
