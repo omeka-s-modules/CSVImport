@@ -25,7 +25,16 @@ class IndexController extends AbstractActionController
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
             if (empty($files)) {
-                
+                $post = $this->params()->fromPost();
+                $map = $post['column-property'];
+                $csvPath = $post['csvpath'];
+                $csvFile = new CsvFile($this->getServiceLocator());
+                $csvFile->setTempPath($csvPath);
+                $csvFile->loadFromTempPath();
+                $data = $csvFile->getDataRows();
+                print_r($map);
+                print_r($data);
+                die();
             } else {
             $post = array_merge_recursive(
                 $request->getPost()->toArray(),
@@ -34,13 +43,14 @@ class IndexController extends AbstractActionController
             
             $tmpFile = $post['csv']['tmp_name'];
             $csvFile = new CsvFile($this->getServiceLocator());
-            $csvFile->getTempPath();
+            $csvPath = $csvFile->getTempPath();
             $csvFile->moveToTemp($tmpFile);
             $csvFile->loadFromTempPath();
             $columns = $csvFile->getHeaders();
-            $data = $csvFile->getDataRows();
+            
             $view->setVariable('form', $form);
             $view->setVariable('columns', $columns);
+            $view->setVariable('csvpath', $csvPath);
             //print_r($post);
             //print_r($columns);
             //die();
