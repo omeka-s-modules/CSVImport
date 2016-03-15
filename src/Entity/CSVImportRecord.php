@@ -10,7 +10,7 @@ use Omeka\Entity\ItemSet;
 /**
  * @Entity
  */
-class OmekaimportRecord extends AbstractEntity
+class CsvimportRecord extends AbstractEntity
 {
 
     /**
@@ -39,24 +39,6 @@ class OmekaimportRecord extends AbstractEntity
      * @var int
      */
     protected $itemSet;
-
-    /**
-     * @Column(type="string")
-     * @var string
-     */
-    protected $remoteType;
-    
-    /**
-     * @Column(type="integer")
-     * @var int
-     */
-    public $remoteId;
-
-    /**
-     * @Column(type="string")
-     * @var string
-     */
-    protected $endpoint;
 
     public function getId()
     {

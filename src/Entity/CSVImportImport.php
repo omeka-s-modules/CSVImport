@@ -7,7 +7,7 @@ use Omeka\Entity\Job;
 /**
  * @Entity
  */
-class OmekaimportImport extends AbstractEntity {
+class CsvimportImport extends AbstractEntity {
 
     /**
      * @Id
@@ -26,11 +26,6 @@ class OmekaimportImport extends AbstractEntity {
      * @Column(type="integer")
      */
     protected $addedCount;
-
-    /**
-     * @Column(type="integer")
-     */
-    protected $updatedCount;
 
     /**
      * @OneToOne(targetEntity="Omeka\Entity\Job")
@@ -76,16 +71,6 @@ class OmekaimportImport extends AbstractEntity {
     public function getAddedCount()
     {
         return $this->addedCount;
-    }
-
-    public function setUpdatedCount($count)
-    {
-        $this->updatedCount = $count;
-    }
-
-    public function getUpdatedCount()
-    {
-        return $this->updatedCount;
     }
 
     public function setComment($comment)
