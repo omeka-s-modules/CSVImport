@@ -20,27 +20,31 @@ class IndexController extends AbstractActionController
     public function mapAction()
     {
         $view = new ViewModel;
+        $form = new MappingForm($this->getServiceLocator());
         $request = $this->getRequest();
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
+            if (empty($files)) {
+                
+            } else {
             $post = array_merge_recursive(
                 $request->getPost()->toArray(),
                 $request->getFiles()->toArray()
             );
-            $form->setData($post);
-            if ($form->isValid()) {
-                $data = $form->getData();
-            }
-            $tmpFile = $data['csv']['tmp_name'];
+            
+            $tmpFile = $post['csv']['tmp_name'];
             $csvFile = new CsvFile($this->getServiceLocator());
             $csvFile->getTempPath();
             $csvFile->moveToTemp($tmpFile);
             $csvFile->loadFromTempPath();
-            $headers = $csvFile->getHeaders();
+            $columns = $csvFile->getHeaders();
             $data = $csvFile->getDataRows();
-            print_r($data);
-            die();
-            
+            $view->setVariable('form', $form);
+            $view->setVariable('columns', $columns);
+            //print_r($post);
+            //print_r($columns);
+            //die();
+            }
         }
         return $view;
     }

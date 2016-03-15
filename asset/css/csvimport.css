@@ -1,0 +1,42 @@
+.csv-import-fieldset-label {
+    display: block;
+    border-color: rgba(0, 0, 0, 0.08);
+    border-bottom-width: 0.1875em;
+    border-bottom-style: solid;
+    padding-bottom: 0.1875em;
+    margin-bottom: 0.375em;
+    font-size: 125%;
+}
+
+.csv-import-fieldset-label .collapse,
+.csv-import-fieldset-label .expand {
+    display: block;
+    float: right;
+}
+
+tr.mappable {
+    color: #f66;
+    background-color: rgba(0,0,0, .08);
+}
+
+tr.active {
+    background-color: rgba(0,0,0, .16);
+}
+
+tr.mappable td:first-child {
+    max-width: 40%;
+}
+
+tr.mappable td:nth-child(2) {
+    width: 30%;
+}
+
+ul.mappings {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li.mapping {
+    margin: 3px;
+}

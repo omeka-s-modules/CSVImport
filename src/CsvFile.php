@@ -34,7 +34,7 @@ class CsvFile implements ServiceLocatorAwareInterface
     public function getHeaders()
     {
         $line = $this->fileObject->fgetcsv();
-        
+        return $line;
     }
 
     public function getDataRows()
