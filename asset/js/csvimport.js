@@ -34,13 +34,13 @@
                 var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
                 if (hasMapping.length === 0) {
                     var elementId = activeElement.data('element-id');
-                    var newInput = $('<input type="hidden" name="element-property[' + elementId + '][]" ></input>');
+                    var newInput = $('<input type="hidden" name="column-property[' + elementId + '][]" ></input>');
                     newInput.val(targetLi.data('property-id'));
                     var newMappingLi = $('<li class="mapping" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
                     newMappingLi.append(newInput);
                     activeElement.find('ul.mappings').append(newMappingLi);
                 } else {
-                    alert('Element is already mapped');
+                    alert('Column is already mapped');
                 }
             }
         });
