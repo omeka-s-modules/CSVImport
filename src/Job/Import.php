@@ -17,17 +17,21 @@ class Import extends AbstractJob
 
     protected $fileMap;
 
-
     public function perform()
     {
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $this->csvFile = $this->getArg('csvFile');
         $this->columnMap = $this->getArg('columnMap');
         $this->fileMap = $this->getArg('fileMap');
+        $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
         foreach($this->csvFile as $index => $row) {
-            $itemJson = $this->buildPropertyJson($row);
-            $itemJson = array_merge($itemJson, $this->buildMediaJson($fileUrls));
+            $itemJson['o:item_set'] = array();
+            foreach($itemSets as $itemSetId) {
+                $resourceJson['o:item_set'][] = array('o:id' => $itemSetId);
+            }
+            $itemJson = array_merge($itemJson, $this->buildPropertyJson($row));
+            $itemJson = array_merge($itemJson, $this->buildMediaJson($row));
             $insertJson[] = $itemJson;
             if ($index % 50 == 0 ) {
                 //batch create
@@ -95,7 +99,7 @@ class Import extends AbstractJob
         $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
     }
     
-    public function buildImportRecordJson($resourceReference) 
+    protected function buildImportRecordJson($resourceReference) 
     {
         
     }
