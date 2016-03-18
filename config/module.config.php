@@ -6,6 +6,12 @@ return array(
             'CSVImport\Controller\Index' => 'CSVImport\Controller\IndexController',
         ),
     ),
+    'api_adapters' => array(
+        'invokables' => array(
+            'csvimport_records' => 'CSVImport\Api\Adapter\CSVImportRecordAdapter',
+            'csvimport_imports' => 'CSVImport\Api\Adapter\CSVImportImportAdapter'
+        ),
+    ),
     'view_manager' => array(
         'template_path_stack'      => array(
             OMEKA_PATH . '/modules/CSVImport/view',
