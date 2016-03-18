@@ -28,7 +28,7 @@ class CsvFile implements ServiceLocatorAwareInterface
     {
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
-        $this->fileObject->setFlags(SplFileObject::SKIP_EMPTY);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV);
     }
 
     public function getHeaders()

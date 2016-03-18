@@ -21,6 +21,7 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $form = new MappingForm($this->getServiceLocator());
+        $view->setVariable('form', $form);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
@@ -28,32 +29,37 @@ class IndexController extends AbstractActionController
                 $post = $this->params()->fromPost();
                 $map = $post['column-property'];
                 $csvPath = $post['csvpath'];
-                $csvFile = new CsvFile($this->getServiceLocator());
-                $csvFile->setTempPath($csvPath);
-                $csvFile->loadFromTempPath();
-                $data = $csvFile->getDataRows();
-                print_r($map);
-                print_r($data);
-                die();
+
+                $args = [
+                    'csvPath'   => $csvPath,
+                    'columnMap' => $map,
+                    'fileMap'   => [],
+                ];
+                $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
+                $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
+                //the Omeka2Import record is created in the job, so it doesn't
+                //happen until the job is done
+                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                //die();
             } else {
-            $post = array_merge_recursive(
-                $request->getPost()->toArray(),
-                $request->getFiles()->toArray()
-            );
-            
-            $tmpFile = $post['csv']['tmp_name'];
-            $csvFile = new CsvFile($this->getServiceLocator());
-            $csvPath = $csvFile->getTempPath();
-            $csvFile->moveToTemp($tmpFile);
-            $csvFile->loadFromTempPath();
-            $columns = $csvFile->getHeaders();
-            
-            $view->setVariable('form', $form);
-            $view->setVariable('columns', $columns);
-            $view->setVariable('csvpath', $csvPath);
-            //print_r($post);
-            //print_r($columns);
-            //die();
+                $post = array_merge_recursive(
+                    $request->getPost()->toArray(),
+                    $request->getFiles()->toArray()
+                );
+                
+                $tmpFile = $post['csv']['tmp_name'];
+                $csvFile = new CsvFile($this->getServiceLocator());
+                $csvPath = $csvFile->getTempPath();
+                $csvFile->moveToTemp($tmpFile);
+                $csvFile->loadFromTempPath();
+                $columns = $csvFile->getHeaders();
+                
+                
+                $view->setVariable('columns', $columns);
+                $view->setVariable('csvpath', $csvPath);
+                //print_r($post);
+                //print_r($columns);
+                //die();
             }
         }
         return $view;

@@ -4,6 +4,7 @@ namespace CSVImport\Job;
 use Omeka\Job\AbstractJob;
 use Omeka\Log\Writer\Job as JobWriter;
 use Omeka\Job\Exception as JobException;
+use CSVImport\CsvFile;
 
 class Import extends AbstractJob
 {
@@ -16,53 +17,65 @@ class Import extends AbstractJob
     protected $columnMap;
 
     protected $fileMap;
+    
+    protected $logger;
 
     public function perform()
     {
+        $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        $this->csvFile = $this->getArg('csvFile');
+        $csvFile = new CsvFile($this->getServiceLocator());
+        $csvFile->setTempPath($this->getArg('csvPath'));;
+        $csvFile->loadFromTempPath();
+        $this->csvFile = $csvFile;
         $this->columnMap = $this->getArg('columnMap');
         $this->fileMap = $this->getArg('fileMap');
+        
         $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
-        foreach($this->csvFile as $index => $row) {
+        foreach($this->csvFile->fileObject as $index => $row) {
+            //skip the first (header) row
+            if ($index == 0 ) {
+                continue;
+            }
+            $itemJson = [];
             $itemJson['o:item_set'] = array();
             foreach($itemSets as $itemSetId) {
-                $resourceJson['o:item_set'][] = array('o:id' => $itemSetId);
+                $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
             }
             $itemJson = array_merge($itemJson, $this->buildPropertyJson($row));
             $itemJson = array_merge($itemJson, $this->buildMediaJson($row));
             $insertJson[] = $itemJson;
-            if ($index % 50 == 0 ) {
+            //only add every X for batch import
+            
+            if ( ($index !=0) && ($index % 20 == 0) ) {
                 //batch create
                 $this->createItems($insertJson);
                 $insertJson = [];
             }
         }
+        $this->createItems($insertJson);
     }
 
     protected function buildPropertyJson($row)
     {
         $propertyJson = [];
         foreach($row as $index => $values) {
-            //handle the situation where there are multiple values in one cell
-            
+            //@todo: handle the situation where there are multiple values in one cell
             
             if(isset($this->columnMap[$index])) {
-                foreach($this->columnMap[$index] as $maps) {
-                    foreach($maps as $propertyId) {
-                        $propertyJson[$propertyId][] = array(
-                                '@value'      => $values,
-                                'property_id' => $propertyId,
-                                'type'        => 'literal',
-                        );
-                    }
+                foreach($this->columnMap[$index] as $propertyId) {
+                    $propertyJson[$propertyId][] = array(
+                            '@value'      => $values,
+                            'property_id' => $propertyId,
+                            'type'        => 'literal',
+                    );
                 }
             }
         }
         return $propertyJson;
     }
-    
+
     protected function buildMediaJson($row)
     {
         $mediaJson = array('o:media' => array());
@@ -96,7 +109,7 @@ class Import extends AbstractJob
             $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
         }
         
-        $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
+        //$createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
     }
     
     protected function buildImportRecordJson($resourceReference) 
