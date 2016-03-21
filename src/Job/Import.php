@@ -29,8 +29,8 @@ class Import extends AbstractJob
         $csvFile->loadFromTempPath();
         $this->csvFile = $csvFile;
         $this->columnMap = $this->getArg('columnMap');
-        $this->fileMap = $this->getArg('fileMap');
-        
+        $this->fileMap = array_keys($this->getArg('fileMap'));
+        $this->logger->debug(print_r($this->fileMap, true));
         $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
@@ -46,6 +46,9 @@ class Import extends AbstractJob
             }
             $itemJson = array_merge($itemJson, $this->buildPropertyJson($row));
             $itemJson = array_merge($itemJson, $this->buildMediaJson($row));
+            //$this->logger->debug(print_r($itemJson, true));
+            //$this->api->create('items', $itemJson);
+            
             $insertJson[] = $itemJson;
             //only add every X for batch import
             
@@ -54,7 +57,9 @@ class Import extends AbstractJob
                 $this->createItems($insertJson);
                 $insertJson = [];
             }
+            
         }
+        $this->logger->debug(print_r($insertJson, true));
         $this->createItems($insertJson);
     }
 
@@ -88,8 +93,8 @@ class Import extends AbstractJob
                 foreach($fileUrls as $fileUrl) {
                     $fileJson = array(
                         'o:ingester'     => 'url',
-                        'o:source'   => $fileUrl,
-                        'ingest_url' => $fileUrl,
+                        'o:source'   => trim($fileUrl),
+                        'ingest_url' => trim($fileUrl),
                     );
                     $mediaJson['o:media'][] = $fileJson;
                 }
