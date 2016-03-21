@@ -28,29 +28,13 @@ class CsvFile implements ServiceLocatorAwareInterface
     {
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
-        $this->fileObject->setFlags(SplFileObject::READ_CSV);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
     }
 
     public function getHeaders()
     {
         $line = $this->fileObject->fgetcsv();
         return $line;
-    }
-
-    public function getDataRows()
-    {
-        if ($this->fileObject->key() !== 1) {
-            $this->fileObject->rewind();
-            $this->fileObject->seek(1);
-        }
-        $rows = [];
-        while (! $this->fileObject->eof()) {
-            $row = $this->fileObject->fgetcsv();
-            if(!empty($row)) {
-                $rows[] = $row; 
-            }
-        }
-        return $rows;
     }
 
     /**

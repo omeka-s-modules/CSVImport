@@ -34,10 +34,11 @@ class Import extends AbstractJob
         $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
-            //skip the first (header) row
-            if ($index == 0 ) {
+            //skip the first (header) row, and any blank ones
+            if ($index == 0 || empty($row)) {
                 continue;
             }
+            
             $itemJson = [];
             $itemJson['o:item_set'] = array();
             foreach($itemSets as $itemSetId) {
@@ -48,7 +49,7 @@ class Import extends AbstractJob
             $insertJson[] = $itemJson;
             //only add every X for batch import
             
-            if ( ($index !=0) && ($index % 20 == 0) ) {
+            if ( $index % 20 == 0 ) {
                 //batch create
                 $this->createItems($insertJson);
                 $insertJson = [];
