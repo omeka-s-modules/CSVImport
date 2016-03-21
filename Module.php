@@ -27,15 +27,19 @@ class Module extends AbstractModule
         ALTER TABLE csvimport_record ADD CONSTRAINT FK_11CF590D960278D7 FOREIGN KEY (item_set_id) REFERENCES item_set (id);
         ALTER TABLE csvimport_import ADD CONSTRAINT FK_17B50881BE04EA9 FOREIGN KEY (job_id) REFERENCES job (id);
         ALTER TABLE csvimport_import ADD CONSTRAINT FK_17B508814C276F75 FOREIGN KEY (undo_job_id) REFERENCES job (id);
-        
         ";
-        
         $connection->exec($sql);
-        
     }
 
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
-
+        $connection = $serviceLocator->get('Omeka\Connection');
+        $connection->exec("ALTER TABLE csvimport_record DROP FOREIGN KEY FK_11CF590DBE04EA9;");
+        $connection->exec("ALTER TABLE csvimport_record DROP FOREIGN KEY FK_11CF590D126F525E;");
+        $connection->exec("ALTER TABLE csvimport_record DROP FOREIGN KEY FK_11CF590D960278D7;");
+        $connection->exec("ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B50881BE04EA9;");
+        $connection->exec("ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B508814C276F75;");
+        $connection->exec("DROP TABLE csvimport_record;");
+        $connection->exec("DROP TABLE csvimport_import;");
     }
 }
