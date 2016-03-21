@@ -10,7 +10,7 @@ use Omeka\Entity\ItemSet;
 /**
  * @Entity
  */
-class CsvimportRecord extends AbstractEntity
+class CSVImportRecord extends AbstractEntity
 {
 
     /**
@@ -73,45 +73,5 @@ class CsvimportRecord extends AbstractEntity
     public function getJob()
     {
         return $this->job;
-    }
-
-    public function setEndpoint($uri)
-    {
-        $this->endpoint = $uri;
-    }
-
-    public function getEndpoint()
-    {
-        return $this->endpoint;
-    }
-    
-    public function setRemoteType($type)
-    {
-        $this->remoteType = $type;
-    }
-    
-    public function getRemoteType()
-    {
-        return $this->remoteType;
-    }
-    
-    public function setRemoteId($id)
-    {
-        $this->remoteId = $id;
-    }
-    
-    public function getRemoteId()
-    {
-        return $this->remoteId;
-    }
-
-    public function setLastModified(DateTime $lastModified) 
-    {
-        $this->lastModified = $lastModified;
-    }
-
-    public function getLastModified()
-    {
-        return $this->lastModified;
     }
 }

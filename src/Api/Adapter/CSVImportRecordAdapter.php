@@ -7,11 +7,11 @@ use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
 use Omeka\Stdlib\ErrorStore;
 
-class CSVimportRecordAdapter extends AbstractEntityAdapter
+class CSVImportRecordAdapter extends AbstractEntityAdapter
 {
     public function getEntityClass()
     {
-        return 'CSVimport\Entity\OmekaimportRecord';
+        return 'CSVImport\Entity\CSVImportRecord';
     }
     
     public function getResourceName()
@@ -26,13 +26,6 @@ class CSVimportRecordAdapter extends AbstractEntityAdapter
     
     public function buildQuery(QueryBuilder $qb, array $query)
     {
-        if (isset($query['endpoint'])) {
-            $qb->andWhere($qb->expr()->eq(
-                $this->getEntityClass() . '.endpoint',
-                $this->createNamedParameter($qb, $query['endpoint']))
-            );
-        }
-
         if (isset($query['job_id'])) {
             $qb->andWhere($qb->expr()->eq(
                 $this->getEntityClass() . '.job',
@@ -62,10 +55,6 @@ class CSVimportRecordAdapter extends AbstractEntityAdapter
         if (isset($data['o:item_set']['o:id'])) {
             $itemSet = $this->getAdapter('item_sets')->findEntity($data['o:item_set']['o:id']);
             $entity->setItemSet($itemSet);
-        }
-
-        if (isset($data['last_modified'])) {
-            $entity->setLastModified($data['last_modified']);
         }
     }
 }

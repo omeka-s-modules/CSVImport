@@ -109,11 +109,14 @@ class Import extends AbstractJob
             $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
         }
         
-        //$createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
+        $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
     }
     
     protected function buildImportRecordJson($resourceReference) 
     {
-        
+        $recordJson = array('o:job'     => ['o:id' => $this->job->getId()],
+                            'o:item'    => ['o:id' => $resourceReference->id()],
+                            );
+        return $recordJson;
     }
 }
