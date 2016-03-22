@@ -27,13 +27,16 @@ class IndexController extends AbstractActionController
             $files = $request->getFiles()->toArray();
             if (empty($files)) {
                 $post = $this->params()->fromPost();
-                $map = $post['column-property'];
                 $csvPath = $post['csvpath'];
-                $fileMap = $post['column-file'];
+                $map = isset($post['column-property']) ? $post['column-property'] : [];
+                
+                $fileMap = isset($post['column-file']) ? array_keys($post['column-file']) : [];
+                $uriMap = isset($post['column-uri']) ? array_keys($post['column-uri']) : [];
                 $args = [
                     'csvPath'   => $csvPath,
                     'columnMap' => $map,
                     'fileMap'   => $fileMap,
+                    'uriMap'    => $uriMap,
                 ];
                 $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);

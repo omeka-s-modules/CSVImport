@@ -18,6 +18,8 @@ class Import extends AbstractJob
 
     protected $fileMap;
     
+    protected $uriMap;
+    
     protected $logger;
 
     public function perform()
@@ -29,7 +31,8 @@ class Import extends AbstractJob
         $csvFile->loadFromTempPath();
         $this->csvFile = $csvFile;
         $this->columnMap = $this->getArg('columnMap');
-        $this->fileMap = array_keys($this->getArg('fileMap'));
+        $this->fileMap = $this->getArg('fileMap');
+        $this->uriMap = $this->getArg('uriMap');
         $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
@@ -64,14 +67,23 @@ class Import extends AbstractJob
         $propertyJson = [];
         foreach($row as $index => $values) {
             //@todo: handle the situation where there are multiple values in one cell
-            
+            $type = in_array($index, $this->uriMap) ? 'uri' : 'literal';
             if(isset($this->columnMap[$index])) {
                 foreach($this->columnMap[$index] as $propertyId) {
-                    $propertyJson[$propertyId][] = array(
-                            '@value'      => $values,
-                            'property_id' => $propertyId,
-                            'type'        => 'literal',
-                    );
+                    if ($type == 'uri') {
+                        $propertyJson[$propertyId][] = array(
+                                '@id'         => $values,
+                                'property_id' => $propertyId,
+                                'type'        => $type,
+                        );
+                    } else {
+                        $propertyJson[$propertyId][] = array(
+                                '@value'      => $values,
+                                'property_id' => $propertyId,
+                                'type'        => $type,
+                        );
+                    }
+
                 }
             }
         }

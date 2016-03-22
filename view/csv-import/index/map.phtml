@@ -19,6 +19,7 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                 <tr>
                     <th><?php echo $this->translate("Csv Heading"); ?></th>
                     <th><?php echo $this->translate("Mapped Properties"); ?></th>
+                    <th><?php echo $this->translate("Uri"); ?></th>
                     <th><?php echo $this->translate("File"); ?></th>
                 </tr>
             </thead>
@@ -29,6 +30,9 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                     <td class="mapping element">
                         <ul class="mappings elements">
                         </ul>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="column-uri[<?php echo $index; ?>]"></input>
                     </td>
                     <td>
                         <input type="checkbox" name="column-file[<?php echo $index; ?>]"></input>
