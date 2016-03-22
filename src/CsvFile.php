@@ -2,21 +2,19 @@
 namespace CSVImport;
 
 use \SplFileObject;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class CsvFile implements ServiceLocatorAwareInterface
+class CsvFile
 {
-    use ServiceLocatorAwareTrait;
-
     public $fileObject;
 
     public $tempPath;
+    
+    protected $serviceLocator;
 
     public function __construct(ServiceLocatorInterface $serviceLocator)
     {
-        $this->setServiceLocator($serviceLocator);
+        $this->serviceLocator = $serviceLocator;
     }
 
     public function moveToTemp($systemTempPath)
@@ -49,7 +47,7 @@ class CsvFile implements ServiceLocatorAwareInterface
             return $this->tempPath;
         }
         if (!isset($tempDir)) {
-            $config = $this->getServiceLocator()->get('Config');
+            $config = $this->serviceLocator->get('Config');
             if (!isset($config['temp_dir'])) {
                 throw new ConfigException('Missing temporary directory configuration');
             }
