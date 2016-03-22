@@ -20,6 +20,8 @@ class Import extends AbstractJob
     
     protected $uriMap;
     
+    protected $multivalueMap;
+    
     protected $logger;
 
     public function perform()
@@ -33,6 +35,7 @@ class Import extends AbstractJob
         $this->columnMap = $this->getArg('columnMap');
         $this->fileMap = $this->getArg('fileMap');
         $this->uriMap = $this->getArg('uriMap');
+        $this->multivalueMap = $this->getArg('multivalueMap');
         $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
@@ -66,24 +69,41 @@ class Import extends AbstractJob
     {
         $propertyJson = [];
         foreach($row as $index => $values) {
-            //@todo: handle the situation where there are multiple values in one cell
             $type = in_array($index, $this->uriMap) ? 'uri' : 'literal';
             if(isset($this->columnMap[$index])) {
                 foreach($this->columnMap[$index] as $propertyId) {
-                    if ($type == 'uri') {
-                        $propertyJson[$propertyId][] = array(
-                                '@id'         => $values,
-                                'property_id' => $propertyId,
-                                'type'        => $type,
-                        );
+                    if(in_array($index, $this->multivalueMap)) {
+                        $values = explode(',', $values);
+                        foreach($values as $value) {
+                            if ($type == 'uri') {
+                                $propertyJson[$propertyId][] = array(
+                                        '@id'         => $value,
+                                        'property_id' => $propertyId,
+                                        'type'        => $type,
+                                );
+                            } else {
+                                $propertyJson[$propertyId][] = array(
+                                        '@value'      => $value,
+                                        'property_id' => $propertyId,
+                                        'type'        => $type,
+                                );
+                            }
+                        }
                     } else {
-                        $propertyJson[$propertyId][] = array(
-                                '@value'      => $values,
-                                'property_id' => $propertyId,
-                                'type'        => $type,
-                        );
+                        if ($type == 'uri') {
+                            $propertyJson[$propertyId][] = array(
+                                    '@id'         => $values,
+                                    'property_id' => $propertyId,
+                                    'type'        => $type,
+                            );
+                        } else {
+                            $propertyJson[$propertyId][] = array(
+                                    '@value'      => $values,
+                                    'property_id' => $propertyId,
+                                    'type'        => $type,
+                            );
+                        }
                     }
-
                 }
             }
         }
