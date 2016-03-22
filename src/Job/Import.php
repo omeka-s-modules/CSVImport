@@ -73,8 +73,8 @@ class Import extends AbstractJob
             if(isset($this->columnMap[$index])) {
                 foreach($this->columnMap[$index] as $propertyId) {
                     if(in_array($index, $this->multivalueMap)) {
-                        $values = explode(',', $values);
-                        foreach($values as $value) {
+                        $multivalues = explode(',', $values);
+                        foreach($multivalues as $value) {
                             if ($type == 'uri') {
                                 $propertyJson[$propertyId][] = array(
                                         '@id'         => $value,
