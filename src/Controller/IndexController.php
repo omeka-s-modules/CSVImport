@@ -33,12 +33,14 @@ class IndexController extends AbstractActionController
                 $fileMap = isset($post['column-file']) ? array_keys($post['column-file']) : [];
                 $uriMap = isset($post['column-uri']) ? array_keys($post['column-uri']) : [];
                 $multivalueMap = isset($post['column-multivalue']) ? array_keys($post['column-multivalue']) : [];
+                $multivalueSeparator = $post['multivalue-separator'];
                 $args = [
                     'csvPath'       => $csvPath,
                     'columnMap'     => $map,
                     'fileMap'       => $fileMap,
                     'uriMap'        => $uriMap,
                     'multivalueMap' => $multivalueMap,
+                    'multivalueSeparator' => $multivalueSeparator,
                 ];
                 $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);

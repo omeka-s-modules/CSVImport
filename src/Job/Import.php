@@ -22,6 +22,8 @@ class Import extends AbstractJob
     
     protected $multivalueMap;
     
+    protected $multivalueSeparator; 
+    
     protected $logger;
 
     public function perform()
@@ -36,6 +38,7 @@ class Import extends AbstractJob
         $this->fileMap = $this->getArg('fileMap');
         $this->uriMap = $this->getArg('uriMap');
         $this->multivalueMap = $this->getArg('multivalueMap');
+        $this->multivalueSeparator = $this->getArg('multivalueSeparator');
         $itemSets = $this->getArg('itemSets', array());
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
@@ -73,7 +76,7 @@ class Import extends AbstractJob
             if(isset($this->columnMap[$index])) {
                 foreach($this->columnMap[$index] as $propertyId) {
                     if(in_array($index, $this->multivalueMap)) {
-                        $multivalues = explode(',', $values);
+                        $multivalues = explode($this->multivalueSeparator, $values);
                         foreach($multivalues as $value) {
                             if ($type == 'uri') {
                                 $propertyJson[$propertyId][] = array(
@@ -116,7 +119,7 @@ class Import extends AbstractJob
         foreach($row as $index => $values) {
             //split $values into an array, so people can have more than one file
             //in the column
-            $fileUrls = explode(',', $values);
+            $fileUrls = explode($this->multivalueSeparator, $values);
             if(in_array($index, $this->fileMap)) {
                 foreach($fileUrls as $fileUrl) {
                     $fileJson = array(

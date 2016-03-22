@@ -12,6 +12,14 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
     <input type='submit' value='Next' />
 </fieldset>
 <input type='hidden' name='csvpath' value='<?php echo $csvpath; ?>' />
+
+<div id='global-data'>
+    <fieldset id='csv-import-global-settings'>
+        <?php echo $this->formCollection($form, false); ?>
+    </fieldset>
+
+</div>
+
 <div id='mapping-data'>
     <fieldset id="csv-import-elements-map-fieldset">
         <table>
