@@ -13,15 +13,20 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 </fieldset>
 <input type='hidden' name='csvpath' value='<?php echo $csvpath; ?>' />
 
-<div id='global-data'>
-    <fieldset id='csv-import-global-settings'>
-        <?php echo $this->formCollection($form, false); ?>
-    </fieldset>
+<a href='#' id='csv-import-basics' class='csv-import-fieldset-label'>
+<?php echo $this->translate('Basic Import Settings'); ?>
+<span class="collapse"></span>
+</a>
+<fieldset id='csv-import-basics-fieldset'>
+    <?php echo $this->formCollection($form, false); ?>
+</fieldset>
 
-</div>
-
+<a href='#' id='csv-import-columns-map' class='csv-import-fieldset-label'>
+<?php echo $this->translate('CSV File Columns to Omeka S Properties'); ?>
+<span class="collapse"></span>
+</a>
 <div id='mapping-data'>
-    <fieldset id="csv-import-elements-map-fieldset">
+    <fieldset id="csv-import-columns-map-fieldset">
         <table>
             <thead>
                 <tr>
