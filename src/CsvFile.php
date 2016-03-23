@@ -1,7 +1,7 @@
 <?php
 namespace CSVImport;
 
-use \SplFileObject;
+use SplFileObject;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CsvFile
