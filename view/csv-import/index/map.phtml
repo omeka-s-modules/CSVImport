@@ -22,7 +22,7 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 </fieldset>
 
 <a href='#' id='csv-import-columns-map' class='csv-import-fieldset-label'>
-<?php echo $this->translate('CSV File Columns to Omeka S Properties'); ?>
+<?php echo $this->translate('Map CSV File Columns to Omeka S Data'); ?>
 <span class="collapse"></span>
 </a>
 <div id='mapping-data'>
@@ -32,9 +32,9 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                 <tr>
                     <th><?php echo $this->translate("Csv Heading"); ?></th>
                     <th><?php echo $this->translate("Mapped Properties"); ?></th>
-                    <th><?php echo $this->translate("Uri"); ?></th>
-                    <th><?php echo $this->translate("Multiple Values"); ?></th>
-                    <th><?php echo $this->translate("File"); ?></th>
+                    <th><?php echo $this->translate("Uri?"); ?></th>
+                    <th><?php echo $this->translate("Multiple Values?"); ?></th>
+                    <th><?php echo $this->translate("File?"); ?></th>
                 </tr>
             </thead>
             <tbody>
