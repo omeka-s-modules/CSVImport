@@ -54,7 +54,7 @@ return array(
                                     ),
                                 )
                             ),
-                            'map-elements' => array(
+                            'map' => array(
                                 'type'    => 'Literal',
                                 'options' => array(
                                     'route' => '/map',
@@ -82,6 +82,12 @@ return array(
                         'label'      => 'Import',
                         'route'      => 'admin/csvimport',
                         'resource'   => 'CSVImport\Controller\Index',
+                    ),
+                    array(
+                        'label'      => 'Import',
+                        'route'      => 'admin/csvimport/map',
+                        'resource'   => 'CSVImport\Controller\Index',
+                        'visible'    => false,
                     ),
                     array(
                         'label'      => 'Past Imports',
