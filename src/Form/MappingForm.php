@@ -28,7 +28,7 @@ class MappingForm extends AbstractForm
         $itemSetSelect = new ResourceSelect($serviceLocator);
         $itemSetSelect->setName('itemSet')
             ->setLabel('Import into')
-            ->setOption('info', $translator->translate('Optional. Import items into this item set. It is recommended to create an Item Set for each Omeka 2 site you import.'))
+            ->setOption('info', $translator->translate('Optional. Import items into this item set.'))
             ->setEmptyOption('Select Item Set...')
             ->setResourceValueOptions(
                 'item_sets',
