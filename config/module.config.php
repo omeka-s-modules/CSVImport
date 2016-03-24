@@ -20,6 +20,7 @@ return array(
     'view_helpers' => array(
         'invokables' => array(
         'resourceClassSelector'    => 'CSVImport\View\Helper\ResourceClassSelector',
+        //'propertySelector'        => 'CSVImport\View\Helper\PropertySelector',
         )
     ),
     'entity_manager' => array(

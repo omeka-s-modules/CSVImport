@@ -116,6 +116,46 @@
             mappingToRemove.removeClass('delete');
             $(this).hide();
         });
-
+        
+        $('.sidebar-chooser').on('click', 'a', function(e) {
+            e.preventDefault();
+            //e.stopPropagation();
+            var currentSidebar = $('.sidebar.active');
+            var actionElement = $(this);
+            actionElement.parent().addClass('active');
+            var target = '#' + actionElement.data('sidebar');
+            if (currentSidebar.attr('id') != target) {
+                currentSidebar.removeClass('active');
+            }
+            Omeka.openSidebar(actionElement, target);
+        });
+        
+        $('#flags-sidebar li').on('click', function(e){
+            e.stopPropagation();
+            //looks like a stopPropagation on the selector-parent forces
+            //me to bind the event lower down the DOM, then work back
+            //up to the li
+            var targetLi = $(e.target).closest('li');
+            if (activeElement == null) {
+                alert("Select an element at the left before choosing a property.");
+            } else {
+                //first, check if the flag is already added
+                var hasFlag = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
+                if (hasFlag.length === 0) {
+                    var elementId = activeElement.data('element-id');
+                    //elementId, or index? @TODO: check the naming conventions
+                    //much is copied from Omeka2Importer, and might need clarification
+                    var flagName = targetLi.find('span').text();
+                    var index = elementId;
+                    var name = targetLi.data('flag') + "[" + index + "]";
+                    var newInput = $('<input type="hidden" name="' + name + '" value="1" ></input>');
+                    var newMappingLi = $('<li class="mapping">' + flagName  + actionsHtml  + '</li>');
+                    newMappingLi.append(newInput);
+                    activeElement.find('ul.mappings').append(newMappingLi);
+                } else {
+                    alert('Column is already mapped');
+                }
+            }
+        });
     });
 })(jQuery);

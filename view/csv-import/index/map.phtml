@@ -30,29 +30,24 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
         <table>
             <thead>
                 <tr>
-                    <th><?php echo $this->translate("Csv Heading"); ?></th>
-                    <th><?php echo $this->translate("Mapped Properties"); ?></th>
-                    <th><?php echo $this->translate("Uri?"); ?></th>
-                    <th><?php echo $this->translate("Multiple Values?"); ?></th>
-                    <th><?php echo $this->translate("File?"); ?></th>
+                    <th><?php echo $this->translate("Csv Column"); ?></th>
+                    <th><?php echo $this->translate("Mappings"); ?></th>
                 </tr>
             </thead>
             <tbody>
             <?php foreach ($columns as $index=>$column): ?>
                 <tr class="element mappable" data-element-id="<?php echo $index; ?>">
-                    <td><?php echo $column;?></td>
+                    <td>
+                        <h3><?php echo $column;?></h3>
+<ul class='sidebar-chooser'>
+<li><a href='#' class='button' data-sidebar='property-selector'>Map Properties</a></li>
+<li><a href='#' class='button' data-sidebar='flags-sidebar'>Set Flags</a></li>
+<li><a href='#' class='button'>(Module-added stuff)</a></li>
+</ul>
+                    </td>
                     <td class="mapping element">
                         <ul class="mappings elements">
                         </ul>
-                    </td>
-                    <td>
-                        <input type="checkbox" name="column-uri[<?php echo $index; ?>]"></input>
-                    </td>
-                    <td>
-                        <input type="checkbox" name="column-multivalue[<?php echo $index; ?>]"></input>
-                    </td>
-                    <td>
-                        <input type="checkbox" name="column-file[<?php echo $index; ?>]"></input>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -65,3 +60,44 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 <?php
 echo $this->propertySelector('Select property to map. Click a column heading as the target, then select the properties for it.', true);
 ?>
+
+<div id='flags-sidebar' class='flags sidebar'>
+    <ul>
+        <li data-flag='column-url'>
+            <div class='description'>Import this data as a URL value type.</div>
+            <span>URL?</span>
+        </li>
+        <li data-flag='column-multivalue'>
+            <div class='description'>This column contains multiple values for a property. Double-check the separator for multiple values.</div>
+            <span>Multiple Values?</span>
+        </li>
+        <li>
+            <p>Media Importing</p>
+            <ul>
+                <li data-flag='column-file'>
+                    <div class='description'>Data in this column gives URLs to files to import.</div>
+                    <span>File URL</span>
+                </li>
+                <li data-flag='column-oembed'>
+                    <div class='description'>Data in this column gives URLs to oEmbed sources.</div>
+                    <span>oEmbed</span>
+                </li>
+                <li data-flag='column-youtube'>
+                    <div class='description'>Data in this column gives URLs to YouTube Videos</div>
+                    <span>YouTube</span>
+                </li>
+                <li data-flag='column-html'>
+                    <div class='description'>Data in this column gives HTML.</div>
+                    <span>HTML</span>
+                </li>
+                <li data-flag='column-iiif'>
+                    <div class='description'>Data in this column gives URLs to IIIF image.</div>
+                    <span>IIIF Image</span>
+                </li>
+            </ul>
+        </li>
+
+
+    
+    </ul>
+</div>
