@@ -41,8 +41,9 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                         <h3><?php echo $column;?></h3>
 <ul class='sidebar-chooser'>
 <li><a href='#' class='button' data-sidebar='property-selector'>Map Properties</a></li>
+<li><a href='#' class='button' data-sidebar='media-sidebar'>Media Import</a></li>
 <li><a href='#' class='button' data-sidebar='flags-sidebar'>Set Flags</a></li>
-<li><a href='#' class='button'>(Module-added stuff)</a></li>
+<li><a href='#' class='button' data-sidebar='fake-module-sidebar'>(Module 1 stuff)</a></li>
 </ul>
                     </td>
                     <td class="mapping element">
@@ -71,33 +72,37 @@ echo $this->propertySelector('Select property to map. Click a column heading as 
             <div class='description'>This column contains multiple values for a property. Double-check the separator for multiple values.</div>
             <span>Multiple Values?</span>
         </li>
-        <li>
-            <p>Media Importing</p>
-            <ul>
-                <li data-flag='column-file'>
-                    <div class='description'>Data in this column gives URLs to files to import.</div>
-                    <span>File URL</span>
-                </li>
-                <li data-flag='column-oembed'>
-                    <div class='description'>Data in this column gives URLs to oEmbed sources.</div>
-                    <span>oEmbed</span>
-                </li>
-                <li data-flag='column-youtube'>
-                    <div class='description'>Data in this column gives URLs to YouTube Videos</div>
-                    <span>YouTube</span>
-                </li>
-                <li data-flag='column-html'>
-                    <div class='description'>Data in this column gives HTML.</div>
-                    <span>HTML</span>
-                </li>
-                <li data-flag='column-iiif'>
-                    <div class='description'>Data in this column gives URLs to IIIF image.</div>
-                    <span>IIIF Image</span>
-                </li>
-            </ul>
-        </li>
-
-
-    
     </ul>
+</div>
+
+<div id='media-sidebar' class='sidebar'>
+    <p>Media Importing (eventually auto-built)</p>
+    <ul>
+        <li data-flag='column-file'>
+            <div class='description'>Data in this column gives URLs to files to import.</div>
+            <span>File URL</span>
+        </li>
+        <li data-flag='column-oembed'>
+            <div class='description'>Data in this column gives URLs to oEmbed sources.</div>
+            <span>oEmbed</span>
+        </li>
+        <li data-flag='column-youtube'>
+            <div class='description'>Data in this column gives URLs to YouTube Videos</div>
+            <span>YouTube</span>
+        </li>
+        <li data-flag='column-html'>
+            <div class='description'>Data in this column gives HTML.</div>
+            <span>HTML</span>
+        </li>
+        <li data-flag='column-iiif'>
+            <div class='description'>Data in this column gives URLs to IIIF image.</div>
+            <span>IIIF Image</span>
+        </li>
+    </ul>
+
+</div>
+
+<div id='fake-module-sidebar' class='sidebar'>
+A module puts stuff here
+
 </div>
