@@ -66,11 +66,11 @@ echo $this->propertySelector('Select property to map. Click a column heading as 
     <ul>
         <li data-flag='column-url'>
             <div class='description'>Import this data as a URL value type.</div>
-            <span>URL?</span>
+            <span>URL</span>
         </li>
         <li data-flag='column-multivalue'>
             <div class='description'>This column contains multiple values for a property. Double-check the separator for multiple values.</div>
-            <span>Multiple Values?</span>
+            <span>Multiple Values</span>
         </li>
     </ul>
 </div>
@@ -78,23 +78,23 @@ echo $this->propertySelector('Select property to map. Click a column heading as 
 <div id='media-sidebar' class='sidebar'>
     <p>Media Importing (eventually auto-built)</p>
     <ul>
-        <li data-flag='column-file'>
+        <li data-flag='column-file' data-flag-type='media'>
             <div class='description'>Data in this column gives URLs to files to import.</div>
             <span>File URL</span>
         </li>
-        <li data-flag='column-oembed'>
+        <li data-flag='column-oembed' data-flag-type='media'>
             <div class='description'>Data in this column gives URLs to oEmbed sources.</div>
             <span>oEmbed</span>
         </li>
-        <li data-flag='column-youtube'>
+        <li data-flag='column-youtube' data-flag-type='media'>
             <div class='description'>Data in this column gives URLs to YouTube Videos</div>
             <span>YouTube</span>
         </li>
-        <li data-flag='column-html'>
+        <li data-flag='column-html' data-flag-type='media'>
             <div class='description'>Data in this column gives HTML.</div>
             <span>HTML</span>
         </li>
-        <li data-flag='column-iiif'>
+        <li data-flag='column-iiif' data-flag-type='media'>
             <div class='description'>Data in this column gives URLs to IIIF image.</div>
             <span>IIIF Image</span>
         </li>

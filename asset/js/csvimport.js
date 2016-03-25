@@ -1,7 +1,7 @@
 (function ($) {
     var activeElement = null;
 
-    var actionsHtml = '<ul class="actions"><li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="Undo remove mapping" title="Undo remove mapping" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
+    var actionsHtml = '<ul class="actions"><li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li></ul>';
 
     $(document).ready(function() {
         $('#mapping-data').on('click', 'tr.mappable', function(e) {
@@ -98,23 +98,7 @@
         $('#mapping-data').on('click', 'a.remove-mapping', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            var mappingToRemove = $(this).parents('li.mapping');
-            mappingToRemove.find('input').prop('disabled', true);
-            mappingToRemove.addClass('delete');
-            mappingToRemove.find('.restore-mapping').show();
-            $(this).hide();
-        });
-
-        // Restore a removed mapping
-        $('#mapping-data').on('click', 'a.restore-mapping', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var mappingToRemove = $(this).parents('li.mapping');
-            mappingToRemove.find('.remove-mapping').show();
-            mappingToRemove.find('span.restore-mapping').hide();
-            mappingToRemove.find('input').prop('disabled', false);
-            mappingToRemove.removeClass('delete');
-            $(this).hide();
+            $(this).parents('li.mapping').remove();
         });
         
         $('.sidebar-chooser').on('click', 'a', function(e) {
@@ -130,7 +114,7 @@
             Omeka.openSidebar(actionElement, target);
         });
         
-        $('#flags-sidebar li').on('click', function(e){
+        $('#flags-sidebar li, #media-sidebar li').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces
             //me to bind the event lower down the DOM, then work back
@@ -139,17 +123,24 @@
             if (activeElement == null) {
                 alert("Select an element at the left before choosing a property.");
             } else {
+                var flagName = targetLi.find('span').text();
+                var flagType = targetLi.data('flag-type');
+                if (! flagType) {
+                    flagType = targetLi.data('flag');
+                }
                 //first, check if the flag is already added
-                var hasFlag = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
+                //or if there is already any media mapping
+
+                var hasFlag = activeElement.find('ul.mappings li.' + flagType);
                 if (hasFlag.length === 0) {
                     var elementId = activeElement.data('element-id');
                     //elementId, or index? @TODO: check the naming conventions
                     //much is copied from Omeka2Importer, and might need clarification
-                    var flagName = targetLi.find('span').text();
+                    
                     var index = elementId;
-                    var name = targetLi.data('flag') + "[" + index + "]";
+                    var name = flagType + "[" + index + "]";
                     var newInput = $('<input type="hidden" name="' + name + '" value="1" ></input>');
-                    var newMappingLi = $('<li class="mapping">' + flagName  + actionsHtml  + '</li>');
+                    var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
                     newMappingLi.append(newInput);
                     activeElement.find('ul.mappings').append(newMappingLi);
                 } else {
