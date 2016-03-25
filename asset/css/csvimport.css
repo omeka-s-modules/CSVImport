@@ -40,3 +40,13 @@ li.mapping {
 .sidebar a.button {
     width: 100%
 }
+
+.sidebar-chooser a {
+    font-size: 13px;
+    min-width: 50%;
+    padding: 0;
+}
+
+.sidebar-chooser li.active a {
+    background-color: #F00
+}

@@ -106,6 +106,7 @@
             //e.stopPropagation();
             var currentSidebar = $('.sidebar.active');
             var actionElement = $(this);
+            $('.sidebar-chooser li').removeClass('active');
             actionElement.parent().addClass('active');
             var target = '#' + actionElement.data('sidebar');
             if (currentSidebar.attr('id') != target) {
