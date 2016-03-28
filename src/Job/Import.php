@@ -39,7 +39,7 @@ class Import extends AbstractJob
         $this->uriMap = $this->getArg('uriMap');
         $this->multivalueMap = $this->getArg('multivalueMap');
         $this->multivalueSeparator = $this->getArg('multivalueSeparator');
-        $itemSets = $this->getArg('itemSets', array());
+        
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
             //skip the first (header) row, and any blank ones
@@ -47,14 +47,8 @@ class Import extends AbstractJob
                 continue;
             }
             
-            $itemJson = [];
-            $itemJson['o:item_set'] = array();
-            foreach($itemSets as $itemSetId) {
-                $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
-            }
-            $itemJson = array_merge($itemJson, $this->buildPropertyJson($row));
-            $itemJson = array_merge($itemJson, $this->buildMediaJson($row));
             
+            $itemJson = $this->buildItemJson($row);
             $insertJson[] = $itemJson;
             //only add every X for batch import
             
@@ -68,6 +62,22 @@ class Import extends AbstractJob
         $this->createItems($insertJson);
     }
 
+    protected function buildItemJson($row)
+    {
+        $itemJson = [];
+        //add item-based data here, either from global settings
+        //or from row-based mapping
+        $itemSets = $this->getArg('itemSets', array());
+        $itemJson['o:item_set'] = array();
+        foreach($itemSets as $itemSetId) {
+            $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
+        }
+        $itemJson = array_merge($itemJson, $this->buildPropertyJson($row));
+        $itemJson = array_merge($itemJson, $this->buildMediaJson($row));
+        //let modules add to item json here?
+        return $itemJson;
+    }
+    
     protected function buildPropertyJson($row)
     {
         $propertyJson = [];
