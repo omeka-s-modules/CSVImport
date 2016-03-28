@@ -50,3 +50,7 @@ li.mapping {
 .sidebar-chooser li.active a {
     background-color: #F00
 }
+
+#media-sidebar a {
+    text-align: left;
+}
