@@ -115,7 +115,7 @@
             Omeka.openSidebar(actionElement, target);
         });
         
-        $('#flags-sidebar li, #media-sidebar li').on('click', function(e){
+        $('.sidebar.flags li').on('click', function(e){
             e.stopPropagation();
             e.preventDefault();
             //looks like a stopPropagation on the selector-parent forces
