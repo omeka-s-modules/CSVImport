@@ -117,6 +117,7 @@
         
         $('#flags-sidebar li, #media-sidebar li').on('click', function(e){
             e.stopPropagation();
+            e.preventDefault();
             //looks like a stopPropagation on the selector-parent forces
             //me to bind the event lower down the DOM, then work back
             //up to the li

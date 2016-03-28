@@ -60,7 +60,7 @@ class IndexController extends AbstractActionController
                 $csvFile->moveToTemp($tmpFile);
                 $csvFile->loadFromTempPath();
                 $columns = $csvFile->getHeaders();
-                
+                $view->setVariable('mediaForms', $this->getMediaForms());
                 
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
@@ -76,5 +76,19 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         return $view;
+    }
+    
+    protected function getMediaForms()
+    {
+        $services = $this->getServiceLocator();
+        $mediaIngester = $services->get('Omeka\MediaIngesterManager');
+
+        $forms = [];
+        foreach ($mediaIngester->getRegisteredNames() as $ingester) {
+            $forms[$ingester] = [
+                'label' => $mediaIngester->get($ingester)->getLabel(),
+            ];
+        }
+        return $forms;
     }
 }
