@@ -18,8 +18,12 @@ return array(
         ),
     ),
     'view_helpers' => array(
+        'factories'  => [
+            'mediaSidebar'        => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
+        ],
         'invokables' => array(
-        'resourceClassSelector'    => 'CSVImport\View\Helper\ResourceClassSelector',
+          //  'mediaSidebar'        => 'CSVImport\View\Helper\MediaSidebar',
+        //'resourceClassSelector'    => 'CSVImport\View\Helper\ResourceClassSelector',
         //'propertySelector'        => 'CSVImport\View\Helper\PropertySelector',
         )
     ),
@@ -28,6 +32,11 @@ return array(
             OMEKA_PATH . '/modules/CSVImport/src/Entity',
         ),
     ),
+    'csv_import_mappings' => [
+        '\CSVImport\Mapping\PropertyMapping',
+        '\CSVImport\Mapping\MediaMapping',
+        '\CSVImport\Mapping\ItemMapping'
+    ],
     'router' => array(
         'routes' => array(
             'admin' => array(

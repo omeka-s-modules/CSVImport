@@ -42,10 +42,11 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                         <input type='checkbox' name='column-url[<?php echo $index; ?>]'></input><label>URL</label>
                         <input type='checkbox' name='column-multivalue[<?php echo $index; ?>]'></input><label>Multivalue</label>
                         <ul class='sidebar-chooser'>
-                            <li><a href='#' class='button' data-sidebar='property-selector'>Map Properties</a></li>
-                            <li><a href='#' class='button' data-sidebar='media-sidebar'>Media Import</a></li>
-                            <li><a href='#' class='button' data-sidebar='item-sidebar'>Item Data</a></li>
-                            <li><a href='#' class='button' data-sidebar='fake-module-sidebar'>(Module 1 stuff)</a></li>
+                            <?php foreach($mappings as $mappingClass): ?>
+                            <li>
+                                <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>-sidebar'><?php echo $mappingClass::getLabel($this); ?></a>
+                            </li>
+                            <?php endforeach; ?>
                         </ul>
                     </td>
                     <td class="mapping element">
@@ -60,45 +61,7 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 </div>
 <?php echo $this->form()->closeTag($form); ?>
 
-<?php
-echo $this->propertySelector('Select property to map. Click a column heading as the target, then select the properties for it.', true);
+<?php foreach($mappings as $mappingClass) {
+    echo $mappingClass::getSidebar($this);
+}
 ?>
-
-<div id='item-sidebar' class='sidebar flags'>
-    <p>Data from this column applies to the entire item being imported.</p>
-    <p>Settings here will override any corresponding settings in Basic Import Settings.</p>
-    <ul>
-        <li data-flag='column-itemset-id'>
-            <a href='#' class='button'><span>Item Set ID</span></a>
-        </li>
-        <li data-flag='column-resourcetemplate'>
-            <a href='#' class='button'><span>Resource Template Name</span></a>
-        </li>
-        <li data-flag='column-resourceclass'>
-            <a href='#' class='button'><span>Resource Class Term</span></a>
-        </li>
-        <li data-flag='column-owneremail'>
-            <a href='#' class='button'><span>Owner Email Address</span></a>
-        </li>
-    </ul>
-</div>
-
-
-<div id='media-sidebar' class='sidebar flags'>
-    <legend>Media Importing</legend>
-    <ul>
-        <?php foreach($mediaForms as $type=>$mediaForm): ?>
-        <?php if ($type !='upload'): ?>
-        <li data-flag='column-<?php echo $escapeHtml($type); ?>' data-flag-type='media'>
-            <a href='#' class='button'><span><?php echo $escapeHtml($mediaForm['label']); ?></span></a>
-        </li>
-        <?php endif; ?>
-        <?php endforeach; ?>
-    </ul>
-
-</div>
-
-<div id='fake-module-sidebar' class='sidebar'>
-A module puts stuff here
-
-</div>

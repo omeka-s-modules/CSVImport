@@ -62,6 +62,9 @@ class IndexController extends AbstractActionController
                 $columns = $csvFile->getHeaders();
                 $view->setVariable('mediaForms', $this->getMediaForms());
                 
+                $config = $this->serviceLocator->get('Config');
+                
+                $view->setVariable('mappings', $config['csv_import_mappings']);
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
                 //print_r($post);
