@@ -48,8 +48,16 @@ class MediaMapping
                     $mediaDatumJson = array(
                         'o:ingester'     => $ingester,
                         'o:source'   => trim($mediaDatum),
-                        'ingest_url' => trim($mediaDatum),
                     );
+                    switch($ingester) {
+                        case 'html':
+                            $mediaDatumJson['html'] = $mediaDatum;
+                        break;
+                        
+                        case 'url':
+                            $mediaDatumJson['ingest_url'] = trim($mediaDatum);
+                        break;
+                    }
                     $mediaJson['o:media'][] = $mediaDatumJson;
                 }
             }
