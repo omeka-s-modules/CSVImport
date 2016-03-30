@@ -26,10 +26,12 @@ class MappingForm extends AbstractForm
         $serviceLocator = $this->getServiceLocator();
         $auth = $serviceLocator->get('Omeka\AuthenticationService');
         $itemSetSelect = new ResourceSelect($serviceLocator);
+        $itemSetSelect->setAttribute('multiple', true);
+        $itemSetSelect->setAttribute('id', 'item-set-select');
         $itemSetSelect->setName('itemSet')
             ->setLabel('Import into')
             ->setOption('info', $translator->translate('Optional. Import items into this item set.'))
-            ->setEmptyOption('Select Item Set...')
+            ->setEmptyOption('Select Item Set(s)...')
             ->setResourceValueOptions(
                 'item_sets',
                 array('owner_id' => $auth->getIdentity()),

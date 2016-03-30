@@ -5,6 +5,16 @@ namespace CSVImport\Mapping;
 class ItemMapping
 {
     
+    protected $args;
+    
+    protected $logger;
+    
+    public function __construct($args, $logger)
+    {
+        $this->args = $args;
+        $this->logger = $logger;
+    }
+    
     public static function getLabel()
     {
         return "Item Data";

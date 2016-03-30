@@ -54,3 +54,7 @@ li.mapping {
 #media-sidebar a {
     text-align: left;
 }
+
+#item-set-select {
+    height: 100px;
+}
