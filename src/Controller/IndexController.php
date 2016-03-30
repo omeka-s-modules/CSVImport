@@ -42,8 +42,11 @@ class IndexController extends AbstractActionController
                     'multivalueMap' => $multivalueMap,
                     'multivalueSeparator' => $multivalueSeparator,
                 ];
+                
+                
                 $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
-                $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
+                //$job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
+                $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());

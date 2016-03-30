@@ -30,8 +30,16 @@ class Import extends AbstractJob
     {
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        $config = $this->getServiceLocator()->get('Config');
+        $mappingClasses = $config['csv_import_mappings'];
+        $mappings = [];
+        $args = $this->job->getArgs();
+        foreach ($mappingClasses as $mappingClass) {
+            $mappings[] = new $mappingClass($args, $this->logger);
+        }
+        
         $csvFile = new CsvFile($this->getServiceLocator());
-        $csvFile->setTempPath($this->getArg('csvPath'));;
+        $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
         $this->csvFile = $csvFile;
         $this->columnMap = $this->getArg('columnMap');
@@ -40,6 +48,8 @@ class Import extends AbstractJob
         $this->multivalueMap = $this->getArg('multivalueMap');
         $this->multivalueSeparator = $this->getArg('multivalueSeparator');
         
+        
+        
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
             //skip the first (header) row, and any blank ones
@@ -47,8 +57,12 @@ class Import extends AbstractJob
                 continue;
             }
             
+            $itemJson = [];
+            foreach($mappings as $mapping) {
+                $itemJson = array_merge($itemJson, $mapping->processRow($row));
+            }
             
-            $itemJson = $this->buildItemJson($row);
+            //$itemJson = $this->buildItemJson($row);
             $insertJson[] = $itemJson;
             //only add every X for batch import
             
