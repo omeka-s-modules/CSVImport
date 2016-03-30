@@ -30,7 +30,7 @@ class MediaSidebar extends AbstractHelper
                 <ul>";
         
         foreach($mediaForms as $type=>$mediaForm) {
-            $html .= "<li data-flag='column-$type' data-flag-type='media'>
+            $html .= "<li data-flag='$type' data-flag-type='media'>
                 <a href='#' class='button'><span>{$mediaForm['label']}</span></a>
             </li>";
         }

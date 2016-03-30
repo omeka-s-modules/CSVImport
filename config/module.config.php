@@ -34,7 +34,7 @@ return array(
     ),
     'csv_import_mappings' => [
         '\CSVImport\Mapping\PropertyMapping',
-        //'\CSVImport\Mapping\MediaMapping',
+        '\CSVImport\Mapping\MediaMapping',
         //'\CSVImport\Mapping\ItemMapping',
     ],
     'router' => array(

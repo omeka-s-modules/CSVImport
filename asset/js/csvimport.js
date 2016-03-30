@@ -141,7 +141,14 @@
                     
                     var index = elementId;
                     var name = flagType + "[" + index + "]";
-                    var newInput = $('<input type="hidden" name="' + name + '" value="1" ></input>');
+                    //special handling for Media, which can add flags for different media types
+                    var value;
+                    if (flagType == 'media') {
+                        value = targetLi.data('flag');
+                    } else {
+                        value = 1;
+                    }
+                    var newInput = $('<input type="hidden" name="' + name + '" value="' + value +'" ></input>');
                     var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
                     newMappingLi.append(newInput);
                     activeElement.find('ul.mappings').append(newMappingLi);
