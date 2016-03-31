@@ -51,6 +51,25 @@ class ItemMapping
     
     public function processRow($row)
     {
+        $itemJson['o:item_set'] = array();
+        $itemSets = $this->args['itemSet'];
+        $multivalueSeparator = $this->args['multivalue-separator'];
+        $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
+        $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
+        foreach($itemSets as $itemSetId) {
+            $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
+        }
         
+        foreach($row as $index => $values) {
+            //maybe weird, but just assuming a split for ids for simplicity's sake
+            //since a list of ids shouldn't have any weird separators
+            $values = explode($multivalueSeparator, $values);
+            if (in_array($index, $itemSetMap)) {
+                foreach($values as $itemSetId) {
+                    $itemJson['o:item_set'][] = array('o:id' => trim($itemSetId));
+                }
+            }
+        }
+        return $itemJson;
     }
 }
