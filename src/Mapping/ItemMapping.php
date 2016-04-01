@@ -7,11 +7,14 @@ class ItemMapping
     
     protected $args;
     
+    protected $api;
+    
     protected $logger;
     
-    public function __construct($args, $logger)
+    public function __construct($args, $api, $logger)
     {
         $this->args = $args;
+        $this->api = $api;
         $this->logger = $logger;
     }
     
@@ -64,6 +67,9 @@ class ItemMapping
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
         
+        $resourceTemplateMap = isset($this->args['column-resourcetemplate']) ? array_keys($this->args['column-resourcetemplate']) : [];
+        $resourceClassMap = isset($this->args['column-resourceclass']) ? array_keys($this->args['column-resourceclass']) : [];
+        $userMap = isset($this->args['column-useremail']) ? array_keys($this->args['column-useremail']) : [];
         
         //first, pull in the global settings
         foreach($itemSets as $itemSetId) {
@@ -79,7 +85,46 @@ class ItemMapping
                     $itemJson['o:item_set'][] = array('o:id' => trim($itemSetId));
                 }
             }
+            if (in_array($index, $resourceTemplateMap)) {
+                $template = $this->findResourceTemplate($values);
+            }
+            if (in_array($index, $resourceClassMap)) {
+                $template = $this->findResourceClass($values);
+            }
+            if (in_array($index, $userMap)) {
+                $template = $this->findUser($values);
+            }
         }
         return $itemJson;
+    }
+    
+    protected function findResourceClass($term)
+    {
+        $response = $this->api->read('resource_class', array('term' => $term));
+        $content = $response->getContent();
+        if (empty($content)) {
+            return false;
+        }
+        return $content[0];
+    }
+    
+    protected function findResourceTemplate($label)
+    {
+        $response = $this->api->read('resource_template', array('label' => $label));
+        $content = $response->getContent();
+        if (empty($content)) {
+            return false;
+        }
+        return $content[0];
+    }
+    
+    protected function findUser($email)
+    {
+        $response = $this->api->read('user', array('email' => $email));
+        $content = $response->getContent();
+        if (empty($content)) {
+            return false;
+        }
+        return $content[0];
     }
 }

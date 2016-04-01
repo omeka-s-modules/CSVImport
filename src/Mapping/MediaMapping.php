@@ -7,11 +7,14 @@ class MediaMapping
     
     protected $args;
     
+    protected $api;
+    
     protected $logger;
     
-    public function __construct($args, $logger)
+    public function __construct($args, $api, $logger)
     {
         $this->args = $args;
+        $this->api = $api;
         $this->logger = $logger;
     }
     

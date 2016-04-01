@@ -35,7 +35,7 @@ class Import extends AbstractJob
         $mappings = [];
         $args = $this->job->getArgs();
         foreach ($mappingClasses as $mappingClass) {
-            $mappings[] = new $mappingClass($args, $this->logger);
+            $mappings[] = new $mappingClass($args, $this->api, $this->logger);
         }
         
         $csvFile = new CsvFile($this->getServiceLocator());
