@@ -56,6 +56,9 @@ class ItemMapping
         $multivalueSeparator = $this->args['multivalue-separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
+        
+        
+        //first, pull in the global settings
         foreach($itemSets as $itemSetId) {
             $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
         }
