@@ -1,13 +1,13 @@
 <?php
 namespace CSVImport\Form;
 
-use Omeka\Form\AbstractForm;
+use Omeka\Form\ItemForm;
 use Omeka\Form\Element\ResourceSelect;
 use Zend\Validator\Callback;
 use Zend\Form\Element\Select;
 
 
-class MappingForm extends AbstractForm
+class MappingForm extends ItemForm
 {
     public function buildForm()
     {
@@ -21,44 +21,14 @@ class MappingForm extends AbstractForm
             ),
             'attributes' => array(
                 'id' => 'comment'
-            )
-        ));
-        $serviceLocator = $this->getServiceLocator();
-        $auth = $serviceLocator->get('Omeka\AuthenticationService');
-        $itemSetSelect = new ResourceSelect($serviceLocator);
-        $itemSetSelect->setAttribute('multiple', true);
-        $itemSetSelect->setAttribute('id', 'item-set-select');
-        $itemSetSelect->setName('itemSet')
-            ->setLabel('Import into')
-            ->setOption('info', $translator->translate('Optional. Import items into this item set.'))
-            ->setEmptyOption('Select Item Set(s)...')
-            ->setResourceValueOptions(
-                'item_sets',
-                array('owner_id' => $auth->getIdentity()),
-                function ($itemSet, $serviceLocator) {
-                    return $itemSet->displayTitle('[no title]');
-                }
-            );
-        $this->add($itemSetSelect);
-        
-        $this->add(array(
-            'name' => 'multivalue-separator',
-            'type' => 'text',
-            'options' => array(
-                'label' => $translator->translate('Multivalue Separator'),
-                'info'  => $translator->translate('The separator to use for columns with multiple values.')
             ),
-            'attributes' => array(
-                'id' => 'multivalue-separator',
-                'value' => ','
-            )
+            array('priority' => 100000)
         ));
         
+        parent::buildForm();
         
-        $inputFilter = $this->getInputFilter();
-        $inputFilter->add(array(
-            'name' => 'itemSet',
-            'required' => false,
-        ));
+        $itemSetSelect = $this->get('o:item_set');
+        $itemSetSelect->setAttribute('multiple', true);
+
     }
 }
