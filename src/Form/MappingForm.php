@@ -22,7 +22,10 @@ class MappingForm extends ItemForm
             'attributes' => array(
                 'id' => 'comment'
             ),
-            array('priority' => 100000)
+            //in theory this _should_ be the correct way to make this 1st, 
+            //instead of putting it before the parent build
+            //but not so much, so the parent comes after
+            array('priority' => 100000) 
         ));
         
         parent::buildForm();

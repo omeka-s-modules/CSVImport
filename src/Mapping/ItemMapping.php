@@ -52,7 +52,14 @@ class ItemMapping
     public function processRow($row)
     {
         $itemJson['o:item_set'] = array();
-        $itemSets = $this->args['itemSet'];
+        $itemSets = $this->args['o:item_set'];
+        
+        $resourceClass = $this->args['o:resource_class']['o:id'];
+        $itemJson['o:resource_class'] = ['o:id' => $resourceClass];
+        
+        $resourceTemplate = $this->args['o:resource_template']['o:id'];
+        $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
+        
         $multivalueSeparator = $this->args['multivalue-separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
