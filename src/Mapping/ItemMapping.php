@@ -119,6 +119,7 @@ class ItemMapping
     
     protected function findResourceClass($term)
     {
+        $term = trim($term);
         $this->logger->debug('term ' . $term);
         $response = $this->api->search('resource_classes', array('term' => $term));
         $content = $response->getContent();
