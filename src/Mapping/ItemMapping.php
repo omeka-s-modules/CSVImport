@@ -135,6 +135,7 @@ class ItemMapping
     
     protected function findResourceTemplate($label)
     {
+        $label = trim($label);
         $response = $this->api->search('resource_templates', array('label' => $label));
         $content = $response->getContent();
         if (empty($content)) {
@@ -145,6 +146,7 @@ class ItemMapping
     
     protected function findUser($email)
     {
+        $email = trim($email);
         $response = $this->api->search('users', array('email' => $email));
         $content = $response->getContent();
         if (empty($content)) {
