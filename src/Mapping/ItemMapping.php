@@ -74,7 +74,8 @@ class ItemMapping
             $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
         }
         
-        $multivalueSeparator = $this->args['multivalue-separator'];
+        //$multivalueSeparator = $this->args['multivalue-separator'];
+        $multivalueSeparator = ',';
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
         
@@ -89,17 +90,28 @@ class ItemMapping
             $values = explode($multivalueSeparator, $values);
             if (in_array($index, $itemSetMap)) {
                 foreach($values as $itemSetId) {
-                    $itemJson['o:item_set'][] = array('o:id' => trim($itemSetId));
+                    $itemJson['o:item_set'][] = ['o:id' => trim($itemSetId)];
                 }
             }
             if (in_array($index, $resourceTemplateMap)) {
-                $template = $this->findResourceTemplate($values);
+                
+                $resourceTemplate = $this->findResourceTemplate($values);
+                if ($resourceTemplate) {
+                    $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate->id()];
+                }
             }
             if (in_array($index, $resourceClassMap)) {
-                $template = $this->findResourceClass($values);
+                $resourceClass = $this->findResourceClass($values[0]);
+                if ($resourceClass) {
+                    $this->logger->debug('rc id ' . $resourceClass->id());
+                    $itemJson['o:resource_class'] = ['o:id' => $resourceClass->id()];
+                }
             }
             if (in_array($index, $userMap)) {
-                $template = $this->findUser($values);
+                $user = $this->findUser($values);
+                if ($user) {
+                    $itemJson['o:owner_id'] = ['o:id' => $user->id()];
+                }
             }
         }
         return $itemJson;
@@ -107,17 +119,22 @@ class ItemMapping
     
     protected function findResourceClass($term)
     {
-        $response = $this->api->read('resource_class', array('term' => $term));
+        $this->logger->debug('term ' . $term);
+        $response = $this->api->search('resource_classes', array('term' => $term));
         $content = $response->getContent();
+        $this->logger->debug('response count ' . count($response));
         if (empty($content)) {
             return false;
         }
+        $c0 = $content[0];
+        $this->logger->debug('c0 label ' . $c0->term());
+        
         return $content[0];
     }
     
     protected function findResourceTemplate($label)
     {
-        $response = $this->api->read('resource_template', array('label' => $label));
+        $response = $this->api->search('resource_templates', array('label' => $label));
         $content = $response->getContent();
         if (empty($content)) {
             return false;
@@ -127,7 +144,7 @@ class ItemMapping
     
     protected function findUser($email)
     {
-        $response = $this->api->read('user', array('email' => $email));
+        $response = $this->api->search('users', array('email' => $email));
         $content = $response->getContent();
         if (empty($content)) {
             return false;
