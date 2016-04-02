@@ -54,14 +54,25 @@ class ItemMapping
     
     public function processRow($row)
     {
-        $itemJson['o:item_set'] = array();
-        $itemSets = $this->args['o:item_set'];
-        
-        $resourceClass = $this->args['o:resource_class']['o:id'];
-        $itemJson['o:resource_class'] = ['o:id' => $resourceClass];
-        
-        $resourceTemplate = $this->args['o:resource_template']['o:id'];
-        $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
+        $itemJson = [];
+
+            
+        //first, pull in the global settings
+        if (isset($this->args['o:item_set'])) {
+            $itemSets = $this->args['o:item_set'];
+            $itemJson['o:item_set'] = [];
+            foreach($itemSets as $itemSetId) {
+                $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
+            }
+        }
+        if (isset($this->args['o:resource_class'])) {
+            $resourceClass = $this->args['o:resource_class']['o:id'];
+            $itemJson['o:resource_class'] = ['o:id' => $resourceClass];
+        }
+        if (isset($this->args['o:resource_template'])) {
+            $resourceTemplate = $this->args['o:resource_template']['o:id'];
+            $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
+        }
         
         $multivalueSeparator = $this->args['multivalue-separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
@@ -70,11 +81,7 @@ class ItemMapping
         $resourceTemplateMap = isset($this->args['column-resourcetemplate']) ? array_keys($this->args['column-resourcetemplate']) : [];
         $resourceClassMap = isset($this->args['column-resourceclass']) ? array_keys($this->args['column-resourceclass']) : [];
         $userMap = isset($this->args['column-useremail']) ? array_keys($this->args['column-useremail']) : [];
-        
-        //first, pull in the global settings
-        foreach($itemSets as $itemSetId) {
-            $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
-        }
+
         
         foreach($row as $index => $values) {
             //maybe weird, but just assuming a split for ids for simplicity's sake
