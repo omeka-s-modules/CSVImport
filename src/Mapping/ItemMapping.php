@@ -81,9 +81,9 @@ class ItemMapping
         
         $resourceTemplateMap = isset($this->args['column-resourcetemplate']) ? array_keys($this->args['column-resourcetemplate']) : [];
         $resourceClassMap = isset($this->args['column-resourceclass']) ? array_keys($this->args['column-resourceclass']) : [];
-        $userMap = isset($this->args['column-useremail']) ? array_keys($this->args['column-useremail']) : [];
+        $ownerMap = isset($this->args['column-owneremail']) ? array_keys($this->args['column-owneremail']) : [];
 
-        
+        $this->logger->debug(print_r($userMap, true));
         foreach($row as $index => $values) {
             //maybe weird, but just assuming a split for ids for simplicity's sake
             //since a list of ids shouldn't have any weird separators
@@ -108,9 +108,10 @@ class ItemMapping
                     $itemJson['o:resource_class'] = ['o:id' => $resourceClass->id()];
                 }
             }
-            if (in_array($index, $userMap)) {
+            if (in_array($index, $ownerMap)) {
                 $user = $this->findUser($values[0]);
                 if ($user) {
+                    $this->logger->debug('userid ' . $user->id());
                     $itemJson['o:owner_id'] = ['o:id' => $user->id()];
                 }
             }
@@ -149,11 +150,13 @@ class ItemMapping
     protected function findUser($email)
     {
         $email = trim($email);
+        $this->logger->debug('user email ' . $email);
         $response = $this->api->search('users', array('email' => $email));
         $content = $response->getContent();
         if (empty($content)) {
             return false;
         }
+        $this->logger->debug('response count ' . count($response));
         return $content[0];
     }
 }
