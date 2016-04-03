@@ -95,8 +95,9 @@ class ItemMapping
             }
             if (in_array($index, $resourceTemplateMap)) {
                 
-                $resourceTemplate = $this->findResourceTemplate($values);
+                $resourceTemplate = $this->findResourceTemplate($values[0]);
                 if ($resourceTemplate) {
+                    $this->logger->debug('template label ' . $resourceTemplate->label());
                     $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate->id()];
                 }
             }
@@ -108,7 +109,7 @@ class ItemMapping
                 }
             }
             if (in_array($index, $userMap)) {
-                $user = $this->findUser($values);
+                $user = $this->findUser($values[0]);
                 if ($user) {
                     $itemJson['o:owner_id'] = ['o:id' => $user->id()];
                 }
@@ -120,7 +121,6 @@ class ItemMapping
     protected function findResourceClass($term)
     {
         $term = trim($term);
-        $this->logger->debug('term ' . $term);
         $response = $this->api->search('resource_classes', array('term' => $term));
         $content = $response->getContent();
         $this->logger->debug('response count ' . count($response));
@@ -136,7 +136,9 @@ class ItemMapping
     protected function findResourceTemplate($label)
     {
         $label = trim($label);
+        $this->logger->debug('template label ' . $label);
         $response = $this->api->search('resource_templates', array('label' => $label));
+        $this->logger->debug('response count ' . count($response));
         $content = $response->getContent();
         if (empty($content)) {
             return false;
