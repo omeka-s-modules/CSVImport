@@ -112,7 +112,7 @@ class ItemMapping
                 $user = $this->findUser($values[0]);
                 if ($user) {
                     $this->logger->debug('userid ' . $user->id());
-                    $itemJson['o:owner_id'] = ['o:id' => $user->id()];
+                    $itemJson['o:owner'] = ['o:id' => $user->id()];
                 }
             }
         }
