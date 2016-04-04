@@ -19,7 +19,8 @@ return array(
     ),
     'view_helpers' => array(
         'factories'  => [
-            'mediaSidebar'        => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
+            'mediaSidebar'    => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
+            'itemSidebar'     => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
         ],
         'invokables' => array(
           //  'mediaSidebar'        => 'CSVImport\View\Helper\MediaSidebar',
