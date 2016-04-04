@@ -74,8 +74,7 @@ class ItemMapping
             $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
         }
         
-        //$multivalueSeparator = $this->args['multivalue-separator'];
-        $multivalueSeparator = ',';
+        $multivalueSeparator = $this->args['multivalue-separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
         

@@ -30,6 +30,19 @@ class MappingForm extends ItemForm
         
         parent::buildForm();
         
+        $this->add(array(
+            'name' => 'multivalue-separator',
+            'type' => 'text',
+            'options' => array(
+                'label' => $translator->translate('Multivalue Separator'),
+                'info'  => $translator->translate('The separator to use for columns with multiple values.')
+            ),
+            'attributes' => array(
+                'id' => 'multivalue-separator',
+                'value' => ','
+            )
+        ));
+        
         $itemSetSelect = $this->get('o:item_set');
         $itemSetSelect->setAttribute('multiple', true);
 
