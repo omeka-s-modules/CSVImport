@@ -51,6 +51,17 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                     </td>
                     <td class="mapping element">
                         <ul class="mappings elements">
+                        <?php if(array_key_exists($index, $automaps)): ?>
+                        <?php $property = $automaps[$index]; ?>
+                            <li class="mapping" data-property-id="<?php echo $property->id(); ?>"><?php echo $property->label(); ?>
+                                <ul class="actions">
+                                    <li>
+                                        <a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a>
+                                    </li>
+                                </ul>
+                                <input value="<?php echo $property->id(); ?>" name="column-property[<?php echo $index; ?>][]" type="hidden">
+                            </li>
+                        <?php endif; ?>
                         </ul>
                     </td>
                 </tr>

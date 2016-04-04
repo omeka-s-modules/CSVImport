@@ -66,7 +66,8 @@ class IndexController extends AbstractActionController
                 $view->setVariable('mediaForms', $this->getMediaForms());
                 
                 $config = $this->serviceLocator->get('Config');
-                
+                $autoMaps = $this->getAutomaps($columns);
+                $view->setVariable('automaps', $autoMaps);
                 $view->setVariable('mappings', $config['csv_import_mappings']);
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
@@ -96,5 +97,22 @@ class IndexController extends AbstractActionController
             ];
         }
         return $forms;
+    }
+    
+    protected function getAutomaps($columns)
+    {
+        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        $autoMaps = [];
+        foreach($columns as $index=>$column) {
+            if (strpos($column, ':') !== false) {
+                $response = $api->search('properties', array('term' => trim($column)));
+                $content = $response->getContent();
+                if (! empty($content)) {
+                    $property = $content[0];
+                    $autoMaps[$index] = $property;
+                }
+            }
+        }
+        return $autoMaps;
     }
 }
