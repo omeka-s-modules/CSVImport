@@ -11,11 +11,14 @@ class MediaMapping
     
     protected $logger;
     
-    public function __construct($args, $api, $logger)
+    protected $serviceLocator;
+
+    public function __construct($args, $serviceLocator)
     {
         $this->args = $args;
-        $this->api = $api;
-        $this->logger = $logger;
+        $this->logger = $serviceLocator->get('Omeka\Logger');
+        $this->api = $serviceLocator->get('Omeka\ApiManager');
+        $this->serviceLocator = $serviceLocator;
     }
     
     public static function getLabel($view)
