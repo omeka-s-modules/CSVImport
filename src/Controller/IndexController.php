@@ -16,7 +16,7 @@ class IndexController extends AbstractActionController
         $view->form = $form;
         return $view;
     }
-    
+
     public function mapAction()
     {
         $view = new ViewModel;
@@ -27,36 +27,17 @@ class IndexController extends AbstractActionController
             $files = $request->getFiles()->toArray();
             if (empty($files)) {
                 $post = $this->params()->fromPost();
-                $csvPath = $post['csvpath'];
-                $map = isset($post['column-property']) ? $post['column-property'] : [];
-                
-                $fileMap = isset($post['column-file']) ? array_keys($post['column-file']) : [];
-                $uriMap = isset($post['column-uri']) ? array_keys($post['column-uri']) : [];
-                $multivalueMap = isset($post['column-multivalue']) ? array_keys($post['column-multivalue']) : [];
-                $multivalueSeparator = $post['multivalue-separator'];
-                $args = [
-                    'csvPath'       => $csvPath,
-                    'columnMap'     => $map,
-                    'fileMap'       => $fileMap,
-                    'uriMap'        => $uriMap,
-                    'multivalueMap' => $multivalueMap,
-                    'multivalueSeparator' => $multivalueSeparator,
-                ];
-                
-                
                 $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
-                //$job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
-                //die();
             } else {
                 $post = array_merge_recursive(
                     $request->getPost()->toArray(),
                     $request->getFiles()->toArray()
                 );
-                
+
                 $tmpFile = $post['csv']['tmp_name'];
                 $csvFile = new CsvFile($this->getServiceLocator());
                 $csvPath = $csvFile->getTempPath();
@@ -64,27 +45,24 @@ class IndexController extends AbstractActionController
                 $csvFile->loadFromTempPath();
                 $columns = $csvFile->getHeaders();
                 $view->setVariable('mediaForms', $this->getMediaForms());
-                
+
                 $config = $this->serviceLocator->get('Config');
                 $autoMaps = $this->getAutomaps($columns);
                 $view->setVariable('automaps', $autoMaps);
                 $view->setVariable('mappings', $config['csv_import_mappings']);
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
-                //print_r($post);
-                //print_r($columns);
-                //die();
             }
         }
         return $view;
     }
-    
+
     public function pastImportsAction()
     {
         $view = new ViewModel;
         return $view;
     }
-    
+
     protected function getMediaForms()
     {
         $services = $this->getServiceLocator();
@@ -98,7 +76,7 @@ class IndexController extends AbstractActionController
         }
         return $forms;
     }
-    
+
     protected function getAutomaps($columns)
     {
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
