@@ -7,7 +7,7 @@ use Omeka\Entity\Job;
 /**
  * @Entity
  */
-class Import extends AbstractEntity {
+class CSVImportImport extends AbstractEntity {
 
     /**
      * @Id

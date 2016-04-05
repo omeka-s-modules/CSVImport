@@ -21,7 +21,7 @@ class ImportAdapter extends AbstractEntityAdapter
     
     public function getRepresentationClass()
     {
-        return 'CSVImport\Api\Representation\Representation';
+        return 'CSVImport\Api\Representation\ImportRepresentation';
     }
     
     public function hydrate(Request $request, EntityInterface $entity,

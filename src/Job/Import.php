@@ -10,25 +10,14 @@ class Import extends AbstractJob
 {
     protected $api;
 
-    protected $csvFile;
-
     protected $addedCount;
-
-    protected $columnMap;
-
-    protected $fileMap;
-
-    protected $uriMap;
-
-    protected $multivalueMap;
-
-    protected $multivalueSeparator; 
 
     protected $logger;
 
     public function perform()
     {
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
+        $this->logger->debug('beginning perform');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $config = $this->getServiceLocator()->get('Config');
         $mappingClasses = $config['csv_import_mappings'];
@@ -41,13 +30,15 @@ class Import extends AbstractJob
         $csvFile = new CsvFile($this->getServiceLocator());
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
-        $this->csvFile = $csvFile;
-        $this->columnMap = $this->getArg('columnMap');
-        $this->fileMap = $this->getArg('fileMap');
-        $this->uriMap = $this->getArg('uriMap');
-        $this->multivalueMap = $this->getArg('multivalueMap');
-        $this->multivalueSeparator = $this->getArg('multivalueSeparator');
+        $csvImportJson = array(
+                            'o:job'         => array('o:id' => $this->job->getId()),
+                            'comment'       => 'Job started',
+                            'added_count'   => 0,
+                            'updated_count' => 0
+                          );
 
+        $response = $this->api->create('csvimport_imports', $csvImportJson);
+        $importRecordId = $response->getContent()->id();
         $insertJson = [];
         foreach($this->csvFile->fileObject as $index => $row) {
             //skip the first (header) row, and any blank ones
@@ -67,6 +58,7 @@ class Import extends AbstractJob
                 $insertJson = [];
             }
         }
+        //take care of remainder from the modulo check
         $this->createItems($insertJson);
     }
 
