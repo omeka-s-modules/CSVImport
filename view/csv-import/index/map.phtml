@@ -7,6 +7,9 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 ?>
 
 <?php echo $this->pageTitle($this->translate('Map Elements · CSV Import')); ?>
+
+<?php if(isset($csvpath)): ?>
+
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>
     <input type='submit' value='Next' />
@@ -76,3 +79,4 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
     echo $mappingClass::getSidebar($this);
 }
 ?>
+<?php endif; ?>

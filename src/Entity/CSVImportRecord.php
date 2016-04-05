@@ -10,7 +10,7 @@ use Omeka\Entity\ItemSet;
 /**
  * @Entity
  */
-class CSVImportRecord extends AbstractEntity
+class Record extends AbstractEntity
 {
 
     /**

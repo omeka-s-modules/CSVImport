@@ -8,8 +8,8 @@ return array(
     ),
     'api_adapters' => array(
         'invokables' => array(
-            'csvimport_records' => 'CSVImport\Api\Adapter\CSVImportRecordAdapter',
-            'csvimport_imports' => 'CSVImport\Api\Adapter\CSVImportImportAdapter'
+            'csvimport_records' => 'CSVImport\Api\Adapter\RecordAdapter',
+            'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter'
         ),
     ),
     'view_manager' => array(
