@@ -51,20 +51,32 @@ class MediaMapping
             if (array_key_exists($index, $mediaMap)) {
                 $ingester = $mediaMap[$index];
                 foreach($mediaData as $mediaDatum) {
+                    $mediaDatum = trim($mediaDatum);
+                    if(empty($mediaDatum)) {
+                        continue;
+                    }
+                    $this->logger->debug($mediaDatum);
                     $mediaDatumJson = array(
                         'o:ingester'     => $ingester,
-                        'o:source'   => trim($mediaDatum),
+                        'o:source'   => $mediaDatum,
                     );
                     switch($ingester) {
                         case 'html':
                             $mediaDatumJson['html'] = $mediaDatum;
+                            $mediaDatumJson['dcterms:title'] = [
+                                    ['@value'      => '',
+                                     'property_id' => 1,
+                                     'type'        => 'literal'
+                                    ]
+                                ];
                         break;
                         
                         case 'url':
-                            $mediaDatumJson['ingest_url'] = trim($mediaDatum);
+                            $mediaDatumJson['ingest_url'] = $mediaDatum;
                         break;
                     }
                     $mediaJson['o:media'][] = $mediaDatumJson;
+                    $this->logger->debug(print_r($mediaJson, true));
                 }
             }
         }
