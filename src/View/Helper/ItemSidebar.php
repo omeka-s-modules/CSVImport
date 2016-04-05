@@ -30,7 +30,7 @@ class ItemSidebar extends AbstractHelper
                     <a href='#' class='button'><span>Resource Class Term</span></a>
                 </li>
                 ";
-        if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) { 
+        if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {
        
             $html .="<li data-flag='column-owneremail'>
                     <a href='#' class='button'><span>Owner Email Address</span></a>

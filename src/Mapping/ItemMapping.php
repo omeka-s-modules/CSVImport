@@ -56,6 +56,11 @@ class ItemMapping
             $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
         }
 
+        if (isset($this->args['o:owner'])) {
+            $ownerId = $this->args['o:owner'];
+            $itemJson['o:owner'] = ['o:id' => $ownerId];
+        }
+        
         $multivalueSeparator = $this->args['multivalue-separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];

@@ -11,6 +11,7 @@ class MappingForm extends ItemForm
 {
     public function buildForm()
     {
+        $userRole = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity()->getRole();
         $translator = $this->getTranslator();
         $this->add(array(
             'name' => 'comment',
@@ -30,6 +31,22 @@ class MappingForm extends ItemForm
         
         parent::buildForm();
         
+        if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {
+            $ownerSelect = new ResourceSelect($this->getServiceLocator());
+            $ownerSelect->setName('o:owner')
+                ->setAttribute('id', 'select-owner')
+                ->setLabel($translator->translate('Owner'))
+                ->setOption('info', $translator->translate('Assign ownership'))
+                ->setResourceValueOptions(
+                    'users',
+                    [],
+                    function ($user, $serviceLocator) {
+                        return $user->name();
+                    }
+                );
+            
+            $this->add($ownerSelect);
+        }
         $this->add(array(
             'name' => 'multivalue-separator',
             'type' => 'text',
