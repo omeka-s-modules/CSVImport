@@ -17,7 +17,6 @@ class Import extends AbstractJob
     public function perform()
     {
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
-        $this->logger->debug('beginning perform');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $config = $this->getServiceLocator()->get('Config');
         $mappingClasses = $config['csv_import_mappings'];
@@ -60,6 +59,15 @@ class Import extends AbstractJob
         }
         //take care of remainder from the modulo check
         $this->createItems($insertJson);
+        
+        $comment = $this->getArg('comment');
+        $csvImportJson = array(
+                            'comment'       => $comment,
+                            'added_count'   => $this->addedCount,
+                            'updated_count' => 0
+                          );
+
+        $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
     }
 
     protected function createItems($toCreate) 
@@ -67,12 +75,15 @@ class Import extends AbstractJob
         $createResponse = $this->api->batchCreate('items', $toCreate, array(), true);
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
+        $this->logger->debug($this->addedCount);
         $createImportRecordsJson = array();
 
         foreach($createContent as $resourceReference) {
             $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
         }
+        $this->logger->debug('before records');
         $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
+        $this->logger->debug('after records');
     }
 
     protected function buildImportRecordJson($resourceReference) 

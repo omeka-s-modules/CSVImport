@@ -59,7 +59,22 @@ class IndexController extends AbstractActionController
 
     public function pastImportsAction()
     {
+        if ($this->getRequest()->isPost()) {
+            $data = $this->params()->fromPost();
+            foreach ($data['jobs'] as $jobId) {
+                $this->undoJob($jobId);
+            }
+        }
         $view = new ViewModel;
+        $page = $this->params()->fromQuery('page', 1);
+        $query = $this->params()->fromQuery() + array(
+            'page'       => $page,
+            'sort_by'    => $this->params()->fromQuery('sort_by', 'id'),
+            'sort_order' => $this->params()->fromQuery('sort_order', 'desc')
+        );
+        $response = $this->api()->search('csvimport_imports', $query);
+        $this->paginator($response->getTotalResults(), $page);
+        $view->setVariable('imports', $response->getContent());
         return $view;
     }
 
@@ -92,5 +107,18 @@ class IndexController extends AbstractActionController
             }
         }
         return $autoMaps;
+    }
+    
+    protected function undoJob($jobId) {
+        $response = $this->api()->search('csvimport_imports', array('job_id' => $jobId));
+        $csvImport = $response->getContent()[0];
+        $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
+        $job = $dispatcher->dispatch('CSVImporter\Job\Undo', array('jobId' => $jobId));
+        $response = $this->api()->update('csvimport_imports', 
+                    $csvImport->id(), 
+                    array(
+                        'o:undo_job' => array('o:id' => $job->getId() )
+                    )
+                );
     }
 }

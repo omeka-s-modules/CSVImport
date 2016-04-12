@@ -47,9 +47,4 @@ class ImportRepresentation extends AbstractEntityRepresentation
     {
         return $this->resource->getAddedCount();
     }
-
-    public function updatedCount()
-    {
-        return $this->resource->getUpdatedCount();
-    }
 }
