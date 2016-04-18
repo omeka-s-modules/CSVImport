@@ -11,7 +11,7 @@ class Import extends AbstractJob
     protected $api;
 
     protected $addedCount;
-
+    
     protected $logger;
 
     public function perform()
@@ -25,7 +25,6 @@ class Import extends AbstractJob
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
-
         $csvFile = new CsvFile($this->getServiceLocator());
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
@@ -33,13 +32,12 @@ class Import extends AbstractJob
                             'o:job'         => array('o:id' => $this->job->getId()),
                             'comment'       => 'Job started',
                             'added_count'   => 0,
-                            'updated_count' => 0
                           );
 
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $importRecordId = $response->getContent()->id();
         $insertJson = [];
-        foreach($this->csvFile->fileObject as $index => $row) {
+        foreach($csvFile->fileObject as $index => $row) {
             //skip the first (header) row, and any blank ones
             if ($index == 0 || empty($row)) {
                 continue;
@@ -64,7 +62,6 @@ class Import extends AbstractJob
         $csvImportJson = array(
                             'comment'       => $comment,
                             'added_count'   => $this->addedCount,
-                            'updated_count' => 0
                           );
 
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
@@ -75,15 +72,12 @@ class Import extends AbstractJob
         $createResponse = $this->api->batchCreate('items', $toCreate, array(), true);
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
-        $this->logger->debug($this->addedCount);
         $createImportRecordsJson = array();
 
         foreach($createContent as $resourceReference) {
             $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
         }
-        $this->logger->debug('before records');
         $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
-        $this->logger->debug('after records');
     }
 
     protected function buildImportRecordJson($resourceReference) 
