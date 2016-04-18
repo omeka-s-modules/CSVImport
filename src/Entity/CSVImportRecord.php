@@ -33,13 +33,6 @@ class CSVImportRecord extends AbstractEntity
      */
     protected $item;
 
-    /**
-     * @OneToOne(targetEntity="Omeka\Entity\ItemSet")
-     * @JoinColumn(nullable=true)
-     * @var int
-     */
-    protected $itemSet;
-
     public function getId()
     {
         return $this->id;
@@ -55,16 +48,6 @@ class CSVImportRecord extends AbstractEntity
         $this->item = $item;
     }
 
-    public function getItemSet()
-    {
-        return $this->itemSet;
-    }
-
-    public function setItemSet(ItemSet $itemSet)
-    {
-        $this->itemSet = $itemSet;
-    }
-    
     public function setJob(Job $job)
     {
         $this->job = $job;
