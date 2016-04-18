@@ -33,6 +33,10 @@ class IndexController extends AbstractActionController
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
             } else {
+                //@TODO for dev purposes, hardcode the importType
+                //to fix when I add something to the interface for setting this
+                $entityType = 'items';
+                $entityType = 'users';
                 $post = array_merge_recursive(
                     $request->getPost()->toArray(),
                     $request->getFiles()->toArray()
@@ -49,7 +53,7 @@ class IndexController extends AbstractActionController
                 $config = $this->serviceLocator->get('Config');
                 $autoMaps = $this->getAutomaps($columns);
                 $view->setVariable('automaps', $autoMaps);
-                $view->setVariable('mappings', $config['csv_import_mappings']);
+                $view->setVariable('mappings', $config['csv_import_mappings'][$entityType]);
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
             }

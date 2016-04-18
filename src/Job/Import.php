@@ -19,7 +19,8 @@ class Import extends AbstractJob
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $config = $this->getServiceLocator()->get('Config');
-        $mappingClasses = $config['csv_import_mappings'];
+        $entityType = $this->getArg('resource_type', 'items');
+        $mappingClasses = $config['csv_import_mappings'][$entityType];
         $mappings = [];
         $args = $this->job->getArgs();
         foreach ($mappingClasses as $mappingClass) {
@@ -31,6 +32,7 @@ class Import extends AbstractJob
         $csvImportJson = array(
                             'o:job'         => array('o:id' => $this->job->getId()),
                             'comment'       => 'Job started',
+                            'entity_type'   => $entityType,
                             'added_count'   => 0,
                           );
 
@@ -43,20 +45,20 @@ class Import extends AbstractJob
                 continue;
             }
 
-            $itemJson = [];
+            $entityJson = [];
             foreach($mappings as $mapping) {
-                $itemJson = array_merge($itemJson, $mapping->processRow($row));
+                $entityJson = array_merge($entityJson, $mapping->processRow($row));
             }
-            $insertJson[] = $itemJson;
+            $insertJson[] = $entityJson;
             //only add every X for batch import
             if ( $index % 20 == 0 ) {
                 //batch create
-                $this->createItems($insertJson);
+                $this->createEntities($insertJson);
                 $insertJson = [];
             }
         }
         //take care of remainder from the modulo check
-        $this->createItems($insertJson);
+        $this->createEntities($insertJson);
         
         $comment = $this->getArg('comment');
         $csvImportJson = array(
@@ -67,9 +69,10 @@ class Import extends AbstractJob
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
     }
 
-    protected function createItems($toCreate) 
+    protected function createEntities($toCreate) 
     {
-        $createResponse = $this->api->batchCreate('items', $toCreate, array(), true);
+        $entityType = $this->getArg('entity_type', 'items');
+        $createResponse = $this->api->batchCreate($entityType, $toCreate, array(), true);
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
         $createImportRecordsJson = array();
@@ -77,13 +80,14 @@ class Import extends AbstractJob
         foreach($createContent as $resourceReference) {
             $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
         }
-        $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
+        $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportRecordsJson, array(), true);
     }
 
     protected function buildImportRecordJson($resourceReference) 
     {
-        $recordJson = array('o:job'     => ['o:id' => $this->job->getId()],
-                            'o:item'    => ['o:id' => $resourceReference->id()],
+        $recordJson = array('o:job'         => ['o:id' => $this->job->getId()],
+                            'o:entity'      => ['o:id' => $resourceReference->id()],
+                            'o:entity_type' => $this->getArg('entity_type', 'items'),
                             );
         return $recordJson;
     }

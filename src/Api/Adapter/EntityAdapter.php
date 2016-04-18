@@ -7,21 +7,21 @@ use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
 use Omeka\Stdlib\ErrorStore;
 
-class RecordAdapter extends AbstractEntityAdapter
+class EntityAdapter extends AbstractEntityAdapter
 {
     public function getEntityClass()
     {
-        return 'CSVImport\Entity\CSVImportRecord';
+        return 'CSVImport\Entity\CSVImportEntity';
     }
     
     public function getResourceName()
     {
-        return 'csvimport_records';
+        return 'csvimport_entities';
     }
     
     public function getRepresentationClass()
     {
-        return 'CSVImport\Api\Representation\RecordRepresentation';
+        return 'CSVImport\Api\Representation\EntityRepresentation';
     }
     
     public function buildQuery(QueryBuilder $qb, array $query)
@@ -32,10 +32,10 @@ class RecordAdapter extends AbstractEntityAdapter
                 $this->createNamedParameter($qb, $query['job_id']))
             );
         }
-        if (isset($query['item_id'])) {
+        if (isset($query['entity_id'])) {
             $qb->andWhere($qb->expr()->eq(
-                $this->getEntityClass() . '.item',
-                $this->createNamedParameter($qb, $query['item_id']))
+                $this->getEntityClass() . '.entity',
+                $this->createNamedParameter($qb, $query['entity_id']))
             );
         }
     }
@@ -48,6 +48,8 @@ class RecordAdapter extends AbstractEntityAdapter
             $job = $this->getAdapter('jobs')->findEntity($data['o:job']['o:id']);
             $entity->setJob($job);
         }
+        
+        //@todo redo this for generalized entities somehow
         if (isset($data['o:item']['o:id'])) {
             $item = $this->getAdapter('items')->findEntity($data['o:item']['o:id']);
             $entity->setItem($item);
