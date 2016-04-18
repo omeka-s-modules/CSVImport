@@ -113,7 +113,7 @@ class IndexController extends AbstractActionController
         $response = $this->api()->search('csvimport_imports', array('job_id' => $jobId));
         $csvImport = $response->getContent()[0];
         $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
-        $job = $dispatcher->dispatch('CSVImporter\Job\Undo', array('jobId' => $jobId));
+        $job = $dispatcher->dispatch('CSVImport\Job\Undo', array('jobId' => $jobId));
         $response = $this->api()->update('csvimport_imports', 
                     $csvImport->id(), 
                     array(
