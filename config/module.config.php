@@ -22,11 +22,6 @@ return array(
             'mediaSidebar'    => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
             'itemSidebar'     => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
         ],
-        'invokables' => array(
-          //  'mediaSidebar'        => 'CSVImport\View\Helper\MediaSidebar',
-        //'resourceClassSelector'    => 'CSVImport\View\Helper\ResourceClassSelector',
-        //'propertySelector'        => 'CSVImport\View\Helper\PropertySelector',
-        )
     ),
     'entity_manager' => array(
         'mapping_classes_paths' => array(
@@ -111,5 +106,4 @@ return array(
             ),
         ),
     )
-
 );
