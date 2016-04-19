@@ -11,6 +11,7 @@ class MappingForm extends ItemForm
 {
     public function buildForm()
     {
+        $entityType = $this->getOption('entityType');
         $userRole = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity()->getRole();
         $translator = $this->getTranslator();
         $this->add(array(
@@ -29,39 +30,40 @@ class MappingForm extends ItemForm
             array('priority' => 100000) 
         ));
         
-        parent::buildForm();
-        
-        if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {
-            $ownerSelect = new ResourceSelect($this->getServiceLocator());
-            $ownerSelect->setName('o:owner')
-                ->setAttribute('id', 'select-owner')
-                ->setLabel($translator->translate('Owner'))
-                ->setOption('info', $translator->translate('Assign ownership'))
-                ->setResourceValueOptions(
-                    'users',
-                    [],
-                    function ($user, $serviceLocator) {
-                        return $user->name();
-                    }
-                );
+        if ($entityType == 'items' || $entityType == 'item_sets') {
+            parent::buildForm();
             
-            $this->add($ownerSelect);
-        }
-        $this->add(array(
-            'name' => 'multivalue-separator',
-            'type' => 'text',
-            'options' => array(
-                'label' => $translator->translate('Multivalue Separator'),
-                'info'  => $translator->translate('The separator to use for columns with multiple values.')
-            ),
-            'attributes' => array(
-                'id' => 'multivalue-separator',
-                'value' => ','
-            )
-        ));
-        
-        $itemSetSelect = $this->get('o:item_set');
-        $itemSetSelect->setAttribute('multiple', true);
+            if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {
+                $ownerSelect = new ResourceSelect($this->getServiceLocator());
+                $ownerSelect->setName('o:owner')
+                    ->setAttribute('id', 'select-owner')
+                    ->setLabel($translator->translate('Owner'))
+                    ->setOption('info', $translator->translate('Assign ownership'))
+                    ->setResourceValueOptions(
+                        'users',
+                        [],
+                        function ($user, $serviceLocator) {
+                            return $user->name();
+                        }
+                    );
+                
+                $this->add($ownerSelect);
+                $itemSetSelect = $this->get('o:item_set');
+                $itemSetSelect->setAttribute('multiple', true);
+            }
 
+            $this->add(array(
+                'name' => 'multivalue-separator',
+                'type' => 'text',
+                'options' => array(
+                    'label' => $translator->translate('Multivalue Separator'),
+                    'info'  => $translator->translate('The separator to use for columns with multiple values.')
+                ),
+                'attributes' => array(
+                    'id' => 'multivalue-separator',
+                    'value' => ','
+                )
+        ));
+        }
     }
 }

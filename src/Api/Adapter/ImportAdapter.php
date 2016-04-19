@@ -44,6 +44,10 @@ class ImportAdapter extends AbstractEntityAdapter
         if (isset($data['comment'])) {
             $entity->setComment($data['comment']);
         }
+        
+        if (isset($data['resource_type'])) {
+            $entity->setResourceType($data['resource_type']);
+        }
     }
     
     public function buildQuery(QueryBuilder $qb, array $query)
@@ -52,6 +56,13 @@ class ImportAdapter extends AbstractEntityAdapter
             $qb->andWhere($qb->expr()->eq(
                 $this->getEntityClass() . '.job',
                 $this->createNamedParameter($qb, $query['job_id']))
+            );
+        }
+
+        if (isset($query['resource_type'])) {
+            $qb->andWhere($qb->expr()->eq(
+                $this->getEntityClass() . '.resource_type',
+                $this->createNamedParameter($qb, $query['resource_type']))
             );
         }
     }

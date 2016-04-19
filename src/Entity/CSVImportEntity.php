@@ -27,11 +27,15 @@ class CSVImportEntity extends AbstractEntity
     protected $job;
 
     /**
-     * @var int
+     * @Column(type="integer")
      */
     protected $entity;
     
-    protected $entity_type;
+    /**
+     * API resource type (not neccesarily a Resource class)
+     * @Column(type="string")
+     */
+    protected $resource_type;
 
     public function getId()
     {
@@ -57,7 +61,7 @@ class CSVImportEntity extends AbstractEntity
     {
         $this->entity_type = $entityType;
     }
-    
+
     public function setJob(Job $job)
     {
         $this->job = $job;
@@ -66,5 +70,15 @@ class CSVImportEntity extends AbstractEntity
     public function getJob()
     {
         return $this->job;
+    }
+
+    public function setResourceType($resourceType)
+    {
+        $this->resource_type = $resourceType;
+    }
+
+    public function getResourceType()
+    {
+        return $this->resource_type;
     }
 }

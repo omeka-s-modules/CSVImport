@@ -42,8 +42,10 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                 <tr class="element mappable" data-element-id="<?php echo $index; ?>">
                     <td>
                         <h3><?php echo $column;?></h3>
+                        <?php if ($entityType == 'items' || $entityType == 'item_sets'): ?>
                         <input type='checkbox' name='column-url[<?php echo $index; ?>]'></input><label>URL</label>
                         <input type='checkbox' name='column-multivalue[<?php echo $index; ?>]'></input><label>Multivalue</label>
+                        <?php endif; ?>
                         <ul class='sidebar-chooser'>
                             <?php foreach($mappings as $mappingClass): ?>
                             <li>

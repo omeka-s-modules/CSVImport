@@ -18,7 +18,7 @@ class UserMapping
 
     public static function getSidebar($view)
     {
-        $html = "<div id='users-sidebar' class='sidebar'>
+        $html = "<div id='users-sidebar' class='sidebar always-open'>
                 <legend>Users Info</legend>
                 
                 </div>
