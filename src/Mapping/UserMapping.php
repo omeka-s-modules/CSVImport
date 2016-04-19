@@ -18,9 +18,19 @@ class UserMapping
 
     public static function getSidebar($view)
     {
-        $html = "<div id='users-sidebar' class='sidebar always-open'>
-                <legend>Users Info</legend>
-                
+        $html = "<div id='users-sidebar' class='sidebar always-open flag'>
+                    <legend>Users Info</legend>
+                    <ul>
+                        <li data-flag='column-user-email'>
+                            <a href='#' class='button'><span>Email</span></a>
+                        </li>
+                        <li data-flag='column-user-displayname'>
+                            <a href='#' class='button'><span>Display Name</span></a>
+                        </li>
+                        <li data-flag='column-user-role'>
+                            <a href='#' class='button'><span>Role</span></a>
+                        </li>
+                    </ul>
                 </div>
         ";
         return $html;
@@ -32,7 +42,7 @@ class UserMapping
      * @param array $itemJson
      * @return array $itemJson including the added data
      */
-    public function processRow($row, $itemJson = array())
+    public function processRow($row)
     {
         
     }
