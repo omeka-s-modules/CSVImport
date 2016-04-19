@@ -69,7 +69,7 @@ class Import extends AbstractJob
 
     protected function createItems($toCreate) 
     {
-        $createResponse = $this->api->batchCreate('items', $toCreate, array(), true);
+        $createResponse = $this->api->batchCreate('items', $toCreate, array());
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
         $createImportRecordsJson = array();
