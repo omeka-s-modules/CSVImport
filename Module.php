@@ -32,7 +32,6 @@ class Module extends AbstractModule
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
         $connection = $serviceLocator->get('Omeka\Connection');
-        $connection->exec("ALTER TABLE csvimport_entity DROP FOREIGN KEY FK_11CF590DBE04EA9;");
         $connection->exec("ALTER TABLE csvimport_entity DROP FOREIGN KEY FK_84D382F4BE04EA9;");
         $connection->exec("ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B50881BE04EA9;");
         $connection->exec("ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B508814C276F75;");
