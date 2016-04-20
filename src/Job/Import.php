@@ -71,7 +71,7 @@ class Import extends AbstractJob
     {
         $createResponse = $this->api->batchCreate('items', $toCreate, array());
         if ($createResponse->isError()) {
-            $this->logger->error($createResponse->getErrors());
+            $this->logger->err($createResponse->getErrors());
         } else {
             $createContent = $createResponse->getContent();
             $this->addedCount = $this->addedCount + count($createContent);
