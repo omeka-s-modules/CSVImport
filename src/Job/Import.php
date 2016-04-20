@@ -69,15 +69,19 @@ class Import extends AbstractJob
 
     protected function createItems($toCreate) 
     {
-        $createResponse = $this->api->batchCreate('items', $toCreate, array(), true);
-        $createContent = $createResponse->getContent();
-        $this->addedCount = $this->addedCount + count($createContent);
-        $createImportRecordsJson = array();
+        $createResponse = $this->api->batchCreate('items', $toCreate, array());
+        if ($createResponse->isError()) {
+            $this->logger->err($createResponse->getErrors());
+        } else {
+            $createContent = $createResponse->getContent();
+            $this->addedCount = $this->addedCount + count($createContent);
+            $createImportRecordsJson = array();
 
-        foreach($createContent as $resourceReference) {
-            $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
+            foreach($createContent as $resourceReference) {
+                $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
+            }
+            $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
         }
-        $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
     }
 
     protected function buildImportRecordJson($resourceReference) 
