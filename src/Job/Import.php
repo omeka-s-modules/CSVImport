@@ -86,7 +86,7 @@ class Import extends AbstractJob
     protected function buildImportRecordJson($resourceReference) 
     {
         $recordJson = array('o:job'         => ['o:id' => $this->job->getId()],
-                            'entity_id'      => $resourceReference->id(),
+                            'entity_id'     => $resourceReference->id(),
                             'resource_type' => $this->getArg('entity_type', 'items'),
                             );
         return $recordJson;

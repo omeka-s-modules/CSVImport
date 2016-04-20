@@ -9,16 +9,17 @@ class Undo extends AbstractJob
     {
         $jobId = $this->getArg('jobId');
         $api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        $response = $api->search('csvimport_records', array('job_id' => $jobId));
-        $csvItems = $response->getContent();
-        if ($csvItems) {
-            foreach ($csvItems as $csvItem) {
-                $csvResponse = $api->delete('csvimport_records', $csvItem->id());
+        $response = $api->search('csvimport_entities', array('job_id' => $jobId));
+        $csvEntities = $response->getContent();
+        if ($csvEntities) {
+            foreach ($csvEntities as $csvEntity) {
+                
+                $csvResponse = $api->delete('csvimport_entities', $csvEntity->id());
                 if ($csvResponse->isError()) {
                 }
 
-                $itemResponse = $api->delete('items', $csvItem->item()->id());
-                if ($itemResponse->isError()) {
+                $entityResponse = $api->delete($csvEntity->resourceType(), $csvEntity->entityId());
+                if ($entityResponse->isError()) {
                 }
             }
         }
