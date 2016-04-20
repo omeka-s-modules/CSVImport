@@ -104,7 +104,11 @@ class ItemMapping
         $term = trim($term);
         $response = $this->api->search('resource_classes', array('term' => $term));
         $content = $response->getContent();
-        if (empty($content)) {
+        $class = $content[0];
+        $classTerm = $class->term();
+        $this->logger->debug($classTerm);
+        if ($term != $classTerm) {
+            $this->logger->err("$term is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
             return false;
         }
         return $content[0];
