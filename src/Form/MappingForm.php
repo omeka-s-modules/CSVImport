@@ -11,7 +11,7 @@ class MappingForm extends ItemForm
 {
     public function buildForm()
     {
-        $entityType = $this->getOption('entityType');
+        $resourceType = $this->getOption('resourceType');
         $userRole = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity()->getRole();
         $translator = $this->getTranslator();
         $this->add(array(
@@ -30,7 +30,7 @@ class MappingForm extends ItemForm
             array('priority' => 100000) 
         ));
         
-        if ($entityType == 'items' || $entityType == 'item_sets') {
+        if ($resourceType == 'items' || $resourceType == 'item_sets') {
             parent::buildForm();
             
             if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {

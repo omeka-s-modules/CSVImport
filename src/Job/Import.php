@@ -19,20 +19,22 @@ class Import extends AbstractJob
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $config = $this->getServiceLocator()->get('Config');
-        $entityType = $this->getArg('resource_type', 'items');
-        $mappingClasses = $config['csv_import_mappings'][$entityType];
+        $resourceType = $this->getArg('resource_type', 'items');
+        $this->logger->debug($resourceType);
+        $mappingClasses = $config['csv_import_mappings'][$resourceType];
         $mappings = [];
         $args = $this->job->getArgs();
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
+        $this->logger->debug('got mappings');
         $csvFile = new CsvFile($this->getServiceLocator());
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
         $csvImportJson = array(
                             'o:job'         => array('o:id' => $this->job->getId()),
                             'comment'       => 'Job started',
-                            'resource_type'   => $entityType,
+                            'resource_type'   => $resourceType,
                             'added_count'   => 0,
                           );
 
@@ -50,6 +52,7 @@ class Import extends AbstractJob
                 $entityJson = array_merge($entityJson, $mapping->processRow($row));
             }
             $insertJson[] = $entityJson;
+            $this->logger->debug($insertJson);
             //only add every X for batch import
             if ( $index % 20 == 0 ) {
                 //batch create
@@ -57,6 +60,7 @@ class Import extends AbstractJob
                 $insertJson = [];
             }
         }
+        
         //take care of remainder from the modulo check
         $this->createEntities($insertJson);
         
@@ -71,8 +75,11 @@ class Import extends AbstractJob
 
     protected function createEntities($toCreate) 
     {
-        $entityType = $this->getArg('entity_type', 'items');
-        $createResponse = $this->api->batchCreate($entityType, $toCreate, array(), true);
+        $resourceType = $this->getArg('resource_type', 'items');
+        $createResponse = $this->api->batchCreate($resourceType, $toCreate, array(), true);
+        if($createResponse->isError()) {
+            $this->logger->debug('shit');
+        }
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
         $createImportRecordsJson = array();

@@ -3,6 +3,22 @@ namespace CSVImport\Mapping;
 
 class UserMapping
 {
+    protected $args;
+
+    protected $api;
+
+    protected $logger;
+
+    protected $serviceLocator;
+
+    public function __construct($args, $serviceLocator)
+    {
+        $this->args = $args;
+        $this->logger = $serviceLocator->get('Omeka\Logger');
+        $this->api = $serviceLocator->get('Omeka\ApiManager');
+        $this->serviceLocator = $serviceLocator;
+    }
+    
     public static function getLabel()
     {
         return "Users Info";
@@ -18,7 +34,7 @@ class UserMapping
 
     public static function getSidebar($view)
     {
-        $html = "<div id='users-sidebar' class='sidebar always-open flag'>
+        $html = "<div id='users-sidebar' class='sidebar always-open flags'>
                     <legend>Users Info</legend>
                     <ul>
                         <li data-flag='column-user-email'>
@@ -44,6 +60,27 @@ class UserMapping
      */
     public function processRow($row)
     {
+        $emailIndex = array_keys($this->args['column-user-email'])[0];
+        $nameIndex = array_keys($this->args['column-user-displayname'])[0];
+        $roleIndex = array_keys($this->args['column-user-role'])[0];
+        $userJson = [];
         
+        
+        foreach($row as $index => $value) {
+            switch($index) {
+                case $emailIndex:
+                    $userJson['o:email'] = trim($value);
+                break;
+                
+                case $nameIndex:
+                    $userJson['o:name'] = trim($value);
+                break;
+                
+                case $roleIndex:
+                    $userJson['o:role'] = trim($value);
+                break;
+            }
+        }
+        return $userJson;
     }
 }

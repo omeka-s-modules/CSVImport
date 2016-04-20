@@ -24,8 +24,8 @@ class IndexController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
+            $post = $this->params()->fromPost();
             if (empty($files)) {
-                $post = $this->params()->fromPost();
                 $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
@@ -36,7 +36,8 @@ class IndexController extends AbstractActionController
                 //to fix when I add something to the interface for setting this
                 $entityType = 'items';
                 //$entityType = 'users';
-                $form = new MappingForm($this->getServiceLocator(), null, array('entityType' => $entityType));
+                $resourceType = $post['resource_type'];
+                $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
                 $view->setVariable('form', $form);
                 $post = array_merge_recursive(
                     $request->getPost()->toArray(),
@@ -52,15 +53,15 @@ class IndexController extends AbstractActionController
                 $view->setVariable('mediaForms', $this->getMediaForms());
 
                 $config = $this->serviceLocator->get('Config');
-                if($entityType == 'items' || $entityType == 'item_sets') {
+                if($resourceType == 'items' || $resourceType == 'item_sets') {
                     $autoMaps = $this->getAutomaps($columns);
                 } else {
                     $autoMaps = [];
                 }
                 
                 $view->setVariable('automaps', $autoMaps);
-                $view->setVariable('entityType', $entityType);
-                $view->setVariable('mappings', $config['csv_import_mappings'][$entityType]);
+                $view->setVariable('resourceType', $resourceType);
+                $view->setVariable('mappings', $config['csv_import_mappings'][$resourceType]);
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
             }
