@@ -34,7 +34,7 @@ class EntityAdapter extends AbstractEntityAdapter
         }
         if (isset($query['entity_id'])) {
             $qb->andWhere($qb->expr()->eq(
-                $this->getEntityClass() . '.entity',
+                $this->getEntityClass() . '.entity_id',
                 $this->createNamedParameter($qb, $query['entity_id']))
             );
         }
@@ -55,12 +55,12 @@ class EntityAdapter extends AbstractEntityAdapter
             $entity->setJob($job);
         }
         
-        //@todo redo this for generalized entities somehow
-        if (isset($data['o:entity']['o:id'])) {
-            $resourceType = $data['o:entity']['resource_type'];
-            $dataKey = 'o:' . rtrim($resourceType, 's');
-            $otherEntity = $this->getAdapter($resourceType)->findEntity($data[$dataKey]['o:id']);
-            $entity->setEntity($otherEntity);
+        if (isset($data['resource_type'])) {
+            $entity->setResourceType($data['resource_type']);
+        }
+        
+        if (isset($data['entity_id'])) {
+            $entity->setEntityId($data['entity_id']);
         }
     }
 }

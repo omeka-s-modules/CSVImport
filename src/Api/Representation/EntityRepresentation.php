@@ -9,6 +9,8 @@ class EntityRepresentation extends AbstractEntityRepresentation
     {
         return array(
             'o:job'         => $this->job()->getReference(),
+            'entity_id'     => $this->entityId(),
+            'resource_type' => $this->resourceType(),
         );
     }
 
@@ -21,6 +23,11 @@ class EntityRepresentation extends AbstractEntityRepresentation
     {
         return $this->getAdapter('jobs')
             ->getRepresentation($this->resource->getJob());
+    }
+    
+    public function entityId()
+    {
+        return $this->resource->getEntityId();
     }
 
     public function resourceType()

@@ -1,5 +1,8 @@
 <?php
-$form->prepare();
+if (isset($form)) {
+    $form->prepare();
+}
+
 $escapeHtml = $this->plugin('escapeHtml');
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));

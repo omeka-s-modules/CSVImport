@@ -29,7 +29,7 @@ class CSVImportEntity extends AbstractEntity
     /**
      * @Column(type="integer")
      */
-    protected $entity;
+    protected $entity_id;
     
     /**
      * API resource type (not neccesarily a Resource class)
@@ -42,24 +42,14 @@ class CSVImportEntity extends AbstractEntity
         return $this->id;
     }
 
-    public function getEntity()
+    public function getEntityId()
     {
-        return $this->entity;
+        return $this->entity_id;
     }
 
-    public function setEntity(Entity $entity)
+    public function setEntityId($entityId)
     {
-        $this->entity = $entity;
-    }
-
-    public function getEntityType()
-    {
-        return $this->entity_type;
-    }
-
-    public function setEntityType($entityType)
-    {
-        $this->entity_type = $entityType;
+        $this->entity_id = $entityId;
     }
 
     public function setJob(Job $job)

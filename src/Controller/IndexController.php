@@ -35,7 +35,7 @@ class IndexController extends AbstractActionController
                 //@TODO for dev purposes, hardcode the importType
                 //to fix when I add something to the interface for setting this
                 $entityType = 'items';
-                $entityType = 'users';
+                //$entityType = 'users';
                 $form = new MappingForm($this->getServiceLocator(), null, array('entityType' => $entityType));
                 $view->setVariable('form', $form);
                 $post = array_merge_recursive(

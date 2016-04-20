@@ -8,7 +8,7 @@ return array(
     ),
     'api_adapters' => array(
         'invokables' => array(
-            'csvimport_entity' => 'CSVImport\Api\Adapter\EntityAdapter',
+            'csvimport_entities' => 'CSVImport\Api\Adapter\EntityAdapter',
             'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter'
         ),
     ),

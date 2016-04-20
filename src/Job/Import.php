@@ -32,7 +32,7 @@ class Import extends AbstractJob
         $csvImportJson = array(
                             'o:job'         => array('o:id' => $this->job->getId()),
                             'comment'       => 'Job started',
-                            'entity_type'   => $entityType,
+                            'resource_type'   => $entityType,
                             'added_count'   => 0,
                           );
 
@@ -86,8 +86,8 @@ class Import extends AbstractJob
     protected function buildImportRecordJson($resourceReference) 
     {
         $recordJson = array('o:job'         => ['o:id' => $this->job->getId()],
-                            'o:entity'      => ['o:id' => $resourceReference->id()],
-                            'o:entity_type' => $this->getArg('entity_type', 'items'),
+                            'entity_id'      => $resourceReference->id(),
+                            'resource_type' => $this->getArg('entity_type', 'items'),
                             );
         return $recordJson;
     }
