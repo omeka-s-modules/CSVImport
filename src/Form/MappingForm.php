@@ -11,7 +11,8 @@ class MappingForm extends ItemForm
 {
     public function buildForm()
     {
-        $userRole = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity()->getRole();
+        $currentUser = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity();
+        $userRole = $currentUser->getRole();
         $translator = $this->getTranslator();
         $this->add(array(
             'name' => 'comment',
@@ -44,6 +45,7 @@ class MappingForm extends ItemForm
                         return $user->name();
                     }
                 );
+            $ownerSelect->setValue($currentUser->getId());
             
             $this->add($ownerSelect);
         }
