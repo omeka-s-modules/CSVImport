@@ -20,7 +20,7 @@ class IndexController extends AbstractActionController
     public function mapAction()
     {
         $view = new ViewModel;
-
+        $logger = $this->getServiceLocator()->get('Omeka\Logger');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
@@ -32,10 +32,6 @@ class IndexController extends AbstractActionController
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
             } else {
-                //@TODO for dev purposes, hardcode the importType
-                //to fix when I add something to the interface for setting this
-                $entityType = 'items';
-                //$entityType = 'users';
                 $resourceType = $post['resource_type'];
                 $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
                 $view->setVariable('form', $form);
@@ -49,6 +45,14 @@ class IndexController extends AbstractActionController
                 $csvPath = $csvFile->getTempPath();
                 $csvFile->moveToTemp($tmpFile);
                 $csvFile->loadFromTempPath();
+                
+                $isUtf8 = $csvFile->isUtf8();
+                if (! $csvFile->isUtf8()) {
+                    $this->messenger()->addError('File is not UTF-8 encoded.');
+                    return;
+                }
+                
+                
                 $columns = $csvFile->getHeaders();
                 $view->setVariable('mediaForms', $this->getMediaForms());
 
