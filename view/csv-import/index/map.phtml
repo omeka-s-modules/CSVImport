@@ -1,5 +1,8 @@
 <?php
-$form->prepare();
+if (isset($form)) {
+    $form->prepare();
+}
+
 $escapeHtml = $this->plugin('escapeHtml');
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
@@ -15,7 +18,7 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
     <input type='submit' value='Next' />
 </fieldset>
 <input type='hidden' name='csvpath' value='<?php echo $csvpath; ?>' />
-
+<input type='hidden' name='resource_type' value='<?php echo $resourceType; ?>' />
 <a href='#' id='csv-import-basics' class='csv-import-fieldset-label'>
 <?php echo $this->translate('Basic Import Settings'); ?>
 <span class="collapse"></span>
@@ -42,14 +45,18 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
                 <tr class="element mappable" data-element-id="<?php echo $index; ?>">
                     <td>
                         <h3><?php echo $column;?></h3>
+                        <?php if ($resourceType == 'items' || $resourceType == 'item_sets'): ?>
                         <input type='checkbox' name='column-url[<?php echo $index; ?>]'></input><label>URL</label>
                         <input type='checkbox' name='column-multivalue[<?php echo $index; ?>]'></input><label>Multivalue</label>
+                        <?php endif; ?>
                         <ul class='sidebar-chooser'>
+                            <?php if (count($mappings) > 1): ?>
                             <?php foreach($mappings as $mappingClass): ?>
                             <li>
                                 <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>-sidebar'><?php echo $mappingClass::getLabel($this); ?></a>
                             </li>
                             <?php endforeach; ?>
+                            <?php endif; ?>
                         </ul>
                     </td>
                     <td class="mapping element">

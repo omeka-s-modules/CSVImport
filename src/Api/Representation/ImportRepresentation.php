@@ -16,6 +16,7 @@ class ImportRepresentation extends AbstractEntityRepresentation
             'added_count'    => $this->addedCount(),
             'updated_count'  => $this->updatedCount(),
             'comment'        => $this->comment(),
+            'resource_type'  => $this->resourceType(),
             'o:job'          => $this->job()->getReference(),
             'o:undo_job'     => $undo_job
         );
@@ -23,7 +24,7 @@ class ImportRepresentation extends AbstractEntityRepresentation
     
     public function getJsonLdType()
     {
-        return 'o:OmekaimportImport';
+        return 'o:CSVimportImport';
     }
 
     public function job()
@@ -46,5 +47,10 @@ class ImportRepresentation extends AbstractEntityRepresentation
     public function addedCount()
     {
         return $this->resource->getAddedCount();
+    }
+
+    public function resourceType()
+    {
+        return $this->resource->getResourceType();
     }
 }

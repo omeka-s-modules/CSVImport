@@ -19,18 +19,22 @@ class Import extends AbstractJob
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $config = $this->getServiceLocator()->get('Config');
-        $mappingClasses = $config['csv_import_mappings'];
+        $resourceType = $this->getArg('resource_type', 'items');
+        $this->logger->debug($resourceType);
+        $mappingClasses = $config['csv_import_mappings'][$resourceType];
         $mappings = [];
         $args = $this->job->getArgs();
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
+        $this->logger->debug('got mappings');
         $csvFile = new CsvFile($this->getServiceLocator());
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
         $csvImportJson = array(
                             'o:job'         => array('o:id' => $this->job->getId()),
                             'comment'       => 'Job started',
+                            'resource_type'   => $resourceType,
                             'added_count'   => 0,
                           );
 
@@ -43,20 +47,22 @@ class Import extends AbstractJob
                 continue;
             }
 
-            $itemJson = [];
+            $entityJson = [];
             foreach($mappings as $mapping) {
-                $itemJson = array_merge($itemJson, $mapping->processRow($row));
+                $entityJson = array_merge($entityJson, $mapping->processRow($row));
             }
-            $insertJson[] = $itemJson;
+            $insertJson[] = $entityJson;
+            $this->logger->debug($insertJson);
             //only add every X for batch import
             if ( $index % 20 == 0 ) {
                 //batch create
-                $this->createItems($insertJson);
+                $this->createEntities($insertJson);
                 $insertJson = [];
             }
         }
+        
         //take care of remainder from the modulo check
-        $this->createItems($insertJson);
+        $this->createEntities($insertJson);
         
         $comment = $this->getArg('comment');
         $csvImportJson = array(
@@ -67,27 +73,28 @@ class Import extends AbstractJob
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
     }
 
-    protected function createItems($toCreate) 
+    protected function createEntities($toCreate) 
     {
-        $createResponse = $this->api->batchCreate('items', $toCreate, array());
-        if ($createResponse->isError()) {
-            $this->logger->err($createResponse->getErrors());
-        } else {
-            $createContent = $createResponse->getContent();
-            $this->addedCount = $this->addedCount + count($createContent);
-            $createImportRecordsJson = array();
-
-            foreach($createContent as $resourceReference) {
-                $createImportRecordsJson[] = $this->buildImportRecordJson($resourceReference);
-            }
-            $createImportRecordResponse = $this->api->batchCreate('csvimport_records', $createImportRecordsJson, array(), true);
+        $resourceType = $this->getArg('resource_type', 'items');
+        $createResponse = $this->api->batchCreate($resourceType, $toCreate, array(), true);
+        if($createResponse->isError()) {
+            $this->logger->debug('shit');
         }
+        $createContent = $createResponse->getContent();
+        $this->addedCount = $this->addedCount + count($createContent);
+        $createImportEntitiesJson = array();
+
+        foreach($createContent as $resourceReference) {
+            $createImportEntitiesJson[] = $this->buildImportRecordJson($resourceReference);
+        }
+        $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportEntitiesJson, array(), true);
     }
 
     protected function buildImportRecordJson($resourceReference) 
     {
-        $recordJson = array('o:job'     => ['o:id' => $this->job->getId()],
-                            'o:item'    => ['o:id' => $resourceReference->id()],
+        $recordJson = array('o:job'         => ['o:id' => $this->job->getId()],
+                            'entity_id'     => $resourceReference->id(),
+                            'resource_type' => $this->getArg('entity_type', 'items'),
                             );
         return $recordJson;
     }

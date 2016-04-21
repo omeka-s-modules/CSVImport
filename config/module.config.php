@@ -8,7 +8,7 @@ return array(
     ),
     'api_adapters' => array(
         'invokables' => array(
-            'csvimport_records' => 'CSVImport\Api\Adapter\RecordAdapter',
+            'csvimport_entities' => 'CSVImport\Api\Adapter\EntityAdapter',
             'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter'
         ),
     ),
@@ -29,9 +29,14 @@ return array(
         ),
     ),
     'csv_import_mappings' => [
-        '\CSVImport\Mapping\PropertyMapping',
-        '\CSVImport\Mapping\MediaMapping',
-        '\CSVImport\Mapping\ItemMapping',
+        'items' => [
+            '\CSVImport\Mapping\PropertyMapping',
+            '\CSVImport\Mapping\MediaMapping',
+            '\CSVImport\Mapping\ItemMapping',
+        ],
+        'users' => [
+            '\CSVImport\Mapping\UserMapping'
+        ],
     ],
     'router' => array(
         'routes' => array(

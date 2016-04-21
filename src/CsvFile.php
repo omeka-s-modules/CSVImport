@@ -17,6 +17,13 @@ class CsvFile
         $this->serviceLocator = $serviceLocator;
     }
 
+    public function isUtf8()
+    {
+        $string = $this->fileObject->fgets();
+        $isUtf8 = mb_detect_encoding($string, 'UTF-8', true);
+        return $isUtf8 == 'UTF-8';
+    }
+    
     public function moveToTemp($systemTempPath)
     {
         move_uploaded_file($systemTempPath, $this->tempPath);
@@ -31,6 +38,7 @@ class CsvFile
 
     public function getHeaders()
     {
+        $this->fileObject->rewind();
         $line = $this->fileObject->fgetcsv();
         return $line;
     }

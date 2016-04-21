@@ -20,19 +20,21 @@ class IndexController extends AbstractActionController
     public function mapAction()
     {
         $view = new ViewModel;
-        $form = new MappingForm($this->getServiceLocator());
-        $view->setVariable('form', $form);
+        $logger = $this->getServiceLocator()->get('Omeka\Logger');
         $request = $this->getRequest();
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
+            $post = $this->params()->fromPost();
             if (empty($files)) {
-                $post = $this->params()->fromPost();
                 $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
             } else {
+                $resourceType = $post['resource_type'];
+                $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
+                $view->setVariable('form', $form);
                 $post = array_merge_recursive(
                     $request->getPost()->toArray(),
                     $request->getFiles()->toArray()
@@ -43,13 +45,27 @@ class IndexController extends AbstractActionController
                 $csvPath = $csvFile->getTempPath();
                 $csvFile->moveToTemp($tmpFile);
                 $csvFile->loadFromTempPath();
+                
+                $isUtf8 = $csvFile->isUtf8();
+                if (! $csvFile->isUtf8()) {
+                    $this->messenger()->addError('File is not UTF-8 encoded.');
+                    return;
+                }
+                
+                
                 $columns = $csvFile->getHeaders();
                 $view->setVariable('mediaForms', $this->getMediaForms());
 
                 $config = $this->serviceLocator->get('Config');
-                $autoMaps = $this->getAutomaps($columns);
+                if($resourceType == 'items' || $resourceType == 'item_sets') {
+                    $autoMaps = $this->getAutomaps($columns);
+                } else {
+                    $autoMaps = [];
+                }
+                
                 $view->setVariable('automaps', $autoMaps);
-                $view->setVariable('mappings', $config['csv_import_mappings']);
+                $view->setVariable('resourceType', $resourceType);
+                $view->setVariable('mappings', $config['csv_import_mappings'][$resourceType]);
                 $view->setVariable('columns', $columns);
                 $view->setVariable('csvpath', $csvPath);
             }

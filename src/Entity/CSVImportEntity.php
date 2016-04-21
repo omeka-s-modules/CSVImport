@@ -10,7 +10,7 @@ use Omeka\Entity\ItemSet;
 /**
  * @Entity
  */
-class CSVImportRecord extends AbstractEntity
+class CSVImportEntity extends AbstractEntity
 {
 
     /**
@@ -27,25 +27,29 @@ class CSVImportRecord extends AbstractEntity
     protected $job;
 
     /**
-     * @OneToOne(targetEntity="Omeka\Entity\Item")
-     * @JoinColumn(nullable=true, onDelete="CASCADE")
-     * @var int
+     * @Column(type="integer")
      */
-    protected $item;
+    protected $entity_id;
+    
+    /**
+     * API resource type (not neccesarily a Resource class)
+     * @Column(type="string")
+     */
+    protected $resource_type;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function getItem()
+    public function getEntityId()
     {
-        return $this->item;
+        return $this->entity_id;
     }
 
-    public function setItem(Item $item)
+    public function setEntityId($entityId)
     {
-        $this->item = $item;
+        $this->entity_id = $entityId;
     }
 
     public function setJob(Job $job)
@@ -56,5 +60,15 @@ class CSVImportRecord extends AbstractEntity
     public function getJob()
     {
         return $this->job;
+    }
+
+    public function setResourceType($resourceType)
+    {
+        $this->resource_type = $resourceType;
+    }
+
+    public function getResourceType()
+    {
+        return $this->resource_type;
     }
 }

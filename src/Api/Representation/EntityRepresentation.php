@@ -3,30 +3,35 @@ namespace CSVImport\Api\Representation;
 
 use Omeka\Api\Representation\AbstractEntityRepresentation;
 
-class RecordRepresentation extends AbstractEntityRepresentation
+class EntityRepresentation extends AbstractEntityRepresentation
 {
     public function getJsonLd()
     {
         return array(
-            'o:item'        => $this->item()->getReference(),
             'o:job'         => $this->job()->getReference(),
+            'entity_id'     => $this->entityId(),
+            'resource_type' => $this->resourceType(),
         );
     }
 
     public function getJsonLdType()
     {
-        return 'o:CsvimportRecord';
-    }
-
-    public function item()
-    {
-        return $this->getAdapter('items')
-            ->getRepresentation($this->resource->getItem());
+        return 'o:CsvimportEntity';
     }
 
     public function job()
     {
         return $this->getAdapter('jobs')
             ->getRepresentation($this->resource->getJob());
+    }
+    
+    public function entityId()
+    {
+        return $this->resource->getEntityId();
+    }
+
+    public function resourceType()
+    {
+        return $this->resource->getResourceType();
     }
 }

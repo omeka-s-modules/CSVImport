@@ -37,6 +37,11 @@ class CSVImportImport extends AbstractEntity {
      * @Column(type="string", nullable=true)
      */
     protected $comment;
+    
+    /**
+     * @Column(type="string")
+     */
+    protected $resource_type;
 
     public function getId()
     {
@@ -81,5 +86,15 @@ class CSVImportImport extends AbstractEntity {
     public function getComment()
     {
         return $this->comment;
+    }
+    
+    public function setResourceType($resourceType)
+    {
+        $this->resource_type = $resourceType;
+    }
+    
+    public function getResourceType()
+    {
+        return $this->resource_type;
     }
 }

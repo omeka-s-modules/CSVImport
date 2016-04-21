@@ -8,6 +8,8 @@ class ImportForm extends AbstractForm
     public function buildForm()
     {
         $translator = $this->getTranslator();
+        $config = $this->getServiceLocator()->get('Config');
+        $mappingClasses = $config['csv_import_mappings'];
         
         $this->setAttribute('action', 'csvimport/map');
         $this->add(array(
@@ -21,6 +23,21 @@ class ImportForm extends AbstractForm
                     'id' => 'csv',
                     'required' => 'true'
                 )
+        ));
+        
+        $resourceTypes = array_keys($mappingClasses);
+        $valueOptions = [];
+        foreach($resourceTypes as $resourceType) {
+            $valueOptions[$resourceType] = ucfirst($resourceType);
+        }
+        $this->add(array(
+                'name' => 'resource_type',
+                'type' => 'select',
+                'options' => array(
+                    'label' => $translator->translate('Import Type'),
+                    'info'  => $translator->translate('The type of data being imported'),
+                    'value_options' => $valueOptions,
+                ),
         ));
     }
 }
