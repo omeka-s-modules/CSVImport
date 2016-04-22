@@ -110,7 +110,6 @@ class ItemMapping
         }
         $class = $content[0];
         $classTerm = $class->term();
-        $this->logger->debug($classTerm);
         if ($term != $classTerm) {
             $this->logger->err("'$term' is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
             return false;
