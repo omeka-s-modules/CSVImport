@@ -104,6 +104,10 @@ class ItemMapping
         $term = trim($term);
         $response = $this->api->search('resource_classes', array('term' => $term));
         $content = $response->getContent();
+        if( empty($content)){
+            $this->logger->err("'$term' is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
+            return false;
+        }
         $class = $content[0];
         $classTerm = $class->term();
         $this->logger->debug($classTerm);
@@ -119,6 +123,10 @@ class ItemMapping
         $label = trim($label);
         $response = $this->api->search('resource_templates', array('label' => $label));
         $content = $response->getContent();
+        if( empty($content)){
+            $this->logger->err("$label is not a valid Resource Template name.");
+            return false;
+        }
         $template = $content[0];
         $templateLabel = $template->label();
         if ($label != $templateLabel) {
@@ -133,6 +141,10 @@ class ItemMapping
         $email = trim($email);
         $response = $this->api->search('users', array('email' => $email));
         $content = $response->getContent();
+        if( empty($content)){
+            $this->logger->err("$email is not a valid user email address.");
+            return false;
+        }
         $user = $content[0];
         $userEmail = $user->email();
         if ($email != $userEmail) {
