@@ -40,23 +40,23 @@ class ItemMapping
         $itemJson = [];
 
         //first, pull in the global settings
-        if (isset($this->args['o:item_set'])) {
+        if (!empty($this->args['o:item_set'])) {
             $itemSets = $this->args['o:item_set'];
             $itemJson['o:item_set'] = [];
             foreach($itemSets as $itemSetId) {
                 $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
             }
         }
-        if (isset($this->args['o:resource_class'])) {
+        if (!empty($this->args['o:resource_class'])) {
             $resourceClass = $this->args['o:resource_class']['o:id'];
             $itemJson['o:resource_class'] = ['o:id' => $resourceClass];
         }
-        if (isset($this->args['o:resource_template'])) {
+        if (!empty($this->args['o:resource_template'])) {
             $resourceTemplate = $this->args['o:resource_template']['o:id'];
             $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate];
         }
 
-        if (isset($this->args['o:owner'])) {
+        if (!empty($this->args['o:owner'])) {
             $ownerId = $this->args['o:owner'];
             $itemJson['o:owner'] = ['o:id' => $ownerId];
         }

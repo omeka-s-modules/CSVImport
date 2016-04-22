@@ -55,7 +55,6 @@ class MediaMapping
                     if(empty($mediaDatum)) {
                         continue;
                     }
-                    $this->logger->debug($mediaDatum);
                     $mediaDatumJson = array(
                         'o:ingester'     => $ingester,
                         'o:source'   => $mediaDatum,
@@ -76,7 +75,6 @@ class MediaMapping
                         break;
                     }
                     $mediaJson['o:media'][] = $mediaDatumJson;
-                    $this->logger->debug(print_r($mediaJson, true));
                 }
             }
         }
