@@ -65,7 +65,6 @@ class UserMapping
         $roleIndex = array_keys($this->args['column-user-role'])[0];
         $userJson = [];
         
-        
         foreach($row as $index => $value) {
             switch($index) {
                 case $emailIndex:
@@ -80,6 +79,10 @@ class UserMapping
                     $userJson['o:role'] = trim($value);
                 break;
             }
+        }
+        
+        if (empty($userJson['o:name'])) {
+            $userJson['o:name'] = $userJson['o:email'];
         }
         return $userJson;
     }

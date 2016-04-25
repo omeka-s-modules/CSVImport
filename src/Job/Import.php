@@ -20,14 +20,12 @@ class Import extends AbstractJob
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $config = $this->getServiceLocator()->get('Config');
         $resourceType = $this->getArg('resource_type', 'items');
-        $this->logger->debug($resourceType);
         $mappingClasses = $config['csv_import_mappings'][$resourceType];
         $mappings = [];
         $args = $this->job->getArgs();
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
-        $this->logger->debug('got mappings');
         $csvFile = new CsvFile($this->getServiceLocator());
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
@@ -52,7 +50,6 @@ class Import extends AbstractJob
                 $entityJson = array_merge($entityJson, $mapping->processRow($row));
             }
             $insertJson[] = $entityJson;
-            $this->logger->debug($insertJson);
             //only add every X for batch import
             if ( $index % 20 == 0 ) {
                 //batch create

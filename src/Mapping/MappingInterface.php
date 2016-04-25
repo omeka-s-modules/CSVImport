@@ -1,5 +1,5 @@
 <?php
-namespace \CSVImport\Mapping;
+namespace CSVImport\Mapping;
 
 interface MappingInterface
 {
@@ -23,8 +23,7 @@ interface MappingInterface
     /**
      * Process a row from the CSV file
      * @param array $row
-     * @param array $itemJson
-     * @return array $itemJson including the added data
+     * @return array $entityJson including the added data
      */
-    public function processRow($row, $itemJson = array());
+    public function processRow($row);
 }
