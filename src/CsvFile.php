@@ -9,7 +9,7 @@ class CsvFile
     public $fileObject;
 
     public $tempPath;
-    
+
     protected $serviceLocator;
 
     public function __construct(ServiceLocatorInterface $serviceLocator)
@@ -19,11 +19,12 @@ class CsvFile
 
     public function isUtf8()
     {
+        $this->fileObject->rewind();
         $string = $this->fileObject->fgets();
         $isUtf8 = mb_detect_encoding($string, 'UTF-8', true);
         return $isUtf8 == 'UTF-8';
     }
-    
+
     public function moveToTemp($systemTempPath)
     {
         move_uploaded_file($systemTempPath, $this->tempPath);
@@ -64,7 +65,7 @@ class CsvFile
         $this->tempPath = tempnam($tempDir, 'omeka');
         return $this->tempPath;
     }
-    
+
     /**
      * Use this to set the known (already-uploaded) csv file's path to where omekas puts it.
      */

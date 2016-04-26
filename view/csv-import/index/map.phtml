@@ -6,7 +6,6 @@ if (isset($form)) {
 $escapeHtml = $this->plugin('escapeHtml');
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
-$this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 ?>
 
 <?php echo $this->pageTitle($this->translate('Map Elements · CSV Import')); ?>
@@ -15,75 +14,74 @@ $this->htmlElement('body')->appendAttribute('class', 'sidebar-open');
 
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>
-    <input type='submit' value='Import' />
+    <button type="submit"><?php echo $this->translate('Import'); ?></button>
 </fieldset>
+<nav class="section-nav">
+    <ul>
+        <li class="active"><a href="#csv-import-basics-fieldset"><?php echo $this->translate('Basic Import Settings'); ?></a></li>
+        <li><a href="#mapping-data"><?php echo $this->translate('Map to Omeka S Data'); ?></a></li>
+    </ul>
+</nav>
+
 <input type='hidden' name='csvpath' value='<?php echo $csvpath; ?>' />
 <input type='hidden' name='resource_type' value='<?php echo $resourceType; ?>' />
-<a href='#' id='csv-import-basics' class='csv-import-fieldset-label'>
-<?php echo $this->translate('Basic Import Settings'); ?>
-<span class="collapse"></span>
-</a>
-<fieldset id='csv-import-basics-fieldset'>
+<fieldset id='csv-import-basics-fieldset' class="section active">
     <?php echo $this->formCollection($form, false); ?>
 </fieldset>
 
-<a href='#' id='csv-import-columns-map' class='csv-import-fieldset-label'>
-<?php echo $this->translate('Map CSV File Columns to Omeka S Data'); ?>
-<span class="collapse"></span>
-</a>
-<div id='mapping-data'>
-    <fieldset id="csv-import-columns-map-fieldset">
-        <table>
-            <thead>
-                <tr>
-                    <th><?php echo $this->translate("Csv Column"); ?></th>
-                    <th><?php echo $this->translate("Mappings"); ?></th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($columns as $index=>$column): ?>
-                <tr class="element mappable" data-element-id="<?php echo $index; ?>">
-                    <td>
-                        <h3><?php echo $column;?></h3>
-                        <?php if ($resourceType == 'items' || $resourceType == 'item_sets'): ?>
-                        <input type='checkbox' name='column-url[<?php echo $index; ?>]'></input><label>URL</label>
-                        <input type='checkbox' name='column-multivalue[<?php echo $index; ?>]'></input><label>Multivalue</label>
+<fieldset id="mapping-data" class="section">
+    <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+        <thead>
+            <tr>
+                <th><?php echo $this->translate("Csv Column"); ?></th>
+                <th><?php echo $this->translate("Mappings"); ?></th>
+                <th><?php echo $this->translate("Actions"); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($columns as $index=>$column): ?>
+            <tr class="element mappable" data-element-id="<?php echo $index; ?>">
+                <td>
+                    <?php echo $column;?>
+                </td>
+                <td class="mapping element">
+                    <ul class="mappings elements">
+                    <?php if(array_key_exists($index, $automaps)): ?>
+                    <?php $property = $automaps[$index]; ?>
+                        <li class="mapping" data-property-id="<?php echo $property->id(); ?>"><?php echo $property->label(); ?>
+                            <ul class="actions">
+                                <li>
+                                    <a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a>
+                                </li>
+                            </ul>
+                            <input value="<?php echo $property->id(); ?>" name="column-property[<?php echo $index; ?>][]" type="hidden">
+                        </li>
+                    <?php endif; ?>
+                    </ul>
+                </td>
+                <td>
+                    <?php if ($resourceType == 'items' || $resourceType == 'item_sets'): ?>
+                    <label><input type='checkbox' name='column-url[<?php echo $index; ?>]'></input>URL</label>
+                    <label><input type='checkbox' name='column-multivalue[<?php echo $index; ?>]'></input>Multivalue</label>
+                    <?php endif; ?>
+                    <ul class='sidebar-chooser'>
+                        <?php if (count($mappings) > 1): ?>
+                        <?php foreach($mappings as $mappingClass): ?>
+                        <li>
+                            <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>' data-column='<?php echo $column; ?>'><?php echo $mappingClass::getLabel($this); ?></a>
+                        </li>
+                        <?php endforeach; ?>
                         <?php endif; ?>
-                        <ul class='sidebar-chooser'>
-                            <?php if (count($mappings) > 1): ?>
-                            <?php foreach($mappings as $mappingClass): ?>
-                            <li>
-                                <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>-sidebar'><?php echo $mappingClass::getLabel($this); ?></a>
-                            </li>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
-                        </ul>
-                    </td>
-                    <td class="mapping element">
-                        <ul class="mappings elements">
-                        <?php if(array_key_exists($index, $automaps)): ?>
-                        <?php $property = $automaps[$index]; ?>
-                            <li class="mapping" data-property-id="<?php echo $property->id(); ?>"><?php echo $property->label(); ?>
-                                <ul class="actions">
-                                    <li>
-                                        <a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a>
-                                    </li>
-                                </ul>
-                                <input value="<?php echo $property->id(); ?>" name="column-property[<?php echo $index; ?>][]" type="hidden">
-                            </li>
-                        <?php endif; ?>
-                        </ul>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </fieldset>
-</div>
+                    </ul>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php foreach($mappings as $mappingClass) {
+        echo $mappingClass::getSidebar($this);
+    }
+    ?>
+</fieldset>
 <?php echo $this->form()->closeTag($form); ?>
-
-<?php foreach($mappings as $mappingClass) {
-    echo $mappingClass::getSidebar($this);
-}
-?>
 <?php endif; ?>

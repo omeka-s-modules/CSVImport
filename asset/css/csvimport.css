@@ -14,16 +14,21 @@
     float: right;
 }
 
-tr.mappable {
-    background-color: rgba(0,0,0, .08);
-}
-
 tr.active {
-    background-color: rgba(0,0,0, .16);
+    background-color: rgba(0,0,0, .08);
 }
 
 tr.mappable td:first-child {
     max-width: 40%;
+}
+
+tr.mappable td:nth-of-type(3) label {
+    margin: 0 1em .375em 0;
+    display: inline-block;
+}
+
+tr.mappable input[type="checkbox"] {
+    margin-right: .5em;
 }
 
 ul {
