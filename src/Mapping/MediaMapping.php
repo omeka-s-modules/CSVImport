@@ -5,7 +5,7 @@ use CSVImport\Mapping\AbstractMapping;
 
 class MediaMapping extends AbstractMapping
 {
-    public static function getLabel($view)
+    public static function getLabel()
     {
         return "Media Import";
     }
