@@ -6,17 +6,20 @@ use Zend\View\Helper\AbstractHelper;
 class ItemSidebar extends AbstractHelper
 {
     protected $user;
-    
+
     public function __construct($user)
     {
         $this->user = $user;
     }
-    
+
     public function __invoke()
     {
         $userRole = $this->user->getRole();
         $html = "
-        <div id='item-sidebar' class='sidebar flags'>
+        <div id='item-data' class='sidebar flags'>
+            <a href='#' class='sidebar-close o-icon-close'><span class='screen-reader-text'>Close Me</span></a>
+            <h3>Item Data: </h3>
+
             <p>Data from this column applies to the entire item being imported.</p>
             <p>Settings here will override any corresponding settings in Basic Import Settings.</p>
             <ul>
@@ -31,7 +34,7 @@ class ItemSidebar extends AbstractHelper
                 </li>
                 ";
         if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {
-       
+
             $html .="<li data-flag='column-owneremail'>
                     <a href='#' class='button'><span>Owner Email Address</span></a>
                 </li>";

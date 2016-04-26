@@ -5,14 +5,14 @@ use Zend\View\Helper\AbstractHelper;
 
 class MediaSidebar extends AbstractHelper
 {
-    
+
     protected $mediaIngester;
-    
+
     public function __construct($mediaIngestManager)
     {
         $this->mediaIngester = $mediaIngestManager;
     }
-    
+
     public function __invoke()
     {
         $mediaForms = [];
@@ -23,20 +23,21 @@ class MediaSidebar extends AbstractHelper
                 ];
             }
         }
-        
+
         $html = "
-            <div id='media-sidebar' class='sidebar flags'>
-                <legend>Media Importing</legend>
+            <div id='media-import' class='sidebar flags'>
+                <a href='#' class='sidebar-close o-icon-close'><span class='screen-reader-text'>Close Me</span></a>
+                <h3>Media Importing: </h3>
                 <ul>";
-        
+
         foreach($mediaForms as $type=>$mediaForm) {
             $html .= "<li data-flag='$type' data-flag-type='media'>
                 <a href='#' class='button'><span>{$mediaForm['label']}</span></a>
             </li>";
         }
-       
+
         $html .= "</ul></div>";
         return $html;
-        
+
     }
 }

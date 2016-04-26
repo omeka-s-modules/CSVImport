@@ -9,18 +9,18 @@ class MediaMapping extends AbstractMapping
     {
         return "Media Import";
     }
-    
+
     public static function getName()
     {
-        return 'media';
+        return 'media-import';
     }
-    
+
     public static function getSidebar($view)
     {
         return $view->mediaSidebar();
 
     }
-    
+
     public function processRow($row)
     {
         $mediaJson = array('o:media' => array());
@@ -31,7 +31,7 @@ class MediaMapping extends AbstractMapping
             //split $values into an array, so people can have more than one file
             //in the column
             $mediaData = explode($multivalueSeparator, $values);
-            
+
             if (array_key_exists($index, $mediaMap)) {
                 $ingester = $mediaMap[$index];
                 foreach($mediaData as $mediaDatum) {
@@ -53,7 +53,7 @@ class MediaMapping extends AbstractMapping
                                     ]
                                 ];
                         break;
-                        
+
                         case 'url':
                             $mediaDatumJson['ingest_url'] = $mediaDatum;
                         break;

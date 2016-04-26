@@ -10,17 +10,17 @@ class PropertyMapping extends AbstractMapping
     {
         return "Map Properties";
     }
-    
+
     public static function getName()
     {
         return 'property-selector';
     }
-    
+
     public static function getSidebar($view)
     {
-        return $view->propertySelector('Select property to map. Click a column heading as the target, then select the properties for it.', true);
+        return $view->propertySelector('Map Properties: ', false);
     }
-    
+
     public function processRow($row, $itemJson = array())
     {
         $propertyJson = [];
