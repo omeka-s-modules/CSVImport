@@ -23,13 +23,13 @@ class ItemSidebar extends AbstractHelper
             <p>Data from this column applies to the entire item being imported.</p>
             <p>Settings here will override any corresponding settings in Basic Import Settings.</p>
             <ul>
-                <li data-flag='column-itemset-id'>
+                <li data-flag='column-itemset-id' data-flag-type='item-data'>
                     <a href='#' class='button'><span>Item Set ID</span></a>
                 </li>
-                <li data-flag='column-resourcetemplate'>
+                <li data-flag='column-resourcetemplate' data-flag-type='item-data'>
                     <a href='#' class='button'><span>Resource Template Name</span></a>
                 </li>
-                <li data-flag='column-resourceclass'>
+                <li data-flag='column-resourceclass' data-flag-type='item-data'>
                     <a href='#' class='button'><span>Resource Class Term</span></a>
                 </li>
                 ";
