@@ -128,10 +128,11 @@
                     //much is copied from Omeka2Importer, and might need clarification
 
                     var index = elementId;
-                    var name = flagType + "[" + index + "]";
+                    var name = targetLi.data('flag') + "[" + index + "]";
                     //special handling for Media, which can add flags for different media types
                     var value;
                     if (flagType == 'media') {
+                        name = 'media[' + index + ']';
                         value = targetLi.data('flag');
                     } else {
                         value = 1;
