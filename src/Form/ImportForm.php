@@ -16,8 +16,8 @@ class ImportForm extends AbstractForm
                 'name' => 'csv',
                 'type' => 'file',
                 'options' => array(
-                    'label' => $translator->translate('CSV File'),
-                    'info'  => $translator->translate('The CSV File to upload')
+                    'label' => $translator->translate('Csv File'),
+                    'info'  => $translator->translate('The Csv File to upload')
                 ),
                 'attributes' => array(
                     'id' => 'csv',
