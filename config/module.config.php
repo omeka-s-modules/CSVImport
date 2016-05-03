@@ -85,7 +85,7 @@ return array(
     'navigation' => array(
         'admin' => array(
             array(
-                'label'      => 'Csv Importer',
+                'label'      => 'CSV Importer',
                 'route'      => 'admin/csvimport',
                 'resource'   => 'CSVImport\Controller\Index',
                 'pages'      => array(
