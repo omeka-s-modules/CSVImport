@@ -23,7 +23,8 @@ class MappingForm extends ItemForm
                 'info'  => $translator->translate('A note about the purpose or source of this import.')
             ),
             'attributes' => array(
-                'id' => 'comment'
+                'id' => 'comment',
+                'class' => 'input-body',
             ),
             //in theory this _should_ be the correct way to make this 1st, 
             //instead of putting it before the parent build
@@ -62,6 +63,7 @@ class MappingForm extends ItemForm
                 ),
                 'attributes' => array(
                     'id' => 'multivalue-separator',
+                    'class' => 'input-body',
                     'value' => ','
                 )
         ));
