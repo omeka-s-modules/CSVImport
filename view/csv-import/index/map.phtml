@@ -8,7 +8,7 @@ $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'))
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 ?>
 
-<?php echo $this->pageTitle($this->translate('Map Elements · Csv Import')); ?>
+<?php echo $this->pageTitle($this->translate('Map Elements · CSV Import')); ?>
 
 <?php if(isset($csvpath)): ?>
 
@@ -33,7 +33,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $this->translate("Csv Column"); ?></th>
+                <th><?php echo $this->translate("CSV Column"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
                 <th><?php echo $this->translate("Actions"); ?></th>
             </tr>
