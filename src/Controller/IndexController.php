@@ -22,17 +22,23 @@ class IndexController extends AbstractActionController
         $view = new ViewModel;
         $logger = $this->getServiceLocator()->get('Omeka\Logger');
         $request = $this->getRequest();
+        
         if ($request->isPost()) {
             $files = $request->getFiles()->toArray();
             $post = $this->params()->fromPost();
+            $resourceType = $post['resource_type'];
             if (empty($files)) {
-                $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
-                $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
-                //the Omeka2Import record is created in the job, so it doesn't
-                //happen until the job is done
-                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
+                $form->setData($post);
+                
+                if ($form->isValid()) {
+                    $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
+                    $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
+                    //the Omeka2Import record is created in the job, so it doesn't
+                    //happen until the job is done
+                    $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                }
             } else {
-                $resourceType = $post['resource_type'];
                 $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
                 $view->setVariable('form', $form);
                 $post = array_merge_recursive(
