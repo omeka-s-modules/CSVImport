@@ -48,6 +48,10 @@ class ImportAdapter extends AbstractEntityAdapter
         if (isset($data['resource_type'])) {
             $entity->setResourceType($data['resource_type']);
         }
+        
+        if (isset($data['has_err'])) {
+            $entity->setHasErr($data['has_err']);
+        }
     }
     
     public function buildQuery(QueryBuilder $qb, array $query)

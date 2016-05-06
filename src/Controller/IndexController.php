@@ -37,6 +37,7 @@ class IndexController extends AbstractActionController
                     //the Omeka2Import record is created in the job, so it doesn't
                     //happen until the job is done
                     $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                    return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
                 }
             } else {
                 $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));

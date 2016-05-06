@@ -13,6 +13,8 @@ abstract class AbstractMapping implements MappingInterface
     
     protected $serviceLocator;
 
+    protected $hasErr = false;
+    
     public function __construct($args, $serviceLocator)
     {
         $this->args = $args;
@@ -21,4 +23,13 @@ abstract class AbstractMapping implements MappingInterface
         $this->serviceLocator = $serviceLocator;
     }
 
+    public function setHasErr($hasErr)
+    {
+        $this->hasErr = $hasErr;
+    }
+    
+    public function getHasErr()
+    {
+        return $this->hasErr;
+    }
 }

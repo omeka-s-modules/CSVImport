@@ -38,6 +38,9 @@ $escape = $this->plugin('escapeHtml');
             <td><?php echo $job->link($escape($job->id())); ?></td>
             <td>
                 <?php echo $import->comment(); ?>
+                <?php if($import->hasErr()): ?>
+                    <p><?php echo $this->translate("Problems were detected with the import. Check the job's log for details."); ?></p>
+                <?php endif; ?>
             </td>
             <td>
                 <?php echo $this->translate('Added: ') . $import->addedCount() . ' ' . $import->resourceType(); ?>

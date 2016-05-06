@@ -42,6 +42,11 @@ class CSVImportImport extends AbstractEntity {
      * @Column(type="string")
      */
     protected $resource_type;
+    
+    /**
+     * @Column(type="boolean")
+     */
+    protected $has_err;
 
     public function getId()
     {
@@ -96,5 +101,15 @@ class CSVImportImport extends AbstractEntity {
     public function getResourceType()
     {
         return $this->resource_type;
+    }
+    
+    public function setHasErr($hasErr)
+    {
+        $this->has_err = $hasErr;
+    }
+    
+    public function getHasErr()
+    {
+        return $this->has_err;
     }
 }

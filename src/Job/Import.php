@@ -13,6 +13,8 @@ class Import extends AbstractJob
     protected $addedCount;
     
     protected $logger;
+    
+    protected $hasErr = false;
 
     public function perform()
     {
@@ -32,8 +34,9 @@ class Import extends AbstractJob
         $csvImportJson = array(
                             'o:job'         => array('o:id' => $this->job->getId()),
                             'comment'       => 'Job started',
-                            'resource_type'   => $resourceType,
+                            'resource_type' => $resourceType,
                             'added_count'   => 0,
+                            'has_err'       => false,
                           );
 
         $response = $this->api->create('csvimport_imports', $csvImportJson);
@@ -48,6 +51,9 @@ class Import extends AbstractJob
             $entityJson = [];
             foreach($mappings as $mapping) {
                 $entityJson = array_merge($entityJson, $mapping->processRow($row));
+                if ($mapping->getHasErr()) {
+                    $this->hasErr = true;
+                }
             }
             $insertJson[] = $entityJson;
             //only add every X for batch import
@@ -62,11 +68,12 @@ class Import extends AbstractJob
         $this->createEntities($insertJson);
         
         $comment = $this->getArg('comment');
+
         $csvImportJson = array(
                             'comment'       => $comment,
                             'added_count'   => $this->addedCount,
+                            'has_err'       => $this->hasErr
                           );
-
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
     }
 

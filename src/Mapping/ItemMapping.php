@@ -91,12 +91,14 @@ class ItemMapping extends AbstractMapping
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("'$term' is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
+            $this->setHasErr(true);
             return false;
         }
         $class = $content[0];
         $classTerm = $class->term();
         if ($term != $classTerm) {
             $this->logger->err("'$term' is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
+            $this->setHasErr(true);
             return false;
         }
         return $content[0];
@@ -109,12 +111,14 @@ class ItemMapping extends AbstractMapping
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("$label is not a valid Resource Template name.");
+            $this->setHasErr(true);
             return false;
         }
         $template = $content[0];
         $templateLabel = $template->label();
         if ($label != $templateLabel) {
             $this->logger->err("$label is not a valid Resource Template name.");
+            $this->setHasErr(true);
             return false;
         }
         return $content[0];
@@ -127,12 +131,14 @@ class ItemMapping extends AbstractMapping
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("$email is not a valid user email address.");
+            $this->setHasErr(true);
             return false;
         }
         $user = $content[0];
         $userEmail = $user->email();
         if ($email != $userEmail) {
             $this->logger->err("$email is not a valid user email address.");
+            $this->setHasErr(true);
             return false;
         }
         return $content[0];

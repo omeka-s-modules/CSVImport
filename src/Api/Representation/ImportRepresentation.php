@@ -53,4 +53,9 @@ class ImportRepresentation extends AbstractEntityRepresentation
     {
         return $this->resource->getResourceType();
     }
+    
+    public function hasErr()
+    {
+        return $this->resource->getHasErr();
+    }
 }
