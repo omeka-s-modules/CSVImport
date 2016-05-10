@@ -58,12 +58,28 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                         </li>
                     <?php endif; ?>
                     </ul>
+                    <ul class='options'>
+                        <li class='column-url' style='display:none;'>Import as URL
+                            <input type='hidden' value='' class='column-url' name='column-url[<?php echo $index; ?>]'></input>
+                            <ul class="actions">
+                                <li>
+                                    <a aria-label="Remove import as URL" title="Remove import as URL" class="o-icon-delete remove-url" href="#" style="display: inline;"></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class='column-multivalue' style='display:none;'>Multivalue
+                            <input type='hidden' value='' class='column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
+                            <ul class="actions">
+                                <li>
+                                    <a aria-label="Remove multivalue" title="Remove multivalue" class="o-icon-delete remove-multivalue" href="#" style="display: inline;"></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </td>
                 <td>
-                    <?php if ($resourceType == 'items' || $resourceType == 'item_sets'): ?>
-                    <label><input type='checkbox' name='column-url[<?php echo $index; ?>]'></input>URL</label>
-                    <label><input type='checkbox' name='column-multivalue[<?php echo $index; ?>]'></input>Multivalue</label>
-                    <?php endif; ?>
+                    
+                    
                     <ul class='sidebar-chooser'>
                         <?php if (count($mappings) > 1): ?>
                         <?php foreach($mappings as $mappingClass): ?>

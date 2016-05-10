@@ -145,5 +145,35 @@
                 }
             }
         });
+        
+        $('.sidebar').on('click', '.button.column-url', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            activeElement.find('input.column-url').val(1);
+            activeElement.find('li.column-url').show();
+        });
+        
+        $('.sidebar').on('click', '.button.column-multivalue', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            activeElement.find('input.column-multivalue').val(1);
+            activeElement.find('li.column-multivalue').show();
+        });
+        
+        $('ul.options').on('click',  'a.remove-url', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var parent = $(this).parents('.options');
+            parent.find('input.column-url').val(0);
+            parent.find('li.column-url').hide();
+        });
+        
+        $('ul.options').on('click',  'a.remove-multivalue', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var parent = $(this).parents('.options');
+            parent.find('input.column-multivalue').val(0);
+            parent.find('li.column-multivalue').hide();
+        });
     });
 })(jQuery);
