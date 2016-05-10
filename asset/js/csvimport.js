@@ -149,14 +149,14 @@
         $('.sidebar').on('click', '.button.column-url', function(e){
             e.stopPropagation();
             e.preventDefault();
-            activeElement.find('input.column-url').val(1);
+            activeElement.find('input.column-url').prop('disabled', false);
             activeElement.find('li.column-url').show();
         });
         
         $('.sidebar').on('click', '.button.column-multivalue', function(e){
             e.stopPropagation();
             e.preventDefault();
-            activeElement.find('input.column-multivalue').val(1);
+            activeElement.find('input.column-multivalue').prop('disabled', false);
             activeElement.find('li.column-multivalue').show();
         });
         
