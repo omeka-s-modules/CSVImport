@@ -164,7 +164,7 @@
             e.stopPropagation();
             e.preventDefault();
             var parent = $(this).parents('.options');
-            parent.find('input.column-url').val(0);
+            parent.find('input.column-url').prop('disabled', true);
             parent.find('li.column-url').hide();
         });
         
@@ -172,7 +172,7 @@
             e.stopPropagation();
             e.preventDefault();
             var parent = $(this).parents('.options');
-            parent.find('input.column-multivalue').val(0);
+            parent.find('input.column-multivalue').prop('disabled', true);
             parent.find('li.column-multivalue').hide();
         });
     });
