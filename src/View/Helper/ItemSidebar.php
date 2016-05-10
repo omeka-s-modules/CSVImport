@@ -39,7 +39,14 @@ class ItemSidebar extends AbstractHelper
                     <a href='#' class='button'><span>Owner Email Address</span></a>
                 </li>";
         }
-        $html .= "</ul></div>";
+        $html .= "</ul>";
+        
+        $html .= "<div class='item-mapping options'>";
+        $html .= "<h4>Options</h4>";
+        $html .= "<a href='#' class='button column-multivalue'><span>Use multivalue separator</span></a>";
+        $html .= "<p>(Only applies to Item Set ID)</p>";
+        $html .= "</div>";
+        $html .= "</div>";
         return $html;
     }
 }

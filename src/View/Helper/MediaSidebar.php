@@ -36,7 +36,14 @@ class MediaSidebar extends AbstractHelper
             </li>";
         }
 
-        $html .= "</ul></div>";
+        $html .= "</ul>";
+        
+        $html .= "<div class='item-mapping options'>";
+        $html .= "<h4>Options</h4>";
+        $html .= "<a href='#' class='button column-multivalue'><span>Use multivalue separator</span></a>";
+        $html .= "</div>";
+        
+        $html .= "</div>";
         return $html;
 
     }

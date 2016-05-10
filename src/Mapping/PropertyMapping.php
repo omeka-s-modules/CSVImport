@@ -18,8 +18,8 @@ class PropertyMapping extends AbstractMapping
 
     public static function getSidebar($view)
     {
-        $html = $view->propertySelector('Map Properties: ', false);        
-        return $html; 
+        $html = $view->propertySelector('Map Properties: ', false);
+        return $html;
     }
 
     public function processRow($row, $itemJson = array())

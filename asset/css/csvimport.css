@@ -51,14 +51,19 @@ li.mapping {
     padding: 0;
 }
 
-.sidebar-chooser li.active a {
-
-}
-
 #media-sidebar a {
     text-align: left;
 }
 
 #select-item-set {
     height: 100px;
+}
+
+.sidebar .options {
+    margin-top: 10px;
+
+}
+
+.sidebar .options p {
+    margin: 3px;
 }
