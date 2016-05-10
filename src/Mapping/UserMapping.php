@@ -21,22 +21,7 @@ class UserMapping extends AbstractMapping
 
     public static function getSidebar($view)
     {
-        $html = "<div id='users-sidebar' class='sidebar always-open flags'>
-                    <legend>Users Info</legend>
-                    <ul>
-                        <li data-flag='column-user-email'>
-                            <a href='#' class='button'><span>Email</span></a>
-                        </li>
-                        <li data-flag='column-user-displayname'>
-                            <a href='#' class='button'><span>Display Name</span></a>
-                        </li>
-                        <li data-flag='column-user-role'>
-                            <a href='#' class='button'><span>Role</span></a>
-                        </li>
-                    </ul>
-                </div>
-        ";
-        return $html;
+        return $view->partial('common/user-sidebar');
     }
     
     /**
