@@ -18,6 +18,9 @@ return array(
         ),
     ),
     'view_helpers' => array(
+        'invokables' => array(
+            'csvPropertySelector' => 'CSVImport\View\Helper\PropertySelector',
+        ),
         'factories'  => [
             'mediaSidebar'    => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
             'itemSidebar'     => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',

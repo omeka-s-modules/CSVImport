@@ -18,7 +18,7 @@ class PropertyMapping extends AbstractMapping
 
     public static function getSidebar($view)
     {
-        $html = $view->propertySelector('Map Properties: ', false);
+        $html = $view->csvPropertySelector('Map Properties: ', false);
         return $html;
     }
 
