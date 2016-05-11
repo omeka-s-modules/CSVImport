@@ -8,7 +8,7 @@ class PropertyMapping extends AbstractMapping
 
     public static function getLabel()
     {
-        return "Map Properties";
+        return "Properties";
     }
 
     public static function getName()
@@ -18,7 +18,7 @@ class PropertyMapping extends AbstractMapping
 
     public static function getSidebar($view)
     {
-        $html = $view->csvPropertySelector('Map Properties: ', false);
+        $html = $view->csvPropertySelector('Properties: ', false);
         return $html;
     }
 
