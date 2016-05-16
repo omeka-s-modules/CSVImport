@@ -14,13 +14,12 @@ class MappingForm extends Form
         $resourceType = $this->getOption('resourceType');
         $currentUser = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity();
         $userRole = $currentUser->getRole();
-        $translator = $this->getTranslator();
         $this->add(array(
             'name' => 'comment',
             'type' => 'textarea',
             'options' => array(
-                'label' => $translator->translate('Comment'),
-                'info'  => $translator->translate('A note about the purpose or source of this import.')
+                'label' => 'Comment', // @translate
+                'info'  => 'A note about the purpose or source of this import.' // @translate
             ),
             'attributes' => array(
                 'id' => 'comment',
@@ -82,9 +81,9 @@ class MappingForm extends Form
                 ->setAttribute('required', false)
                 ->setAttribute('multiple', true)
                 ->setAttribute('id', 'select-item-set')
-                ->setAttribute('data-placeholder', $translator->translate('Select Item Sets...'))
-                ->setLabel($translator->translate('Item Sets'))
-                ->setOption('info', $translator->translate('Select Items Sets for this resource.'))
+                ->setAttribute('data-placeholder', 'Select Item Sets') // @translate
+                ->setLabel('Item Sets') // @translate
+                ->setOption('info', 'Select Items Sets for this resource.') // @translate
                 ->setResourceValueOptions(
                     'item_sets',
                     [],
@@ -94,8 +93,7 @@ class MappingForm extends Form
                 );
             if (!$itemSetSelect->getValueOptions()) {
                 $itemSetSelect->setAttribute('disabled', true);
-                $itemSetSelect->setAttribute('data-placeholder',
-                    $translator->translate('No item sets exist'));
+                $itemSetSelect->setAttribute('data-placeholder', 'No item sets exist'); // @translate
             }
             $this->add($itemSetSelect);
 
@@ -103,8 +101,8 @@ class MappingForm extends Form
                 $ownerSelect = new ResourceSelect($this->getServiceLocator());
                 $ownerSelect->setName('o:owner')
                     ->setAttribute('id', 'select-owner')
-                    ->setLabel($translator->translate('Owner'))
-                    ->setOption('info', $translator->translate('Assign ownership'))
+                    ->setLabel('Owner') // @translate
+                    ->setOption('info', 'Assign ownership') // @translate
                     ->setResourceValueOptions(
                         'users',
                         [],
@@ -119,8 +117,8 @@ class MappingForm extends Form
                 'name' => 'multivalue-separator',
                 'type' => 'text',
                 'options' => array(
-                    'label' => $translator->translate('Multivalue Separator'),
-                    'info'  => $translator->translate('The separator to use for columns with multiple values.')
+                    'label' => 'Multivalue Separator', // @translate
+                    'info'  => 'The separator to use for columns with multiple values.' // @translate
                 ),
                 'attributes' => array(
                     'id' => 'multivalue-separator',
