@@ -98,7 +98,7 @@ class MappingForm extends Form
             }
             $this->add($itemSetSelect);
 
-            if( $acl->userIsAllowed($currentUser, 'change-owner') ) {
+            if( $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner') ) {
                 $ownerSelect = new ResourceSelect($this->getServiceLocator());
                 $ownerSelect->setName('o:owner')
                     ->setAttribute('id', 'select-owner')
