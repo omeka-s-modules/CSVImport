@@ -13,7 +13,8 @@ class MappingForm extends Form
     {
         $resourceType = $this->getOption('resourceType');
         $currentUser = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity();
-        $userRole = $currentUser->getRole();
+        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+        
         $this->add(array(
             'name' => 'comment',
             'type' => 'textarea',
@@ -97,7 +98,7 @@ class MappingForm extends Form
             }
             $this->add($itemSetSelect);
 
-            if( ($userRole == 'global_admin') || ($userRole == 'site_admin')) {
+            if( $acl->userIsAllowed($currentUser, 'change-owner') ) {
                 $ownerSelect = new ResourceSelect($this->getServiceLocator());
                 $ownerSelect->setName('o:owner')
                     ->setAttribute('id', 'select-owner')
