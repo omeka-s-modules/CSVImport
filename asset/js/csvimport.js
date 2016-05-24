@@ -100,7 +100,7 @@
             if (currentSidebar.attr('id') != target) {
                 currentSidebar.removeClass('active');
             }
-            Omeka.openSidebar(actionElement, target);
+            Omeka.openSidebar(sidebar);
         });
 
         $('.sidebar.flags li').on('click', function(e){
