@@ -76,15 +76,13 @@ class Import extends AbstractJob
                             'has_err'       => $this->hasErr
                           );
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
+        $csvFile->delete();
     }
 
     protected function createEntities($toCreate) 
     {
         $resourceType = $this->getArg('resource_type', 'items');
         $createResponse = $this->api->batchCreate($resourceType, $toCreate, array(), true);
-        if($createResponse->isError()) {
-            $this->logger->debug('shit');
-        }
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
         $createImportEntitiesJson = array();
