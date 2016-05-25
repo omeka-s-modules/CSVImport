@@ -13,7 +13,8 @@ class MappingForm extends Form
     {
         $resourceType = $this->getOption('resourceType');
         $currentUser = $this->getServiceLocator()->get('Omeka\AuthenticationService')->getIdentity();
-        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+        $serviceLocator = $this->getServiceLocator();
+        $acl = $serviceLocator->get('Omeka\Acl');
         
         $this->add(array(
             'name' => 'comment',
@@ -27,9 +28,8 @@ class MappingForm extends Form
                 'class' => 'input-body',
             ),
         ));
-
+        
         if ($resourceType == 'items' || $resourceType == 'item_sets') {
-            $serviceLocator = $this->getServiceLocator();
             $url = $serviceLocator->get('ViewHelperManager')->get('url');
             $templateSelect = new ResourceSelect($serviceLocator);
             $templateSelect
