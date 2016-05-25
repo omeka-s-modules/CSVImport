@@ -5,7 +5,6 @@ use CSVImport\Mapping\AbstractMapping;
 
 class UserMapping extends AbstractMapping
 {
-    
     public static function getLabel()
     {
         return "Users Info";

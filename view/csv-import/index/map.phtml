@@ -81,13 +81,11 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     
                     
                     <ul class='sidebar-chooser'>
-                        <?php if (count($mappings) > 1): ?>
                         <?php foreach($mappings as $mappingClass): ?>
                         <li>
                             <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>' data-column='<?php echo $column; ?>'><?php echo $mappingClass::getLabel($this); ?></a>
                         </li>
                         <?php endforeach; ?>
-                        <?php endif; ?>
                     </ul>
                 </td>
             </tr>
