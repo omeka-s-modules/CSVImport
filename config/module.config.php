@@ -86,7 +86,7 @@ return array(
         ),
     ),
     'navigation' => array(
-        'AdminGlobal' => array(
+        'AdminModule' => array(
             array(
                 'label'      => 'CSV Importer',
                 'route'      => 'admin/csvimport',
