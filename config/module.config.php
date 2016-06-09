@@ -34,6 +34,7 @@ return array(
     'form_elements' => [
         'factories' => [
             'CSVImport\Form\ImportForm' => 'CSVImport\Service\Form\ImportFormFactory',
+            'CSVImport\Form\MappingForm' => 'CSVImport\Service\Form\MappingFormFactory',
         ],
     ],
     'csv_import_mappings' => [

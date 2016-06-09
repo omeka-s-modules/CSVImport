@@ -27,8 +27,9 @@ class IndexController extends AbstractActionController
             $files = $request->getFiles()->toArray();
             $post = $this->params()->fromPost();
             $resourceType = $post['resource_type'];
+            $form = $this->getForm(MappingForm::class, array('resourceType' => $resourceType));
             if (empty($files)) {
-                $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
+                
                 $form->setData($post);
                 
                 if ($form->isValid()) {
@@ -40,7 +41,6 @@ class IndexController extends AbstractActionController
                     return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
                 }
             } else {
-                $form = new MappingForm($this->getServiceLocator(), null, array('resourceType' => $resourceType));
                 $view->setVariable('form', $form);
                 $post = array_merge_recursive(
                     $request->getPost()->toArray(),
