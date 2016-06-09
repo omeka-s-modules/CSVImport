@@ -31,6 +31,11 @@ return array(
             OMEKA_PATH . '/modules/CSVImport/src/Entity',
         ),
     ),
+    'form_elements' => [
+        'factories' => [
+            'CSVImport\Form\ImportForm' => 'CSVImport\Service\Form\ImportFormFactory',
+        ],
+    ],
     'csv_import_mappings' => [
         'items' => [
             '\CSVImport\Mapping\PropertyMapping',

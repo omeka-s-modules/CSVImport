@@ -1,31 +1,29 @@
 <?php
 namespace CSVImport\Form;
 
-use Omeka\Form\AbstractForm;
+use Zend\Form\Form;
 
-class ImportForm extends AbstractForm
+class ImportForm extends Form
 {
-    public function buildForm()
+    protected $mappingClasses;
+
+    public function init()
     {
-        $translator = $this->getTranslator();
-        $config = $this->getServiceLocator()->get('Config');
-        $mappingClasses = $config['csv_import_mappings'];
-        
         $this->setAttribute('action', 'csvimport/map');
         $this->add(array(
                 'name' => 'csv',
                 'type' => 'file',
                 'options' => array(
-                    'label' => $translator->translate('CSV File'),
-                    'info'  => $translator->translate('The CSV File to upload')
+                    'label' => 'CSV File', // @translate
+                    'info'  => 'The CSV File to upload', //@translate
                 ),
                 'attributes' => array(
                     'id' => 'csv',
                     'required' => 'true'
                 )
         ));
-        
-        $resourceTypes = array_keys($mappingClasses);
+
+        $resourceTypes = array_keys($this->mappingClasses);
         $valueOptions = [];
         foreach($resourceTypes as $resourceType) {
             $valueOptions[$resourceType] = ucfirst($resourceType);
@@ -34,10 +32,15 @@ class ImportForm extends AbstractForm
                 'name' => 'resource_type',
                 'type' => 'select',
                 'options' => array(
-                    'label' => $translator->translate('Import Type'),
-                    'info'  => $translator->translate('The type of data being imported'),
+                    'label' => 'Import Type', // @translate
+                    'info'  => 'The type of data being imported', // @translate
                     'value_options' => $valueOptions,
                 ),
         ));
+    }
+
+    public function setMappingClasses(array $mappingClasses)
+    {
+        $this->mappingClasses = $mappingClasses;
     }
 }
