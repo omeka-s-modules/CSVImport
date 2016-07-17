@@ -2,19 +2,20 @@
 namespace CSVImport;
 
 use SplFileObject;
+use Omeka\Service\Exception\ConfigException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CsvFile
 {
-    public $fileObject;
+    protected $fileObject;
 
-    public $tempPath;
+    protected $tempPath;
 
-    protected $serviceLocator;
+    protected $config;
 
-    public function __construct(ServiceLocatorInterface $serviceLocator)
+    public function __construct($config)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->config = $config;
     }
 
     public function isUtf8()
@@ -56,7 +57,7 @@ class CsvFile
             return $this->tempPath;
         }
         if (!isset($tempDir)) {
-            $config = $this->serviceLocator->get('Config');
+            $config = $this->config;
             if (!isset($config['temp_dir'])) {
                 throw new ConfigException('Missing temporary directory configuration');
             }

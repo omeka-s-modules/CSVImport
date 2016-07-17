@@ -9,6 +9,15 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+    
+    protected $logger;
+    
+    protected $jobDispatcher;
+    
+    protected $mediaIngesterManager;
+    
+    protected $config;
+    
     public function indexAction()
     {
         $view = new ViewModel;
@@ -20,7 +29,7 @@ class IndexController extends AbstractActionController
     public function mapAction()
     {
         $view = new ViewModel;
-        $logger = $this->getServiceLocator()->get('Omeka\Logger');
+        $logger = $this->logger;
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -33,7 +42,7 @@ class IndexController extends AbstractActionController
                 $form->setData($post);
                 
                 if ($form->isValid()) {
-                    $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
+                    $dispatcher = $this->jobDispatcher;
                     $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                     //the Omeka2Import record is created in the job, so it doesn't
                     //happen until the job is done
@@ -48,7 +57,7 @@ class IndexController extends AbstractActionController
                 );
 
                 $tmpFile = $post['csv']['tmp_name'];
-                $csvFile = new CsvFile($this->getServiceLocator());
+                $csvFile = new CsvFile($this->config);
                 $csvPath = $csvFile->getTempPath();
                 $csvFile->moveToTemp($tmpFile);
                 $csvFile->loadFromTempPath();
@@ -63,7 +72,7 @@ class IndexController extends AbstractActionController
                 $columns = $csvFile->getHeaders();
                 $view->setVariable('mediaForms', $this->getMediaForms());
 
-                $config = $this->serviceLocator->get('Config');
+                $config = $this->config;
                 if($resourceType == 'items' || $resourceType == 'item_sets') {
                     $autoMaps = $this->getAutomaps($columns);
                 } else {
@@ -100,11 +109,17 @@ class IndexController extends AbstractActionController
         $view->setVariable('imports', $response->getContent());
         return $view;
     }
+    
+    public function setServices($services)
+    {
+        foreach($services as $serviceName => $service) {
+            $this->$serviceName = $service;
+        }
+    }
 
     protected function getMediaForms()
     {
-        $services = $this->getServiceLocator();
-        $mediaIngester = $services->get('Omeka\MediaIngesterManager');
+        $mediaIngester = $this->mediaIngesterManager;
 
         $forms = [];
         foreach ($mediaIngester->getRegisteredNames() as $ingester) {
@@ -117,11 +132,10 @@ class IndexController extends AbstractActionController
 
     protected function getAutomaps($columns)
     {
-        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $autoMaps = [];
         foreach($columns as $index=>$column) {
             if (strpos($column, ':') !== false) {
-                $response = $api->search('properties', array('term' => trim($column)));
+                $response = $this->api()->search('properties', array('term' => trim($column)));
                 $content = $response->getContent();
                 if (! empty($content)) {
                     $property = $content[0];
@@ -135,7 +149,7 @@ class IndexController extends AbstractActionController
     protected function undoJob($jobId) {
         $response = $this->api()->search('csvimport_imports', array('job_id' => $jobId));
         $csvImport = $response->getContent()[0];
-        $dispatcher = $this->getServiceLocator()->get('Omeka\JobDispatcher');
+        $dispatcher = $this->jobDispatcher;
         $job = $dispatcher->dispatch('CSVImport\Job\Undo', array('jobId' => $jobId));
         $response = $this->api()->update('csvimport_imports', 
                     $csvImport->id(), 

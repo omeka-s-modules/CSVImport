@@ -102,7 +102,7 @@ class MappingForm extends Form
                 'options' => [
                     'label' => 'Item Sets', // @translate
                     'info' => 'Select Items Sets for this resource.', // @translate
-                    'empty_option' => 'Select Class', // @translate
+                    'empty_option' => 'Select Item Set', // @translate
                     'resource_value_options' => [
                         'resource' => 'item_sets',
                         'query' => [],

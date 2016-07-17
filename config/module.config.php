@@ -2,8 +2,8 @@
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'CSVImport\Controller\Index' => 'CSVImport\Controller\IndexController',
+        'factories' => array(
+            'CSVImport\Controller\Index' => 'CSVImport\Service\Controller\IndexControllerFactory',
         ),
     ),
     'api_adapters' => array(
