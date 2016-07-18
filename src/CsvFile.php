@@ -7,11 +7,11 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CsvFile
 {
-    protected $fileObject;
+    public $fileObject;
 
-    protected $tempPath;
+    public $tempPath;
 
-    protected $config;
+    public $config;
 
     public function __construct($config)
     {
