@@ -9,14 +9,15 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
-    
-    protected $logger;
-    
-    protected $jobDispatcher;
-    
     protected $mediaIngesterManager;
     
     protected $config;
+    
+    public function __construct(array $config, \Omeka\Media\Ingester\Manager $mediaIngesterManager)
+    {
+        $this->config = $config;
+        $this->mediaIngesterManager = $mediaIngesterManager;
+    }
     
     public function indexAction()
     {
@@ -29,7 +30,7 @@ class IndexController extends AbstractActionController
     public function mapAction()
     {
         $view = new ViewModel;
-        $logger = $this->logger;
+        $logger = $this->logger();
         $request = $this->getRequest();
         
         if ($request->isPost()) {
@@ -42,7 +43,7 @@ class IndexController extends AbstractActionController
                 $form->setData($post);
                 
                 if ($form->isValid()) {
-                    $dispatcher = $this->jobDispatcher;
+                    $dispatcher = $this->jobDispatcher();
                     $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                     //the Omeka2Import record is created in the job, so it doesn't
                     //happen until the job is done
@@ -109,13 +110,6 @@ class IndexController extends AbstractActionController
         $view->setVariable('imports', $response->getContent());
         return $view;
     }
-    
-    public function setServices($services)
-    {
-        foreach($services as $serviceName => $service) {
-            $this->$serviceName = $service;
-        }
-    }
 
     protected function getMediaForms()
     {
@@ -149,7 +143,7 @@ class IndexController extends AbstractActionController
     protected function undoJob($jobId) {
         $response = $this->api()->search('csvimport_imports', array('job_id' => $jobId));
         $csvImport = $response->getContent()[0];
-        $dispatcher = $this->jobDispatcher;
+        $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Undo', array('jobId' => $jobId));
         $response = $this->api()->update('csvimport_imports', 
                     $csvImport->id(), 
