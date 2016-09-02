@@ -1,25 +1,16 @@
 <?php
 namespace CSVImport\Service\Form;
 
-use Zend\ServiceManager\setCreationOptions;
-
 use CSVImport\Form\MappingForm;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 class MappingFormFactory implements FactoryInterface
 {
-    protected $options = [];
-
-    public function createService(ServiceLocatorInterface $elements)
+    public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $form = new MappingForm(null, $this->options);
-        $form->setServiceLocator($elements->getServiceLocator());
+        $form = new MappingForm(null, $options);
+        $form->setServiceLocator($services);
         return $form;
-    }
-
-    public function setCreationOptions($creationOptions)
-    {
-        $this->options = $creationOptions;
     }
 }

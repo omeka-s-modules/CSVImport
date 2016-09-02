@@ -2,14 +2,13 @@
 namespace CSVImport\Service\ViewHelper;
 
 use CSVImport\View\Helper\MediaSidebar;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
+use Interop\Container\ContainerInterface;
 
 class MediaSidebarFactory implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $viewServiceLocator)
+    public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $serviceLocator = $viewServiceLocator->getServiceLocator();
-        return new MediaSidebar($serviceLocator->get('Omeka\MediaIngesterManager'));
+        return new MediaSidebar($services->get('Omeka\MediaIngesterManager'));
     }
 }

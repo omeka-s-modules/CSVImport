@@ -2,14 +2,13 @@
 namespace CSVImport\Service\Controller;
 
 use CSVImport\Controller\IndexController;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 class IndexControllerFactory implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {   
-        $serviceLocator = $serviceLocator->getServiceLocator();
+    public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
+    {
         $mediaIngesterManager = $serviceLocator->get('Omeka\MediaIngesterManager');
         $config = $serviceLocator->get('Config');
         $indexController = new IndexController($config, $mediaIngesterManager);
