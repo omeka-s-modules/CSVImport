@@ -90,28 +90,30 @@ class MappingForm extends Form
                 ]);
             }
 
-            $this->add([
-                'name' => 'o:item_set',
-                'type' => ResourceSelect::class,
-                'attributes' => [
-                    'id'       => 'select-item-set',
-                    'required' => false,
-                    'multiple' => true,
-                    'data-placeholder' => 'Select Item Sets', // @translate
-                ],
-                'options' => [
-                    'label' => 'Item Sets', // @translate
-                    'info' => 'Select Items Sets for this resource.', // @translate
-                    'empty_option' => 'Select Item Set', // @translate
-                    'resource_value_options' => [
-                        'resource' => 'item_sets',
-                        'query' => [],
-                        'option_text_callback' => function ($itemSet) {
-                            return $itemSet->displayTitle();
-                        },
+            if ($resourceType == 'items') {
+                $this->add([
+                    'name' => 'o:item_set',
+                    'type' => ResourceSelect::class,
+                    'attributes' => [
+                        'id'       => 'select-item-set',
+                        'required' => false,
+                        'multiple' => true,
+                        'data-placeholder' => 'Select Item Sets', // @translate
                     ],
-                ],
-            ]);
+                    'options' => [
+                        'label' => 'Item Sets', // @translate
+                        'info' => 'Select Items Sets for this resource.', // @translate
+                        'empty_option' => 'Select Item Set', // @translate
+                        'resource_value_options' => [
+                            'resource' => 'item_sets',
+                            'query' => [],
+                            'option_text_callback' => function ($itemSet) {
+                                return $itemSet->displayTitle();
+                            },
+                        ],
+                    ],
+                ]);
+            }
 /*
             $itemSetSelect = new ResourceSelect($serviceLocator);
             $itemSetSelect->setName('o:item_set')

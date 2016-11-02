@@ -30,7 +30,6 @@ class IndexController extends AbstractActionController
     public function mapAction()
     {
         $view = new ViewModel;
-        $logger = $this->logger();
         $request = $this->getRequest();
         
         if ($request->isPost()) {
