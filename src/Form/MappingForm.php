@@ -78,17 +78,6 @@ class MappingForm extends Form
                     ],
                 ],
             ]);
-                        
-            $inputFilter = $this->getInputFilter();
-            $inputFilter->add([
-                'name' => 'o:resource_template[o:id]',
-                'required' => false,
-                ]);
-            $inputFilter->add([
-                'name' => 'o:resource_class[o:id]',
-                'required' => false,
-                ]);
-            }
 
             if ($resourceType == 'items') {
                 $this->add([
@@ -187,6 +176,21 @@ class MappingForm extends Form
                     'value' => ','
                 )
             ));
+            
+            $inputFilter = $this->getInputFilter();
+            $inputFilter->add([
+                'name' => 'o:resource_template[o:id]',
+                'required' => false,
+                ]);
+            $inputFilter->add([
+                'name' => 'o:resource_class[o:id]',
+                'required' => false,
+                ]);
+            $inputFilter->add([
+                'name' => 'o:item_set',
+                'required' => false, 
+                ]);
+            }
     }
         
     public function setServiceLocator($serviceLocator)
