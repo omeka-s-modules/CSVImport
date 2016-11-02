@@ -103,30 +103,7 @@ class MappingForm extends Form
                     ],
                 ]);
             }
-/*
-            $itemSetSelect = new ResourceSelect($serviceLocator);
-            $itemSetSelect->setName('o:item_set')
-                ->setAttribute('required', false)
-                ->setAttribute('multiple', true)
-                ->setAttribute('id', 'select-item-set')
-                ->setAttribute('data-placeholder', 'Select Item Sets') // @translate
-                ->setLabel('Item Sets') // @translate
-                ->setOption('info', 'Select Items Sets for this resource.') // @translate
-                ->setResourceValueOptions(
-                    'item_sets',
-                    [],
-                    function ($itemSet, $serviceLocator) {
-                        return $itemSet->displayTitle();
-                    }
-                );
-            if (!$itemSetSelect->getValueOptions()) {
-                $itemSetSelect->setAttribute('disabled', true);
-                $itemSetSelect->setAttribute('data-placeholder', 'No item sets exist'); // @translate
-            }
-            $this->add($itemSetSelect);
-*/
             if( $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner') ) {
-                            
                 $this->add([
                     'name'       => 'o:owner',
                     'type'       => ResourceSelect::class,
@@ -143,24 +120,7 @@ class MappingForm extends Form
                                 }
                             ]
                         ],
-                        
                 ]);
-                            
-/*
-                $ownerSelect = new ResourceSelect($this->getServiceLocator());
-                $ownerSelect->setName('o:owner')
-                    ->setAttribute('id', 'select-owner')
-                    ->setLabel('Owner') // @translate
-                    ->setOption('info', 'Assign ownership') // @translate
-                    ->setResourceValueOptions(
-                        'users',
-                        [],
-                        function ($user, $serviceLocator) {
-                            return $user->name();
-                        }
-                    );
-                $this->add($ownerSelect);
-                */
             }
 
             $this->add(array(
