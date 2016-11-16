@@ -93,9 +93,12 @@ class IndexController extends AbstractActionController
     {
         if ($this->getRequest()->isPost()) {
             $data = $this->params()->fromPost();
+            $undoJobIds = [];
             foreach ($data['jobs'] as $jobId) {
-                $this->undoJob($jobId);
+                $undoJob = $this->undoJob($jobId);
+                $undoJobIds[] = $undoJob->getId();
             }
+            $this->messenger()->addSuccess('Undo in progress in the following jobs: ' . implode(', ', $undoJobIds));
         }
         $view = new ViewModel;
         $page = $this->params()->fromQuery('page', 1);
@@ -150,5 +153,6 @@ class IndexController extends AbstractActionController
                         'o:undo_job' => array('o:id' => $job->getId() )
                     )
                 );
+        return $job;
     }
 }
