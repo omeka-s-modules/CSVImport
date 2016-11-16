@@ -14,12 +14,25 @@
     float: right;
 }
 
+#mapping-data td,
+#mapping-data th {
+    vertical-align: top;
+}
+
+#mapping-data td:first-of-type {
+    padding: 9px .5em;
+}
+
+#mapping-data td:nth-of-type(3) {
+    padding: 0 .5em;
+}
+
 tr.active {
     background-color: rgba(0,0,0, .08);
 }
 
 tr.mappable td:first-child {
-    max-width: 40%;
+    max-width: 20%;
 }
 
 tr.mappable td:nth-of-type(3) label {
@@ -45,9 +58,13 @@ li.mapping {
     width: 100%
 }
 
-.sidebar-chooser a {
+.sidebar-chooser li {
+    display: inline-block;
+}
+
+.sidebar-chooser a.button {
     font-size: 13px;
-    min-width: 50%;
+    margin: 3px 0;
 }
 
 #media-sidebar a {
