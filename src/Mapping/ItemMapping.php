@@ -59,7 +59,11 @@ class ItemMapping extends AbstractMapping
             $values = explode($multivalueSeparator, $values);
             if (in_array($index, $itemSetMap)) {
                 foreach($values as $itemSetId) {
-                    $itemJson['o:item_set'][] = ['o:id' => trim($itemSetId)];
+                    $itemSetId = trim($itemSetId);
+                    $itemSet = $this->findItemSet($itemSetId);
+                    if ($itemSet) {
+                        $itemJson['o:item_set'][] = ['o:id' => trim($itemSetId)];
+                    }
                 }
             }
             if (in_array($index, $resourceTemplateMap)) {
@@ -141,6 +145,19 @@ class ItemMapping extends AbstractMapping
             $this->setHasErr(true);
             return false;
         }
+        return $content[0];
+    }
+    
+    protected function findItemSet($itemSetId)
+    {
+        $response = $this->api->search('item_sets', array('id' => $itemSetId));
+        $content = $response->getContent();
+        if( empty($content)){
+            $this->logger->err("$itemSetId is not a valid item set.");
+            $this->setHasErr(true);
+            return false;
+        }
+        
         return $content[0];
     }
 }
