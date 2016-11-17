@@ -1,6 +1,7 @@
 <?php
 $this->htmlElement('body')->appendAttribute('class', 'csvimporter jobs undo');
 $escape = $this->plugin('escapeHtml');
+$this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 ?>
 
 <?php echo $this->pageTitle($this->translate('Past Imports · CSV Importer')); ?>
@@ -34,7 +35,7 @@ $escape = $this->plugin('escapeHtml');
                 <input type='checkbox' name='jobs[]' value='<?php echo $job->id(); ?>' />
             </td>
             <td><?php echo $job->link($escape($job->id())); ?></td>
-            <td>
+            <td class='comment'>
                 <?php echo $import->comment(); ?>
                 <?php if($import->hasErr()): ?>
                     <p><?php echo $this->translate("Problems were detected with the import. Check the job's log for details."); ?></p>
