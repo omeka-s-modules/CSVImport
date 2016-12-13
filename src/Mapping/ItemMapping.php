@@ -30,7 +30,7 @@ class ItemMapping extends AbstractMapping
             $itemSets = $this->args['o:item_set'];
             $itemJson['o:item_set'] = [];
             foreach($itemSets as $itemSetId) {
-                $itemJson['o:item_set'][] = array('o:id' => $itemSetId);
+                $itemJson['o:item_set'][] = ['o:id' => $itemSetId];
             }
         }
         if (!empty($this->args['o:resource_class'])) {
@@ -91,7 +91,7 @@ class ItemMapping extends AbstractMapping
     protected function findResourceClass($term)
     {
         $term = trim($term);
-        $response = $this->api->search('resource_classes', array('term' => $term));
+        $response = $this->api->search('resource_classes', ['term' => $term]);
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("'$term' is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
@@ -111,7 +111,7 @@ class ItemMapping extends AbstractMapping
     protected function findResourceTemplate($label)
     {
         $label = trim($label);
-        $response = $this->api->search('resource_templates', array('label' => $label));
+        $response = $this->api->search('resource_templates', ['label' => $label]);
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("$label is not a valid Resource Template name.");
@@ -131,7 +131,7 @@ class ItemMapping extends AbstractMapping
     protected function findUser($email)
     {
         $email = trim($email);
-        $response = $this->api->search('users', array('email' => $email));
+        $response = $this->api->search('users', ['email' => $email]);
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("$email is not a valid user email address.");
@@ -150,7 +150,7 @@ class ItemMapping extends AbstractMapping
     
     protected function findItemSet($itemSetId)
     {
-        $response = $this->api->search('item_sets', array('id' => $itemSetId));
+        $response = $this->api->search('item_sets', ['id' => $itemSetId]);
         $content = $response->getContent();
         if( empty($content)){
             $this->logger->err("$itemSetId is not a valid item set.");

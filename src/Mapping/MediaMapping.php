@@ -23,7 +23,7 @@ class MediaMapping extends AbstractMapping
 
     public function processRow($row)
     {
-        $mediaJson = array('o:media' => array());
+        $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media']) ? $this->args['media'] : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
@@ -39,10 +39,10 @@ class MediaMapping extends AbstractMapping
                     if(empty($mediaDatum)) {
                         continue;
                     }
-                    $mediaDatumJson = array(
+                    $mediaDatumJson = [
                         'o:ingester'     => $ingester,
                         'o:source'   => $mediaDatum,
-                    );
+                    ];
                     switch($ingester) {
                         case 'html':
                             $mediaDatumJson['html'] = $mediaDatum;

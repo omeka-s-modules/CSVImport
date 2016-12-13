@@ -1,36 +1,36 @@
 <?php
 
-return array(
-    'controllers' => array(
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
             'CSVImport\Controller\Index' => 'CSVImport\Service\Controller\IndexControllerFactory',
-        ),
-    ),
-    'api_adapters' => array(
-        'invokables' => array(
+        ],
+    ],
+    'api_adapters' => [
+        'invokables' => [
             'csvimport_entities' => 'CSVImport\Api\Adapter\EntityAdapter',
             'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter'
-        ),
-    ),
-    'view_manager' => array(
-        'template_path_stack'      => array(
+        ],
+    ],
+    'view_manager' => [
+        'template_path_stack'      => [
             OMEKA_PATH . '/modules/CSVImport/view',
-        ),
-    ),
-    'view_helpers' => array(
-        'invokables' => array(
+        ],
+    ],
+    'view_helpers' => [
+        'invokables' => [
             'csvPropertySelector' => 'CSVImport\View\Helper\PropertySelector',
-        ),
+        ],
         'factories'  => [
             'mediaSidebar'    => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
             'itemSidebar'     => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
         ],
-    ),
-    'entity_manager' => array(
-        'mapping_classes_paths' => array(
+    ],
+    'entity_manager' => [
+        'mapping_classes_paths' => [
             OMEKA_PATH . '/modules/CSVImport/src/Entity',
-        ),
-    ),
+        ],
+    ],
     'form_elements' => [
         'factories' => [
             'CSVImport\Form\ImportForm' => 'CSVImport\Service\Form\ImportFormFactory',
@@ -47,77 +47,77 @@ return array(
             '\CSVImport\Mapping\UserMapping'
         ],
     ],
-    'router' => array(
-        'routes' => array(
-            'admin' => array(
-                'child_routes' => array(
-                    'csvimport' => array(
+    'router' => [
+        'routes' => [
+            'admin' => [
+                'child_routes' => [
+                    'csvimport' => [
                         'type'    => 'Literal',
-                        'options' => array(
+                        'options' => [
                             'route'    => '/csvimport',
-                            'defaults' => array(
+                            'defaults' => [
                                 '__NAMESPACE__' => 'CSVImport\Controller',
                                 'controller'    => 'Index',
                                 'action'        => 'index',
-                            ),
-                        ),
+                            ],
+                        ],
                         'may_terminate' => true,
-                        'child_routes' => array(
-                            'past-imports' => array(
+                        'child_routes' => [
+                            'past-imports' => [
                                 'type'    => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/past-imports',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         '__NAMESPACE__' => 'CSVImport\Controller',
                                         'controller'    => 'Index',
                                         'action'        => 'past-imports',
-                                    ),
-                                )
-                            ),
-                            'map' => array(
+                                    ],
+                                ]
+                            ],
+                            'map' => [
                                 'type'    => 'Literal',
-                                'options' => array(
+                                'options' => [
                                     'route' => '/map',
-                                    'defaults' => array(
+                                    'defaults' => [
                                         '__NAMESPACE__' => 'CSVImport\Controller',
                                         'controller'    => 'Index',
                                         'action'        => 'map',
-                                    ),
-                                )
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'navigation' => array(
-        'AdminModule' => array(
-            array(
+                                    ],
+                                ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'navigation' => [
+        'AdminModule' => [
+            [
                 'label'      => 'CSV Importer',
                 'route'      => 'admin/csvimport',
                 'resource'   => 'CSVImport\Controller\Index',
-                'pages'      => array(
-                    array(
+                'pages'      => [
+                    [
                         'label'      => 'Import',
                         'route'      => 'admin/csvimport',
                         'resource'   => 'CSVImport\Controller\Index',
-                    ),
-                    array(
+                    ],
+                    [
                         'label'      => 'Import',
                         'route'      => 'admin/csvimport/map',
                         'resource'   => 'CSVImport\Controller\Index',
                         'visible'    => false,
-                    ),
-                    array(
+                    ],
+                    [
                         'label'      => 'Past Imports',
                         'route'      => 'admin/csvimport/past-imports',
                         'controller' => 'Index',
                         'action'     => 'past-imports',
                         'resource'   => 'CSVImport\Controller\Index',
-                    ),
-                ),
-            ),
-        ),
-    )
-);
+                    ],
+                ],
+            ],
+        ],
+    ]
+];

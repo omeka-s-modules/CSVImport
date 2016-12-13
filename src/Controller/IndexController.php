@@ -36,7 +36,7 @@ class IndexController extends AbstractActionController
             $files = $request->getFiles()->toArray();
             $post = $this->params()->fromPost();
             $resourceType = $post['resource_type'];
-            $form = $this->getForm(MappingForm::class, array('resourceType' => $resourceType));
+            $form = $this->getForm(MappingForm::class, ['resourceType' => $resourceType]);
             if (empty($files)) {
                 
                 $form->setData($post);
@@ -102,11 +102,11 @@ class IndexController extends AbstractActionController
         }
         $view = new ViewModel;
         $page = $this->params()->fromQuery('page', 1);
-        $query = $this->params()->fromQuery() + array(
+        $query = $this->params()->fromQuery() + [
             'page'       => $page,
             'sort_by'    => $this->params()->fromQuery('sort_by', 'id'),
             'sort_order' => $this->params()->fromQuery('sort_order', 'desc')
-        );
+        ];
         $response = $this->api()->search('csvimport_imports', $query);
         $this->paginator($response->getTotalResults(), $page);
         $view->setVariable('imports', $response->getContent());
@@ -131,7 +131,7 @@ class IndexController extends AbstractActionController
         $autoMaps = [];
         foreach($columns as $index=>$column) {
             if (strpos($column, ':') !== false) {
-                $response = $this->api()->search('properties', array('term' => trim($column)));
+                $response = $this->api()->search('properties', ['term' => trim($column)]);
                 $content = $response->getContent();
                 if (! empty($content)) {
                     $property = $content[0];
@@ -143,15 +143,15 @@ class IndexController extends AbstractActionController
     }
     
     protected function undoJob($jobId) {
-        $response = $this->api()->search('csvimport_imports', array('job_id' => $jobId));
+        $response = $this->api()->search('csvimport_imports', ['job_id' => $jobId]);
         $csvImport = $response->getContent()[0];
         $dispatcher = $this->jobDispatcher();
-        $job = $dispatcher->dispatch('CSVImport\Job\Undo', array('jobId' => $jobId));
+        $job = $dispatcher->dispatch('CSVImport\Job\Undo', ['jobId' => $jobId]);
         $response = $this->api()->update('csvimport_imports', 
                     $csvImport->id(), 
-                    array(
-                        'o:undo_job' => array('o:id' => $job->getId() )
-                    )
+                    [
+                        'o:undo_job' => ['o:id' => $job->getId() ]
+                    ]
                 );
         return $job;
     }

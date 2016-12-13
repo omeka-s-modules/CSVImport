@@ -20,18 +20,18 @@ class MappingForm extends Form
         $currentUser = $serviceLocator->get('Omeka\AuthenticationService')->getIdentity();
         $acl = $serviceLocator->get('Omeka\Acl');
         
-        $this->add(array(
+        $this->add([
             'name' => 'comment',
             'type' => 'textarea',
-            'options' => array(
+            'options' => [
                 'label' => 'Comment', // @translate
                 'info'  => 'A note about the purpose or source of this import.' // @translate
-            ),
-            'attributes' => array(
+            ],
+            'attributes' => [
                 'id' => 'comment',
                 'class' => 'input-body',
-            ),
-        ));
+            ],
+        ]);
         
         if ($resourceType == 'items' || $resourceType == 'item_sets') {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
@@ -122,19 +122,19 @@ class MappingForm extends Form
                 ]);
             }
 
-            $this->add(array(
+            $this->add([
                 'name' => 'multivalue-separator',
                 'type' => 'text',
-                'options' => array(
+                'options' => [
                     'label' => 'Multivalue Separator', // @translate
                     'info'  => 'The separator to use for columns with multiple values.' // @translate
-                ),
-                'attributes' => array(
+                ],
+                'attributes' => [
                     'id' => 'multivalue-separator',
                     'class' => 'input-body',
                     'value' => ','
-                )
-            ));
+                ]
+            ]);
             
             $inputFilter = $this->getInputFilter();
             $inputFilter->add([

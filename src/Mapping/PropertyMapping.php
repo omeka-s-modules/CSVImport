@@ -22,7 +22,7 @@ class PropertyMapping extends AbstractMapping
         return $html;
     }
 
-    public function processRow($row, $itemJson = array())
+    public function processRow($row, $itemJson = [])
     {
         $propertyJson = [];
         $columnMap = isset($this->args['column-property']) ? $this->args['column-property'] : [];
@@ -37,32 +37,32 @@ class PropertyMapping extends AbstractMapping
                         $multivalues = explode($multivalueSeparator, $values);
                         foreach($multivalues as $value) {
                             if ($type == 'uri') {
-                                $propertyJson[$propertyId][] = array(
+                                $propertyJson[$propertyId][] = [
                                         '@id'         => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
-                                );
+                                ];
                             } else {
-                                $propertyJson[$propertyId][] = array(
+                                $propertyJson[$propertyId][] = [
                                         '@value'      => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
-                                );
+                                ];
                             }
                         }
                     } else {
                         if ($type == 'uri') {
-                            $propertyJson[$propertyId][] = array(
+                            $propertyJson[$propertyId][] = [
                                     '@id'         => $values,
                                     'property_id' => $propertyId,
                                     'type'        => $type,
-                            );
+                            ];
                         } else {
-                            $propertyJson[$propertyId][] = array(
+                            $propertyJson[$propertyId][] = [
                                     '@value'      => $values,
                                     'property_id' => $propertyId,
                                     'type'        => $type,
-                            );
+                            ];
                         }
                     }
                 }

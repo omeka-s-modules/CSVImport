@@ -32,13 +32,13 @@ class Import extends AbstractJob
         $csvFile = new CsvFile($this->getServiceLocator());
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
-        $csvImportJson = array(
-                            'o:job'         => array('o:id' => $this->job->getId()),
+        $csvImportJson = [
+                            'o:job'         => ['o:id' => $this->job->getId()],
                             'comment'       => 'Job started',
                             'resource_type' => $resourceType,
                             'added_count'   => 0,
                             'has_err'       => false,
-                          );
+                          ];
 
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $importRecordId = $response->getContent()->id();
@@ -70,11 +70,11 @@ class Import extends AbstractJob
         
         $comment = $this->getArg('comment');
 
-        $csvImportJson = array(
+        $csvImportJson = [
                             'comment'       => $comment,
                             'added_count'   => $this->addedCount,
                             'has_err'       => $this->hasErr
-                          );
+                          ];
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
         $csvFile->delete();
     }
@@ -82,23 +82,23 @@ class Import extends AbstractJob
     protected function createEntities($toCreate) 
     {
         $resourceType = $this->getArg('resource_type', 'items');
-        $createResponse = $this->api->batchCreate($resourceType, $toCreate, array(), true);
+        $createResponse = $this->api->batchCreate($resourceType, $toCreate, [], true);
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
-        $createImportEntitiesJson = array();
+        $createImportEntitiesJson = [];
 
         foreach($createContent as $resourceReference) {
             $createImportEntitiesJson[] = $this->buildImportRecordJson($resourceReference);
         }
-        $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportEntitiesJson, array(), true);
+        $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportEntitiesJson, [], true);
     }
 
     protected function buildImportRecordJson($resourceReference) 
     {
-        $recordJson = array('o:job'         => ['o:id' => $this->job->getId()],
+        $recordJson = ['o:job'         => ['o:id' => $this->job->getId()],
                             'entity_id'     => $resourceReference->id(),
                             'resource_type' => $this->getArg('entity_type', 'items'),
-                            );
+                            ];
         return $recordJson;
     }
 }

@@ -7,11 +7,11 @@ class EntityRepresentation extends AbstractEntityRepresentation
 {
     public function getJsonLd()
     {
-        return array(
+        return [
             'o:job'         => $this->job()->getReference(),
             'entity_id'     => $this->entityId(),
             'resource_type' => $this->resourceType(),
-        );
+        ];
     }
 
     public function getJsonLdType()
