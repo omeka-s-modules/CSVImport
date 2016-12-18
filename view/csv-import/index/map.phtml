@@ -4,6 +4,7 @@ if (isset($form)) {
 }
 
 $escapeHtml = $this->plugin('escapeHtml');
+$this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 ?>
