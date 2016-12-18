@@ -1,8 +1,5 @@
 <?php
-if (isset($form)) {
-    $form->prepare();
-}
-
+$form->prepare();
 $escapeHtml = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
@@ -10,8 +7,6 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
 ?>
 
 <?php echo $this->pageTitle($this->translate('Map Elements · CSV Import')); ?>
-
-<?php if(isset($csvpath)): ?>
 
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>
@@ -99,4 +94,3 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
     ?>
 </fieldset>
 <?php echo $this->form()->closeTag($form); ?>
-<?php endif; ?>

@@ -37,6 +37,12 @@ class ImportForm extends Form
                     'value_options' => $valueOptions,
                 ],
         ]);
+
+        $inputFilter = $this->getInputFilter();
+        $inputFilter->add([
+            'name' => 'csv',
+            'required' => true,
+        ]);
     }
 
     public function setMappingClasses(array $mappingClasses)

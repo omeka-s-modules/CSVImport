@@ -32,59 +32,64 @@ class IndexController extends AbstractActionController
         $view = new ViewModel;
         $request = $this->getRequest();
         
-        if ($request->isPost()) {
-            $files = $request->getFiles()->toArray();
-            $post = $this->params()->fromPost();
-            $resourceType = $post['resource_type'];
-            $form = $this->getForm(MappingForm::class, ['resourceType' => $resourceType]);
-            if (empty($files)) {
-                
-                $form->setData($post);
-                
-                if ($form->isValid()) {
-                    $dispatcher = $this->jobDispatcher();
-                    $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
-                    //the Omeka2Import record is created in the job, so it doesn't
-                    //happen until the job is done
-                    $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
-                    return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
-                }
-            } else {
-                $view->setVariable('form', $form);
-                $post = array_merge_recursive(
-                    $request->getPost()->toArray(),
-                    $request->getFiles()->toArray()
-                );
+        if (!$request->isPost()) {
+            return $this->redirect()->toRoute('admin/csvimport');
+        }
 
-                $tmpFile = $post['csv']['tmp_name'];
-                $csvFile = new CsvFile($this->config);
-                $csvPath = $csvFile->getTempPath();
-                $csvFile->moveToTemp($tmpFile);
-                $csvFile->loadFromTempPath();
-                
-                $isUtf8 = $csvFile->isUtf8();
-                if (! $csvFile->isUtf8()) {
-                    $this->messenger()->addError('File is not UTF-8 encoded.');
-                    return;
-                }
-                
-                
-                $columns = $csvFile->getHeaders();
-                $view->setVariable('mediaForms', $this->getMediaForms());
-
-                $config = $this->config;
-                if($resourceType == 'items' || $resourceType == 'item_sets') {
-                    $autoMaps = $this->getAutomaps($columns);
-                } else {
-                    $autoMaps = [];
-                }
-                
-                $view->setVariable('automaps', $autoMaps);
-                $view->setVariable('resourceType', $resourceType);
-                $view->setVariable('mappings', $config['csv_import_mappings'][$resourceType]);
-                $view->setVariable('columns', $columns);
-                $view->setVariable('csvpath', $csvPath);
+        $files = $request->getFiles()->toArray();
+        $post = $this->params()->fromPost();
+        $resourceType = $post['resource_type'];
+        $form = $this->getForm(MappingForm::class, ['resourceType' => $resourceType]);
+        if (empty($files)) {
+            $form->setData($post);
+            if ($form->isValid()) {
+                $dispatcher = $this->jobDispatcher();
+                $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
+                //the Omeka2Import record is created in the job, so it doesn't
+                //happen until the job is done
+                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
+        } else {
+            $importForm = $this->getForm(ImportForm::class);
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+            $importForm->setData($post);
+            if (!$importForm->isValid()) {
+                $this->messenger()->addFormErrors($importForm);
+                return $this->redirect()->toRoute('admin/csvimport');
+            }
+
+            $tmpFile = $post['csv']['tmp_name'];
+            $csvFile = new CsvFile($this->config);
+            $csvPath = $csvFile->getTempPath();
+            $csvFile->moveToTemp($tmpFile);
+            $csvFile->loadFromTempPath();
+
+            $isUtf8 = $csvFile->isUtf8();
+            if (! $csvFile->isUtf8()) {
+                $this->messenger()->addError('File is not UTF-8 encoded.');
+                return $this->redirect()->toRoute('admin/csvimport');
+            }
+
+            $columns = $csvFile->getHeaders();
+            $view->setVariable('mediaForms', $this->getMediaForms());
+
+            $config = $this->config;
+            if($resourceType == 'items' || $resourceType == 'item_sets') {
+                $autoMaps = $this->getAutomaps($columns);
+            } else {
+                $autoMaps = [];
+            }
+
+            $view->setVariable('form', $form);
+            $view->setVariable('automaps', $autoMaps);
+            $view->setVariable('resourceType', $resourceType);
+            $view->setVariable('mappings', $config['csv_import_mappings'][$resourceType]);
+            $view->setVariable('columns', $columns);
+            $view->setVariable('csvpath', $csvPath);
         }
         return $view;
     }
