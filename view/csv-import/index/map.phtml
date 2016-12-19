@@ -38,7 +38,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
         <?php foreach ($columns as $index=>$column): ?>
             <tr class="element mappable" data-element-id="<?php echo $index; ?>">
                 <td>
-                    <?php echo $column;?>
+                    <?php echo $escapeHtml($column); ?>
                 </td>
                 <td class="mapping element">
                     <ul class="mappings elements">
@@ -79,7 +79,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     <ul class='sidebar-chooser'>
                         <?php foreach($mappings as $mappingClass): ?>
                         <li>
-                            <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>' data-column='<?php echo $column; ?>'><?php echo $mappingClass::getLabel($this); ?></a>
+                            <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>' data-column='<?php echo $escapeHtml($column); ?>'><?php echo $mappingClass::getLabel($this); ?></a>
                         </li>
                         <?php endforeach; ?>
                     </ul>
