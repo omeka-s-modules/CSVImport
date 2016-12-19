@@ -94,7 +94,7 @@ return [
     'navigation' => [
         'AdminModule' => [
             [
-                'label'      => 'CSV Importer',
+                'label'      => 'CSV Import',
                 'route'      => 'admin/csvimport',
                 'resource'   => 'CSVImport\Controller\Index',
                 'pages'      => [
