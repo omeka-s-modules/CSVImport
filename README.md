@@ -18,7 +18,6 @@ The Global Settings allow you to set default data for each Item imported. You ca
 * Owner by email address
 * Resource Template by name
 * Class by term (e.g., dctype:Text -- consult the Classes lists under Vocabularies for allowed values)
-* 
 
 #### Property mapping
 
@@ -41,7 +40,6 @@ Importing Users from a CSV file must specify the following
 
 * Email address
 * Role
-* 
 
 Optionally, a Display Name should be specified. For simplicity, the email address can also be mapped to the Display Name, though this is not recommended. New users will not be active until they confirm their registration via an email that will be sent to them.
 
