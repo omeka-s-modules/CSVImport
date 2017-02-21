@@ -48,8 +48,10 @@ class MediaMapping extends AbstractMapping
                         'o:ingester' => $ingester,
                         'o:source'   => $mediaDatum,
                     ];
-                    $adapter = new $mediaAdapters[$ingester];
-                    $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
+                    if (isset($mediaAdapters[$ingester])) {
+                        $adapter = new $mediaAdapters[$ingester];
+                        $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
+                    }
                     $mediaJson['o:media'][] = $mediaDatumJson;
                 }
             }
