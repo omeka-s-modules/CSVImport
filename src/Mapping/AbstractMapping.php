@@ -23,11 +23,17 @@ abstract class AbstractMapping implements MappingInterface
         $this->serviceLocator = $serviceLocator;
     }
 
+
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+
     public function setHasErr($hasErr)
     {
         $this->hasErr = $hasErr;
     }
-    
+
     public function getHasErr()
     {
         return $this->hasErr;

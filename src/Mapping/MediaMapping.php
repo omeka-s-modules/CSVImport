@@ -2,6 +2,8 @@
 namespace CSVImport\Mapping;
 
 use CSVImport\Mapping\AbstractMapping;
+use CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter;
+use CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter;
 
 class MediaMapping extends AbstractMapping
 {
@@ -23,6 +25,8 @@ class MediaMapping extends AbstractMapping
 
     public function processRow($row)
     {
+        $config = $this->getServiceLocator()->get('Config');
+        $mediaAdapters = $config['csv_import_media_ingester_adapter'];
         $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media']) ? $this->args['media'] : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
@@ -34,30 +38,18 @@ class MediaMapping extends AbstractMapping
 
             if (array_key_exists($index, $mediaMap)) {
                 $ingester = $mediaMap[$index];
+                $this->logger->debug($mediaData);
                 foreach($mediaData as $mediaDatum) {
                     $mediaDatum = trim($mediaDatum);
                     if(empty($mediaDatum)) {
                         continue;
                     }
                     $mediaDatumJson = [
-                        'o:ingester'     => $ingester,
+                        'o:ingester' => $ingester,
                         'o:source'   => $mediaDatum,
                     ];
-                    switch($ingester) {
-                        case 'html':
-                            $mediaDatumJson['html'] = $mediaDatum;
-                            $mediaDatumJson['dcterms:title'] = [
-                                    ['@value'      => '',
-                                     'property_id' => 1,
-                                     'type'        => 'literal'
-                                    ]
-                                ];
-                        break;
-
-                        case 'url':
-                            $mediaDatumJson['ingest_url'] = $mediaDatum;
-                        break;
-                    }
+                    $adapter = new $mediaAdapters[$ingester];
+                    $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
                     $mediaJson['o:media'][] = $mediaDatumJson;
                 }
             }

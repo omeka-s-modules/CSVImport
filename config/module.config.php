@@ -47,6 +47,10 @@ return [
             '\CSVImport\Mapping\UserMapping'
         ],
     ],
+    'csv_import_media_ingester_adapter' => [
+        'url'   => 'CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter',
+        'html'  => 'CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter',
+    ],
     'router' => [
         'routes' => [
             'admin' => [
