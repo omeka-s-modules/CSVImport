@@ -38,7 +38,6 @@ class MediaMapping extends AbstractMapping
 
             if (array_key_exists($index, $mediaMap)) {
                 $ingester = $mediaMap[$index];
-                $this->logger->debug($mediaData);
                 foreach($mediaData as $mediaDatum) {
                     $mediaDatum = trim($mediaDatum);
                     if(empty($mediaDatum)) {

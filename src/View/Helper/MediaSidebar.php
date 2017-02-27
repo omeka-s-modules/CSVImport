@@ -8,8 +8,11 @@ class MediaSidebar extends AbstractHelper
 
     protected $mediaIngester;
 
-    public function __construct($mediaIngestManager)
+    protected $mediaAdapters;
+
+    public function __construct($mediaIngestManager, $mediaAdapters)
     {
+        $this->mediaAdapters = $mediaAdapters;
         $this->mediaIngester = $mediaIngestManager;
     }
 
@@ -17,7 +20,7 @@ class MediaSidebar extends AbstractHelper
     {
         $mediaForms = [];
         foreach ($this->mediaIngester->getRegisteredNames() as $ingester) {
-            if ($ingester != 'upload') {
+            if (array_key_exists($ingester, $this->mediaAdapters)) {
                 $mediaForms[$ingester] = [
                     'label' => $this->mediaIngester->get($ingester)->getLabel(),
                 ];

@@ -48,8 +48,11 @@ return [
         ],
     ],
     'csv_import_media_ingester_adapter' => [
-        'url'   => 'CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter',
-        'html'  => 'CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter',
+        'url'     => 'CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter',
+        'html'    => 'CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter',
+        'iiif'    => null,
+        'oembed'  => null,
+        'youtube' => null,
     ],
     'router' => [
         'routes' => [
