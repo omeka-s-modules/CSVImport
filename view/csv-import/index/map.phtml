@@ -63,6 +63,16 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                                 </li>
                             </ul>
                         </li>
+
+                        <li class='column-reference' style='display:none;'>Import as Omeka S Item ID
+                            <input type='hidden' disabled='disabled' value='1' class='column-reference' name='column-reference[<?php echo $index; ?>]'></input>
+                            <ul class="actions">
+                                <li>
+                                    <a aria-label="Remove import as Omeka S Item ID" title="Remove import as Omeka S Item ID" class="o-icon-delete remove-reference" href="#" style="display: inline;"></a>
+                                </li>
+                            </ul>
+                        </li>
+
                         <li class='column-multivalue' style='display:none;'>Multivalue
                             <input type='hidden' disabled='disabled' value='1' class='column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
                             <ul class="actions">
@@ -71,6 +81,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                                 </li>
                             </ul>
                         </li>
+
                     </ul>
                 </td>
                 <td>

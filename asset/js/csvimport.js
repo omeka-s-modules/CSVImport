@@ -151,6 +151,8 @@
             e.preventDefault();
             activeElement.find('input.column-url').prop('disabled', false);
             activeElement.find('li.column-url').show();
+            activeElement.find('input.column-reference').prop('disabled', true);
+            activeElement.find('li.column-reference').hide();
         });
         
         $('.sidebar').on('click', '.button.column-multivalue', function(e){
@@ -158,6 +160,15 @@
             e.preventDefault();
             activeElement.find('input.column-multivalue').prop('disabled', false);
             activeElement.find('li.column-multivalue').show();
+        });
+        
+        $('.sidebar').on('click', '.button.column-reference', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            activeElement.find('input.column-reference').prop('disabled', false);
+            activeElement.find('li.column-reference').show();
+            activeElement.find('input.column-url').prop('disabled', true);
+            activeElement.find('li.column-url').hide();
         });
         
         $('ul.options').on('click',  'a.remove-url', function(e){
@@ -174,6 +185,14 @@
             var parent = $(this).parents('.options');
             parent.find('input.column-multivalue').prop('disabled', true);
             parent.find('li.column-multivalue').hide();
+        });
+        
+        $('ul.options').on('click',  'a.remove-reference', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var parent = $(this).parents('.options');
+            parent.find('input.column-reference').prop('disabled', true);
+            parent.find('li.column-reference').hide();
         });
     });
 })(jQuery);
