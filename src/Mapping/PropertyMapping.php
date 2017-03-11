@@ -56,7 +56,6 @@ class PropertyMapping extends AbstractMapping
                                 break;
                                 case 'resource':
                                     $propertyJson[$propertyId][] = [
-                                        '@id'               => $value,
                                         'value_resource_id' => $values,
                                         'property_id'       => $propertyId,
                                         'type'              => $type,
@@ -80,11 +79,10 @@ class PropertyMapping extends AbstractMapping
                                     'property_id' => $propertyId,
                                     'type'        => $type,
                                 ];
-                                
+
                             break;
                             case 'resource':
                                 $propertyJson[$propertyId][] = [
-                                '@id'               => $values,
                                 'value_resource_id' => $values,
                                 'property_id'       => $propertyId,
                                 'type'              => $type,
