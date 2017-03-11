@@ -31,6 +31,7 @@ class PropertyMapping extends AbstractMapping
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach($row as $index => $values) {
+            // consider 'literal' as the default type
             $type = 'literal';
             if (in_array($index, $urlMap)) {
                 $type = 'uri';
