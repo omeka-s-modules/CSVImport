@@ -24,50 +24,85 @@ class PropertyMapping extends AbstractMapping
 
     public function processRow($row, $itemJson = [])
     {
+        $this->logger->debug('processRow');
         $propertyJson = [];
         $columnMap = isset($this->args['column-property']) ? $this->args['column-property'] : [];
-        $uriMap = isset($this->args['column-uri']) ? array_keys($this->args['column-uri']) : [];
+        $urlMap = isset($this->args['column-url']) ? array_keys($this->args['column-url']) : [];
+        $referenceMap = isset($this->args['column-reference']) ? array_keys($this->args['column-reference']) : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach($row as $index => $values) {
-            $type = in_array($index, $uriMap) ? 'uri' : 'literal';
+            $this->logger->debug('row index: ' . $index);
+            $type = 'literal';
+            if (in_array($index, $urlMap)) {
+                $type = 'uri';
+            }
+
+            if (in_array($index, $referenceMap)) {
+                $type = 'resource';
+            }
+
             if(isset($columnMap[$index])) {
+                $this->logger->debug('has column map');
                 foreach($columnMap[$index] as $propertyId) {
+                    $this->logger->debug('propId: ' . $propertyId);
                     if(in_array($index, $multivalueMap)) {
+                        $this->logger->debug('multivalue');
                         $multivalues = explode($multivalueSeparator, $values);
                         foreach($multivalues as $value) {
-                            if ($type == 'uri') {
-                                $propertyJson[$propertyId][] = [
+                            switch ($type) {
+                                case 'uri':
+                                case 'resource':
+                                    $propertyJson[$propertyId][] = [
                                         '@id'         => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
-                                ];
-                            } else {
-                                $propertyJson[$propertyId][] = [
+                                    ];
+                                break;
+
+                                case 'literal':
+                                    $propertyJson[$propertyId][] = [
                                         '@value'      => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
-                                ];
+                                    ];
+                                break;
                             }
                         }
                     } else {
-                        if ($type == 'uri') {
-                            $propertyJson[$propertyId][] = [
+                        $this->logger->debug('single value');
+                        $this->logger->debug($type);
+                        switch ($type) {
+                            case 'uri':
+                                $propertyJson[$propertyId][] = [
                                     '@id'         => $values,
                                     'property_id' => $propertyId,
                                     'type'        => $type,
-                            ];
-                        } else {
-                            $propertyJson[$propertyId][] = [
-                                    '@value'      => $values,
-                                    'property_id' => $propertyId,
-                                    'type'        => $type,
-                            ];
+                                ];
+                                
+                            break;
+                            case 'resource':
+                                $propertyJson[$propertyId][] = [
+                                '@id'               => $values,
+                                'value_resource_id' => $values,
+                                'property_id'       => $propertyId,
+                                'type'              => $type,
+                                ];
+                            break;
+
+                            case 'literal':
+                                $propertyJson[$propertyId][] = [
+                                '@value'      => $values,
+                                'property_id' => $propertyId,
+                                'type'        => $type,
+                                ];
+                            break;
                         }
                     }
                 }
             }
         }
+        $this->logger->debug($propertyJson);
         return $propertyJson;
     }
 }
