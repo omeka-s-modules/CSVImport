@@ -47,11 +47,18 @@ class PropertyMapping extends AbstractMapping
                         foreach($multivalues as $value) {
                             switch ($type) {
                                 case 'uri':
-                                case 'resource':
                                     $propertyJson[$propertyId][] = [
-                                        '@id'         => $value,
+                                        '@id'         => $values,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
+                                    ];
+                                break;
+                                case 'resource':
+                                    $propertyJson[$propertyId][] = [
+                                        '@id'               => $value,
+                                        'value_resource_id' => $values,
+                                        'property_id'       => $propertyId,
+                                        'type'              => $type,
                                     ];
                                 break;
 
