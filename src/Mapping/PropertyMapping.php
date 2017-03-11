@@ -24,7 +24,6 @@ class PropertyMapping extends AbstractMapping
 
     public function processRow($row, $itemJson = [])
     {
-        $this->logger->debug('processRow');
         $propertyJson = [];
         $columnMap = isset($this->args['column-property']) ? $this->args['column-property'] : [];
         $urlMap = isset($this->args['column-url']) ? array_keys($this->args['column-url']) : [];
@@ -32,7 +31,6 @@ class PropertyMapping extends AbstractMapping
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach($row as $index => $values) {
-            $this->logger->debug('row index: ' . $index);
             $type = 'literal';
             if (in_array($index, $urlMap)) {
                 $type = 'uri';
@@ -43,11 +41,8 @@ class PropertyMapping extends AbstractMapping
             }
 
             if(isset($columnMap[$index])) {
-                $this->logger->debug('has column map');
                 foreach($columnMap[$index] as $propertyId) {
-                    $this->logger->debug('propId: ' . $propertyId);
                     if(in_array($index, $multivalueMap)) {
-                        $this->logger->debug('multivalue');
                         $multivalues = explode($multivalueSeparator, $values);
                         foreach($multivalues as $value) {
                             switch ($type) {
@@ -70,8 +65,6 @@ class PropertyMapping extends AbstractMapping
                             }
                         }
                     } else {
-                        $this->logger->debug('single value');
-                        $this->logger->debug($type);
                         switch ($type) {
                             case 'uri':
                                 $propertyJson[$propertyId][] = [
@@ -102,7 +95,6 @@ class PropertyMapping extends AbstractMapping
                 }
             }
         }
-        $this->logger->debug($propertyJson);
         return $propertyJson;
     }
 }
