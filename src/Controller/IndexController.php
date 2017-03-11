@@ -135,6 +135,7 @@ class IndexController extends AbstractActionController
     {
         $autoMaps = [];
         foreach($columns as $index=>$column) {
+            $column = trim($column);
             if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
                 $response = $this->api()->search('properties', ['term' => trim($column)]);
                 $content = $response->getContent();
