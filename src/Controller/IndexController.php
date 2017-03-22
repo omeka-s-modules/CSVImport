@@ -137,7 +137,7 @@ class IndexController extends AbstractActionController
         foreach($columns as $index=>$column) {
             $column = trim($column);
             if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
-                $response = $this->api()->search('properties', ['term' => trim($column)]);
+                $response = $this->api()->search('properties', ['term' => $column]);
                 $content = $response->getContent();
                 if (! empty($content)) {
                     $property = $content[0];
