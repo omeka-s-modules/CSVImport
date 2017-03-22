@@ -82,7 +82,7 @@ class Import extends AbstractJob
     protected function createEntities($toCreate) 
     {
         $resourceType = $this->getArg('resource_type', 'items');
-        $createResponse = $this->api->batchCreate($resourceType, $toCreate, [], true);
+        $createResponse = $this->api->batchCreate($resourceType, $toCreate, [], ['continueOnError' => true]);
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
         $createImportEntitiesJson = [];
@@ -90,7 +90,7 @@ class Import extends AbstractJob
         foreach($createContent as $resourceReference) {
             $createImportEntitiesJson[] = $this->buildImportRecordJson($resourceReference);
         }
-        $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportEntitiesJson, [], true);
+        $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportEntitiesJson, [], ['continueOnError' => true]);
     }
 
     protected function buildImportRecordJson($resourceReference) 
