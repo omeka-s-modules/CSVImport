@@ -26,43 +26,76 @@ class PropertyMapping extends AbstractMapping
     {
         $propertyJson = [];
         $columnMap = isset($this->args['column-property']) ? $this->args['column-property'] : [];
-        $uriMap = isset($this->args['column-uri']) ? array_keys($this->args['column-uri']) : [];
+        $urlMap = isset($this->args['column-url']) ? array_keys($this->args['column-url']) : [];
+        $referenceMap = isset($this->args['column-reference']) ? array_keys($this->args['column-reference']) : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach($row as $index => $values) {
-            $type = in_array($index, $uriMap) ? 'uri' : 'literal';
+            // consider 'literal' as the default type
+            $type = 'literal';
+            if (in_array($index, $urlMap)) {
+                $type = 'uri';
+            }
+
+            if (in_array($index, $referenceMap)) {
+                $type = 'resource';
+            }
+
             if(isset($columnMap[$index])) {
                 foreach($columnMap[$index] as $propertyId) {
                     if(in_array($index, $multivalueMap)) {
                         $multivalues = explode($multivalueSeparator, $values);
                         foreach($multivalues as $value) {
-                            if ($type == 'uri') {
-                                $propertyJson[$propertyId][] = [
-                                        '@id'         => $value,
+                            switch ($type) {
+                                case 'uri':
+                                    $propertyJson[$propertyId][] = [
+                                        '@id'         => $values,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
-                                ];
-                            } else {
-                                $propertyJson[$propertyId][] = [
+                                    ];
+                                break;
+                                case 'resource':
+                                    $propertyJson[$propertyId][] = [
+                                        'value_resource_id' => $values,
+                                        'property_id'       => $propertyId,
+                                        'type'              => $type,
+                                    ];
+                                break;
+
+                                case 'literal':
+                                    $propertyJson[$propertyId][] = [
                                         '@value'      => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
-                                ];
+                                    ];
+                                break;
                             }
                         }
                     } else {
-                        if ($type == 'uri') {
-                            $propertyJson[$propertyId][] = [
+                        switch ($type) {
+                            case 'uri':
+                                $propertyJson[$propertyId][] = [
                                     '@id'         => $values,
                                     'property_id' => $propertyId,
                                     'type'        => $type,
-                            ];
-                        } else {
-                            $propertyJson[$propertyId][] = [
-                                    '@value'      => $values,
-                                    'property_id' => $propertyId,
-                                    'type'        => $type,
-                            ];
+                                ];
+
+                            break;
+                            case 'resource':
+                                $propertyJson[$propertyId][] = [
+                                'value_resource_id' => $values,
+                                'property_id'       => $propertyId,
+                                'type'              => $type,
+                                ];
+                            break;
+
+                            case 'literal':
+                                $propertyJson[$propertyId][] = [
+                                '@value'      => $values,
+                                'property_id' => $propertyId,
+                                'type'        => $type,
+                                ];
+                            break;
                         }
                     }
                 }
