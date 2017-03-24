@@ -82,6 +82,15 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                             </ul>
                         </li>
 
+                        <li class='column-language' style='display:none;'>Language
+                            <input type='hidden' disabled='disabled' value='1' class='column-language' name='column-language[<?php echo $index; ?>]'></input>
+                            <span class='column-language'></span>
+                            <ul class="actions">
+                                <li>
+                                    <a aria-label="Remove language" title="Remove language" class="o-icon-delete remove-language" href="#" style="display: inline;"></a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </td>
                 <td>

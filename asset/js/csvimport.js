@@ -146,6 +146,33 @@
             }
         });
         
+        
+        
+        
+        $('.sidebar').on('click', '.button.language', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var valueLanguageElement = document.getElementById('value-language');
+            if (typeof valueLanguageElement.reportValidity === 'function') {
+                var valid = valueLanguageElement.reportValidity();
+            } else {
+                var valid = valueLanguageElement.checkValidity();
+                if (! valid) {
+                    alert("Please enter a valid language tag")
+                }
+            }
+            var lang = $(valueLanguageElement).val();
+            if (valid && lang != '') {
+                
+                var languageInput = activeElement.find('input.column-language');
+                languageInput.val(lang);
+                activeElement.find('li.column-language').show();
+                activeElement.find('span.column-language').html(lang);
+                languageInput.prop('disabled', false);
+            }
+
+        });
+        
         $('.sidebar').on('click', '.button.column-url', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -170,6 +197,7 @@
             activeElement.find('input.column-url').prop('disabled', true);
             activeElement.find('li.column-url').hide();
         });
+
         
         $('ul.options').on('click',  'a.remove-url', function(e){
             e.stopPropagation();
@@ -194,5 +222,26 @@
             parent.find('input.column-reference').prop('disabled', true);
             parent.find('li.column-reference').hide();
         });
+        
+        /*
+         * Modified from resource-form.js in core
+         */
+        
+        $('input.value-language').on('keyup', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var languageTag = this.value;
+            // @see http://stackoverflow.com/questions/7035825/regular-expression-for-a-language-tag-as-defined-by-bcp47
+            // Removes `|[A-Za-z]{4}|[A-Za-z]{5,8}` from the "language" portion
+            // becuase, while in the spec, it does not represent current usage.
+            if ('' == languageTag
+                || languageTag.match(/^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?))(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+))$/)) {
+                this.setCustomValidity('');
+            } else {
+                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
+            }
+        });
+        
+        
     });
 })(jQuery);

@@ -87,3 +87,9 @@ li.mapping {
 .sidebar .options p {
     margin: 3px;
 }
+
+input.value-language[type="text"] {
+    display: block;
+    margin: 3px;
+}
+
