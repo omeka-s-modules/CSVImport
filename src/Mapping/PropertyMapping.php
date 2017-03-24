@@ -29,6 +29,7 @@ class PropertyMapping extends AbstractMapping
         $urlMap = isset($this->args['column-url']) ? array_keys($this->args['column-url']) : [];
         $referenceMap = isset($this->args['column-reference']) ? array_keys($this->args['column-reference']) : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
+        $languageSettings = isset($this->args['column-language']) ? $this->args['column-language'] : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach($row as $index => $values) {
             // consider 'literal' as the default type
@@ -63,11 +64,15 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                                 case 'literal':
-                                    $propertyJson[$propertyId][] = [
-                                        '@value'      => $value,
+                                    $literalPropertyJson =  [
+                                        '@value'      => $values,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
                                     ];
+                                    if (isset($languageSettings[$index])) {
+                                        $literalPropertyJson['@language'] = $languageSettings[$index];
+                                    }
+                                    $propertyJson[$propertyId][] = $literalPropertyJson;
                                 break;
                             }
                         }
@@ -83,18 +88,23 @@ class PropertyMapping extends AbstractMapping
                             break;
                             case 'resource':
                                 $propertyJson[$propertyId][] = [
-                                'value_resource_id' => $values,
-                                'property_id'       => $propertyId,
-                                'type'              => $type,
+                                    'value_resource_id' => $values,
+                                    'property_id'       => $propertyId,
+                                    'type'              => $type,
                                 ];
                             break;
 
                             case 'literal':
-                                $propertyJson[$propertyId][] = [
-                                '@value'      => $values,
-                                'property_id' => $propertyId,
-                                'type'        => $type,
+                                $literalPropertyJson =  [
+                                    '@value'      => $values,
+                                    'property_id' => $propertyId,
+                                    'type'        => $type,
                                 ];
+                                if (isset($languageSettings[$index])) {
+                                    $literalPropertyJson['@language'] = $languageSettings[$index];
+                                }
+                                $propertyJson[$propertyId][] = $literalPropertyJson;
+                                
                             break;
                         }
                     }
