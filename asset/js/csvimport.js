@@ -153,6 +153,10 @@
             e.stopPropagation();
             e.preventDefault();
             var valueLanguageElement = document.getElementById('value-language');
+            var lang = $(valueLanguageElement).val();
+            if (lang == '') {
+                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
+            }
             if (typeof valueLanguageElement.reportValidity === 'function') {
                 var valid = valueLanguageElement.reportValidity();
             } else {
@@ -161,7 +165,7 @@
                     alert("Please enter a valid language tag")
                 }
             }
-            var lang = $(valueLanguageElement).val();
+            
             if (valid && lang != '') {
                 
                 var languageInput = activeElement.find('input.column-language');
