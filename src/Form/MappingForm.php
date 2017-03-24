@@ -136,6 +136,21 @@ class MappingForm extends Form
                 ]
             ]);
             
+            
+            $this->add([
+                'name' => 'global-language',
+                'type' => 'text',
+                'options' => [
+                    'label' => 'Language', // @translate
+                    'info'  => 'Language setting to apply to all imported literal data.' // @translate
+                ],
+                'attributes' => [
+                    'id' => 'global-language',
+                    'class' => 'input-body value-language',
+                    'value' => ''
+                ]
+            ]);
+            
             $inputFilter = $this->getInputFilter();
             $inputFilter->add([
                 'name' => 'o:resource_template[o:id]',
