@@ -68,7 +68,7 @@
 
         $('.sidebar-chooser').on('click', 'a', function(e) {
             e.preventDefault();
-
+            $('input.value-language').val('');
             if (activeElement !== null) {
                 activeElement.removeClass('active');
             }
@@ -225,6 +225,14 @@
             var parent = $(this).parents('.options');
             parent.find('input.column-reference').prop('disabled', true);
             parent.find('li.column-reference').hide();
+        });
+        
+        $('ul.options').on('click',  'a.remove-column-language', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var parent = $(this).parents('.options');
+            parent.find('input.column-language').prop('disabled', true);
+            parent.find('li.column-language').hide();
         });
         
         /*
