@@ -50,14 +50,14 @@ class PropertyMapping extends AbstractMapping
                             switch ($type) {
                                 case 'uri':
                                     $propertyJson[$propertyId][] = [
-                                        '@id'         => $values,
+                                        '@id'         => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
                                     ];
                                 break;
                                 case 'resource':
                                     $propertyJson[$propertyId][] = [
-                                        'value_resource_id' => $values,
+                                        'value_resource_id' => $value,
                                         'property_id'       => $propertyId,
                                         'type'              => $type,
                                     ];
@@ -65,7 +65,7 @@ class PropertyMapping extends AbstractMapping
 
                                 case 'literal':
                                     $literalPropertyJson =  [
-                                        '@value'      => $values,
+                                        '@value'      => $value,
                                         'property_id' => $propertyId,
                                         'type'        => $type,
                                     ];
