@@ -13,14 +13,8 @@ class Undo extends AbstractJob
         $csvEntities = $response->getContent();
         if ($csvEntities) {
             foreach ($csvEntities as $csvEntity) {
-                
                 $csvResponse = $api->delete('csvimport_entities', $csvEntity->id());
-                if ($csvResponse->isError()) {
-                }
-
                 $entityResponse = $api->delete($csvEntity->resourceType(), $csvEntity->entityId());
-                if ($entityResponse->isError()) {
-                }
             }
         }
     }
