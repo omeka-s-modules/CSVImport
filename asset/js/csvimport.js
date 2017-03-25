@@ -254,6 +254,11 @@
             }
         });
         
+        /*
+         * Prevent accidental form submission when entering a language tag
+         * and hitting enter
+         */
+        
         $('input.value-language').on('keypress', function(e) {
             if (e.keyCode == 13 ) {
                 e.preventDefault();
