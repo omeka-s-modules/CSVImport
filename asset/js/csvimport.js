@@ -68,7 +68,7 @@
 
         $('.sidebar-chooser').on('click', 'a', function(e) {
             e.preventDefault();
-            //$('input.value-language').val('');
+            $('.property-mapping input.value-language').val('');
             if (activeElement !== null) {
                 activeElement.removeClass('active');
             }
