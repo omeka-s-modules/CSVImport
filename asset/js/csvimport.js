@@ -254,6 +254,13 @@
             }
         });
         
+        $('input.value-language').on('keypress', function(e) {
+            if (e.keyCode == 13 ) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+        
         
     });
 })(jQuery);
