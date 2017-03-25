@@ -104,6 +104,7 @@ class PropertyMapping extends AbstractMapping
                                     'property_id' => $propertyId,
                                     'type'        => $type,
                                 ];
+                                $this->logger->debug($globalLanguage);
                                 if ($globalLanguage !== '') {
                                     $literalPropertyJson['@language'] = $globalLanguage;
                                 }
