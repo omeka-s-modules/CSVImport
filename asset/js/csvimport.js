@@ -150,30 +150,7 @@
         
         
         $('.sidebar').on('click', '.button.language', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var valueLanguageElement = document.getElementById('value-language');
-            var lang = $(valueLanguageElement).val();
-            if (lang == '') {
-                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
-            }
-            if (typeof valueLanguageElement.reportValidity === 'function') {
-                var valid = valueLanguageElement.reportValidity();
-            } else {
-                var valid = valueLanguageElement.checkValidity();
-                if (! valid) {
-                    alert("Please enter a valid language tag")
-                }
-            }
-            
-            if (valid && lang != '') {
-                
-                var languageInput = activeElement.find('input.column-language');
-                languageInput.val(lang);
-                activeElement.find('li.column-language').show();
-                activeElement.find('span.column-language').html(lang);
-                languageInput.prop('disabled', false);
-            }
+            setLanguage(e);
 
         });
         
@@ -256,16 +233,41 @@
         
         /*
          * Prevent accidental form submission when entering a language tag
-         * and hitting enter
+         * and hitting enter by setting the language as if clicking the button
          */
         
         $('input.value-language').on('keypress', function(e) {
             if (e.keyCode == 13 ) {
-                e.preventDefault();
-                e.stopPropagation();
+                setLanguage(e);
             }
         });
         
+        function setLanguage(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var valueLanguageElement = document.getElementById('value-language');
+            var lang = $(valueLanguageElement).val();
+            if (lang == '') {
+                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
+            }
+            if (typeof valueLanguageElement.reportValidity === 'function') {
+                var valid = valueLanguageElement.reportValidity();
+            } else {
+                var valid = valueLanguageElement.checkValidity();
+                if (! valid) {
+                    alert(Omeka.jsTranslate("Please enter a valid language tag"));
+                }
+            }
+            
+            if (valid && lang != '') {
+                
+                var languageInput = activeElement.find('input.column-language');
+                languageInput.val(lang);
+                activeElement.find('li.column-language').show();
+                activeElement.find('span.column-language').html(lang);
+                languageInput.prop('disabled', false);
+            }
+        }
         
     });
 })(jQuery);
