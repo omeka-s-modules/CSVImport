@@ -142,7 +142,7 @@ class MappingForm extends Form
                 'type' => 'text',
                 'options' => [
                     'label' => 'Language', // @translate
-                    'info'  => 'Language setting to apply to all imported literal data.' // @translate
+                    'info'  => 'Language setting to apply to all imported literal data. Individual property mappings can override the setting here.' // @translate
                 ],
                 'attributes' => [
                     'id' => 'global-language',
