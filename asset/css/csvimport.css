@@ -54,6 +54,14 @@ ul {
     padding: 0;
 }
 
+ul.actions {
+    float: right;
+}
+
+li.mapping.delete {
+    text-decoration: line-through;
+}
+
 .sidebar a.button {
     width: 100%
 }

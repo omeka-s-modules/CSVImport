@@ -46,9 +46,8 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     <?php $property = $automaps[$index]; ?>
                         <li class="mapping" data-property-id="<?php echo $property->id(); ?>"><?php echo $property->label(); ?>
                             <ul class="actions">
-                                <li>
-                                    <a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a>
-                                </li>
+                                <li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
+                                <li><a aria-label="Undo remove mapping" title="Undo remove mapping" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
                             <input value="<?php echo $property->id(); ?>" name="column-property[<?php echo $index; ?>][]" type="hidden">
                         </li>

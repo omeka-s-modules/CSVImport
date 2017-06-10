@@ -1,15 +1,13 @@
 <?php
+
 namespace CSVImport\Form;
 
 use Omeka\Form\Element\ResourceSelect;
 use Zend\Form\Form;
-use Zend\Validator\Callback;
 use Zend\Form\Element\Select;
-
 
 class MappingForm extends Form
 {
-    protected $currentUser;
     
     protected $serviceLocator;
     
@@ -107,7 +105,8 @@ class MappingForm extends Form
                     'name'       => 'o:owner',
                     'type'       => ResourceSelect::class,
                     'attributes' => [
-                        'id' => 'select-owner'
+                        'id' => 'select-owner',
+                        'value' => $currentUser->getId(),
                         ],
                     'options'    => [
                         'label' => 'Owner', // @translate
@@ -176,15 +175,4 @@ class MappingForm extends Form
     {
         return $this->serviceLocator;
     }
-    
-    public function setCurrentUser($currentUser)
-    {
-        $this->currentUser = $currentUser;
-    }
-    
-    public function getCurrentUser()
-    {
-        return $this->currentUser;
-    }
-
 }
