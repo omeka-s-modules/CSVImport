@@ -48,15 +48,12 @@ td.comment {
     max-width: 300px;
 }
 
-ul {
+ul.mappings.elements {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-ul.actions {
-    float: right;
-}
 
 li.mapping.delete {
 
