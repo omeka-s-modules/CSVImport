@@ -7,7 +7,7 @@ class UserMapping extends AbstractMapping
 {
     public static function getLabel()
     {
-        return "Users Info";
+        return "Users info";
     }
     
     /**

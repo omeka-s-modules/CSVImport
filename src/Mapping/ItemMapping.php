@@ -8,7 +8,7 @@ class ItemMapping extends AbstractMapping
 
     public static function getLabel()
     {
-        return "Item Data";
+        return "Item data";
     }
 
     public static function getName()

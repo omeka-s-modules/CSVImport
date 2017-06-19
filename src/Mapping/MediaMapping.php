@@ -9,7 +9,7 @@ class MediaMapping extends AbstractMapping
 {
     public static function getLabel()
     {
-        return "Media Import";
+        return "Media import";
     }
 
     public static function getName()
@@ -55,7 +55,6 @@ class MediaMapping extends AbstractMapping
                 }
             }
         }
-
         return $mediaJson;
     }
 }

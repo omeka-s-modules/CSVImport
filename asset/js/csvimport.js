@@ -160,15 +160,12 @@
                 }
             }
         });
-        
-        
-        
-        
+
         $('.sidebar').on('click', '.button.language', function(e) {
             setLanguage(e);
 
         });
-        
+
         $('.sidebar').on('click', '.button.column-url', function(e){
             e.stopPropagation();
             e.preventDefault();

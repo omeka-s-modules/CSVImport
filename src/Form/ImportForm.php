@@ -14,8 +14,8 @@ class ImportForm extends Form
                 'name' => 'csv',
                 'type' => 'file',
                 'options' => [
-                    'label' => 'CSV File', // @translate
-                    'info'  => 'The CSV File to upload', //@translate
+                    'label' => 'CSV ile', // @translate
+                    'info'  => 'The CSV file to upload', //@translate
                 ],
                 'attributes' => [
                     'id' => 'csv',
@@ -32,7 +32,7 @@ class ImportForm extends Form
                 'name' => 'resource_type',
                 'type' => 'select',
                 'options' => [
-                    'label' => 'Import Type', // @translate
+                    'label' => 'Import type', // @translate
                     'info'  => 'The type of data being imported', // @translate
                     'value_options' => $valueOptions,
                 ],

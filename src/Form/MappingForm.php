@@ -23,7 +23,7 @@ class MappingForm extends Form
             'type' => 'textarea',
             'options' => [
                 'label' => 'Comment', // @translate
-                'info'  => 'A note about the purpose or source of this import.' // @translate
+                'info'  => 'A note about the purpose or source of this import' // @translate
             ],
             'attributes' => [
                 'id' => 'comment',
@@ -41,8 +41,8 @@ class MappingForm extends Form
                     'data-api-base-url' => $urlHelper('api/default', ['resource' => 'resource_templates']),
                 ],
                 'options' => [
-                    'label' => 'Resource Template', // @translate
-                    'info' => 'A pre-defined template for resource creation.', // @translate
+                    'label' => 'Resource template', // @translate
+                    'info' => 'A pre-defined template for resource creation', // @translate
                     'empty_option' => 'Select Template', // @translate
                     'resource_value_options' => [
                         'resource' => 'resource_templates',
@@ -85,11 +85,11 @@ class MappingForm extends Form
                         'id'       => 'select-item-set',
                         'required' => false,
                         'multiple' => true,
-                        'data-placeholder' => 'Select Item Sets', // @translate
+                        'data-placeholder' => 'Select item sets', // @translate
                     ],
                     'options' => [
-                        'label' => 'Item Sets', // @translate
-                        'info' => 'Select Items Sets for this resource.', // @translate
+                        'label' => 'Item sets', // @translate
+                        'info' => 'Select Item sets for this resource', // @translate
                         'resource_value_options' => [
                             'resource' => 'item_sets',
                             'query' => [],
@@ -125,8 +125,8 @@ class MappingForm extends Form
                 'name' => 'multivalue-separator',
                 'type' => 'text',
                 'options' => [
-                    'label' => 'Multivalue Separator', // @translate
-                    'info'  => 'The separator to use for columns with multiple values.' // @translate
+                    'label' => 'Multivalue separator', // @translate
+                    'info'  => 'The separator to use for columns with multiple values' // @translate
                 ],
                 'attributes' => [
                     'id' => 'multivalue-separator',

@@ -15,7 +15,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
 <nav class="section-nav">
     <ul>
         <li class="active"><a href="#csv-import-basics-fieldset"><?php echo $this->translate('Basic Import Settings'); ?></a></li>
-        <li><a href="#mapping-data"><?php echo $this->translate('Map to Omeka S Data'); ?></a></li>
+        <li><a href="#mapping-data"><?php echo $this->translate('Map to Omeka S data'); ?></a></li>
     </ul>
 </nav>
 
@@ -29,9 +29,9 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $this->translate("CSV Column"); ?></th>
+                <th><?php echo $this->translate("CSV column"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
-                <th><?php echo $this->translate("Mapping Options"); ?></th>
+                <th><?php echo $this->translate("Mapping options"); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -54,7 +54,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     <?php endif; ?>
                     </ul>
                     <ul class='options'>
-                        <li class='column-url' style='display:none;'>Import as URL
+                        <li class='column-url' style='display:none;'><?php echo $this->translate("Import as URL"); ?>
                             <input type='hidden' disabled='disabled' value='1' class='column-url' name='column-url[<?php echo $index; ?>]'></input>
                             <ul class="actions">
                                 <li>
@@ -63,7 +63,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                             </ul>
                         </li>
 
-                        <li class='column-reference' style='display:none;'>Import as Omeka S Resource ID
+                        <li class='column-reference' style='display:none;'><?php echo $this->translate("Import as Omeka S resource ID"); ?>
                             <input type='hidden' disabled='disabled' value='1' class='column-reference' name='column-reference[<?php echo $index; ?>]'></input>
                             <ul class="actions">
                                 <li>
@@ -72,7 +72,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                             </ul>
                         </li>
 
-                        <li class='column-multivalue' style='display:none;'>Multivalue
+                        <li class='column-multivalue' style='display:none;'><?php echo $this->translate("Multivalue"); ?>
                             <input type='hidden' disabled='disabled' value='1' class='column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
                             <ul class="actions">
                                 <li>
@@ -81,7 +81,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                             </ul>
                         </li>
 
-                        <li class='column-language' style='display:none;'>Language
+                        <li class='column-language' style='display:none;'><?php echo $this->translate("Language"); ?>
                             <input type='hidden' disabled='disabled' value='' class='column-language' name='column-language[<?php echo $index; ?>]'></input>
                             <span class='column-language'></span>
                             <ul class="actions">
@@ -93,8 +93,6 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     </ul>
                 </td>
                 <td>
-                    
-                    
                     <ul class='sidebar-chooser'>
                         <?php foreach($mappings as $mappingClass): ?>
                         <li>
