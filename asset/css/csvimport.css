@@ -54,9 +54,12 @@ ul.mappings.elements {
     padding: 0;
 }
 
+li.mapping {
+    display: flex;
+}
 
 li.mapping.delete {
-
+    background-color: #fcc;
 }
 
 .sidebar a.button {
