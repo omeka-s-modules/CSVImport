@@ -14,7 +14,7 @@ class ImportForm extends Form
                 'name' => 'csv',
                 'type' => 'file',
                 'options' => [
-                    'label' => 'CSV ile', // @translate
+                    'label' => 'CSV file', // @translate
                     'info'  => 'The CSV file to upload', //@translate
                 ],
                 'attributes' => [
