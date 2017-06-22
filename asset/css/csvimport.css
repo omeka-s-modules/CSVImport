@@ -54,6 +54,10 @@ ul.mappings.elements {
     padding: 0;
 }
 
+li {
+    list-style: none;
+}
+
 li.mapping {
     display: flex;
 }
@@ -95,5 +99,9 @@ li.mapping.delete {
 input.value-language[type="text"] {
     display: block;
     margin: 3px;
+}
+
+div.language.options {
+    padding-left: 12px;
 }
 
