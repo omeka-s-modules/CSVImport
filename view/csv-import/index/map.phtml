@@ -82,7 +82,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                             </ul>
                         </li>
 
-                        <li class='column-language' style='display:none;'><?php echo $this->translate("Language"); ?>
+                        <li class='column-language' style='display:none;'><?php echo $this->translate("Language:"); echo"&nbsp;"; ?>
                             <input type='hidden' disabled='disabled' value='' class='column-language' name='column-language[<?php echo $index; ?>]'></input>
                             <span class='column-language'></span>
                             <ul class="actions">
