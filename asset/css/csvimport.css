@@ -54,6 +54,14 @@ ul.mappings.elements {
     padding: 0;
 }
 
+ul.options {
+    padding: unset;
+}
+
+ul.options li {
+    display: flex;
+}
+
 li {
     list-style: none;
 }
@@ -105,3 +113,6 @@ div.language.options {
     padding-left: 12px;
 }
 
+li.column-multivalue {
+    display: flex;
+}
