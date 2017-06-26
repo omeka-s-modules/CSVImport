@@ -200,28 +200,24 @@
             parent.find('li.column-url').hide();
         });
         
-        $('ul.options').on('click',  'a.remove-multivalue', function(e){
+        $('ul.options').on('click', 'a.remove-option', function(e){
             e.stopPropagation();
             e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-multivalue').prop('disabled', true);
-            parent.find('li.column-multivalue').hide();
+            var optionToRemove = $(this).parents('li.option');
+            optionToRemove.find('input.column-option').prop('disabled', true);
+            optionToRemove.addClass('delete');
+            optionToRemove.find('.restore-option').show();
+            optionToRemove.find('.remove-option').hide();
         });
         
-        $('ul.options').on('click',  'a.remove-reference', function(e){
+        $('ul.options').on('click', 'a.restore-option', function(e){
             e.stopPropagation();
             e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-reference').prop('disabled', true);
-            parent.find('li.column-reference').hide();
-        });
-        
-        $('ul.options').on('click',  'a.remove-column-language', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-language').prop('disabled', true);
-            parent.find('li.column-language').hide();
+            var optionToRestore = $(this).parents('li.option');
+            optionToRestore.find('input.column-option').prop('disabled', false);
+            optionToRestore.removeClass('delete');
+            optionToRestore.find('.remove-option').show();
+            optionToRestore.find('.restore-option').hide();
         });
         
         /*

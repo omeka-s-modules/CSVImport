@@ -74,6 +74,10 @@ li.mapping.delete {
     background-color: #fcc;
 }
 
+li.option.delete {
+    background-color: #fcc;
+}
+
 .sidebar a.button {
     width: 100%
 }
