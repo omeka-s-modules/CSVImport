@@ -163,7 +163,6 @@
 
         $('.sidebar').on('click', '.button.language', function(e) {
             setLanguage(e);
-
         });
 
         $('.sidebar').on('click', '.button.column-url', function(e){
@@ -191,15 +190,6 @@
             activeElement.find('li.column-url').hide();
         });
 
-        
-        $('ul.options').on('click',  'a.remove-url', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-url').prop('disabled', true);
-            parent.find('li.column-url').hide();
-        });
-        
         $('ul.options').on('click', 'a.remove-option', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -268,7 +258,6 @@
             }
             
             if (valid && lang != '') {
-                
                 var languageInput = activeElement.find('input.column-language');
                 languageInput.val(lang);
                 activeElement.find('li.column-language').show();
