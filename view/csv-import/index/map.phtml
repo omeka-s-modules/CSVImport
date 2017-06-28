@@ -64,7 +64,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                                     <a aria-label="Undo remove as URL" title="Undo remove as URL" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option' name='column-url[<?php echo $index; ?>]'></input>
+                            <input type='hidden' disabled='disabled' value='1' class='column-option column-url' name='column-url[<?php echo $index; ?>]'></input>
                         </li>
 
                         <li class='column-reference option' style='display:none;'><?php echo $this->translate("Import as Omeka S resource ID"); ?>
@@ -76,7 +76,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                                     <a aria-label="Undo remove as URL" title="Undo remove as URL" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option' name='column-reference[<?php echo $index; ?>]'></input>
+                            <input type='hidden' disabled='disabled' value='1' class='column-option column-reference' name='column-reference[<?php echo $index; ?>]'></input>
                         </li>
 
                         <li class='column-multivalue option' style='display:none;'><?php echo $this->translate("Multivalue"); ?>
@@ -88,7 +88,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                                     <a aria-label="Undo remove as URL" title="Undo remove as URL" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option' name='column-multivalue[<?php echo $index; ?>]'></input>
+                            <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
                         </li>
 
                         <li class='column-language option' style='display:none;'><?php echo $this->translate("Language:"); echo"&nbsp;"; ?>
