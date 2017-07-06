@@ -119,12 +119,17 @@
         });
 
         $('.sidebar.flags li').on('click', function(e){
+            // hijack the multivalue option because it is handled separately below
+            var targetLi = $(e.target).closest('li');
+            if (targetLi.hasClass('column-multivalue')) {
+                return;
+            }
             e.stopPropagation();
             e.preventDefault();
             //looks like a stopPropagation on the selector-parent forces
             //me to bind the event lower down the DOM, then work back
             //up to the li
-            var targetLi = $(e.target).closest('li');
+
             if (activeElement == null) {
                 alert("Select an element at the left before choosing a property.");
             } else {
@@ -135,7 +140,6 @@
                 }
                 //first, check if the flag is already added
                 //or if there is already any media mapping
-
                 var hasFlag = activeElement.find('ul.mappings li.' + flagType);
                 if (hasFlag.length === 0) {
                     var elementId = activeElement.data('element-id');
