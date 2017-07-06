@@ -142,6 +142,7 @@
                 //or if there is already any media mapping
                 var hasFlag = activeElement.find('ul.mappings li.' + flagType);
                 if (hasFlag.length === 0) {
+                    alert('grr');
                     var elementId = activeElement.data('element-id');
                     //elementId, or index? @TODO: check the naming conventions
                     //much is copied from Omeka2Importer, and might need clarification
