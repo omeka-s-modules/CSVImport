@@ -35,7 +35,7 @@
             //up to the li
             var targetLi = $(e.target).closest('li.selector-child');
             if (activeElement == null) {
-                alert("Select an item type at the left before choosing a resource class.");
+                alert(Omeka.jsTranslate("Select an item type at the left before choosing a resource class."));
             } else {
                 //first, check if a class is already added
                 //var hasMapping = activeElement.find('ul.mappings li');
@@ -131,7 +131,7 @@
             //up to the li
 
             if (activeElement == null) {
-                alert("Select an element at the left before choosing a property.");
+                alert(Omeka.jsTranslate("Select an element at the left before choosing a property."));
             } else {
                 var flagName = targetLi.find('span').text();
                 var flagType = targetLi.data('flag-type');
@@ -142,7 +142,6 @@
                 //or if there is already any media mapping
                 var hasFlag = activeElement.find('ul.mappings li.' + flagType);
                 if (hasFlag.length === 0) {
-                    alert('grr');
                     var elementId = activeElement.data('element-id');
                     //elementId, or index? @TODO: check the naming conventions
                     //much is copied from Omeka2Importer, and might need clarification
