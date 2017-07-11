@@ -14,7 +14,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
     <fieldset id='page-actions'>
         <input type='submit' value='Submit' />
     </fieldset>
-    <table>
+    <table class="tablesaw" data-tablesaw-mode="stack">
         <thead>
             <tr>
                 <th><?php echo $escape($this->translate('Undo?'));?></th>
