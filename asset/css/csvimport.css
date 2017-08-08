@@ -54,6 +54,10 @@ ul.mappings.elements {
     padding: 0;
 }
 
+.sidebar ul {
+    padding-left: 0;
+}
+
 ul.options {
     padding: unset;
 }
