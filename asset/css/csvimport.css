@@ -14,11 +14,6 @@
     float: right;
 }
 
-#mapping-data td,
-#mapping-data th {
-    vertical-align: top;
-}
-
 #mapping-data td:first-of-type {
     padding: 9px .5em;
 }
