@@ -8,7 +8,7 @@ class PropertyMapping extends AbstractMapping
 
     public static function getLabel()
     {
-        return "Properties";
+        return "Properties"; // @translate
     }
 
     public static function getName()

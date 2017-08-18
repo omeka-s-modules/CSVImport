@@ -1,0 +1,225 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-18 17:50-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: view/common/csv-property-selector.phtml:49
+msgid "This will override language settings in basic import settings."
+msgstr ""
+
+#: view/common/csv-property-selector.phtml:56
+msgid "Import as URL reference"
+msgstr ""
+
+#: view/common/csv-property-selector.phtml:59
+#: view/csv-import/index/map.phtml:70
+msgid "Import as Omeka S resource ID"
+msgstr ""
+
+#: view/common/csv-property-selector.phtml:62 view/common/item-sidebar.phtml:32
+#: view/common/media-sidebar.phtml:19
+msgid "Use multivalue separator"
+msgstr ""
+
+#: view/common/item-sidebar.phtml:4
+msgid "Item data: "
+msgstr ""
+
+#: view/common/item-sidebar.phtml:6
+msgid "Data from this column applies to the entire item being imported."
+msgstr ""
+
+#: view/common/item-sidebar.phtml:7
+msgid ""
+"Settings here will override any corresponding settings in Basic import "
+"settings."
+msgstr ""
+
+#: view/common/item-sidebar.phtml:10
+msgid "Item set ID"
+msgstr ""
+
+#: view/common/item-sidebar.phtml:13
+msgid "Resource template name"
+msgstr ""
+
+#: view/common/item-sidebar.phtml:16
+msgid "Resource class term"
+msgstr ""
+
+#: view/common/item-sidebar.phtml:22
+msgid "Owner email address"
+msgstr ""
+
+#: view/common/item-sidebar.phtml:33
+msgid "(Only applies to Item set ID)"
+msgstr ""
+
+#: view/common/media-sidebar.phtml:4
+msgid "Media import: "
+msgstr ""
+
+#: view/common/resource-class-selector.phtml:8
+msgid "Click on a resource class to add it to the mapped item types."
+msgstr ""
+
+#: view/common/resource-class-selector.phtml:10
+msgid "Filter resource classes"
+msgstr ""
+
+#: view/common/resource-class-selector.phtml:12
+msgid "All resource classes"
+msgstr ""
+
+#: view/common/user-sidebar.phtml:2
+msgid "Users info"
+msgstr ""
+
+#: view/csv-import/index/index.phtml:9
+msgid "CSV Import"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:9
+msgid "Map Elements"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:17
+msgid "Basic Import Settings"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:18
+msgid "Map to Omeka S data"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:32
+msgid "CSV column"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:33
+msgid "Mappings"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:34
+msgid "Mapping options"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:58
+msgid "Import as URL"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:82
+msgid "Multivalue"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:94
+msgid "Language:"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:7
+msgid "Past Imports · CSV Import"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:20
+msgid "Undo?"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:21
+msgid "Job ID"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:23
+msgid "Imported content"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:41
+msgid ""
+"Problems were detected with the import. Check the job's log for details."
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:45
+msgid "Added: "
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:51
+msgid "Undone"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:53
+msgid "Undo in progress"
+msgstr ""
+
+#: src/Mapping/ItemMapping.php:11
+msgid "Item data"
+msgstr ""
+
+#: src/Mapping/MediaMapping.php:12
+msgid "Media import"
+msgstr ""
+
+#: src/Form/ImportForm.php:17
+msgid "CSV file"
+msgstr ""
+
+#: src/Form/ImportForm.php:18
+msgid "The CSV file to upload"
+msgstr ""
+
+#: src/Form/ImportForm.php:35
+msgid "Import type"
+msgstr ""
+
+#: src/Form/ImportForm.php:36
+msgid "The type of data being imported"
+msgstr ""
+
+#: src/Form/MappingForm.php:26
+msgid "A note about the purpose or source of this import"
+msgstr ""
+
+#: src/Form/MappingForm.php:45
+msgid "A pre-defined template for resource creation"
+msgstr ""
+
+#: src/Form/MappingForm.php:46
+msgid "Select Template"
+msgstr ""
+
+#: src/Form/MappingForm.php:66
+msgid "Select Class"
+msgstr ""
+
+#: src/Form/MappingForm.php:88
+msgid "Select item sets"
+msgstr ""
+
+#: src/Form/MappingForm.php:92
+msgid "Select Item sets for this resource"
+msgstr ""
+
+#: src/Form/MappingForm.php:128
+msgid "Multivalue separator"
+msgstr ""
+
+#: src/Form/MappingForm.php:129
+msgid "The separator to use for columns with multiple values"
+msgstr ""
+
+#: src/Form/MappingForm.php:144
+msgid ""
+"Language setting to apply to all imported literal data. Individual property "
+"mappings can override the setting here."
+msgstr ""

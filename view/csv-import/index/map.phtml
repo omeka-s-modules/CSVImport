@@ -45,7 +45,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     <?php if(array_key_exists($index, $automaps)): ?>
                     <?php $property = $automaps[$index]; ?>
                         <li class="mapping" data-property-id="<?php echo $property->id(); ?>">
-                            <?php echo $property->label(); ?>
+                            <?php echo $this->translate($property->label()); ?>
                             <ul class="actions">
                                 <li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
                                 <li><a aria-label="Undo remove mapping" title="Undo remove mapping" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
@@ -109,7 +109,10 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                     <ul class='sidebar-chooser'>
                         <?php foreach($mappings as $mappingClass): ?>
                         <li>
-                            <a href='#' class='button' data-sidebar='<?php echo $mappingClass::getName(); ?>' data-column='<?php echo $escapeHtml($column); ?>'><?php echo $mappingClass::getLabel($this); ?></a>
+                            <a href='#'
+                               class='button' 
+                               data-sidebar='<?php echo $this->translate($mappingClass::getName()); ?>' 
+                               data-column='<?php echo $escapeHtml($column); ?>'><?php echo $this->translate($mappingClass::getLabel()); ?></a>
                         </li>
                         <?php endforeach; ?>
                     </ul>

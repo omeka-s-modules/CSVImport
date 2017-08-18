@@ -9,7 +9,7 @@ class MediaMapping extends AbstractMapping
 {
     public static function getLabel()
     {
-        return "Media import";
+        return "Media import"; // @translate
     }
 
     public static function getName()

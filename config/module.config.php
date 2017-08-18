@@ -12,6 +12,16 @@ return [
             'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter'
         ],
     ],
+    'translator' => [
+        'translation_file_patterns' => [
+            [
+                'type' => 'gettext',
+                'base_dir' => OMEKA_PATH . '/modules/CSVImport/language',
+                'pattern' => '%s.mo',
+                'text_domain' => null,
+            ],
+        ],
+    ],
     'view_manager' => [
         'template_path_stack'      => [
             OMEKA_PATH . '/modules/CSVImport/view',
