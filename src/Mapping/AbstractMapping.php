@@ -1,8 +1,6 @@
 <?php
 namespace CSVImport\Mapping;
 
-use CSVImport\Mapping\MappingInterface;
-
 abstract class AbstractMapping implements MappingInterface
 {
     protected $args;
@@ -10,11 +8,11 @@ abstract class AbstractMapping implements MappingInterface
     protected $api;
 
     protected $logger;
-    
+
     protected $serviceLocator;
 
     protected $hasErr = false;
-    
+
     public function __construct($args, $serviceLocator)
     {
         $this->args = $args;
@@ -22,7 +20,6 @@ abstract class AbstractMapping implements MappingInterface
         $this->api = $serviceLocator->get('Omeka\ApiManager');
         $this->serviceLocator = $serviceLocator;
     }
-
 
     public function getServiceLocator()
     {

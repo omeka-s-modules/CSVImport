@@ -5,7 +5,6 @@ use Zend\View\Helper\AbstractHelper;
 
 class MediaSidebar extends AbstractHelper
 {
-
     protected $mediaIngester;
 
     protected $mediaAdapters;

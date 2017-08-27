@@ -8,29 +8,28 @@ use Zend\Form\Element\Select;
 
 class MappingForm extends Form
 {
-    
     protected $serviceLocator;
-    
+
     public function init()
     {
         $resourceType = $this->getOption('resourceType');
         $serviceLocator = $this->getServiceLocator();
         $currentUser = $serviceLocator->get('Omeka\AuthenticationService')->getIdentity();
         $acl = $serviceLocator->get('Omeka\Acl');
-        
+
         $this->add([
             'name' => 'comment',
             'type' => 'textarea',
             'options' => [
                 'label' => 'Comment', // @translate
-                'info'  => 'A note about the purpose or source of this import' // @translate
+                'info' => 'A note about the purpose or source of this import', // @translate
             ],
             'attributes' => [
                 'id' => 'comment',
                 'class' => 'input-body',
             ],
         ]);
-        
+
         if ($resourceType == 'items' || $resourceType == 'item_sets') {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $this->add([
@@ -53,7 +52,7 @@ class MappingForm extends Form
                     ],
                 ],
             ]);
-    
+
             $this->add([
                 'name' => 'o:resource_class[o:id]',
                 'type' => ResourceSelect::class,
@@ -70,7 +69,7 @@ class MappingForm extends Form
                         'option_text_callback' => function ($resourceClass) {
                             return [
                                 $resourceClass->vocabulary()->label(),
-                                $resourceClass->label()
+                                $resourceClass->label(),
                             ];
                         },
                     ],
@@ -82,7 +81,7 @@ class MappingForm extends Form
                     'name' => 'o:item_set',
                     'type' => ResourceSelect::class,
                     'attributes' => [
-                        'id'       => 'select-item-set',
+                        'id' => 'select-item-set',
                         'required' => false,
                         'multiple' => true,
                         'data-placeholder' => 'Select item sets', // @translate
@@ -100,23 +99,23 @@ class MappingForm extends Form
                     ],
                 ]);
             }
-            if( $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner') ) {
+            if ($acl->userIsAllowed('Omeka\Entity\Item', 'change-owner')) {
                 $this->add([
-                    'name'       => 'o:owner',
-                    'type'       => ResourceSelect::class,
+                    'name' => 'o:owner',
+                    'type' => ResourceSelect::class,
                     'attributes' => [
                         'id' => 'select-owner',
                         'value' => $currentUser->getId(),
                         ],
-                    'options'    => [
+                    'options' => [
                         'label' => 'Owner', // @translate
                         'resource_value_options' => [
                             'resource' => 'users',
-                            'query'    => [],
+                            'query' => [],
                             'option_text_callback' => function ($user) {
                                 return $user->name();
-                                }
-                            ]
+                            },
+                            ],
                         ],
                 ]);
             }
@@ -126,30 +125,29 @@ class MappingForm extends Form
                 'type' => 'text',
                 'options' => [
                     'label' => 'Multivalue separator', // @translate
-                    'info'  => 'The separator to use for columns with multiple values' // @translate
+                    'info' => 'The separator to use for columns with multiple values', // @translate
                 ],
                 'attributes' => [
                     'id' => 'multivalue-separator',
                     'class' => 'input-body',
-                    'value' => ','
-                ]
+                    'value' => ',',
+                ],
             ]);
-            
-            
+
             $this->add([
                 'name' => 'global-language',
                 'type' => 'text',
                 'options' => [
                     'label' => 'Language', // @translate
-                    'info'  => 'Language setting to apply to all imported literal data. Individual property mappings can override the setting here.' // @translate
+                    'info' => 'Language setting to apply to all imported literal data. Individual property mappings can override the setting here.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'global-language',
                     'class' => 'input-body value-language',
-                    'value' => ''
-                ]
+                    'value' => '',
+                ],
             ]);
-            
+
             $inputFilter = $this->getInputFilter();
             $inputFilter->add([
                 'name' => 'o:resource_template[o:id]',
@@ -161,16 +159,16 @@ class MappingForm extends Form
                 ]);
             $inputFilter->add([
                 'name' => 'o:item_set',
-                'required' => false, 
+                'required' => false,
                 ]);
-            }
+        }
     }
-        
+
     public function setServiceLocator($serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
     }
-    
+
     public function getServiceLocator()
     {
         return $this->serviceLocator;

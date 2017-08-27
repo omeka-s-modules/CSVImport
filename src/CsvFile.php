@@ -3,7 +3,6 @@ namespace CSVImport;
 
 use SplFileObject;
 use Omeka\Service\Exception\ConfigException;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CsvFile
 {
@@ -70,7 +69,6 @@ class CsvFile
     /**
      * Use this to set the known (already-uploaded) csv file's path to where omekas puts it.
      */
-
     public function setTempPath($tempPath)
     {
         $this->tempPath = $tempPath;
