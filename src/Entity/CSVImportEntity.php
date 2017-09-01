@@ -1,18 +1,14 @@
 <?php
 namespace CSVImport\Entity;
 
-use DateTime;
 use Omeka\Entity\AbstractEntity;
 use Omeka\Entity\Job;
-use Omeka\Entity\Item;
-use Omeka\Entity\ItemSet;
 
 /**
  * @Entity
  */
 class CSVImportEntity extends AbstractEntity
 {
-
     /**
      * @Id
      * @Column(type="integer")
@@ -30,7 +26,7 @@ class CSVImportEntity extends AbstractEntity
      * @Column(type="integer")
      */
     protected $entity_id;
-    
+
     /**
      * API resource type (not neccesarily a Resource class)
      * @Column(type="string")

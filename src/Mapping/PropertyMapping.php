@@ -1,11 +1,8 @@
 <?php
 namespace CSVImport\Mapping;
 
-use CSVImport\Mapping\AbstractMapping;
-
 class PropertyMapping extends AbstractMapping
 {
-
     public static function getLabel()
     {
         return "Properties"; // @translate
@@ -32,7 +29,7 @@ class PropertyMapping extends AbstractMapping
         $languageSettings = isset($this->args['column-language']) ? $this->args['column-language'] : [];
         $globalLanguage = isset($this->args['global-language']) ? $this->args['global-language'] : '';
         $multivalueSeparator = $this->args['multivalue-separator'];
-        foreach($row as $index => $values) {
+        foreach ($row as $index => $values) {
             // consider 'literal' as the default type
             $type = 'literal';
             if (in_array($index, $urlMap)) {
@@ -43,32 +40,32 @@ class PropertyMapping extends AbstractMapping
                 $type = 'resource';
             }
 
-            if(isset($columnMap[$index])) {
-                foreach($columnMap[$index] as $propertyId) {
-                    if(in_array($index, $multivalueMap)) {
+            if (isset($columnMap[$index])) {
+                foreach ($columnMap[$index] as $propertyId) {
+                    if (in_array($index, $multivalueMap)) {
                         $multivalues = explode($multivalueSeparator, $values);
-                        foreach($multivalues as $value) {
+                        foreach ($multivalues as $value) {
                             switch ($type) {
                                 case 'uri':
                                     $propertyJson[$propertyId][] = [
-                                        '@id'         => $value,
+                                        '@id' => $value,
                                         'property_id' => $propertyId,
-                                        'type'        => $type,
+                                        'type' => $type,
                                     ];
                                 break;
                                 case 'resource':
                                     $propertyJson[$propertyId][] = [
                                         'value_resource_id' => $value,
-                                        'property_id'       => $propertyId,
-                                        'type'              => $type,
+                                        'property_id' => $propertyId,
+                                        'type' => $type,
                                     ];
                                 break;
 
                                 case 'literal':
-                                    $literalPropertyJson =  [
-                                        '@value'      => $value,
+                                    $literalPropertyJson = [
+                                        '@value' => $value,
                                         'property_id' => $propertyId,
-                                        'type'        => $type,
+                                        'type' => $type,
                                     ];
                                     if ($globalLanguage !== '') {
                                         $literalPropertyJson['@language'] = $globalLanguage;
@@ -84,25 +81,25 @@ class PropertyMapping extends AbstractMapping
                         switch ($type) {
                             case 'uri':
                                 $propertyJson[$propertyId][] = [
-                                    '@id'         => $values,
+                                    '@id' => $values,
                                     'property_id' => $propertyId,
-                                    'type'        => $type,
+                                    'type' => $type,
                                 ];
 
                             break;
                             case 'resource':
                                 $propertyJson[$propertyId][] = [
                                     'value_resource_id' => $values,
-                                    'property_id'       => $propertyId,
-                                    'type'              => $type,
+                                    'property_id' => $propertyId,
+                                    'type' => $type,
                                 ];
                             break;
 
                             case 'literal':
-                                $literalPropertyJson =  [
-                                    '@value'      => $values,
+                                $literalPropertyJson = [
+                                    '@value' => $values,
                                     'property_id' => $propertyId,
-                                    'type'        => $type,
+                                    'type' => $type,
                                 ];
                                 $this->logger->debug($globalLanguage);
                                 if ($globalLanguage !== '') {
@@ -112,7 +109,7 @@ class PropertyMapping extends AbstractMapping
                                     $literalPropertyJson['@language'] = $languageSettings[$index];
                                 }
                                 $propertyJson[$propertyId][] = $literalPropertyJson;
-                                
+
                             break;
                         }
                     }

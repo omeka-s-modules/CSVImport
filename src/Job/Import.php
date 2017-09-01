@@ -2,8 +2,6 @@
 namespace CSVImport\Job;
 
 use Omeka\Job\AbstractJob;
-use Omeka\Log\Writer\Job as JobWriter;
-use Omeka\Job\Exception as JobException;
 use CSVImport\CsvFile;
 
 class Import extends AbstractJob
@@ -11,9 +9,9 @@ class Import extends AbstractJob
     protected $api;
 
     protected $addedCount;
-    
+
     protected $logger;
-    
+
     protected $hasErr = false;
 
     public function perform()
@@ -33,24 +31,24 @@ class Import extends AbstractJob
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
         $csvImportJson = [
-                            'o:job'         => ['o:id' => $this->job->getId()],
-                            'comment'       => 'Job started',
+                            'o:job' => ['o:id' => $this->job->getId()],
+                            'comment' => 'Job started',
                             'resource_type' => $resourceType,
-                            'added_count'   => 0,
-                            'has_err'       => false,
+                            'added_count' => 0,
+                            'has_err' => false,
                           ];
 
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $importRecordId = $response->getContent()->id();
         $insertJson = [];
-        foreach($csvFile->fileObject as $index => $row) {
+        foreach ($csvFile->fileObject as $index => $row) {
             //skip the first (header) row, and any blank ones
             if ($index == 0 || empty($row)) {
                 continue;
             }
 
             $entityJson = [];
-            foreach($mappings as $mapping) {
+            foreach ($mappings as $mapping) {
                 $entityJson = array_merge($entityJson, $mapping->processRow($row));
                 if ($mapping->getHasErr()) {
                     $this->hasErr = true;
@@ -58,28 +56,28 @@ class Import extends AbstractJob
             }
             $insertJson[] = $entityJson;
             //only add every X for batch import
-            if ( $index % 20 == 0 ) {
+            if ($index % 20 == 0) {
                 //batch create
                 $this->createEntities($insertJson);
                 $insertJson = [];
             }
         }
-        
+
         //take care of remainder from the modulo check
         $this->createEntities($insertJson);
-        
+
         $comment = $this->getArg('comment');
 
         $csvImportJson = [
-                            'comment'       => $comment,
-                            'added_count'   => $this->addedCount,
-                            'has_err'       => $this->hasErr
+                            'comment' => $comment,
+                            'added_count' => $this->addedCount,
+                            'has_err' => $this->hasErr,
                           ];
         $response = $this->api->update('csvimport_imports', $importRecordId, $csvImportJson);
         $csvFile->delete();
     }
 
-    protected function createEntities($toCreate) 
+    protected function createEntities($toCreate)
     {
         $resourceType = $this->getArg('resource_type', 'items');
         $createResponse = $this->api->batchCreate($resourceType, $toCreate, [], ['continueOnError' => true]);
@@ -87,16 +85,16 @@ class Import extends AbstractJob
         $this->addedCount = $this->addedCount + count($createContent);
         $createImportEntitiesJson = [];
 
-        foreach($createContent as $resourceReference) {
+        foreach ($createContent as $resourceReference) {
             $createImportEntitiesJson[] = $this->buildImportRecordJson($resourceReference);
         }
         $createImportRecordResponse = $this->api->batchCreate('csvimport_entities', $createImportEntitiesJson, [], ['continueOnError' => true]);
     }
 
-    protected function buildImportRecordJson($resourceReference) 
+    protected function buildImportRecordJson($resourceReference)
     {
-        $recordJson = ['o:job'=> ['o:id'          => $this->job->getId()],
-                                  'entity_id'     => $resourceReference->id(),
+        $recordJson = ['o:job' => ['o:id' => $this->job->getId()],
+                                  'entity_id' => $resourceReference->id(),
                                   'resource_type' => $this->getArg('entity_type', 'items'),
                             ];
         return $recordJson;

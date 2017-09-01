@@ -7,8 +7,8 @@ use Omeka\Entity\Job;
 /**
  * @Entity
  */
-class CSVImportImport extends AbstractEntity {
-
+class CSVImportImport extends AbstractEntity
+{
     /**
      * @Id
      * @Column(type="integer")
@@ -37,12 +37,12 @@ class CSVImportImport extends AbstractEntity {
      * @Column(type="string", nullable=true)
      */
     protected $comment;
-    
+
     /**
      * @Column(type="string")
      */
     protected $resource_type;
-    
+
     /**
      * @Column(type="boolean")
      */
@@ -92,22 +92,22 @@ class CSVImportImport extends AbstractEntity {
     {
         return $this->comment;
     }
-    
+
     public function setResourceType($resourceType)
     {
         $this->resource_type = $resourceType;
     }
-    
+
     public function getResourceType()
     {
         return $this->resource_type;
     }
-    
+
     public function setHasErr($hasErr)
     {
         $this->has_err = $hasErr;
     }
-    
+
     public function getHasErr()
     {
         return $this->has_err;

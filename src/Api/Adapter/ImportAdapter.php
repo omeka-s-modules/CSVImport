@@ -13,17 +13,17 @@ class ImportAdapter extends AbstractEntityAdapter
     {
         return 'CSVImport\Entity\CSVImportImport';
     }
-    
+
     public function getResourceName()
     {
         return 'csvimport_imports';
     }
-    
+
     public function getRepresentationClass()
     {
         return 'CSVImport\Api\Representation\ImportRepresentation';
     }
-    
+
     public function hydrate(Request $request, EntityInterface $entity,
         ErrorStore $errorStore
     ) {
@@ -44,16 +44,16 @@ class ImportAdapter extends AbstractEntityAdapter
         if (isset($data['comment'])) {
             $entity->setComment($data['comment']);
         }
-        
+
         if (isset($data['resource_type'])) {
             $entity->setResourceType($data['resource_type']);
         }
-        
+
         if (isset($data['has_err'])) {
             $entity->setHasErr($data['has_err']);
         }
     }
-    
+
     public function buildQuery(QueryBuilder $qb, array $query)
     {
         if (isset($query['job_id'])) {

@@ -8,8 +8,8 @@ class EntityRepresentation extends AbstractEntityRepresentation
     public function getJsonLd()
     {
         return [
-            'o:job'         => $this->job()->getReference(),
-            'entity_id'     => $this->entityId(),
+            'o:job' => $this->job()->getReference(),
+            'entity_id' => $this->entityId(),
             'resource_type' => $this->resourceType(),
         ];
     }
@@ -24,7 +24,7 @@ class EntityRepresentation extends AbstractEntityRepresentation
         return $this->getAdapter('jobs')
             ->getRepresentation($this->resource->getJob());
     }
-    
+
     public function entityId()
     {
         return $this->resource->getEntityId();
