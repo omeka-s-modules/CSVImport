@@ -84,10 +84,12 @@ class IndexController extends AbstractActionController
                 $autoMaps = [];
             }
 
+            $mappingsResource = $this->orderMappingsForResource($resourceType);
+
             $view->setVariable('form', $form);
             $view->setVariable('automaps', $autoMaps);
             $view->setVariable('resourceType', $resourceType);
-            $view->setVariable('mappings', $config['csv_import_mappings'][$resourceType]);
+            $view->setVariable('mappings', $mappingsResource);
             $view->setVariable('columns', $columns);
             $view->setVariable('csvpath', $csvPath);
         }
@@ -116,6 +118,37 @@ class IndexController extends AbstractActionController
         $this->paginator($response->getTotalResults(), $page);
         $view->setVariable('imports', $response->getContent());
         return $view;
+    }
+
+    /**
+     * Helper to order buttons on the mapping form for a resource type.
+     *
+     * For ergonomic reasons, it’s cleaner to keep the buttons of modules after
+     * the default ones. This is only needed in the mapping form. The default
+     * order is set in this module config too, before Zend merge.
+     *
+     * @param string $resourceType
+     * @return array
+     */
+    protected function orderMappingsForResource($resourceType)
+    {
+        $defaultOrder = [
+            'items' => [
+                '\CSVImport\Mapping\PropertyMapping',
+                '\CSVImport\Mapping\ItemMapping',
+                '\CSVImport\Mapping\MediaMapping',
+            ],
+            'users' => [
+                '\CSVImport\Mapping\UserMapping',
+            ],
+        ];
+        $mappings = $this->config['csv_import_mappings'];
+        if (isset($defaultOrder[$resourceType])) {
+            return array_values(array_unique(array_merge(
+                $defaultOrder[$resourceType], $mappings[$resourceType]
+            )));
+        }
+        return $mappings[$resourceType];
     }
 
     protected function getMediaForms()
