@@ -1,15 +1,13 @@
 <?php
 namespace CSVImport\Mapping;
 
-use CSVImport\Mapping\AbstractMapping;
-
 class UserMapping extends AbstractMapping
 {
     public static function getLabel()
     {
         return "Users info";
     }
-    
+
     /**
      * Return a name to use in the form to identify this mapping's components
      */
@@ -22,7 +20,7 @@ class UserMapping extends AbstractMapping
     {
         return $view->partial('common/user-sidebar');
     }
-    
+
     /**
      * Process a row from the CSV file
      * @param array $row
@@ -35,23 +33,23 @@ class UserMapping extends AbstractMapping
         $nameIndex = array_keys($this->args['column-user-displayname'])[0];
         $roleIndex = array_keys($this->args['column-user-role'])[0];
         $userJson = [];
-        
-        foreach($row as $index => $value) {
-            switch($index) {
+
+        foreach ($row as $index => $value) {
+            switch ($index) {
                 case $emailIndex:
                     $userJson['o:email'] = trim($value);
                 break;
-                
+
                 case $nameIndex:
                     $userJson['o:name'] = trim($value);
                 break;
-                
+
                 case $roleIndex:
                     $userJson['o:role'] = trim($value);
                 break;
             }
         }
-        
+
         if (empty($userJson['o:name'])) {
             $userJson['o:name'] = $userJson['o:email'];
         }

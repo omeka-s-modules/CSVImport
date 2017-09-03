@@ -1,11 +1,8 @@
 <?php
 namespace CSVImport\Mapping;
 
-use CSVImport\Mapping\AbstractMapping;
-
 class ItemMapping extends AbstractMapping
 {
-
     public static function getLabel()
     {
         return "Item data"; // @translate
@@ -29,7 +26,7 @@ class ItemMapping extends AbstractMapping
         if (!empty($this->args['o:item_set'])) {
             $itemSets = $this->args['o:item_set'];
             $itemJson['o:item_set'] = [];
-            foreach($itemSets as $itemSetId) {
+            foreach ($itemSets as $itemSetId) {
                 $itemJson['o:item_set'][] = ['o:id' => $itemSetId];
             }
         }
@@ -53,12 +50,12 @@ class ItemMapping extends AbstractMapping
         $resourceClassMap = isset($this->args['column-resourceclass']) ? array_keys($this->args['column-resourceclass']) : [];
         $ownerMap = isset($this->args['column-owneremail']) ? array_keys($this->args['column-owneremail']) : [];
 
-        foreach($row as $index => $values) {
+        foreach ($row as $index => $values) {
             //maybe weird, but just assuming a split for ids for simplicity's sake
             //since a list of ids shouldn't have any weird separators
             $values = explode($multivalueSeparator, $values);
             if (in_array($index, $itemSetMap)) {
-                foreach($values as $itemSetId) {
+                foreach ($values as $itemSetId) {
                     $itemSetId = trim($itemSetId);
                     $itemSet = $this->findItemSet($itemSetId);
                     if ($itemSet) {
@@ -93,7 +90,7 @@ class ItemMapping extends AbstractMapping
         $term = trim($term);
         $response = $this->api->search('resource_classes', ['term' => $term]);
         $content = $response->getContent();
-        if( empty($content)){
+        if (empty($content)) {
             $this->logger->err("'$term' is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.");
             $this->setHasErr(true);
             return false;
@@ -113,7 +110,7 @@ class ItemMapping extends AbstractMapping
         $label = trim($label);
         $response = $this->api->search('resource_templates', ['label' => $label]);
         $content = $response->getContent();
-        if( empty($content)){
+        if (empty($content)) {
             $this->logger->err("$label is not a valid Resource Template name.");
             $this->setHasErr(true);
             return false;
@@ -133,7 +130,7 @@ class ItemMapping extends AbstractMapping
         $email = trim($email);
         $response = $this->api->search('users', ['email' => $email]);
         $content = $response->getContent();
-        if( empty($content)){
+        if (empty($content)) {
             $this->logger->err("$email is not a valid user email address.");
             $this->setHasErr(true);
             return false;
@@ -147,17 +144,17 @@ class ItemMapping extends AbstractMapping
         }
         return $content[0];
     }
-    
+
     protected function findItemSet($itemSetId)
     {
         $response = $this->api->search('item_sets', ['id' => $itemSetId]);
         $content = $response->getContent();
-        if( empty($content)){
+        if (empty($content)) {
             $this->logger->err("$itemSetId is not a valid item set.");
             $this->setHasErr(true);
             return false;
         }
-        
+
         return $content[0];
     }
 }

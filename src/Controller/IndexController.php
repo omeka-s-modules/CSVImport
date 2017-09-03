@@ -10,15 +10,15 @@ use Zend\View\Model\ViewModel;
 class IndexController extends AbstractActionController
 {
     protected $mediaIngesterManager;
-    
+
     protected $config;
-    
+
     public function __construct(array $config, \Omeka\Media\Ingester\Manager $mediaIngesterManager)
     {
         $this->config = $config;
         $this->mediaIngesterManager = $mediaIngesterManager;
     }
-    
+
     public function indexAction()
     {
         $view = new ViewModel;
@@ -31,7 +31,7 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $request = $this->getRequest();
-        
+
         if (!$request->isPost()) {
             return $this->redirect()->toRoute('admin/csvimport');
         }
@@ -78,7 +78,7 @@ class IndexController extends AbstractActionController
             $view->setVariable('mediaForms', $this->getMediaForms());
 
             $config = $this->config;
-            if($resourceType == 'items' || $resourceType == 'item_sets') {
+            if ($resourceType == 'items' || $resourceType == 'item_sets') {
                 $autoMaps = $this->getAutomaps($columns);
             } else {
                 $autoMaps = [];
@@ -108,9 +108,9 @@ class IndexController extends AbstractActionController
         $view = new ViewModel;
         $page = $this->params()->fromQuery('page', 1);
         $query = $this->params()->fromQuery() + [
-            'page'       => $page,
-            'sort_by'    => $this->params()->fromQuery('sort_by', 'id'),
-            'sort_order' => $this->params()->fromQuery('sort_order', 'desc')
+            'page' => $page,
+            'sort_by' => $this->params()->fromQuery('sort_by', 'id'),
+            'sort_order' => $this->params()->fromQuery('sort_order', 'desc'),
         ];
         $response = $this->api()->search('csvimport_imports', $query);
         $this->paginator($response->getTotalResults(), $page);
@@ -134,7 +134,7 @@ class IndexController extends AbstractActionController
     protected function getAutomaps($columns)
     {
         $autoMaps = [];
-        foreach($columns as $index=>$column) {
+        foreach ($columns as $index => $column) {
             $column = trim($column);
             if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
                 $response = $this->api()->search('properties', ['term' => $column]);
@@ -147,16 +147,17 @@ class IndexController extends AbstractActionController
         }
         return $autoMaps;
     }
-    
-    protected function undoJob($jobId) {
+
+    protected function undoJob($jobId)
+    {
         $response = $this->api()->search('csvimport_imports', ['job_id' => $jobId]);
         $csvImport = $response->getContent()[0];
         $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Undo', ['jobId' => $jobId]);
-        $response = $this->api()->update('csvimport_imports', 
-                    $csvImport->id(), 
+        $response = $this->api()->update('csvimport_imports',
+                    $csvImport->id(),
                     [
-                        'o:undo_job' => ['o:id' => $job->getId() ]
+                        'o:undo_job' => ['o:id' => $job->getId() ],
                     ]
                 );
         return $job;
