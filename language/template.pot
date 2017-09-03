@@ -4,11 +4,12 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
+
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 18:09-0400\n"
+"POT-Creation-Date: 2017-08-21 13:06-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -226,4 +227,8 @@ msgstr ""
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
+msgstr ""
+
+#: config/module.config.php:130
+msgid "Past Imports"
 msgstr ""

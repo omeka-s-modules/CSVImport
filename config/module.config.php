@@ -116,18 +116,18 @@ return [
                 'resource'   => 'CSVImport\Controller\Index',
                 'pages'      => [
                     [
-                        'label'      => 'Import',
+                        'label'      => 'Import', // @translate
                         'route'      => 'admin/csvimport',
                         'resource'   => 'CSVImport\Controller\Index',
                     ],
                     [
-                        'label'      => 'Import',
+                        'label'      => 'Import', // @translate
                         'route'      => 'admin/csvimport/map',
                         'resource'   => 'CSVImport\Controller\Index',
                         'visible'    => false,
                     ],
                     [
-                        'label'      => 'Past Imports',
+                        'label'      => 'Past Imports', // @translate
                         'route'      => 'admin/csvimport/past-imports',
                         'controller' => 'Index',
                         'action'     => 'past-imports',
