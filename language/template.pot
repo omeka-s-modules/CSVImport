@@ -4,12 +4,11 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
-
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 13:06-0400\n"
+"POT-Creation-Date: 2017-09-04 11:38-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Mapping/PropertyMapping.php:21
+#: src/Mapping/PropertyMapping.php:18
 msgid "Properties: "
 msgstr ""
 
@@ -126,12 +125,33 @@ msgstr ""
 msgid "Import as URL"
 msgstr ""
 
+#: view/csv-import/index/map.phtml:61
+msgid "Remove import as URL"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:64 view/csv-import/index/map.phtml:76
+#: view/csv-import/index/map.phtml:88 view/csv-import/index/map.phtml:101
+msgid "Undo remove as URL"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:73
+msgid "Remove import as Omeka S Resource ID"
+msgstr ""
+
 #: view/csv-import/index/map.phtml:82
 msgid "Multivalue"
 msgstr ""
 
+#: view/csv-import/index/map.phtml:85
+msgid "Remove multivalue"
+msgstr ""
+
 #: view/csv-import/index/map.phtml:94
 msgid "Language:"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:98
+msgid "Remove language"
 msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
@@ -167,11 +187,11 @@ msgstr ""
 msgid "Undo in progress"
 msgstr ""
 
-#: src/Mapping/ItemMapping.php:11
+#: src/Mapping/ItemMapping.php:8
 msgid "Item data"
 msgstr ""
 
-#: src/Mapping/MediaMapping.php:12
+#: src/Mapping/MediaMapping.php:10
 msgid "Media import"
 msgstr ""
 
@@ -191,39 +211,39 @@ msgstr ""
 msgid "The type of data being imported"
 msgstr ""
 
-#: src/Form/MappingForm.php:26
+#: src/Form/MappingForm.php:25
 msgid "A note about the purpose or source of this import"
 msgstr ""
 
-#: src/Form/MappingForm.php:45
+#: src/Form/MappingForm.php:44
 msgid "A pre-defined template for resource creation"
 msgstr ""
 
-#: src/Form/MappingForm.php:46
+#: src/Form/MappingForm.php:45
 msgid "Select Template"
 msgstr ""
 
-#: src/Form/MappingForm.php:66
+#: src/Form/MappingForm.php:65
 msgid "Select Class"
 msgstr ""
 
-#: src/Form/MappingForm.php:88
+#: src/Form/MappingForm.php:87
 msgid "Select item sets"
 msgstr ""
 
-#: src/Form/MappingForm.php:92
+#: src/Form/MappingForm.php:91
 msgid "Select Item sets for this resource"
 msgstr ""
 
-#: src/Form/MappingForm.php:128
+#: src/Form/MappingForm.php:127
 msgid "Multivalue separator"
 msgstr ""
 
-#: src/Form/MappingForm.php:129
+#: src/Form/MappingForm.php:128
 msgid "The separator to use for columns with multiple values"
 msgstr ""
 
-#: src/Form/MappingForm.php:144
+#: src/Form/MappingForm.php:142
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
@@ -231,4 +251,24 @@ msgstr ""
 
 #: config/module.config.php:130
 msgid "Past Imports"
+msgstr ""
+
+#: config/module.config.php:141
+msgid "Remove mapping"
+msgstr ""
+
+#: config/module.config.php:142
+msgid "Undo remove mapping"
+msgstr ""
+
+#: config/module.config.php:143
+msgid "Select an item type at the left before choosing a resource class."
+msgstr ""
+
+#: config/module.config.php:144
+msgid "Select an element at the left before choosing a property."
+msgstr ""
+
+#: config/module.config.php:145
+msgid "Please enter a valid language tag."
 msgstr ""
