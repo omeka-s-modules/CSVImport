@@ -194,15 +194,37 @@ class Import extends AbstractJob
     }
 
     /**
-     * Helper to find identifiers from a row.
+     * Helper to find identifiers from a batch of rows.
      *
      * @param array $data
      * @param int $identifierProperty
-     * @return array Associative array mapping the data key and the found ids.
+     * @return array Associative array mapping the data key as key and the found
+     * ids or null as value. Order is kept.
      */
     protected function extractIdentifiers($data, $identifierProperty)
     {
         $identifiers = [];
+        $resourceType = $this->getArg('resource_type', 'items');
+        foreach ($data as $key => $entityJson) {
+            $identifier = null;
+            switch ($resourceType) {
+                case 'items':
+                    foreach ($entityJson as $index => $value) {
+                        if (is_array($value)
+                            && !empty($value[0]['@value'])
+                            && isset($value[0]['property_id'])
+                            && $value[0]['property_id'] === $identifierProperty
+                        ) {
+                            $identifier = $value[0]['@value'];
+                            break;
+                        }
+                    }
+                    break;
+                case 'users':
+                    break;
+            }
+            $identifiers[$key] = $identifier;
+        }
         return $identifiers;
     }
 
