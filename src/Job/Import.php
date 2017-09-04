@@ -27,7 +27,7 @@ class Import extends AbstractJob
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
-        $csvFile = new CsvFile($this->getServiceLocator());
+        $csvFile = new CsvFile($this->getServiceLocator()->get('Config'));
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
         $csvImportJson = [

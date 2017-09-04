@@ -6,13 +6,22 @@ use Omeka\Service\Exception\ConfigException;
 
 class CsvFile
 {
+    /**
+     * @var SplFileObject
+     */
     public $fileObject;
 
+    /**
+     * @var string
+     */
     public $tempPath;
 
+    /**
+     * @var array
+     */
     public $config;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $this->config = $config;
     }
