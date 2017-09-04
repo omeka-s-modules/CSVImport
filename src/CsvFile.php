@@ -43,13 +43,14 @@ class CsvFile
     {
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
-        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
     }
 
     public function getHeaders()
     {
         $this->fileObject->rewind();
-        $line = $this->fileObject->fgetcsv();
+        $line = $this->fileObject->current();
         return $line;
     }
 
