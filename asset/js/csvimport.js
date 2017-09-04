@@ -6,6 +6,8 @@
             + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
             + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
 
+        $('#multivalue-switch').text(Omeka.jsTranslate('Set multivalue separator for all columns'));
+
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces
@@ -214,6 +216,28 @@
             optionToRestore.removeClass('delete');
             optionToRestore.find('.remove-option').show();
             optionToRestore.find('.restore-option').hide();
+        });
+
+        // Set/unset multivalue separator for all columns.
+        $('#multivalue-switch').on('click', function(e) {
+            e.preventDefault();
+            var targetLines = $('.mappable li.column-multivalue');
+            targetLines.removeClass('delete');
+            targetLines.find('.remove-option').css({ display: 'inline' });
+            targetLines.find('.restore-option').css({ display: 'none' });
+            if ($(this).val() === 'multivalue-unset') {
+                targetLines.find('input.column-multivalue').prop('disabled', true);
+                targetLines.hide();
+                $(this).prop('value', 'multivalue-set');
+                $(this).val('multivalue-set');
+                $(this).text(Omeka.jsTranslate('Set multivalue separator for all columns'));
+            } else {
+                targetLines.find('input.column-multivalue').prop('disabled', false);
+                targetLines.show();
+                $(this).prop('value', 'multivalue-unset');
+                $(this).val('multivalue-unset');
+                $(this).text(Omeka.jsTranslate('Unset multivalue separator for all columns'));
+            }
         });
 
         /*
