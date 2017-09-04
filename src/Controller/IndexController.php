@@ -43,8 +43,9 @@ class IndexController extends AbstractActionController
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
+                $args = $this->cleanArgs($post);
                 $dispatcher = $this->jobDispatcher();
-                $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
+                $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
@@ -149,6 +150,30 @@ class IndexController extends AbstractActionController
             )));
         }
         return $mappings[$resourceType];
+    }
+
+    /**
+     * Helper to clean posted args to get more readable logs.
+     *
+     * @param array $post
+     * @return array
+     */
+    protected function cleanArgs(array $post)
+    {
+        $args = $post;
+
+        // Name of properties must be known to merge data and to process update.
+        $api = $this->api();
+        foreach ($args['column-property'] as $column => $ids) {
+            $properties = [];
+            foreach ($ids as $id) {
+                $term = $api->read('properties', $id)->getContent()->term();
+                $properties[$term] = $id;
+            }
+            $args['column-property'][$column] = $properties;
+        }
+
+        return $args;
     }
 
     protected function getMediaForms()
