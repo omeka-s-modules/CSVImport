@@ -61,6 +61,17 @@ class Import extends AbstractJob
      */
     protected $resourceType;
 
+    /**
+     * @var array
+     */
+    protected $identifiers;
+
+    /**
+     *
+     * @var string|int
+     */
+    protected $identifierProperty;
+
     public function perform()
     {
         ini_set("auto_detect_line_endings", true);
@@ -99,6 +110,7 @@ class Import extends AbstractJob
         if ($this->hasErr) {
             return $this->endJob();
         }
+        $this->identifierProperty = $identifierProperty;
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
         $offset = 1;
@@ -250,14 +262,15 @@ class Import extends AbstractJob
                     $resource = $response->getContent();
                     $this->deduplicatePropertyValues($resource);
                 }
-                $updatedIds[] = $id;
+                $updatedIds[$key] = $id;
             } catch (\Exception $e) {
                 $this->logger->err((string) $e);
                 continue;
             }
         }
+        $idsForLog = $this->idsForLog($updatedIds);
         $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
-            count($updatedIds), $this->resourceType, $mode, implode(', ', $updatedIds)));
+            count($updatedIds), $this->resourceType, $mode, $idsForLog));
     }
 
     /**
@@ -274,12 +287,16 @@ class Import extends AbstractJob
         $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
         $deleted = $response->getContent();
         // TODO Get better stats of removed ids in case of error.
+        $idsForLog = $this->idsForLog($ids);
         $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
-            count($deleted), $this->resourceType, implode(', ', $ids)));
+            count($deleted), $this->resourceType, $idsForLog));
     }
 
     /**
      * Helper to find identifiers from a batch of rows.
+     *
+     * The list of associated identifiers are kept as a class property until it
+     * is recalled with new identifiers.
      *
      * @param array $data
      * @param int $identifierProperty
@@ -312,6 +329,7 @@ class Import extends AbstractJob
             }
             $identifiers[$key] = $identifier;
         }
+        $this->identifiers = $identifiers;
         return $identifiers;
     }
 
@@ -432,6 +450,25 @@ class Import extends AbstractJob
     {
         $identifiers = array_filter($identifiers);
         return array_intersect_key($data, $identifiers);
+    }
+
+    /**
+     * Helper to get cleaner log when identifiers are used.
+     *
+     * @param array $ids
+     * @return string
+     */
+    protected function idsForLog($ids)
+    {
+        switch ($this->identifierProperty) {
+            case 'internal_id':
+                // Nothing to do.
+                break;
+            default:
+                array_walk($ids, function(&$v, $k) { $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); }); // @ translate
+                break;
+        }
+        return implode(', ', $ids);
     }
 
     /**
