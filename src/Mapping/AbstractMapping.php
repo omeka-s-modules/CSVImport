@@ -1,16 +1,35 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Omeka\Api\Manager;
+use Zend\Log\Logger;
+use Zend\ServiceManager\ServiceManager;
+
 abstract class AbstractMapping implements MappingInterface
 {
+    /**
+     * @var array
+     */
     protected $args;
 
+    /**
+     * @var Manager
+     */
     protected $api;
 
+    /**
+     * @var Logger
+     */
     protected $logger;
 
+    /**
+     * @var ServiceManager
+     */
     protected $serviceLocator;
 
+    /**
+     * @var bool
+     */
     protected $hasErr = false;
 
     public function __construct($args, $serviceLocator)

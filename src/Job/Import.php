@@ -6,16 +6,18 @@ use CSVImport\Entity\CSVImportImport;
 use Doctrine\DBAL\Connection;
 use LimitIterator;
 use Omeka\Api\Manager;
+use Omeka\Api\Representation\AbstractResourceRepresentation;
 use Omeka\Job\AbstractJob;
 use Zend\Log\Logger;
 
 class Import extends AbstractJob
 {
-    const ACTION_CREATE = 'create';
-    const ACTION_UPDATE = 'update';
-    const ACTION_UPDATE_ELSE_CREATE = 'update else create';
-    const ACTION_DELETE = 'delete';
-    const ACTION_SKIP = 'skip';
+    const ACTION_CREATE = 'create'; // @translate
+    const ACTION_APPEND = 'append'; // @translate
+    const ACTION_UPDATE = 'update'; // @translate
+    const ACTION_REPLACE = 'replace'; // @translate
+    const ACTION_DELETE = 'delete'; // @translate
+    const ACTION_SKIP = 'skip'; // @translate
 
     /**
      * Number of rows to process by batch.
@@ -86,11 +88,10 @@ class Import extends AbstractJob
         $this->importRecord = $response->getContent();
 
         // Check options.
+        $action = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
         $identifierProperty = empty($args['identifier_property']) ? null : $args['identifier_property'];
-        $action = empty($args['action'])
-            ? (empty($identifierProperty) ? self::ACTION_CREATE : self::ACTION_UPDATE_ELSE_CREATE)
-            : $args['action'];
-        $this->checkOptions(compact('action', 'identifierProperty'));
+        $actionUnidentified = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
+        $this->checkOptions(compact('action', 'identifierProperty', 'actionUnidentified'));
         if ($this->hasErr) {
             return $this->endJob();
         }
@@ -106,6 +107,7 @@ class Import extends AbstractJob
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
                     $entityJson = array_merge($entityJson, $mapping->processRow($row));
+
                     if ($mapping->getHasErr()) {
                         $this->hasErr = true;
                     }
@@ -117,27 +119,45 @@ class Import extends AbstractJob
                 case self::ACTION_CREATE:
                     $this->create($data);
                     break;
+                case self::ACTION_APPEND:
                 case self::ACTION_UPDATE:
+                case self::ACTION_REPLACE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
                     $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
                     $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
-                    $ids = array_filter($ids);
-                    $data = array_intersect_key($data, $ids);
-                    $this->update($data, $ids);
-                    break;
-                case self::ACTION_UPDATE_ELSE_CREATE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
-                    $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
-                    $this->updateElseCreate($data, $ids);
+                    $idsToProcess = array_filter($ids);
+                    $idsRemaining = array_diff_key($ids, $idsToProcess);
+                    $dataToProcess = array_intersect_key($data, $idsToProcess);
+                    // The creation occurs before the update in all cases.
+                    switch ($actionUnidentified) {
+                        case self::ACTION_CREATE:
+                            $dataToCreate = array_intersect_key($data, $idsRemaining);
+                            $this->create($dataToCreate);
+                            break;
+                        case self::ACTION_SKIP:
+                            if ($idsRemaining) {
+                                $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                                $this->logger->info(sprintf('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                                    implode('", "', $identifiersRemaining)));
+                            }
+                            break;
+                    }
+                    $this->update($dataToProcess, $idsToProcess, $action);
                     break;
                 case self::ACTION_DELETE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
                     $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
-                    $this->delete($ids);
+                    $idsToProcess = array_filter($ids);
+                    $idsRemaining = array_diff_key($ids, $idsToProcess);
+                    if ($idsRemaining) {
+                        $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                        $this->logger->info(sprintf('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                            implode('", "', $identifiersRemaining)));
+                    }
+                    $this->delete($idsToProcess);
                     break;
                 case self::ACTION_SKIP:
-                    // No action to do.
+                    // No process.
                     break;
             }
 
@@ -179,33 +199,63 @@ class Import extends AbstractJob
      * @param array $data
      * @param array $ids All the ids must exists and the order must be the same
      * than data.
+     * @param string $mode
      */
-    protected function update(array $data, array $ids)
+    protected function update(array $data, array $ids, $mode)
     {
         if (empty($ids)) {
             return;
         }
-        $resourceType = $this->getArg('resource_type', 'items');
-        $response = $this->api->batchUpdate($resourceType, $ids, $data, ['continueOnError' => true]);
-        $this->logger->info(sprintf('%d %s were updated: %s.', // @translate
-            count($ids), $resourceType, implode(', ', $ids)));
-    }
 
-    /**
-     * Batch update or create a list of entities.
-     *
-     * @param array $data
-     * @param array $ids All the ids must exists and the order must be the same
-     * than data.
-     */
-    protected function updateElseCreate(array $data, array $ids)
-    {
-        $idsToUpdate = array_filter($ids);
-        $dataToUpdate = array_intersect_key($data, $idsToUpdate);
-        $idsToCreate = array_diff_key($ids, $idsToUpdate);
-        $dataToCreate = array_intersect_key($data, $idsToCreate);
-        $this->create($dataToCreate);
-        $this->update($dataToUpdate, $idsToUpdate);
+        $resourceType = $this->getArg('resource_type', 'items');
+        $fileData = [];
+        $options = [];
+        switch ($resourceType) {
+            case 'items':
+                // TODO Manage and update file data.
+                switch ($mode) {
+                    case self::ACTION_APPEND:
+                        $options['isPartial'] = true;
+                        $options['collectionAction'] = 'append';
+                        break;
+                    case self::ACTION_UPDATE:
+                        $options['isPartial'] = true;
+                        $options['collectionAction'] = array_key_exists('o:item_set', reset($data))
+                            ? 'replace'
+                            : 'append';
+                        break;
+                    case self::ACTION_REPLACE:
+                        $options['isPartial'] = false;
+                        $options['collectionAction'] = 'replace';
+                        break;
+                }
+                break;
+            default:
+                $this->hasErr = true;
+                $this->logger->err(sprintf('The update mode "%s" is unsupported for %s currently.', // @translate
+                    $mode, $resourceType));
+                return;
+        }
+
+        // In the api manager, batchUpdate() allows to update a set of resources
+        // with the same data. Here, data are specific to each row.
+        $updatedIds = [];
+        foreach ($ids as $key => $id) {
+            try {
+                $response = $this->api->update($resourceType, $id, $data[$key], $fileData, $options);
+                if ($mode === self::ACTION_APPEND) {
+                    // TODO Improve to avoid two consecutive update (deduplicate before or via core methods).
+                    $resource = $response->getContent();
+                    $this->deduplicatePropertyValues($resource);
+                }
+                $updatedIds[] = $id;
+            } catch (\Exception $e) {
+                $this->logger->err((string) $e);
+                continue;
+            }
+        }
+        $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
+            count($updatedIds), $resourceType, $mode, implode(', ', $updatedIds)));
     }
 
     /**
@@ -221,8 +271,10 @@ class Import extends AbstractJob
         }
         $resourceType = $this->getArg('resource_type', 'items');
         $response = $this->api->batchDelete($resourceType, $ids, [], ['continueOnError' => true]);
+        $deleted = $response->getContent();
+        // TODO Get better stats of removed ids in case of error.
         $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
-            count($ids), $resourceType, implode(', ', $ids)));
+            count($deleted), $resourceType, implode(', ', $ids)));
     }
 
     /**
@@ -384,6 +436,32 @@ class Import extends AbstractJob
     }
 
     /**
+     * Deduplicate property values of a resource.
+     *
+     * @param AbstractResourceRepresentation $representation
+     */
+    protected function deduplicatePropertyValues(AbstractResourceRepresentation $representation)
+    {
+        // NOTE The partial update does not seem to work, so take flushed data
+        // and replace them all.
+        // $data = [];
+        $data = $representation->jsonSerialize();
+        $values = $representation->values();
+        foreach ($values as $term => $propertyData) {
+            $data[$term] = array_values(array_map('unserialize', array_unique( array_map(function ($v) {
+                return serialize($v->jsonSerialize());
+            }, $propertyData['values']))));
+        }
+        $resourceType = $this->getArg('resource_type', 'items');
+        $options = [];
+        // $options['isPartial'] = true;
+        // $options['collectionAction'] = 'append';
+        $options['isPartial'] = false;
+        $options['collectionAction'] = 'replace';
+        $response = $this->api->update($resourceType, $representation->id(), $data, [], $options);
+    }
+
+    /**
      * Check options used to import.
      *
      * @param array $options Associative array of options.
@@ -420,6 +498,13 @@ class Import extends AbstractJob
         if ($identifierProperty === 'internal_id') {
             $this->hasErr = true;
             $this->logger->err(sprintf('The identifier property "internal_id" is not managed currently.')); // @translate
+        }
+        if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
+            if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
+                $this->hasErr = true;
+                $this->logger->err(sprintf('The action "%s" for unidentified resources is not managed.', // @translate
+                    $actionUnidentified));
+            }
         }
     }
 

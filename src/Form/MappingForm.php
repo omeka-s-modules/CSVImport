@@ -152,8 +152,9 @@ class MappingForm extends Form
 
             $valueOptions = [
                 Import::ACTION_CREATE => 'Create a new resource', // @translate
-                Import::ACTION_UPDATE => 'Update the resource if it exists, else skip the row', // @translate
-                Import::ACTION_UPDATE_ELSE_CREATE => 'Update the resource if it exists, else create one', // @translate
+                Import::ACTION_APPEND => 'Append data to the resource', // @translate
+                Import::ACTION_UPDATE => 'Update data of the resource', // @translate
+                Import::ACTION_REPLACE => 'Replace all data of the resource', // @translate
                 Import::ACTION_DELETE => 'Delete the resource', // @translate
                 Import::ACTION_SKIP => 'Skip process of the resource', // @translate
             ];
@@ -162,12 +163,11 @@ class MappingForm extends Form
                 'type' => 'select',
                 'options' => [
                     'label' => 'Action', // @translate
-                    'info' => 'The default action depends on the identifier option: if set, it’s "Update if it exists, else create", else it’s "Create".', // @translate
-                    'empty_option' => 'Select below', // @translate
                     'value_options' => $valueOptions,
                 ],
                 'attributes' => [
                     'id' => 'action',
+                    'class' => 'advanced-import',
                 ],
             ]);
 
@@ -186,8 +186,27 @@ class MappingForm extends Form
                     ]
                 ],
                 'attributes' => [
-                    'class' => 'chosen-select',
+                    'class' => 'advanced-import chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
+                ],
+            ]);
+
+            $this->add([
+                'name' => 'action_unidentified',
+                'type' => 'radio',
+                'options' => [
+                    'label' => 'Action on unidentified resources', // @translate
+                    'info' => 'This option determines what to do when a resource does not exist but the action applies to an existing resource ("Append", "Update", or "Replace").' // @translate
+                        . ' ' . 'This option is not used when the main action is "Create", "Delete" or "Skip".', // @translate
+                    'value_options' => [
+                        Import::ACTION_SKIP => 'Skip the row', // @translate
+                        Import::ACTION_CREATE => 'Create a new resource', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'action_unidentified',
+                    'class' => 'advanced-import',
+                    'value' => Import::ACTION_SKIP,
                 ],
             ]);
 
@@ -210,6 +229,10 @@ class MappingForm extends Form
             ]);
             $inputFilter->add([
                 'name' => 'identifier_property',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'action_unidentified',
                 'required' => false,
             ]);
         }
