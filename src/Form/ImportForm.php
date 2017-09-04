@@ -13,6 +13,7 @@ class ImportForm extends Form
     protected $delimiterList = [
         ',' => 'comma', // @translate
         ';' => 'semi-colon', // @translate
+        ':' => 'colon', // @translate
         "__>\t<__" => 'tabulation', // @translate
         '__>\r<__' => 'carriage return', // @translate
         '__> <__' => 'space', // @translate
