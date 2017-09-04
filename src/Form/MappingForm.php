@@ -18,6 +18,33 @@ class MappingForm extends Form
         $acl = $serviceLocator->get('Omeka\Acl');
 
         $this->add([
+            'name' => 'resource_type',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $resourceType,
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'delimiter',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('delimiter'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'enclosure',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('enclosure'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
             'name' => 'comment',
             'type' => 'textarea',
             'options' => [

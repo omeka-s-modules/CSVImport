@@ -1,8 +1,8 @@
 <?php
 namespace CSVImport\Job;
 
-use Omeka\Job\AbstractJob;
 use CSVImport\CsvFile;
+use Omeka\Job\AbstractJob;
 
 class Import extends AbstractJob
 {
@@ -27,7 +27,16 @@ class Import extends AbstractJob
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
-        $csvFile = new CsvFile($this->getServiceLocator());
+        $csvFile = new CsvFile($this->getServiceLocator()->get('Config'));
+        if (isset($args['delimiter'])) {
+            $csvFile->setDelimiter($args['delimiter']);
+        }
+        if (isset($args['enclosure'])) {
+            $csvFile->setEnclosure($args['enclosure']);
+        }
+        if (isset($args['escape'])) {
+            $csvFile->setEscape($args['escape']);
+        }
         $csvFile->setTempPath($this->getArg('csvpath'));
         $csvFile->loadFromTempPath();
         $csvImportJson = [
