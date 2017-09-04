@@ -8,6 +8,16 @@
 
         $('#multivalue-switch').text(Omeka.jsTranslate('Set multivalue separator for all columns'));
 
+        var advancedHtml = '<div class="field">'
+            + '<div class="field-meta">'
+            + '<button type="button" name="advanced-params" id="advanced-params" value="show">'
+            + Omeka.jsTranslate('Advanced options')
+            + '</button>'
+            + '</div>'
+            + '</div>';
+        $('#action').closest('.field').before(advancedHtml);
+        $('.advanced-params').closest('.field').hide();
+
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces
@@ -238,6 +248,13 @@
                 $(this).val('multivalue-unset');
                 $(this).text(Omeka.jsTranslate('Unset multivalue separator for all columns'));
             }
+        });
+
+        // Manage advanced options.
+        $('#advanced-params').on('click', function(e) {
+            e.preventDefault();
+            $('.advanced-params').closest('.field').show();
+            $(this).closest('.field').remove();
         });
 
         /*

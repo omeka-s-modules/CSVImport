@@ -1,8 +1,9 @@
 <?php
 namespace CSVImport;
 
-use SplFileObject;
+use LimitIterator;
 use Omeka\Service\Exception\ConfigException;
+use SplFileObject;
 
 class CsvFile
 {
@@ -68,12 +69,28 @@ class CsvFile
         $this->config = $config;
     }
 
+    /**
+     * Check if the file is utf-8 formatted.
+     *
+     * @return bool
+     */
     public function isUtf8()
     {
+        $result = true;
+        // Check all the file, because the headers are generally ascii.
+        // Nevertheless, check the lines one by one as text to avoid a memory
+        // overflow with a big csv file.
+        $this->fileObject->setFlags(0);
         $this->fileObject->rewind();
-        $string = $this->fileObject->fgets();
-        $isUtf8 = mb_detect_encoding($string, 'UTF-8', true);
-        return $isUtf8 == 'UTF-8';
+        foreach (new LimitIterator($this->fileObject) as $line) {
+            if (mb_detect_encoding($line, 'UTF-8', true) !== 'UTF-8') {
+                $result = false;
+                break;
+            }
+        }
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        return $result;
     }
 
     public function moveToTemp($systemTempPath)
@@ -85,15 +102,16 @@ class CsvFile
     {
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
-        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
         $this->fileObject->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
     }
 
     public function getHeaders()
     {
         $this->fileObject->rewind();
-        $line = $this->fileObject->fgetcsv();
-        return $line;
+        $line = $this->fileObject->current();
+        return array_map('trim', $line);
     }
 
     /**
@@ -116,6 +134,25 @@ class CsvFile
         }
         $this->tempPath = tempnam($tempDir, 'omeka');
         return $this->tempPath;
+    }
+
+    /**
+     * Return the number of non-empty rows.
+     *
+     * @return int
+     */
+    public function countRows()
+    {
+        // FileObject has no countRows() method, so count them one by one.
+        // $file->key() + 1 cannot be used, because we want non-empty rows only.
+        $file = $this->fileObject;
+        $file->rewind();
+        $index = 0;
+        while ($file->valid()) {
+            ++$index;
+            $file->next();
+        }
+        return $index;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace CSVImport\Form;
 
+use CSVImport\Job\Import;
+use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Zend\Form\Form;
 use Zend\Form\Element\Select;
@@ -188,19 +190,91 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $valueOptions = [
+                Import::ACTION_CREATE => 'Create a new resource', // @translate
+                Import::ACTION_APPEND => 'Append data to the resource', // @translate
+                Import::ACTION_UPDATE => 'Update data of the resource', // @translate
+                Import::ACTION_REPLACE => 'Replace all data of the resource', // @translate
+                Import::ACTION_DELETE => 'Delete the resource', // @translate
+                Import::ACTION_SKIP => 'Skip process of the resource', // @translate
+            ];
+            $this->add([
+                'name' => 'action',
+                'type' => 'select',
+                'options' => [
+                    'label' => 'Action', // @translate
+                    'value_options' => $valueOptions,
+                ],
+                'attributes' => [
+                    'id' => 'action',
+                    'class' => 'advanced-params',
+                ],
+            ]);
+
+            $this->add([
+                'name' => 'identifier_property',
+                'type' => PropertySelect::class,
+                'options' => [
+                    'label' => 'Resource identifier property', // @translate
+                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them.' // @translate
+                        . ' ' . 'One column of the file must map the selected property.' // @translate
+                        . ' ' . 'In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
+                    'empty_option' => 'Select below', // @translate
+                    'term_as_value' => false,
+                    'prepend_value_options' => [
+                        'internal_id' => 'Internal id', // @translate
+                    ]
+                ],
+                'attributes' => [
+                    'class' => 'advanced-params chosen-select',
+                    'data-placeholder' => 'Select a property', // @translate
+                ],
+            ]);
+
+            $this->add([
+                'name' => 'action_unidentified',
+                'type' => 'radio',
+                'options' => [
+                    'label' => 'Action on unidentified resources', // @translate
+                    'info' => 'This option determines what to do when a resource does not exist but the action applies to an existing resource ("Append", "Update", or "Replace").' // @translate
+                        . ' ' . 'This option is not used when the main action is "Create", "Delete" or "Skip".', // @translate
+                    'value_options' => [
+                        Import::ACTION_SKIP => 'Skip the row', // @translate
+                        Import::ACTION_CREATE => 'Create a new resource', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'action_unidentified',
+                    'class' => 'advanced-params',
+                    'value' => Import::ACTION_SKIP,
+                ],
+            ]);
+
             $inputFilter = $this->getInputFilter();
             $inputFilter->add([
                 'name' => 'o:resource_template[o:id]',
                 'required' => false,
-                ]);
+            ]);
             $inputFilter->add([
                 'name' => 'o:resource_class[o:id]',
                 'required' => false,
-                ]);
+            ]);
             $inputFilter->add([
                 'name' => 'o:item_set',
                 'required' => false,
-                ]);
+            ]);
+            $inputFilter->add([
+                'name' => 'action',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'identifier_property',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'action_unidentified',
+                'required' => false,
+            ]);
         }
     }
 

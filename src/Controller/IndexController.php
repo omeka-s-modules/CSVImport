@@ -190,6 +190,18 @@ class IndexController extends AbstractActionController
     protected function cleanArgs(array $post)
     {
         $args = $post;
+
+        // Name of properties must be known to merge data and to process update.
+        $api = $this->api();
+        foreach ($args['column-property'] as $column => $ids) {
+            $properties = [];
+            foreach ($ids as $id) {
+                $term = $api->read('properties', $id)->getContent()->term();
+                $properties[$term] = $id;
+            }
+            $args['column-property'][$column] = $properties;
+        }
+
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
         unset($args['enclosure']);
@@ -200,6 +212,7 @@ class IndexController extends AbstractActionController
             unset($args['multivalue-separator']);
             $args['multivalue-separator'] = $post['multivalue-separator'];
         }
+
         return $args;
     }
 
@@ -220,7 +233,6 @@ class IndexController extends AbstractActionController
     {
         $autoMaps = [];
         foreach ($columns as $index => $column) {
-            $column = trim($column);
             if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
                 $response = $this->api()->search('properties', ['term' => $column]);
                 $content = $response->getContent();

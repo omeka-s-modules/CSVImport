@@ -41,20 +41,21 @@ class PropertyMapping extends AbstractMapping
             }
 
             if (isset($columnMap[$index])) {
-                foreach ($columnMap[$index] as $propertyId) {
+                foreach ($columnMap[$index] as $propertyTerm => $propertyId) {
                     if (in_array($index, $multivalueMap)) {
                         $multivalues = explode($multivalueSeparator, $values);
+                        $multivalues = array_map('trim', $multivalues);
                         foreach ($multivalues as $value) {
                             switch ($type) {
                                 case 'uri':
-                                    $propertyJson[$propertyId][] = [
+                                    $propertyJson[$propertyTerm][] = [
                                         '@id' => $value,
                                         'property_id' => $propertyId,
                                         'type' => $type,
                                     ];
                                 break;
                                 case 'resource':
-                                    $propertyJson[$propertyId][] = [
+                                    $propertyJson[$propertyTerm][] = [
                                         'value_resource_id' => $value,
                                         'property_id' => $propertyId,
                                         'type' => $type,
@@ -73,14 +74,14 @@ class PropertyMapping extends AbstractMapping
                                     if (isset($languageSettings[$index])) {
                                         $literalPropertyJson['@language'] = $languageSettings[$index];
                                     }
-                                    $propertyJson[$propertyId][] = $literalPropertyJson;
+                                    $propertyJson[$propertyTerm][] = $literalPropertyJson;
                                 break;
                             }
                         }
                     } else {
                         switch ($type) {
                             case 'uri':
-                                $propertyJson[$propertyId][] = [
+                                $propertyJson[$propertyTerm][] = [
                                     '@id' => $values,
                                     'property_id' => $propertyId,
                                     'type' => $type,
@@ -88,7 +89,7 @@ class PropertyMapping extends AbstractMapping
 
                             break;
                             case 'resource':
-                                $propertyJson[$propertyId][] = [
+                                $propertyJson[$propertyTerm][] = [
                                     'value_resource_id' => $values,
                                     'property_id' => $propertyId,
                                     'type' => $type,
@@ -108,7 +109,7 @@ class PropertyMapping extends AbstractMapping
                                 if (isset($languageSettings[$index])) {
                                     $literalPropertyJson['@language'] = $languageSettings[$index];
                                 }
-                                $propertyJson[$propertyId][] = $literalPropertyJson;
+                                $propertyJson[$propertyTerm][] = $literalPropertyJson;
 
                             break;
                         }

@@ -37,15 +37,15 @@ class UserMapping extends AbstractMapping
         foreach ($row as $index => $value) {
             switch ($index) {
                 case $emailIndex:
-                    $userJson['o:email'] = trim($value);
+                    $userJson['o:email'] = $value;
                 break;
 
                 case $nameIndex:
-                    $userJson['o:name'] = trim($value);
+                    $userJson['o:name'] = $value;
                 break;
 
                 case $roleIndex:
-                    $userJson['o:role'] = trim($value);
+                    $userJson['o:role'] = $value;
                 break;
             }
         }

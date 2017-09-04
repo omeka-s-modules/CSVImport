@@ -32,11 +32,11 @@ class MediaMapping extends AbstractMapping
             //split $values into an array, so people can have more than one file
             //in the column
             $mediaData = explode($multivalueSeparator, $values);
+            $mediaData = array_map('trim', $mediaData);
 
             if (array_key_exists($index, $mediaMap)) {
                 $ingester = $mediaMap[$index];
                 foreach ($mediaData as $mediaDatum) {
-                    $mediaDatum = trim($mediaDatum);
                     if (empty($mediaDatum)) {
                         continue;
                     }

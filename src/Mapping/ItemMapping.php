@@ -54,28 +54,40 @@ class ItemMapping extends AbstractMapping
             //maybe weird, but just assuming a split for ids for simplicity's sake
             //since a list of ids shouldn't have any weird separators
             $values = explode($multivalueSeparator, $values);
+            $values = array_map('trim', $values);
             if (in_array($index, $itemSetMap)) {
+                if (!array_key_exists('o:item_set', $itemJson)) {
+                    $itemJson['o:item_set'] = [];
+                }
                 foreach ($values as $itemSetId) {
-                    $itemSetId = trim($itemSetId);
                     $itemSet = $this->findItemSet($itemSetId);
                     if ($itemSet) {
-                        $itemJson['o:item_set'][] = ['o:id' => trim($itemSetId)];
+                        $itemJson['o:item_set'][] = ['o:id' => $itemSetId];
                     }
                 }
             }
             if (in_array($index, $resourceTemplateMap)) {
+                if (!array_key_exists('o:resource_template', $itemJson)) {
+                    $itemJson['o:resource_template'] = null;
+                }
                 $resourceTemplate = $this->findResourceTemplate($values[0]);
                 if ($resourceTemplate) {
                     $itemJson['o:resource_template'] = ['o:id' => $resourceTemplate->id()];
                 }
             }
             if (in_array($index, $resourceClassMap)) {
+                if (!array_key_exists('o:resource_class', $itemJson)) {
+                    $itemJson['o:resource_class'] = null;
+                }
                 $resourceClass = $this->findResourceClass($values[0]);
                 if ($resourceClass) {
                     $itemJson['o:resource_class'] = ['o:id' => $resourceClass->id()];
                 }
             }
             if (in_array($index, $ownerMap)) {
+                if (!array_key_exists('o:owner', $itemJson)) {
+                    $itemJson['o:owner'] = null;
+                }
                 $user = $this->findUser($values[0]);
                 if ($user) {
                     $itemJson['o:owner'] = ['o:id' => $user->id()];
@@ -87,7 +99,6 @@ class ItemMapping extends AbstractMapping
 
     protected function findResourceClass($term)
     {
-        $term = trim($term);
         $response = $this->api->search('resource_classes', ['term' => $term]);
         $content = $response->getContent();
         if (empty($content)) {
@@ -107,7 +118,6 @@ class ItemMapping extends AbstractMapping
 
     protected function findResourceTemplate($label)
     {
-        $label = trim($label);
         $response = $this->api->search('resource_templates', ['label' => $label]);
         $content = $response->getContent();
         if (empty($content)) {
@@ -127,7 +137,6 @@ class ItemMapping extends AbstractMapping
 
     protected function findUser($email)
     {
-        $email = trim($email);
         $response = $this->api->search('users', ['email' => $email]);
         $content = $response->getContent();
         if (empty($content)) {
