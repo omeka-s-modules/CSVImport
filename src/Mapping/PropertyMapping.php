@@ -44,6 +44,7 @@ class PropertyMapping extends AbstractMapping
                 foreach ($columnMap[$index] as $propertyId) {
                     if (in_array($index, $multivalueMap)) {
                         $multivalues = explode($multivalueSeparator, $values);
+                        $multivalues = array_map('trim', $multivalues);
                         foreach ($multivalues as $value) {
                             switch ($type) {
                                 case 'uri':

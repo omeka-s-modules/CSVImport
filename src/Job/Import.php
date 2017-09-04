@@ -85,6 +85,7 @@ class Import extends AbstractJob
         while ($file->valid()) {
             $data = [];
             foreach (new LimitIterator($file, $offset, $this->rowsByBatch) as $row) {
+                $row = array_map('trim', $row);
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
                     $entityJson = array_merge($entityJson, $mapping->processRow($row));

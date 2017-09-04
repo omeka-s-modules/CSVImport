@@ -51,7 +51,7 @@ class CsvFile
     {
         $this->fileObject->rewind();
         $line = $this->fileObject->current();
-        return $line;
+        return array_map('trim', $line);
     }
 
     /**

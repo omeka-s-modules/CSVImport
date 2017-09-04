@@ -54,12 +54,12 @@ class ItemMapping extends AbstractMapping
             //maybe weird, but just assuming a split for ids for simplicity's sake
             //since a list of ids shouldn't have any weird separators
             $values = explode($multivalueSeparator, $values);
+            $values = array_map('trim', $values);
             if (in_array($index, $itemSetMap)) {
                 foreach ($values as $itemSetId) {
-                    $itemSetId = trim($itemSetId);
                     $itemSet = $this->findItemSet($itemSetId);
                     if ($itemSet) {
-                        $itemJson['o:item_set'][] = ['o:id' => trim($itemSetId)];
+                        $itemJson['o:item_set'][] = ['o:id' => $itemSetId];
                     }
                 }
             }
@@ -87,7 +87,6 @@ class ItemMapping extends AbstractMapping
 
     protected function findResourceClass($term)
     {
-        $term = trim($term);
         $response = $this->api->search('resource_classes', ['term' => $term]);
         $content = $response->getContent();
         if (empty($content)) {
@@ -107,7 +106,6 @@ class ItemMapping extends AbstractMapping
 
     protected function findResourceTemplate($label)
     {
-        $label = trim($label);
         $response = $this->api->search('resource_templates', ['label' => $label]);
         $content = $response->getContent();
         if (empty($content)) {
@@ -127,7 +125,6 @@ class ItemMapping extends AbstractMapping
 
     protected function findUser($email)
     {
-        $email = trim($email);
         $response = $this->api->search('users', ['email' => $email]);
         $content = $response->getContent();
         if (empty($content)) {
