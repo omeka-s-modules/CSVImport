@@ -10,6 +10,12 @@ use Zend\Log\Logger;
 
 class Import extends AbstractJob
 {
+    const ACTION_CREATE = 'create';
+    const ACTION_UPDATE = 'update';
+    const ACTION_UPDATE_ELSE_CREATE = 'update else create';
+    const ACTION_DELETE = 'delete';
+    const ACTION_SKIP = 'skip';
+
     /**
      * Number of rows to process by batch.
      *
@@ -78,6 +84,16 @@ class Import extends AbstractJob
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $this->importRecord = $response->getContent();
 
+        // Check options.
+        $identifierProperty = empty($args['identifier_property']) ? null : $args['identifier_property'];
+        $action = empty($args['action'])
+            ? (empty($identifierProperty) ? self::ACTION_CREATE : self::ACTION_UPDATE_ELSE_CREATE)
+            : $args['action'];
+        $this->checkOptions(compact('action', 'identifierProperty'));
+        if ($this->hasErr) {
+            return $this->endJob();
+        }
+
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
         $offset = 1;
         $file = $csvFile->fileObject;
@@ -96,7 +112,29 @@ class Import extends AbstractJob
                 $data[] = $entityJson;
             }
 
-            $this->create($data);
+            switch ($action) {
+                case self::ACTION_CREATE:
+                    $this->create($data);
+                    break;
+                case self::ACTION_UPDATE:
+                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
+                    $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
+                    $this->update($data, $ids, false);
+                    break;
+                case self::ACTION_UPDATE_ELSE_CREATE:
+                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
+                    $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
+                    $this->update($data, $ids, true);
+                    break;
+                case self::ACTION_DELETE:
+                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
+                    $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
+                    $this->delete($ids);
+                    break;
+                case self::ACTION_SKIP:
+                    // No action to do.
+                    break;
+            }
 
             // The next offset is not the previous offset + the batch size but
             // the current key (read ahead), because there may be empty lines.
@@ -128,6 +166,96 @@ class Import extends AbstractJob
         }
         $createImportRecordResponse = $this->api->batchCreate(
             'csvimport_entities', $createImportEntitiesJson, [], ['continueOnError' => true]);
+    }
+
+    /**
+     * Batch update a list of entities.
+     *
+     * @param array $data
+     * @param array $ids
+     * @param bool $createIfNotFound
+     */
+    protected function update($data, $ids, $createIfNotFound = false)
+    {
+        $this->hasErr = true;
+        $this->logger->err(sprintf('The action "Update" is not managed currently.'));
+    }
+
+    /**
+     * Batch delete a list of entities.
+     *
+     * @param array $ids
+     */
+    protected function delete($ids)
+    {
+        $ids = array_unique(array_filter($ids));
+        $this->hasErr = true;
+        $this->logger->err(sprintf('The action "Delete" is not managed currently.'));
+    }
+
+    /**
+     * Helper to find identifiers from a row.
+     *
+     * @param array $data
+     * @param int $identifierProperty
+     * @return array Associative array mapping the data key and the found ids.
+     */
+    protected function extractIdentifiers($data, $identifierProperty)
+    {
+        $identifiers = [];
+        return $identifiers;
+    }
+
+    /**
+     * Helper to find a list of resource ids from a list of identifiers.
+     *
+     * @param array $identifiers
+     * @param int $identifierProperty
+     * @return array Associative array with identifiers as key.
+     */
+    protected function findResourceIdsFromIdentifiers($identifiers, $identifierProperty)
+    {
+
+    }
+
+    /**
+     * Check options used to import.
+     *
+     * @param array $options Associative array of options.
+     */
+    protected function checkOptions(array $options)
+    {
+        extract($options);
+        $resourceType = $this->getArg('resource_type', 'items');
+
+        $allowedActions = [
+            self::ACTION_CREATE,
+            self::ACTION_APPEND,
+            self::ACTION_UPDATE,
+            self::ACTION_REPLACE,
+            self::ACTION_DELETE,
+            self::ACTION_SKIP,
+        ];
+        if (!in_array($action, $allowedActions)) {
+            $this->hasErr = true;
+            $this->logger->err(sprintf('Unknown action "%s".', $action));
+        }
+        // Another specific check.
+        elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
+            if (empty($identifierProperty)) {
+                $this->hasErr = true;
+                $this->logger->err(sprintf('The action "%s" requires a resource identifier property.', $action)); // @translate
+            }
+            if ($action !== self::ACTION_DELETE && !in_array($resourceType, ['items'])) {
+                $this->hasErr = true;
+                $this->logger->err(sprintf('The action "%s" is not available for resource type "%s" currently.', // @translate
+                    $action, $resourceType));
+            }
+        }
+        if ($identifierProperty === 'internal_id') {
+            $this->hasErr = true;
+            $this->logger->err(sprintf('The identifier property "internal_id" is not managed currently.')); // @translate
+        }
     }
 
     protected function buildImportRecordJson($resourceReference)

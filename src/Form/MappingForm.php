@@ -2,6 +2,8 @@
 
 namespace CSVImport\Form;
 
+use CSVImport\Job\Import;
+use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Zend\Form\Form;
 use Zend\Form\Element\Select;
@@ -148,19 +150,68 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $valueOptions = [
+                Import::ACTION_CREATE => 'Create a new resource', // @translate
+                Import::ACTION_UPDATE => 'Update the resource if it exists, else skip the row', // @translate
+                Import::ACTION_UPDATE_ELSE_CREATE => 'Update the resource if it exists, else create one', // @translate
+                Import::ACTION_DELETE => 'Delete the resource', // @translate
+                Import::ACTION_SKIP => 'Skip process of the resource', // @translate
+            ];
+            $this->add([
+                'name' => 'action',
+                'type' => 'select',
+                'options' => [
+                    'label' => 'Action', // @translate
+                    'info' => 'The default action depends on the identifier option: if set, it’s "Update if it exists, else create", else it’s "Create".', // @translate
+                    'empty_option' => 'Select below', // @translate
+                    'value_options' => $valueOptions,
+                ],
+                'attributes' => [
+                    'id' => 'action',
+                ],
+            ]);
+
+            $this->add([
+                'name' => 'identifier_property',
+                'type' => PropertySelect::class,
+                'options' => [
+                    'label' => 'Resource identifier property', // @translate
+                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them.' // @translate
+                        . ' ' . 'One column of the file must map the selected property.' // @translate
+                        . ' ' . 'In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
+                    'empty_option' => 'Select below', // @translate
+                    'term_as_value' => false,
+                    'prepend_value_options' => [
+                        'internal_id' => 'Internal id', // @translate
+                    ]
+                ],
+                'attributes' => [
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property', // @translate
+                ],
+            ]);
+
             $inputFilter = $this->getInputFilter();
             $inputFilter->add([
                 'name' => 'o:resource_template[o:id]',
                 'required' => false,
-                ]);
+            ]);
             $inputFilter->add([
                 'name' => 'o:resource_class[o:id]',
                 'required' => false,
-                ]);
+            ]);
             $inputFilter->add([
                 'name' => 'o:item_set',
                 'required' => false,
-                ]);
+            ]);
+            $inputFilter->add([
+                'name' => 'action',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'identifier_property',
+                'required' => false,
+            ]);
         }
     }
 
