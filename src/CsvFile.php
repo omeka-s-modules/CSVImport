@@ -77,6 +77,25 @@ class CsvFile
     }
 
     /**
+     * Return the number of non-empty rows.
+     *
+     * @return int
+     */
+    public function countRows()
+    {
+        // FileObject has no countRows() method, so count them one by one.
+        // $file->key() + 1 cannot be used, because we want non-empty rows only.
+        $file = $this->fileObject;
+        $file->rewind();
+        $index = 0;
+        while ($file->valid()) {
+            ++$index;
+            $file->next();
+        }
+        return $index;
+    }
+
+    /**
      * Use this to set the known (already-uploaded) csv file's path to where omekas puts it.
      */
     public function setTempPath($tempPath)
