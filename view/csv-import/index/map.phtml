@@ -22,7 +22,6 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
 <input type="hidden" name="filename" value="<?php echo $filename; ?>" />
 <input type="hidden" name="filesize" value="<?php echo $filesize; ?>" />
 <input type="hidden" name="csvpath" value="<?php echo $csvpath; ?>" />
-<input type="hidden" name="resource_type" value="<?php echo $resourceType; ?>" />
 <fieldset id="csv-import-basics-fieldset" class="section active">
     <?php echo $this->formCollection($form, false); ?>
 </fieldset>

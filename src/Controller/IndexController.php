@@ -49,7 +49,7 @@ class IndexController extends AbstractActionController
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
-                $args = $this->reorderArgs($post);
+                $args = $this->cleanArgs($post);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
@@ -103,8 +103,6 @@ class IndexController extends AbstractActionController
             $view->setVariable('csvpath', $csvPath);
             $view->setVariable('filename', $post['csv']['name']);
             $view->setVariable('filesize', $post['csv']['size']);
-            $view->setVariable('delimiter', $post['delimiter']);
-            $view->setVariable('enclosure', $post['enclosure']);
         }
         return $view;
     }
@@ -184,12 +182,12 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * Helper to reorder posted args to get more readable logs.
+     * Helper to clean posted args to get more readable logs.
      *
      * @param array $post
      * @return array
      */
-    protected function reorderArgs(array $post)
+    protected function cleanArgs(array $post)
     {
         $args = $post;
         // "unset()" allows to keep all csv parameters together in args.

@@ -13,11 +13,36 @@ class MappingForm extends Form
     public function init()
     {
         $resourceType = $this->getOption('resourceType');
-        $delimiter = $this->getOption('delimiter');
-        $enclosure = $this->getOption('enclosure');
         $serviceLocator = $this->getServiceLocator();
         $currentUser = $serviceLocator->get('Omeka\AuthenticationService')->getIdentity();
         $acl = $serviceLocator->get('Omeka\Acl');
+
+        $this->add([
+            'name' => 'resource_type',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $resourceType,
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'delimiter',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('delimiter'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'enclosure',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('enclosure'),
+                'required' => true,
+            ],
+        ]);
 
         $this->add([
             'name' => 'comment',
@@ -164,24 +189,6 @@ class MappingForm extends Form
                 'required' => false,
                 ]);
         }
-
-        $this->add([
-            'name' => 'delimiter',
-            'type' => 'hidden',
-            'attributes' => [
-                'value' => $delimiter,
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
-            'name' => 'enclosure',
-            'type' => 'hidden',
-            'attributes' => [
-                'value' => $enclosure,
-                'required' => true,
-            ],
-        ]);
     }
 
     public function setServiceLocator($serviceLocator)
