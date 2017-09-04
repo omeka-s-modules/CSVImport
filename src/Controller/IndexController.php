@@ -101,6 +101,8 @@ class IndexController extends AbstractActionController
             $view->setVariable('mappings', $mappingsResource);
             $view->setVariable('columns', $columns);
             $view->setVariable('csvpath', $csvPath);
+            $view->setVariable('filename', $post['csv']['name']);
+            $view->setVariable('filesize', $post['csv']['size']);
             $view->setVariable('delimiter', $post['delimiter']);
             $view->setVariable('enclosure', $post['enclosure']);
         }
