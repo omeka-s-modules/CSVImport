@@ -120,12 +120,16 @@ class Import extends AbstractJob
                 case self::ACTION_UPDATE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
                     $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
-                    $this->update($data, $ids, false);
+                    $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
+                    $ids = array_filter($ids);
+                    $data = array_intersect_key($data, $ids);
+                    $this->update($data, $ids);
                     break;
                 case self::ACTION_UPDATE_ELSE_CREATE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
                     $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
-                    $this->update($data, $ids, true);
+                    $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
+                    $this->updateElseCreate($data, $ids);
                     break;
                 case self::ACTION_DELETE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
@@ -173,13 +177,35 @@ class Import extends AbstractJob
      * Batch update a list of entities.
      *
      * @param array $data
-     * @param array $ids
-     * @param bool $createIfNotFound
+     * @param array $ids All the ids must exists and the order must be the same
+     * than data.
      */
-    protected function update($data, $ids, $createIfNotFound = false)
+    protected function update(array $data, array $ids)
     {
-        $this->hasErr = true;
-        $this->logger->err(sprintf('The action "Update" is not managed currently.'));
+        if (empty($ids)) {
+            return;
+        }
+        $resourceType = $this->getArg('resource_type', 'items');
+        $response = $this->api->batchUpdate($resourceType, $ids, $data, ['continueOnError' => true]);
+        $this->logger->info(sprintf('%d %s were updated: %s.', // @translate
+            count($ids), $resourceType, implode(', ', $ids)));
+    }
+
+    /**
+     * Batch update or create a list of entities.
+     *
+     * @param array $data
+     * @param array $ids All the ids must exists and the order must be the same
+     * than data.
+     */
+    protected function updateElseCreate(array $data, array $ids)
+    {
+        $idsToUpdate = array_filter($ids);
+        $dataToUpdate = array_intersect_key($data, $idsToUpdate);
+        $idsToCreate = array_diff_key($ids, $idsToUpdate);
+        $dataToCreate = array_intersect_key($data, $idsToCreate);
+        $this->create($dataToCreate);
+        $this->update($dataToUpdate, $idsToUpdate);
     }
 
     /**
@@ -187,11 +213,16 @@ class Import extends AbstractJob
      *
      * @param array $ids
      */
-    protected function delete($ids)
+    protected function delete(array $ids)
     {
         $ids = array_unique(array_filter($ids));
-        $this->hasErr = true;
-        $this->logger->err(sprintf('The action "Delete" is not managed currently.'));
+        if (empty($ids)) {
+            return;
+        }
+        $resourceType = $this->getArg('resource_type', 'items');
+        $response = $this->api->batchDelete($resourceType, $ids, [], ['continueOnError' => true]);
+        $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
+            count($ids), $resourceType, implode(', ', $ids)));
     }
 
     /**
@@ -306,6 +337,50 @@ class Import extends AbstractJob
 
         // Reorder the result according to the input (simpler in php).
         return array_replace(array_fill_keys($identifiers, null), $result);
+    }
+
+    /**
+     * Helper to map data keys and ids in order to keep duplicate identifiers.
+     *
+     * When a document use multiple lines of data, consecutive or not, they have
+     * the same identifiers, but they are lost during the database search, that
+     * returns an simple associative array.
+     *
+     * @param array $identifiers Associative array of data ids and identifiers.
+     * @param array $ids Associative array of unique identifiers and ids.
+     * @return array
+     */
+    protected function assocIdentifierKeysAndIds(array $identifiers, array $ids)
+    {
+        return array_map(function ($v) use ($ids) {
+            return $v ? $ids[$v] : null;
+        }, $identifiers);
+    }
+
+    /**
+     * Keep only data with an existing identifier.
+     *
+     * @param array $data
+     * @param array $identifiers Associative array of identifiers and data ids.
+     * @return array
+     */
+    protected function filterDataWithIdentifier(array $data, array $identifiers)
+    {
+        $identifiers = array_filter($identifiers, function ($v) { return !empty($v); });
+        return array_intersect_key($data, $identifiers);
+    }
+
+    /**
+     * Keep only data without an existing identifier.
+     *
+     * @param array $data
+     * @param array $identifiers Associative array of data ids and identifiers.
+     * @return array
+     */
+    protected function filterDataWithoutIdentifier(array $data, array $identifiers)
+    {
+        $identifiers = array_filter($identifiers);
+        return array_intersect_key($data, $identifiers);
     }
 
     /**
