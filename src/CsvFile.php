@@ -1,8 +1,9 @@
 <?php
 namespace CSVImport;
 
-use SplFileObject;
+use LimitIterator;
 use Omeka\Service\Exception\ConfigException;
+use SplFileObject;
 
 class CsvFile
 {
@@ -26,12 +27,28 @@ class CsvFile
         $this->config = $config;
     }
 
+    /**
+     * Check if the file is utf-8 formatted.
+     *
+     * @return bool
+     */
     public function isUtf8()
     {
+        $result = true;
+        // Check all the file, because the headers are generally ascii.
+        // Nevertheless, check the lines one by one as text to avoid a memory
+        // overflow with a big csv file.
+        $this->fileObject->setFlags(0);
         $this->fileObject->rewind();
-        $string = $this->fileObject->fgets();
-        $isUtf8 = mb_detect_encoding($string, 'UTF-8', true);
-        return $isUtf8 == 'UTF-8';
+        foreach (new LimitIterator($this->fileObject) as $line) {
+            if (mb_detect_encoding($line, 'UTF-8', true) !== 'UTF-8') {
+                $result = false;
+                break;
+            }
+        }
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        return $result;
     }
 
     public function moveToTemp($systemTempPath)
