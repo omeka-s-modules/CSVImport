@@ -143,5 +143,6 @@ return [
         'Select an item type at the left before choosing a resource class.', // @translate
         'Select an element at the left before choosing a property.', // @translate
         'Please enter a valid language tag.', // @translate
+        'Advanced options' // @translate
     ],
 ];

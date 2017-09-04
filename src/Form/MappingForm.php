@@ -167,7 +167,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'action',
-                    'class' => 'advanced-import',
+                    'class' => 'advanced-params',
                 ],
             ]);
 
@@ -186,7 +186,7 @@ class MappingForm extends Form
                     ]
                 ],
                 'attributes' => [
-                    'class' => 'advanced-import chosen-select',
+                    'class' => 'advanced-params chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],
             ]);
@@ -205,7 +205,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'action_unidentified',
-                    'class' => 'advanced-import',
+                    'class' => 'advanced-params',
                     'value' => Import::ACTION_SKIP,
                 ],
             ]);

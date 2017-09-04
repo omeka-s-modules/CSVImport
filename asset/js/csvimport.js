@@ -6,6 +6,16 @@
             + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
             + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
 
+        var advancedHtml = '<div class="field">'
+            + '<div class="field-meta">'
+            + '<button type="button" name="advanced-params" id="advanced-params" value="show">'
+            + Omeka.jsTranslate('Advanced options')
+            + '</button>'
+            + '</div>'
+            + '</div>';
+        $('#action').closest('.field').before(advancedHtml);
+        $('.advanced-params').closest('.field').hide();
+
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces
@@ -214,6 +224,13 @@
             optionToRestore.removeClass('delete');
             optionToRestore.find('.remove-option').show();
             optionToRestore.find('.restore-option').hide();
+        });
+
+        // Manage advanced options.
+        $('#advanced-params').on('click', function(e) {
+            e.preventDefault();
+            $('.advanced-params').closest('.field').show();
+            $(this).closest('.field').remove();
         });
 
         /*
