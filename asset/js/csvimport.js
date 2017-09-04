@@ -1,9 +1,11 @@
 (function ($) {
     var activeElement = null;
 
-    var actionsHtml = '<ul class="actions"><li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="Undo remove mapping" title="Undo remove mapping" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
-
     $(document).ready(function() {
+        var actionsHtml = '<ul class="actions"><li><a aria-label="'
+            + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
+            + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
+
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces
@@ -35,7 +37,7 @@
             //up to the li
             var targetLi = $(e.target).closest('li.selector-child');
             if (activeElement == null) {
-                alert(Omeka.jsTranslate("Select an item type at the left before choosing a resource class."));
+                alert(Omeka.jsTranslate('Select an item type at the left before choosing a resource class.'));
             } else {
                 //first, check if a class is already added
                 //var hasMapping = activeElement.find('ul.mappings li');
@@ -131,7 +133,7 @@
             //up to the li
 
             if (activeElement == null) {
-                alert(Omeka.jsTranslate("Select an element at the left before choosing a property."));
+                alert(Omeka.jsTranslate('Select an element at the left before choosing a property.'));
             } else {
                 var flagName = targetLi.find('span').text();
                 var flagType = targetLi.data('flag-type');
@@ -177,14 +179,14 @@
             activeElement.find('input.column-reference').prop('disabled', true);
             activeElement.find('li.column-reference').hide();
         });
-        
+
         $('.sidebar').on('click', '.button.column-multivalue', function(e){
             e.stopPropagation();
             e.preventDefault();
             activeElement.find('input.column-multivalue').prop('disabled', false);
             activeElement.find('li.column-multivalue').show();
         });
-        
+
         $('.sidebar').on('click', '.button.column-reference', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -203,7 +205,7 @@
             optionToRemove.find('.restore-option').show();
             optionToRemove.find('.remove-option').hide();
         });
-        
+
         $('ul.options').on('click', 'a.restore-option', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -213,47 +215,47 @@
             optionToRestore.find('.remove-option').show();
             optionToRestore.find('.restore-option').hide();
         });
-        
+
         /*
          * Modified from resource-form.js in core
          */
-        
+
         $('input.value-language').on('keyup', function(e) {
             e.preventDefault();
             e.stopPropagation();
             this.setCustomValidity(
-                Omeka.langIsValid(this.value) ? '' : Omeka.jsTranslate('Please enter a valid language tag')
+                Omeka.langIsValid(this.value) ? '' : Omeka.jsTranslate('Please enter a valid language tag.')
             );
         });
-        
+
         /*
          * Prevent accidental form submission when entering a language tag
          * and hitting enter by setting the language as if clicking the button
          */
-        
+
         $('input.value-language').on('keypress', function(e) {
             if (e.keyCode == 13 ) {
                 setLanguage(e);
             }
         });
-        
+
         function setLanguage(e) {
             e.stopPropagation();
             e.preventDefault();
             var valueLanguageElement = document.getElementById('value-language');
             var lang = $(valueLanguageElement).val();
             if (lang == '') {
-                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
+                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag.'));
             }
             if (typeof valueLanguageElement.reportValidity === 'function') {
                 var valid = valueLanguageElement.reportValidity();
             } else {
                 var valid = valueLanguageElement.checkValidity();
                 if (! valid) {
-                    alert(Omeka.jsTranslate("Please enter a valid language tag"));
+                    alert(Omeka.jsTranslate('Please enter a valid language tag.'));
                 }
             }
-            
+
             if (valid && lang != '') {
                 var languageInput = activeElement.find('input.column-language');
                 languageInput.val(lang);
@@ -262,6 +264,6 @@
                 languageInput.prop('disabled', false);
             }
         }
-        
+
     });
 })(jQuery);
