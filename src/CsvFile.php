@@ -7,6 +7,27 @@ use Omeka\Service\Exception\ConfigException;
 class CsvFile
 {
     /**
+     * Default delimiter of fgetcsv().
+     *
+     * @var string
+     */
+    const DEFAULT_DELIMITER = ',';
+
+    /**
+     * Default enclosure of fgetcsv().
+     *
+     * @var string
+     */
+    const DEFAULT_ENCLOSURE = '"';
+
+    /**
+     * Default escape of fgetcsv().
+     *
+     * @var string
+     */
+    const DEFAULT_ESCAPE = '\\';
+
+    /**
      * @var SplFileObject
      */
     public $fileObject;
@@ -15,6 +36,27 @@ class CsvFile
      * @var string
      */
     public $tempPath;
+
+    /**
+     * Csv delimiter of the file (default to standard).
+     *
+     * @var string
+     */
+    public $delimiter = self::DEFAULT_DELIMITER;
+
+    /**
+     * Csv enclosure of the file (default to standard).
+     *
+     * @var string
+     */
+    public $enclosure = self::DEFAULT_ENCLOSURE;
+
+    /**
+     * Csv escape of the file (default to standard).
+     *
+     * @var string
+     */
+    public $escape = self::DEFAULT_ESCAPE;
 
     /**
      * @var array
@@ -44,6 +86,7 @@ class CsvFile
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
         $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $this->fileObject->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
     }
 
     public function getHeaders()
@@ -81,6 +124,36 @@ class CsvFile
     public function setTempPath($tempPath)
     {
         $this->tempPath = $tempPath;
+    }
+
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    public function setDelimiter($delimiter)
+    {
+        $this->delimiter = $delimiter;
+    }
+
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    public function setEnclosure($enclosure)
+    {
+        $this->enclosure = $enclosure;
+    }
+
+    public function getEscape()
+    {
+        return $this->escape;
+    }
+
+    public function setEscape($escape)
+    {
+        $this->escape = $escape;
     }
 
     /**

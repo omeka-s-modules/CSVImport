@@ -38,13 +38,20 @@ class IndexController extends AbstractActionController
 
         $files = $request->getFiles()->toArray();
         $post = $this->params()->fromPost();
+        $delimiter = $this->extractCsvOptionFromPostValue($post['delimiter']);
+        $enclosure = $this->extractCsvOptionFromPostValue($post['enclosure']);
         $resourceType = $post['resource_type'];
-        $form = $this->getForm(MappingForm::class, ['resourceType' => $resourceType]);
+        $form = $this->getForm(MappingForm::class, [
+            'resourceType' => $resourceType,
+            'delimiter' => $post['delimiter'],
+            'enclosure' => $post['enclosure'],
+        ]);
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
+                $args = $this->reorderArgs($post);
                 $dispatcher = $this->jobDispatcher();
-                $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
+                $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
@@ -64,6 +71,8 @@ class IndexController extends AbstractActionController
 
             $tmpFile = $post['csv']['tmp_name'];
             $csvFile = new CsvFile($this->config);
+            $csvFile->setDelimiter($delimiter);
+            $csvFile->setEnclosure($enclosure);
             $csvPath = $csvFile->getTempPath();
             $csvFile->moveToTemp($tmpFile);
             $csvFile->loadFromTempPath();
@@ -92,6 +101,8 @@ class IndexController extends AbstractActionController
             $view->setVariable('mappings', $mappingsResource);
             $view->setVariable('columns', $columns);
             $view->setVariable('csvpath', $csvPath);
+            $view->setVariable('delimiter', $post['delimiter']);
+            $view->setVariable('enclosure', $post['enclosure']);
         }
         return $view;
     }
@@ -149,6 +160,47 @@ class IndexController extends AbstractActionController
             )));
         }
         return $mappings[$resourceType];
+    }
+
+    /**
+     * Extract values that can’t be passed via a select form element in Zend.
+     *
+     * The values is extracted from a string between "__>" and "<__".
+     *
+     * @param string $value
+     * @return string
+     */
+    protected function extractCsvOptionFromPostValue($value)
+    {
+        if (strpos($value, '__>') === 0
+            && ($pos = strpos($value, '<__')) == (strlen($value) - 3)
+        ) {
+            $result = substr($value, 3, $pos - 3);
+            return $result === '\r' ? "\r" : $result;
+        }
+        return $value;
+    }
+
+    /**
+     * Helper to reorder posted args to get more readable logs.
+     *
+     * @param array $post
+     * @return array
+     */
+    protected function reorderArgs(array $post)
+    {
+        $args = $post;
+        // "unset()" allows to keep all csv parameters together in args.
+        unset($args['delimiter']);
+        unset($args['enclosure']);
+        $args['delimiter'] = $this->extractCsvOptionFromPostValue($post['delimiter']);
+        $args['enclosure'] = $this->extractCsvOptionFromPostValue($post['enclosure']);
+        $args['escape'] = CsvFile::DEFAULT_ESCAPE;
+        if (array_key_exists('multivalue-separator', $post)) {
+            unset($args['multivalue-separator']);
+            $args['multivalue-separator'] = $post['multivalue-separator'];
+        }
+        return $args;
     }
 
     protected function getMediaForms()
