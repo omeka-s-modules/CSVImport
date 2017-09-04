@@ -56,18 +56,22 @@ class Import extends AbstractJob
      */
     protected $hasErr = false;
 
+    /**
+     * @var string
+     */
+    protected $resourceType;
+
     public function perform()
     {
         ini_set("auto_detect_line_endings", true);
         $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
         $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
-        $config = $this->getServiceLocator()->get('Config');
-        $resourceType = $this->getArg('resource_type', 'items');
-        $mappingClasses = $config['csv_import_mappings'][$resourceType];
-
+        $this->resourceType = $this->getArg('resource_type', 'items');
         $args = $this->job->getArgs();
 
         $mappings = [];
+        $config = $this->getServiceLocator()->get('Config');
+        $mappingClasses = $config['csv_import_mappings'][$this->resourceType];
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass($args, $this->getServiceLocator());
         }
@@ -80,7 +84,7 @@ class Import extends AbstractJob
         $csvImportJson = [
             'o:job' => ['o:id' => $this->job->getId()],
             'comment' => 'Job started',
-            'resource_type' => $resourceType,
+            'resource_type' => $this->resourceType,
             'added_count' => 0,
             'has_err' => false,
         ];
@@ -180,8 +184,7 @@ class Import extends AbstractJob
         if (empty($data)) {
             return;
         }
-        $resourceType = $this->getArg('resource_type', 'items');
-        $createResponse = $this->api->batchCreate($resourceType, $data, [], ['continueOnError' => true]);
+        $createResponse = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
         $createContent = $createResponse->getContent();
         $this->addedCount = $this->addedCount + count($createContent);
 
@@ -207,10 +210,9 @@ class Import extends AbstractJob
             return;
         }
 
-        $resourceType = $this->getArg('resource_type', 'items');
         $fileData = [];
         $options = [];
-        switch ($resourceType) {
+        switch ($this->resourceType) {
             case 'items':
                 // TODO Manage and update file data.
                 switch ($mode) {
@@ -233,7 +235,7 @@ class Import extends AbstractJob
             default:
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The update mode "%s" is unsupported for %s currently.', // @translate
-                    $mode, $resourceType));
+                    $mode, $this->resourceType));
                 return;
         }
 
@@ -242,7 +244,7 @@ class Import extends AbstractJob
         $updatedIds = [];
         foreach ($ids as $key => $id) {
             try {
-                $response = $this->api->update($resourceType, $id, $data[$key], $fileData, $options);
+                $response = $this->api->update($this->resourceType, $id, $data[$key], $fileData, $options);
                 if ($mode === self::ACTION_APPEND) {
                     // TODO Improve to avoid two consecutive update (deduplicate before or via core methods).
                     $resource = $response->getContent();
@@ -255,7 +257,7 @@ class Import extends AbstractJob
             }
         }
         $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
-            count($updatedIds), $resourceType, $mode, implode(', ', $updatedIds)));
+            count($updatedIds), $this->resourceType, $mode, implode(', ', $updatedIds)));
     }
 
     /**
@@ -269,12 +271,11 @@ class Import extends AbstractJob
         if (empty($ids)) {
             return;
         }
-        $resourceType = $this->getArg('resource_type', 'items');
-        $response = $this->api->batchDelete($resourceType, $ids, [], ['continueOnError' => true]);
+        $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
         $deleted = $response->getContent();
         // TODO Get better stats of removed ids in case of error.
         $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
-            count($deleted), $resourceType, implode(', ', $ids)));
+            count($deleted), $this->resourceType, implode(', ', $ids)));
     }
 
     /**
@@ -288,10 +289,9 @@ class Import extends AbstractJob
     protected function extractIdentifiers($data, $identifierProperty)
     {
         $identifiers = [];
-        $resourceType = $this->getArg('resource_type', 'items');
         foreach ($data as $key => $entityJson) {
             $identifier = null;
-            switch ($resourceType) {
+            switch ($this->resourceType) {
                 case 'items':
                     foreach ($entityJson as $index => $value) {
                         if (is_array($value) && !empty($value)) {
@@ -330,7 +330,6 @@ class Import extends AbstractJob
             return [];
         }
 
-        $resourceType = $this->getArg('resource_type', 'items');
         $resourceTypes = [
             'item_sets' => 'Omeka\Entity\ItemSet',
             'items' => 'Omeka\Entity\Item',
@@ -340,7 +339,7 @@ class Import extends AbstractJob
             'Omeka\Entity\Item' => 'Omeka\Entity\Item',
             'Omeka\Entity\Media' => 'Omeka\Entity\Media',
         ];
-        if (!isset($resourceTypes[$resourceType])) {
+        if (!isset($resourceTypes[$this->resourceType])) {
             return [];
         }
 
@@ -355,7 +354,7 @@ class Import extends AbstractJob
                     ->select('resource.id')
                     ->from('resource', 'resource')
                     ->andWhere('resource.resource_type = :resource_type')
-                    ->setParameter(':resource_type', $resourceTypes[$resourceType])
+                    ->setParameter(':resource_type', $resourceTypes[$this->resourceType])
                     // ->andWhere('resource.id in (:ids)')
                     // ->setParameter(':ids', $identifiers)
                     ->andWhere("resource.id in ($quotedIdentifiers)")
@@ -374,7 +373,7 @@ class Import extends AbstractJob
                     ->from('value', 'value')
                     ->leftJoin('value', 'resource', 'resource', 'value.resource_id = resource.id')
                     ->andWhere('resource.resource_type = :resource_type')
-                    ->setParameter(':resource_type', $resourceTypes[$resourceType])
+                    ->setParameter(':resource_type', $resourceTypes[$this->resourceType])
                     ->andwhere('value.property_id = :property_id')
                     ->setParameter(':property_id', $identifierProperty)
                     // ->andWhere('value.value in (:values)')
@@ -452,13 +451,12 @@ class Import extends AbstractJob
                 return serialize($v->jsonSerialize());
             }, $propertyData['values']))));
         }
-        $resourceType = $this->getArg('resource_type', 'items');
         $options = [];
         // $options['isPartial'] = true;
         // $options['collectionAction'] = 'append';
         $options['isPartial'] = false;
         $options['collectionAction'] = 'replace';
-        $response = $this->api->update($resourceType, $representation->id(), $data, [], $options);
+        $response = $this->api->update($this->resourceType, $representation->id(), $data, [], $options);
     }
 
     /**
@@ -469,7 +467,6 @@ class Import extends AbstractJob
     protected function checkOptions(array $options)
     {
         extract($options);
-        $resourceType = $this->getArg('resource_type', 'items');
 
         $allowedActions = [
             self::ACTION_CREATE,
@@ -489,10 +486,10 @@ class Import extends AbstractJob
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The action "%s" requires a resource identifier property.', $action)); // @translate
             }
-            if ($action !== self::ACTION_DELETE && !in_array($resourceType, ['items'])) {
+            if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['items'])) {
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The action "%s" is not available for resource type "%s" currently.', // @translate
-                    $action, $resourceType));
+                    $action, $this->resourceType));
             }
         }
         if ($identifierProperty === 'internal_id') {
