@@ -1,13 +1,9 @@
 <?php
 $form->prepare();
 $escapeHtml = $this->plugin('escapeHtml');
-
 ?>
 
-<?php // echo $this->pageTitle($this->translate('Import · CSV Import')); ?>
-
-<?php echo $this->pageTitle($this->translate("CSV Import"), 1, null, "Import" ); ?>
-
+<?php echo $this->pageTitle($this->translate('CSV Import'), 1, $this->translate('Import') ); ?>
 
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>

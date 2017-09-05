@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-04 11:38-0400\n"
+"POT-Creation-Date: 2017-09-05 16:42-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,12 +93,13 @@ msgstr ""
 msgid "Users info"
 msgstr ""
 
-#: view/csv-import/index/index.phtml:9
+#: view/csv-import/index/index.phtml:6 view/csv-import/index/map.phtml:9
+#: view/csv-import/index/past-imports.phtml:7
 msgid "CSV Import"
 msgstr ""
 
 #: view/csv-import/index/map.phtml:9
-msgid "Map Elements"
+msgid "Import Settings"
 msgstr ""
 
 #: view/csv-import/index/map.phtml:17
@@ -155,7 +156,7 @@ msgid "Remove language"
 msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
-msgid "Past Imports · CSV Import"
+msgid "Past Imports"
 msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:20
@@ -247,10 +248,6 @@ msgstr ""
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
-msgstr ""
-
-#: config/module.config.php:130
-msgid "Past Imports"
 msgstr ""
 
 #: config/module.config.php:141
