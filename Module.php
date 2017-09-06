@@ -33,5 +33,7 @@ class Module extends AbstractModule
         $connection->exec("ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B508814C276F75;");
         $connection->exec("DROP TABLE csvimport_entity;");
         $connection->exec("DROP TABLE csvimport_import;");
+
+        // User settings are not removed here: they belong to the user.
     }
 }

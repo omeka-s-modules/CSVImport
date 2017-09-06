@@ -17,6 +17,9 @@ class MappingForm extends Form
         $resourceType = $this->getOption('resourceType');
         $serviceLocator = $this->getServiceLocator();
         $currentUser = $serviceLocator->get('Omeka\AuthenticationService')->getIdentity();
+        $userSettings = $serviceLocator->get('Omeka\Settings\User');
+        $config = $serviceLocator->get('Config');
+        $default = $config['csv_import']['user_settings'];
         $acl = $serviceLocator->get('Omeka\Acl');
 
         $this->add([
@@ -59,7 +62,7 @@ class MappingForm extends Form
             ],
         ]);
 
-        if ($resourceType == 'items' || $resourceType == 'item_sets') {
+        if (in_array($resourceType, ['items', 'item_sets'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $this->add([
                 'name' => 'o:resource_template[o:id]',
@@ -135,7 +138,7 @@ class MappingForm extends Form
                     'attributes' => [
                         'id' => 'select-owner',
                         'value' => $currentUser->getId(),
-                        ],
+                    ],
                     'options' => [
                         'label' => 'Owner', // @translate
                         'resource_value_options' => [
@@ -144,22 +147,24 @@ class MappingForm extends Form
                             'option_text_callback' => function ($user) {
                                 return $user->name();
                             },
-                            ],
                         ],
+                    ],
                 ]);
             }
 
             $this->add([
-                'name' => 'multivalue-separator',
+                'name' => 'multivalue_separator',
                 'type' => 'text',
                 'options' => [
                     'label' => 'Multivalue separator', // @translate
                     'info' => 'The separator to use for columns with multiple values', // @translate
                 ],
                 'attributes' => [
-                    'id' => 'multivalue-separator',
+                    'id' => 'multivalue_separator',
                     'class' => 'input-body',
-                    'value' => ',',
+                    'value' => $userSettings->get(
+                        'csv_import_multivalue_separator',
+                        $default['csv_import_multivalue_separator']),
                 ],
             ]);
 
@@ -177,16 +182,18 @@ class MappingForm extends Form
             ]);
 
             $this->add([
-                'name' => 'global-language',
+                'name' => 'global_language',
                 'type' => 'text',
                 'options' => [
                     'label' => 'Language', // @translate
                     'info' => 'Language setting to apply to all imported literal data. Individual property mappings can override the setting here.', // @translate
                 ],
                 'attributes' => [
-                    'id' => 'global-language',
+                    'id' => 'global_language',
                     'class' => 'input-body value-language',
-                    'value' => '',
+                    'value' => $userSettings->get(
+                        'csv_import_global_language',
+                        $default['csv_import_global_language']),
                 ],
             ]);
 

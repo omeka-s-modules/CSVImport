@@ -43,7 +43,7 @@ class ItemMapping extends AbstractMapping
             $ownerId = $this->args['o:owner'];
             $itemJson['o:owner'] = ['o:id' => $ownerId];
         }
-        $multivalueSeparator = $this->args['multivalue-separator'];
+        $multivalueSeparator = $this->args['multivalue_separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
         $resourceTemplateMap = isset($this->args['column-resourcetemplate']) ? array_keys($this->args['column-resourcetemplate']) : [];

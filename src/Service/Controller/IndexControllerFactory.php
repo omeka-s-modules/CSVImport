@@ -11,7 +11,8 @@ class IndexControllerFactory implements FactoryInterface
     {
         $mediaIngesterManager = $serviceLocator->get('Omeka\Media\Ingester\Manager');
         $config = $serviceLocator->get('Config');
-        $indexController = new IndexController($config, $mediaIngesterManager);
+        $userSettings = $serviceLocator->get('Omeka\Settings\User');
+        $indexController = new IndexController($config, $mediaIngesterManager, $userSettings);
         return $indexController;
     }
 }

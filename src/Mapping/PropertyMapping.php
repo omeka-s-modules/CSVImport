@@ -27,8 +27,8 @@ class PropertyMapping extends AbstractMapping
         $referenceMap = isset($this->args['column-reference']) ? array_keys($this->args['column-reference']) : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $languageSettings = isset($this->args['column-language']) ? $this->args['column-language'] : [];
-        $globalLanguage = isset($this->args['global-language']) ? $this->args['global-language'] : '';
-        $multivalueSeparator = $this->args['multivalue-separator'];
+        $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
+        $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             // consider 'literal' as the default type
             $type = 'literal';
@@ -102,7 +102,6 @@ class PropertyMapping extends AbstractMapping
                                     'property_id' => $propertyId,
                                     'type' => $type,
                                 ];
-                                $this->logger->debug($globalLanguage);
                                 if ($globalLanguage !== '') {
                                     $literalPropertyJson['@language'] = $globalLanguage;
                                 }

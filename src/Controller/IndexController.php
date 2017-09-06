@@ -4,19 +4,38 @@ namespace CSVImport\Controller;
 use CSVImport\Form\ImportForm;
 use CSVImport\Form\MappingForm;
 use CSVImport\CsvFile;
+use Omeka\Media\Ingester\Manager;
+use Omeka\Settings\UserSettings;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
-    protected $mediaIngesterManager;
-
+    /**
+     * @var array
+     */
     protected $config;
 
-    public function __construct(array $config, \Omeka\Media\Ingester\Manager $mediaIngesterManager)
+    /**
+     * @var Manager
+     */
+    protected $mediaIngesterManager;
+
+    /**
+     * @var UserSettings
+     */
+    protected $userSettings;
+
+    /**
+     * @param array $config
+     * @param Manager $mediaIngesterManager
+     * @param UserSettings $userSettings
+     */
+    public function __construct(array $config, Manager $mediaIngesterManager, UserSettings $userSettings)
     {
         $this->config = $config;
         $this->mediaIngesterManager = $mediaIngesterManager;
+        $this->userSettings = $userSettings;
     }
 
     public function indexAction()
@@ -50,6 +69,7 @@ class IndexController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
+                $this->saveUserSettings($args);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
@@ -214,6 +234,21 @@ class IndexController extends AbstractActionController
         }
 
         return $args;
+    }
+
+    /**
+     * Save user settings.
+     *
+     * @param array $settings
+     */
+    protected function saveUserSettings(array $settings)
+    {
+        foreach ($this->config['csv_import']['user_settings'] as $key => $value) {
+            $name = substr($key, strlen('csv_import_'));
+            if (isset($settings[$name])) {
+                $this->userSettings->set($key, $settings[$name]);
+            }
+        }
     }
 
     protected function getMediaForms()
