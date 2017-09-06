@@ -4,7 +4,7 @@ $escape = $this->plugin('escapeHtml');
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 ?>
 
-<?php echo $this->pageTitle($this->translate('CSV Import'), 1, $this->translate('Past Imports')); ?>
+<?php echo $this->pageTitle($this->translate('Past Imports'), 1, $this->translate('CSV Import')); ?>
 <?php if(empty($imports)): ?>
 
 <?php else: ?>
