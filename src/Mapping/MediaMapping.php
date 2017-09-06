@@ -27,7 +27,7 @@ class MediaMapping extends AbstractMapping
         $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media']) ? $this->args['media'] : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
-        $multivalueSeparator = $this->args['multivalue-separator'];
+        $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             //split $values into an array, so people can have more than one file
             //in the column

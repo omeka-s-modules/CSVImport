@@ -64,6 +64,12 @@ return [
         'oembed' => null,
         'youtube' => null,
     ],
+    'csv_import' => [
+        'user_settings' => [
+            'csv_import_multivalue_separator' => ',',
+            'csv_import_global_language' => '',
+        ],
+    ],
     'router' => [
         'routes' => [
             'admin' => [
