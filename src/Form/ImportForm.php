@@ -1,6 +1,7 @@
 <?php
 namespace CSVImport\Form;
 
+use Omeka\Settings\UserSettings;
 use Zend\Form\Form;
 
 class ImportForm extends Form
@@ -28,7 +29,7 @@ class ImportForm extends Form
      * @var array
      */
     protected $enclosureList = [
-        '"' => 'double-quote', // @translate
+        '"' => 'double quote', // @translate
         "'" => 'quote', // @translate
         '#' => 'hash', // @translate
         // '' => 'empty', // @translate
@@ -38,6 +39,16 @@ class ImportForm extends Form
      * @var array
      */
     protected $mappingClasses;
+
+    /**
+     * @var array
+     */
+    protected $defaultSettings;
+
+    /**
+     * @var UserSettings
+     */
+    protected $userSettings;
 
     public function init()
     {
@@ -56,6 +67,7 @@ class ImportForm extends Form
         ]);
 
         $valueOptions = $this->getDelimiterList();
+        $value = $this->userSettings->get('csv_import_delimiter', $this->defaultSettings['csv_import_delimiter']);
         $this->add([
             'name' => 'delimiter',
             'type' => 'select',
@@ -64,9 +76,13 @@ class ImportForm extends Form
                 'info'=> 'A single character that will be used to separate columns in the csv file.', // @translate
                 'value_options' => $valueOptions,
             ],
+            'attributes' => [
+                'value' => $this->integrateCsvOption($value),
+            ],
         ]);
 
         $valueOptions = $this->getEnclosureList();
+        $value = $this->userSettings->get('csv_import_enclosure', $this->defaultSettings['csv_import_enclosure']);
         $this->add([
             'name' => 'enclosure',
             'type' => 'select',
@@ -75,6 +91,9 @@ class ImportForm extends Form
                 'info' => 'A single character that will be used to separate columns in the csv file.' // @translate
                     . ' ' . 'The enclosure can be omitted when the content does not contain the delimiter.', // @translate
                 'value_options' => $valueOptions,
+            ],
+            'attributes' => [
+                'value' => $this->integrateCsvOption($value),
             ],
         ]);
 
@@ -108,9 +127,63 @@ class ImportForm extends Form
         ]);
     }
 
+    /**
+     * Extract values that can’t be passed via a select form element in Zend.
+     *
+     * The values is extracted from a string between "__>" and "<__".
+     *
+     * @param string $value
+     * @return string
+     */
+    public function extractCsvOption($value)
+    {
+        if (strpos($value, '__>') === 0
+            && ($pos = strpos($value, '<__')) == (strlen($value) - 3)
+        ) {
+            $result = substr($value, 3, $pos - 3);
+            return $result === '\r' ? "\r" : $result;
+        }
+        return $value;
+    }
+
+    /**
+     * Integrate values that can’t be passed via a select form element in Zend.
+     *
+     * The values are integrated with a string between "__>" and "<__".
+     *
+     * @param string $value
+     * @return string
+     */
+    public function integrateCsvOption($value)
+    {
+        $specialValues = ["\r", "\t", ' '];
+        return in_array($value, $specialValues, true)
+            ? sprintf('__>%s<__', $value)
+            : $value;
+    }
+
+    /**
+     * @param array $mappingClasses
+     */
     public function setMappingClasses(array $mappingClasses)
     {
         $this->mappingClasses = $mappingClasses;
+    }
+
+    /**
+     * @param array $defaultSettings
+     */
+    public function setDefaultSettings(array $defaultSettings)
+    {
+        $this->defaultSettings= $defaultSettings;
+    }
+
+    /**
+     * @param UserSettings $userSettings
+     */
+    public function setUserSettings(UserSettings $userSettings)
+    {
+        $this->userSettings = $userSettings;
     }
 
     /**

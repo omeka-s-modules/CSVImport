@@ -203,7 +203,7 @@ class MappingForm extends Form
                 Import::ACTION_UPDATE => 'Update data of the resource', // @translate
                 Import::ACTION_REPLACE => 'Replace all data of the resource', // @translate
                 Import::ACTION_DELETE => 'Delete the resource', // @translate
-                Import::ACTION_SKIP => 'Skip process of the resource', // @translate
+                Import::ACTION_SKIP => 'Skip row', // @translate
             ];
             $this->add([
                 'name' => 'action',
@@ -233,6 +233,9 @@ class MappingForm extends Form
                     ]
                 ],
                 'attributes' => [
+                    'value' => $userSettings->get(
+                        'csv_import_identifier_property',
+                        $default['csv_import_identifier_property']),
                     'class' => 'advanced-params chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],
