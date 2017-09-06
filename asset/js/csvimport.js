@@ -6,7 +6,7 @@
             + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
             + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
 
-        $('#multivalue-switch').text(Omeka.jsTranslate('Set multivalue separator for all columns'));
+        setMultivalueSeparatorByDefault();
 
         var advancedHtml = '<div class="field">'
             + '<div class="field-meta">'
@@ -229,26 +229,28 @@
         });
 
         // Set/unset multivalue separator for all columns.
-        $('#multivalue-switch').on('click', function(e) {
-            e.preventDefault();
-            var targetLines = $('.mappable li.column-multivalue');
-            targetLines.removeClass('delete');
-            targetLines.find('.remove-option').css({ display: 'inline' });
-            targetLines.find('.restore-option').css({ display: 'none' });
-            if ($(this).val() === 'multivalue-unset') {
-                targetLines.find('input.column-multivalue').prop('disabled', true);
-                targetLines.hide();
-                $(this).prop('value', 'multivalue-set');
-                $(this).val('multivalue-set');
-                $(this).text(Omeka.jsTranslate('Set multivalue separator for all columns'));
-            } else {
-                targetLines.find('input.column-multivalue').prop('disabled', false);
-                targetLines.show();
-                $(this).prop('value', 'multivalue-unset');
-                $(this).val('multivalue-unset');
-                $(this).text(Omeka.jsTranslate('Unset multivalue separator for all columns'));
-            }
+        $('#multivalue_by_default').on('change', function(e) {
+            setMultivalueSeparatorByDefault();
         });
+
+        function setMultivalueSeparatorByDefault() {
+            var multivalueSwitch = $('#multivalue_by_default').prop('checked');
+            var targetRows = $('.element.mappable li.column-multivalue');
+            targetRows.removeClass('delete');
+            targetRows.find('.remove-option').css({ display: 'inline' });
+            targetRows.find('.restore-option').css({ display: 'none' });
+            if (multivalueSwitch) {
+                $('.sidebar .button.column-multivalue').each(function() {
+                    $('.element.mappable').find('input.column-multivalue').prop('disabled', false);
+                    $('.element.mappable').find('li.column-multivalue').show();
+                });
+            } else {
+                $('.sidebar .button.column-multivalue').each(function() {
+                    $('.element.mappable').find('input.column-multivalue').prop('disabled', true);
+                    $('.element.mappable').find('li.column-multivalue').hide();
+                });
+            }
+        }
 
         // Manage advanced options.
         $('#advanced-params').on('click', function(e) {

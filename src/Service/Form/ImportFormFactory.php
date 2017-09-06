@@ -12,6 +12,8 @@ class ImportFormFactory implements FactoryInterface
         $form = new ImportForm(null, $options);
         $config = $services->get('Config');
         $form->setMappingClasses($config['csv_import_mappings']);
+        $form->setDefaultSettings($config['csv_import']['user_settings']);
+        $form->setUserSettings($services->get('Omeka\Settings\User'));
         return $form;
     }
 }

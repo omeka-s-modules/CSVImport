@@ -169,15 +169,17 @@ class MappingForm extends Form
             ]);
 
             $this->add([
-                'name' => 'multivalue-switch',
-                'type' => 'button',
+                'name' => 'multivalue_by_default',
+                'type' => 'checkbox',
                 'options' => [
                     'label' => 'Set/unset the multivalue separator for all columns', // @translate
                     'info' => 'When clicked, all columns will be set/unset multivalued by default in the next tab.', // @translate
                 ],
                 'attributes' => [
-                    'id' => 'multivalue-switch',
-                    'value' => 'multivalue-set',
+                    'id' => 'multivalue_by_default',
+                    'value' => (int) (bool) $userSettings->get(
+                        'csv_import_multivalue_by_default',
+                        $default['csv_import_multivalue_by_default']),
                 ],
             ]);
 
@@ -203,7 +205,7 @@ class MappingForm extends Form
                 Import::ACTION_UPDATE => 'Update data of the resource', // @translate
                 Import::ACTION_REPLACE => 'Replace all data of the resource', // @translate
                 Import::ACTION_DELETE => 'Delete the resource', // @translate
-                Import::ACTION_SKIP => 'Skip process of the resource', // @translate
+                Import::ACTION_SKIP => 'Skip row', // @translate
             ];
             $this->add([
                 'name' => 'action',
@@ -233,6 +235,9 @@ class MappingForm extends Form
                     ]
                 ],
                 'attributes' => [
+                    'value' => $userSettings->get(
+                        'csv_import_identifier_property',
+                        $default['csv_import_identifier_property']),
                     'class' => 'advanced-params chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],

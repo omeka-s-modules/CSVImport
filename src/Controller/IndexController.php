@@ -57,8 +57,8 @@ class IndexController extends AbstractActionController
 
         $files = $request->getFiles()->toArray();
         $post = $this->params()->fromPost();
-        $delimiter = $this->extractCsvOptionFromPostValue($post['delimiter']);
-        $enclosure = $this->extractCsvOptionFromPostValue($post['enclosure']);
+        $delimiter = $this->getForm(ImportForm::class)->extractCsvOption($post['delimiter']);
+        $enclosure = $this->getForm(ImportForm::class)->extractCsvOption($post['enclosure']);
         $resourceType = $post['resource_type'];
         $form = $this->getForm(MappingForm::class, [
             'resourceType' => $resourceType,
@@ -183,25 +183,6 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * Extract values that can’t be passed via a select form element in Zend.
-     *
-     * The values is extracted from a string between "__>" and "<__".
-     *
-     * @param string $value
-     * @return string
-     */
-    protected function extractCsvOptionFromPostValue($value)
-    {
-        if (strpos($value, '__>') === 0
-            && ($pos = strpos($value, '<__')) == (strlen($value) - 3)
-        ) {
-            $result = substr($value, 3, $pos - 3);
-            return $result === '\r' ? "\r" : $result;
-        }
-        return $value;
-    }
-
-    /**
      * Helper to clean posted args to get more readable logs.
      *
      * @param array $post
@@ -222,15 +203,19 @@ class IndexController extends AbstractActionController
             $args['column-property'][$column] = $properties;
         }
 
+        if (!array_key_exists('column-multivalue', $post)) {
+            $args['column-multivalue'] = [];
+        }
+
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
         unset($args['enclosure']);
-        $args['delimiter'] = $this->extractCsvOptionFromPostValue($post['delimiter']);
-        $args['enclosure'] = $this->extractCsvOptionFromPostValue($post['enclosure']);
+        $args['delimiter'] = $this->getForm(ImportForm::class)->extractCsvOption($post['delimiter']);
+        $args['enclosure'] = $this->getForm(ImportForm::class)->extractCsvOption($post['enclosure']);
         $args['escape'] = CsvFile::DEFAULT_ESCAPE;
-        if (array_key_exists('multivalue-separator', $post)) {
-            unset($args['multivalue-separator']);
-            $args['multivalue-separator'] = $post['multivalue-separator'];
+        if (array_key_exists('multivalue_separator', $post)) {
+            unset($args['multivalue_separator']);
+            $args['multivalue_separator'] = $post['multivalue_separator'];
         }
 
         return $args;
