@@ -203,6 +203,10 @@ class IndexController extends AbstractActionController
             $args['column-property'][$column] = $properties;
         }
 
+        if (!array_key_exists('column-multivalue', $post)) {
+            $args['column-multivalue'] = [];
+        }
+
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
         unset($args['enclosure']);
