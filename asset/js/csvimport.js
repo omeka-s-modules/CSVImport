@@ -202,6 +202,19 @@
             activeElement.find('li.column-url').hide();
         });
 
+        $('.sidebar').on('click', '.button.column-text', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            activeElement.find('input.column-url').prop('disabled', true);
+            activeElement.find('input.column-reference').prop('disabled', true);
+            activeElement.find('li.column-url').hide();
+            activeElement.find('li.column-reference').hide();
+            activeElement.find('li.column-url').removeClass('delete');
+            activeElement.find('li.column-reference').removeClass('delete');
+            activeElement.find('li .remove-option').css({ display: 'inline' });
+            activeElement.find('li .restore-option').css({ display: 'none' });
+        });
+
         $('.sidebar').on('click', '.button.column-multivalue', function(e){
             e.stopPropagation();
             e.preventDefault();
