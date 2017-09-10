@@ -18,5 +18,10 @@
         <li data-flag="column-ispublic" data-flag-type="resource-data">
             <a href="#" class="button"><span><?php echo $this->translate('Visibility public/private'); ?></span></a>
         </li>
+        <?php if ($resourceType === 'item_sets'): ?>
+        <li data-flag="column-isopen" data-flag-type="resource-data">
+            <a href="#" class="button"><span><?php echo $this->translate('Open/closed to additions'); ?></span></a>
+        </li>
+        <?php endif; ?>
     </ul>
 </div>

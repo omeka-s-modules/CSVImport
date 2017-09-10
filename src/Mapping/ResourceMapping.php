@@ -24,6 +24,7 @@ class ResourceMapping extends AbstractMapping
     {
         return 'resource-data';
     }
+
     public static function getSidebar(PhpRenderer $view)
     {
         return $view->resourceSidebar();

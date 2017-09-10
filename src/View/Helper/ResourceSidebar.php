@@ -12,13 +12,14 @@ class ResourceSidebar extends AbstractHelper
         $this->user = $user;
     }
 
-    public function __invoke()
+    public function __invoke($resourceType = null)
     {
         $userRole = $this->user->getRole();
         return $this->getView()->partial(
             'common/resource-sidebar',
             [
                 'userRole' => $userRole,
+                'resourceType' => $resourceType,
             ]
         );
     }

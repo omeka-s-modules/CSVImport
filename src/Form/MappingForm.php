@@ -112,28 +112,45 @@ class MappingForm extends Form
                 ],
             ]);
 
-            if ($resourceType == 'items') {
-                $this->add([
-                    'name' => 'o:item_set',
-                    'type' => ResourceSelect::class,
-                    'attributes' => [
-                        'id' => 'select-item-set',
-                        'required' => false,
-                        'multiple' => true,
-                        'data-placeholder' => 'Select item sets', // @translate
-                    ],
-                    'options' => [
-                        'label' => 'Item sets', // @translate
-                        'info' => 'Select Item sets for this resource', // @translate
-                        'resource_value_options' => [
-                            'resource' => 'item_sets',
-                            'query' => [],
-                            'option_text_callback' => function ($itemSet) {
-                                return $itemSet->displayTitle();
-                            },
+            switch ($resourceType) {
+                case 'item_sets':
+                    $this->add([
+                        'name' => 'o:is_open',
+                        'type' => 'radio',
+                        'options' => [
+                            'label' => 'Open/closed to additions', // @translate
+                            'info' => 'The default openess is closed if the cell contains "0", "false", "off", or "closed" (case insensitive), else it is open.', // @translate
+                            'value_options' => [
+                                '1' => 'Open', // @translate
+                                '0' => 'Closed', // @translate
+                            ],
                         ],
-                    ],
-                ]);
+                    ]);
+                    break;
+
+                case 'items':
+                    $this->add([
+                        'name' => 'o:item_set',
+                        'type' => ResourceSelect::class,
+                        'attributes' => [
+                            'id' => 'select-item-set',
+                            'required' => false,
+                            'multiple' => true,
+                            'data-placeholder' => 'Select item sets', // @translate
+                        ],
+                        'options' => [
+                            'label' => 'Item sets', // @translate
+                            'info' => 'Select Item sets for this resource', // @translate
+                            'resource_value_options' => [
+                                'resource' => 'item_sets',
+                                'query' => [],
+                                'option_text_callback' => function ($itemSet) {
+                                    return $itemSet->displayTitle();
+                                },
+                            ],
+                        ],
+                    ]);
+                    break;
             }
 
             $this->add([
@@ -175,6 +192,10 @@ class MappingForm extends Form
                 ]);
             $inputFilter->add([
                 'name' => 'o:is_public',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'o:is_open',
                 'required' => false,
             ]);
             $inputFilter->add([
