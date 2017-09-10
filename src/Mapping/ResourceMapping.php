@@ -41,10 +41,12 @@ class ResourceMapping extends AbstractMapping
             : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach ($row as $index => $values) {
-            // Maybe weird, but just assuming a split for ids for simplicity's
-            // sake since a list of ids shouldn't have any weird separators.
-            $values = explode($multivalueSeparator, $values);
-            $values = array_map('trim', $values);
+            if (empty($multivalueMap[$index])) {
+                $values = [$values];
+            } else {
+                $values = explode($multivalueSeparator, $values);
+                $values = array_map('trim', $values);
+            }
             $this->processCell($index, $values);
         }
 
@@ -80,26 +82,33 @@ class ResourceMapping extends AbstractMapping
             : [];
     }
 
+    /**
+     * Process the content of a cell (one csv value).
+     *
+     * @param int $index
+     * @param array $values The content of the cell as an array (only one value
+     * if the cell is not multivalued).
+     */
     protected function processCell($index, array $values)
     {
         $data = &$this->data;
 
         if (in_array($index, $this->map['resourceTemplate'])) {
-            $resourceTemplate = $this->findResourceTemplate($values[0]);
+            $resourceTemplate = $this->findResourceTemplate(reset($values));
             if ($resourceTemplate) {
                 $data['o:resource_template'] = ['o:id' => $resourceTemplate->id()];
             }
         }
 
         if (in_array($index, $this->map['resourceClass'])) {
-            $resourceClass = $this->findResourceClass($values[0]);
+            $resourceClass = $this->findResourceClass(reset($values));
             if ($resourceClass) {
                 $data['o:resource_class'] = ['o:id' => $resourceClass->id()];
             }
         }
 
         if (in_array($index, $this->map['ownerEmail'])) {
-            $user = $this->findUser($values[0]);
+            $user = $this->findUser(reset($values));
             if ($user) {
                 $data['o:owner'] = ['o:id' => $user->id()];
             }
