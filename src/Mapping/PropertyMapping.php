@@ -31,7 +31,7 @@ class PropertyMapping extends AbstractMapping
         $languageSettings = isset($this->args['column-language']) ? $this->args['column-language'] : [];
         $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
 
-        $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
+        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             // consider 'literal' as the default type
@@ -46,7 +46,7 @@ class PropertyMapping extends AbstractMapping
 
             if (isset($columnMap[$index])) {
                 foreach ($columnMap[$index] as $propertyTerm => $propertyId) {
-                    if (in_array($index, $multivalueMap)) {
+                    if (empty($multivalueMap[$index])) {
                         $values = [$values];
                     } else {
                         $values = explode($multivalueSeparator, $values);

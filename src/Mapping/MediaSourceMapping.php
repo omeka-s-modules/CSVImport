@@ -27,7 +27,7 @@ class MediaSourceMapping extends AbstractMapping
         $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media-source']) ? $this->args['media-source'] : [];
 
-        $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
+        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             if (empty($multivalueMap[$index])) {

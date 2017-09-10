@@ -37,9 +37,7 @@ class ResourceMapping extends AbstractMapping
         // First, pull in the global settings.
         $this->processGlobalArgs();
 
-        $multivalueMap = isset($this->args['column-multivalue'])
-            ? array_keys($this->args['column-multivalue'])
-            : [];
+        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             if (empty($multivalueMap[$index])) {
