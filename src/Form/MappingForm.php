@@ -103,31 +103,6 @@ class MappingForm extends Form
                 ],
             ]);
 
-            if ($resourceType == 'items') {
-                $this->add([
-                    'name' => 'o:item_set',
-                    'type' => ResourceSelect::class,
-                    'attributes' => [
-                        'id' => 'select-item-set',
-                        'class' => 'chosen-select',
-                        'required' => false,
-                        'multiple' => true,
-                        'data-placeholder' => 'Select item sets', // @translate
-                        'data-api-base-url' => $urlHelper('api/default', ['resource' => 'item_sets']),
-                    ],
-                    'options' => [
-                        'label' => 'Item sets', // @translate
-                        'info' => 'Select Item sets for this resource', // @translate
-                        'resource_value_options' => [
-                            'resource' => 'item_sets',
-                            'query' => [],
-                            'option_text_callback' => function ($itemSet) {
-                                return $itemSet->displayTitle();
-                            },
-                        ],
-                    ],
-                ]);
-            }
             if ($acl->userIsAllowed('Omeka\Entity\Item', 'change-owner')) {
                 $this->add([
                     'name' => 'o:owner',
@@ -150,6 +125,34 @@ class MappingForm extends Form
                         ],
                     ],
                 ]);
+            }
+
+            switch ($resourceType) {
+                case 'items':
+                    $this->add([
+                        'name' => 'o:item_set',
+                        'type' => ResourceSelect::class,
+                        'attributes' => [
+                            'id' => 'select-item-set',
+                            'class' => 'chosen-select',
+                            'required' => false,
+                            'multiple' => true,
+                            'data-placeholder' => 'Select item sets', // @translate
+                            'data-api-base-url' => $urlHelper('api/default', ['resource' => 'item_sets']),
+                        ],
+                        'options' => [
+                            'label' => 'Item sets', // @translate
+                            'info' => 'Select Item sets for this resource', // @translate
+                            'resource_value_options' => [
+                                'resource' => 'item_sets',
+                                'query' => [],
+                                'option_text_callback' => function ($itemSet) {
+                                    return $itemSet->displayTitle();
+                                },
+                            ],
+                        ],
+                    ]);
+                    break;
             }
 
             $this->add([
