@@ -166,16 +166,8 @@ class IndexController extends AbstractActionController
      */
     protected function orderMappingsForResource($resourceType)
     {
-        $defaultOrder = [
-            'items' => [
-                '\CSVImport\Mapping\ItemMapping',
-                '\CSVImport\Mapping\PropertyMapping',
-                '\CSVImport\Mapping\MediaSourceMapping',
-            ],
-            'users' => [
-                '\CSVImport\Mapping\UserMapping',
-            ],
-        ];
+        $config = include __DIR__ . '/../../config/module.config.php';
+        $defaultOrder = $config['csv_import_mappings'];
         $mappings = $this->config['csv_import_mappings'];
         if (isset($defaultOrder[$resourceType])) {
             return array_values(array_unique(array_merge(

@@ -1,65 +1,56 @@
 <?php
+namespace CSVImport;
 
 return [
-    'controllers' => [
-        'factories' => [
-            'CSVImport\Controller\Index' => 'CSVImport\Service\Controller\IndexControllerFactory',
-        ],
-    ],
-    'api_adapters' => [
-        'invokables' => [
-            'csvimport_entities' => 'CSVImport\Api\Adapter\EntityAdapter',
-            'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter',
-        ],
-    ],
-    'translator' => [
-        'translation_file_patterns' => [
-            [
-                'type' => 'gettext',
-                'base_dir' => OMEKA_PATH . '/modules/CSVImport/language',
-                'pattern' => '%s.mo',
-                'text_domain' => null,
-            ],
+    'entity_manager' => [
+        'mapping_classes_paths' => [
+            __DIR__ . '/../src/Entity',
         ],
     ],
     'view_manager' => [
         'template_path_stack' => [
-            OMEKA_PATH . '/modules/CSVImport/view',
+            __DIR__ . '/../view',
         ],
     ],
     'view_helpers' => [
         'invokables' => [
-            'csvPropertySelector' => 'CSVImport\View\Helper\PropertySelector',
+            'csvPropertySelector' => View\Helper\PropertySelector::class,
         ],
         'factories' => [
-            'itemSidebar' => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
-            'mediaSourceSidebar' => 'CSVImport\Service\ViewHelper\MediaSourceSidebarFactory',
-        ],
-    ],
-    'entity_manager' => [
-        'mapping_classes_paths' => [
-            OMEKA_PATH . '/modules/CSVImport/src/Entity',
+            'itemSidebar' => Service\ViewHelper\ItemSidebarFactory::class,
+            'mediaSourceSidebar' => Service\ViewHelper\MediaSourceSidebarFactory::class,
         ],
     ],
     'form_elements' => [
         'factories' => [
-            'CSVImport\Form\ImportForm' => 'CSVImport\Service\Form\ImportFormFactory',
-            'CSVImport\Form\MappingForm' => 'CSVImport\Service\Form\MappingFormFactory',
+            'CSVImport\Form\ImportForm' => Service\Form\ImportFormFactory::class,
+            'CSVImport\Form\MappingForm' => Service\Form\MappingFormFactory::class,
+        ],
+    ],
+    'controllers' => [
+        'factories' => [
+            'CSVImport\Controller\Index' => Service\Controller\IndexControllerFactory::class,
+        ],
+    ],
+    'api_adapters' => [
+        'invokables' => [
+            'csvimport_entities' => Api\Adapter\EntityAdapter::class,
+            'csvimport_imports' => Api\Adapter\ImportAdapter::class,
         ],
     ],
     'csv_import_mappings' => [
         'items' => [
-            '\CSVImport\Mapping\ItemMapping',
-            '\CSVImport\Mapping\PropertyMapping',
-            '\CSVImport\Mapping\MediaSourceMapping',
+            Mapping\ItemMapping::class,
+            Mapping\PropertyMapping::class,
+            Mapping\MediaSourceMapping::class,
         ],
         'users' => [
-            '\CSVImport\Mapping\UserMapping',
+            Mapping\UserMapping::class,
         ],
     ],
     'csv_import_media_ingester_adapter' => [
-        'url' => 'CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter',
-        'html' => 'CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter',
+        'url' => MediaIngesterAdapter\UrlMediaIngesterAdapter::class,
+        'html' => MediaIngesterAdapter\HtmlMediaIngesterAdapter::class,
         'iiif' => null,
         'oembed' => null,
         'youtube' => null,
@@ -144,6 +135,16 @@ return [
                         'resource' => 'CSVImport\Controller\Index',
                     ],
                 ],
+            ],
+        ],
+    ],
+    'translator' => [
+        'translation_file_patterns' => [
+            [
+                'type' => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern' => '%s.mo',
+                'text_domain' => null,
             ],
         ],
     ],
