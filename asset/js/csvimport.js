@@ -1,99 +1,51 @@
+/**
+ * Initially based on Omeka S omeka2importer.js and resource-core.js.
+ */
 (function ($) {
-    var activeElement = null;
 
     $(document).ready(function() {
-        var actionsHtml = '<ul class="actions"><li><a aria-label="'
-            + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
-            + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
+        /*
+         * Init.
+         */
+
+        var activeElement = null;
+
+        var actionsHtml = '<ul class="actions">'
+            + '<li><a aria-label="' + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>'
+            + '<li><a aria-label="' + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>'
+            + '</ul>';
+
+        $('#action').closest('.field').before(
+            '<div class="field">'
+            + '<div class="field-meta">'
+            + '<button type="button" name="advanced-settings" id="advanced-settings" value="show">'
+            + Omeka.jsTranslate('Advanced settings')
+            + '</button>'
+            + '</div>'
+            + '</div>'
+        );
+        $('.advanced-settings').closest('.field').hide();
 
         setMultivalueSeparatorByDefault();
 
-        var advancedHtml = '<div class="field">'
-            + '<div class="field-meta">'
-            + '<button type="button" name="advanced-params" id="advanced-params" value="show">'
-            + Omeka.jsTranslate('Advanced options')
-            + '</button>'
-            + '</div>'
-            + '</div>';
-        $('#action').closest('.field').before(advancedHtml);
-        $('.advanced-params').closest('.field').hide();
+        /*
+         * Basic import settings tab.
+         */
 
-        $('#property-selector li.selector-child').on('click', function(e){
-            e.stopPropagation();
-            //looks like a stopPropagation on the selector-parent forces
-            //me to bind the event lower down the DOM, then work back
-            //up to the li
-            var targetLi = $(e.target).closest('li.selector-child');
-
-            //first, check if the property is already added
-            var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
-            if (hasMapping.length === 0) {
-                var elementId = activeElement.data('element-id');
-                var newInput = $('<input type="hidden" name="column-property[' + elementId + '][]" ></input>');
-                newInput.val(targetLi.data('property-id'));
-                var newMappingLi = $('<li class="mapping" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
-                newMappingLi.append(newInput);
-                activeElement.find('ul.mappings').append(newMappingLi);
-                Omeka.closeSidebar($(this));
-            }
-        });
-
-        $('.sidebar-close').on('click', function() {
-            $('tr.mappable.active').removeClass('active');
-        });
-
-        $('#resource-class-selector li.selector-child').on('click', function(e){
-            e.stopPropagation();
-            //looks like a stopPropagation on the selector-parent forces
-            //me to bind the event lower down the DOM, then work back
-            //up to the li
-            var targetLi = $(e.target).closest('li.selector-child');
-            if (activeElement == null) {
-                alert(Omeka.jsTranslate('Select an item type at the left before choosing a resource class.'));
-            } else {
-                //first, check if a class is already added
-                //var hasMapping = activeElement.find('ul.mappings li');
-                activeElement.find('ul.mappings li').remove();
-                activeElement.find('input').remove();
-                //hasMapping.remove();
-                var typeId = activeElement.data('item-type-id');
-                var newInput = $('<input type="hidden" name="type-class[' + typeId + ']" ></input>');
-                newInput.val(targetLi.data('class-id'));
-                activeElement.find('td.mapping').append(newInput);
-                activeElement.find('ul.mappings').append('<li class="mapping" data-class-id="' + targetLi.data('class-id') + '">' + targetLi.data('child-search') + '</li>');
-            }
-        });
-
-        // Clear default mappings
-        $('body').on('click', '.clear-defaults', function(e) {
-            e.stopPropagation();
+        // Manage advanced settings.
+        $('#advanced-settings').on('click', function(e) {
             e.preventDefault();
-            var fieldset = $(this).parents('fieldset');
-            fieldset.find('li.mapping.default').remove();
+            $('.advanced-settings').closest('.field').show();
+            $(this).closest('.field').remove();
         });
 
-        // Remove mapping
-        $('.section').on('click', 'a.remove-mapping', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var mappingToRemove = $(this).parents('li.mapping');
-            mappingToRemove.find('input').prop('disabled', true);
-            mappingToRemove.addClass('delete');
-            mappingToRemove.find('.restore-mapping').show();
-            $(this).hide();
-        });
+        /*
+         * Mapping form tab.
+         */
 
-        // Restore a removed mapping
-        $('.section').on('click', 'a.restore-mapping', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var mappingToRemove = $(this).parents('li.mapping');
-            mappingToRemove.find('.remove-mapping').show();
-            mappingToRemove.find('span.restore-mapping').hide();
-            mappingToRemove.find('input').prop('disabled', false);
-            mappingToRemove.removeClass('delete');
-            $(this).hide();
-        });
+        /*
+         * Sidebar chooser (buttons on each mappable element).
+         */
 
         $('.sidebar-chooser').on('click', 'a', function(e) {
             e.preventDefault();
@@ -132,6 +84,15 @@
             Omeka.openSidebar(sidebar);
         });
 
+        /*
+         * Sidebar actions (data mapping and options on the active element).
+         */
+
+        $('.sidebar-close').on('click', function() {
+            $('tr.mappable.active').removeClass('active');
+        });
+
+        // Generic sidebar actions.
         $('.sidebar.flags li').on('click', function(e){
             // hijack the multivalue option because it is handled separately below
             var targetLi = $(e.target).closest('li');
@@ -152,8 +113,8 @@
                 if (! flagType) {
                     flagType = targetLi.data('flag');
                 }
-                //first, check if the flag is already added
-                //or if there is already any media mapping
+                // First, check if the flag is already added or if there is
+                // already a mapping.
                 var hasFlag = activeElement.find('ul.mappings li.' + flagType);
                 if (hasFlag.length === 0) {
                     var elementId = activeElement.data('element-id');
@@ -180,6 +141,50 @@
             }
         });
 
+        // Specific sidebar action for property selector.
+        $('#property-selector li.selector-child').on('click', function(e){
+            e.stopPropagation();
+            //looks like a stopPropagation on the selector-parent forces
+            //me to bind the event lower down the DOM, then work back
+            //up to the li
+            var targetLi = $(e.target).closest('li.selector-child');
+
+            // First, check if the property is already added.
+            var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
+            if (hasMapping.length === 0) {
+                var elementId = activeElement.data('element-id');
+                var newInput = $('<input type="hidden" name="column-property[' + elementId + '][]" ></input>');
+                newInput.val(targetLi.data('property-id'));
+                var newMappingLi = $('<li class="mapping" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
+                newMappingLi.append(newInput);
+                activeElement.find('ul.mappings').append(newMappingLi);
+                Omeka.closeSidebar($(this));
+            }
+        });
+
+        // Specific sidebar action for resource class selector.
+        $('#resource-class-selector li.selector-child').on('click', function(e){
+            e.stopPropagation();
+            //looks like a stopPropagation on the selector-parent forces
+            //me to bind the event lower down the DOM, then work back
+            //up to the li
+            var targetLi = $(e.target).closest('li.selector-child');
+            if (activeElement == null) {
+                alert(Omeka.jsTranslate('Select an item type at the left before choosing a resource class.'));
+            } else {
+                //first, check if a class is already added
+                //var hasMapping = activeElement.find('ul.mappings li');
+                activeElement.find('ul.mappings li').remove();
+                activeElement.find('input').remove();
+                //hasMapping.remove();
+                var typeId = activeElement.data('item-type-id');
+                var newInput = $('<input type="hidden" name="type-class[' + typeId + ']" ></input>');
+                newInput.val(targetLi.data('class-id'));
+                activeElement.find('td.mapping').append(newInput);
+                activeElement.find('ul.mappings').append('<li class="mapping" data-class-id="' + targetLi.data('class-id') + '">' + targetLi.data('child-search') + '</li>');
+            }
+        });
+
         $('.sidebar').on('click', '.button.language', function(e) {
             setLanguage(e);
         });
@@ -193,13 +198,6 @@
             activeElement.find('li.column-reference').hide();
         });
 
-        $('.sidebar').on('click', '.button.column-multivalue', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            activeElement.find('input.column-multivalue').prop('disabled', false);
-            activeElement.find('li.column-multivalue').show();
-        });
-
         $('.sidebar').on('click', '.button.column-reference', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -209,24 +207,11 @@
             activeElement.find('li.column-url').hide();
         });
 
-        $('ul.options').on('click', 'a.remove-option', function(e){
+        $('.sidebar').on('click', '.button.column-multivalue', function(e){
             e.stopPropagation();
             e.preventDefault();
-            var optionToRemove = $(this).parents('li.option');
-            optionToRemove.find('input.column-option').prop('disabled', true);
-            optionToRemove.addClass('delete');
-            optionToRemove.find('.restore-option').show();
-            optionToRemove.find('.remove-option').hide();
-        });
-
-        $('ul.options').on('click', 'a.restore-option', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var optionToRestore = $(this).parents('li.option');
-            optionToRestore.find('input.column-option').prop('disabled', false);
-            optionToRestore.removeClass('delete');
-            optionToRestore.find('.remove-option').show();
-            optionToRestore.find('.restore-option').hide();
+            activeElement.find('input.column-multivalue').prop('disabled', false);
+            activeElement.find('li.column-multivalue').show();
         });
 
         // Set/unset multivalue separator for all columns.
@@ -253,11 +238,61 @@
             }
         }
 
-        // Manage advanced options.
-        $('#advanced-params').on('click', function(e) {
+        /*
+         * Actions on mapped columns.
+         */
+
+        // Clear default mappings.
+        $('body').on('click', '.clear-defaults', function(e) {
+            e.stopPropagation();
             e.preventDefault();
-            $('.advanced-params').closest('.field').show();
-            $(this).closest('.field').remove();
+            var fieldset = $(this).parents('fieldset');
+            fieldset.find('li.mapping.default').remove();
+        });
+
+        // Remove mapping.
+        $('.section').on('click', 'a.remove-mapping', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var mappingToRemove = $(this).parents('li.mapping');
+            mappingToRemove.find('input').prop('disabled', true);
+            mappingToRemove.addClass('delete');
+            mappingToRemove.find('.restore-mapping').show();
+            $(this).hide();
+        });
+
+        // Restore a removed mapping.
+        $('.section').on('click', 'a.restore-mapping', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var mappingToRemove = $(this).parents('li.mapping');
+            mappingToRemove.find('.remove-mapping').show();
+            mappingToRemove.find('span.restore-mapping').hide();
+            mappingToRemove.find('input').prop('disabled', false);
+            mappingToRemove.removeClass('delete');
+            $(this).hide();
+        });
+
+        // Remove option.
+        $('ul.options').on('click', 'a.remove-option', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var optionToRemove = $(this).parents('li.option');
+            optionToRemove.find('input.column-option').prop('disabled', true);
+            optionToRemove.addClass('delete');
+            optionToRemove.find('.restore-option').show();
+            optionToRemove.find('.remove-option').hide();
+        });
+
+        // Restore option.
+        $('ul.options').on('click', 'a.restore-option', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var optionToRestore = $(this).parents('li.option');
+            optionToRestore.find('input.column-option').prop('disabled', false);
+            optionToRestore.removeClass('delete');
+            optionToRestore.find('.remove-option').show();
+            optionToRestore.find('.restore-option').hide();
         });
 
         /*
@@ -267,16 +302,14 @@
         $('input.value-language').on('keyup', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            this.setCustomValidity(
-                Omeka.langIsValid(this.value) ? '' : Omeka.jsTranslate('Please enter a valid language tag.')
-            );
+            if ('' === this.value || Omeka.langIsValid(this.value)) {
+                this.setCustomValidity('');
+            } else {
+                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'))
+            }
         });
-
-        /*
-         * Prevent accidental form submission when entering a language tag
-         * and hitting enter by setting the language as if clicking the button
-         */
-
+        // Prevent accidental form submission when entering a language tag and
+        // and hitting enter by setting the language as if clicking the button.
         $('input.value-language').on('keypress', function(e) {
             if (e.keyCode == 13 ) {
                 setLanguage(e);

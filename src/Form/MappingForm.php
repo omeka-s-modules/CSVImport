@@ -219,7 +219,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'action',
-                    'class' => 'advanced-params',
+                    'class' => 'advanced-settings',
                 ],
             ]);
 
@@ -235,13 +235,13 @@ class MappingForm extends Form
                     'term_as_value' => false,
                     'prepend_value_options' => [
                         'internal_id' => 'Internal id', // @translate
-                    ]
+                    ],
                 ],
                 'attributes' => [
                     'value' => $userSettings->get(
                         'csv_import_identifier_property',
                         $default['csv_import_identifier_property']),
-                    'class' => 'advanced-params chosen-select',
+                    'class' => 'advanced-settings chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],
             ]);
@@ -260,7 +260,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'action_unidentified',
-                    'class' => 'advanced-params',
+                    'class' => 'advanced-settings',
                     'value' => Import::ACTION_SKIP,
                 ],
             ]);

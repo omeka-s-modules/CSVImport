@@ -156,6 +156,6 @@ return [
         'Please enter a valid language tag.', // @translate
         'Set multivalue separator for all columns', // @translate
         'Unset multivalue separator for all columns', // @translate
-        'Advanced options' // @translate
+        'Advanced settings' // @translate
     ],
 ];
