@@ -4,9 +4,18 @@ $escapeHtml = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
-?>
 
-<?php echo $this->pageTitle($this->translate('Import Settings'), 1, $this->translate('CSV Import')); ?>
+$resourceTypeLabels = [
+    'items' => $this->translate('items'),
+    'item_sets' => $this->translate('item sets'),
+    'media' => $this->translate('media'),
+    'users' => $this->translate('users'),
+];
+$pageTitle = isset($resourceTypeLabels[$resourceType])
+    ? sprintf($this->translate('Import settings for %s'), $resourceTypeLabels[$resourceType])
+    : $this->translate('Import settings');
+?>
+<?php echo $this->pageTitle($pageTitle, 1, $this->translate('CSV Import')); ?>
 
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>
