@@ -107,7 +107,7 @@ class MappingForm extends Form
                 || ($resourceType === 'items' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
             ) {
                 $this->add([
-                    'name' => 'o:owner',
+                    'name' => 'o:owner[o:id]',
                     'type' => ResourceSelect::class,
                     'attributes' => [
                         'id' => 'select-owner',

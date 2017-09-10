@@ -58,33 +58,33 @@ class ResourceMapping extends AbstractMapping
     {
         $data = &$this->data;
 
-        if (!empty($this->args['o:resource_template'])) {
-            $resourceTemplate = $this->args['o:resource_template']['o:id'];
-            $data['o:resource_template'] = ['o:id' => $resourceTemplate];
+        if (!empty($this->args['o:resource_template']['o:id'])) {
+            $value = $this->args['o:resource_template']['o:id'];
+            $data['o:resource_template'] = $value;
         }
         $this->map['resourceTemplate'] = isset($this->args['column-resourcetemplate'])
             ? array_keys($this->args['column-resourcetemplate'])
             : [];
 
-        if (!empty($this->args['o:resource_class'])) {
-            $resourceClass = $this->args['o:resource_class']['o:id'];
-            $data['o:resource_class'] = ['o:id' => $resourceClass];
+        if (!empty($this->args['o:resource_class']['o:id'])) {
+            $value = $this->args['o:resource_class']['o:id'];
+            $data['o:resource_class'] = $value;
         }
         $this->map['resourceClass'] = isset($this->args['column-resourceclass'])
             ? array_keys($this->args['column-resourceclass'])
             : [];
 
-        if (!empty($this->args['o:owner'])) {
-            $ownerId = $this->args['o:owner'];
-            $data['o:owner'] = ['o:id' => $ownerId];
+        if (!empty($this->args['o:owner']['o:id'])) {
+            $value = $this->args['o:owner']['o:id'];
+            $data['o:owner'] = ['o:id' => $value];
         }
         $this->map['ownerEmail'] = isset($this->args['column-owneremail'])
             ? array_keys($this->args['column-owneremail'])
             : [];
 
         if (isset($this->args['o:is_public']) && strlen($this->args['o:is_public'])) {
-            $isPublic = $this->args['o:is_public'];
-            $data['o:is_public'] = (int) (bool) $isPublic;
+            $value = $this->args['o:is_public'];
+            $data['o:is_public'] = (int) (bool) $value;
         }
         $this->map['isPublic'] = isset($this->args['column-ispublic'])
             ? array_keys($this->args['column-ispublic'])
