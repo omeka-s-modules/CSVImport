@@ -5,6 +5,7 @@ namespace CSVImport\Form;
 use CSVImport\Job\Import;
 use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
+use Omeka\Form\Element\ResourceClassSelect;
 use Zend\Form\Form;
 use Zend\Form\Element\Select;
 
@@ -62,19 +63,21 @@ class MappingForm extends Form
             ],
         ]);
 
-        if (in_array($resourceType, ['items', 'item_sets'])) {
+        if (in_array($resourceType, ['item_sets', 'items'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $this->add([
                 'name' => 'o:resource_template[o:id]',
                 'type' => ResourceSelect::class,
                 'attributes' => [
                     'id' => 'resource-template-select',
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a template', // @translate
                     'data-api-base-url' => $urlHelper('api/default', ['resource' => 'resource_templates']),
                 ],
                 'options' => [
                     'label' => 'Resource template', // @translate
                     'info' => 'A pre-defined template for resource creation', // @translate
-                    'empty_option' => 'Select Template', // @translate
+                    'empty_option' => 'Select a template', // @translate
                     'resource_value_options' => [
                         'resource' => 'resource_templates',
                         'query' => [],
@@ -87,24 +90,16 @@ class MappingForm extends Form
 
             $this->add([
                 'name' => 'o:resource_class[o:id]',
-                'type' => ResourceSelect::class,
+                'type' => ResourceClassSelect::class,
                 'attributes' => [
                     'id' => 'resource-class-select',
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a class', // @translate
                 ],
                 'options' => [
                     'label' => 'Class', // @translate
                     'info' => 'A type for the resource. Different types have different default properties attached to them.', // @translate
-                    'empty_option' => 'Select Class', // @translate
-                    'resource_value_options' => [
-                        'resource' => 'resource_classes',
-                        'query' => [],
-                        'option_text_callback' => function ($resourceClass) {
-                            return [
-                                $resourceClass->vocabulary()->label(),
-                                $resourceClass->label(),
-                            ];
-                        },
-                    ],
+                    'empty_option' => 'Select a class', // @translate
                 ],
             ]);
 
@@ -114,9 +109,11 @@ class MappingForm extends Form
                     'type' => ResourceSelect::class,
                     'attributes' => [
                         'id' => 'select-item-set',
+                        'class' => 'chosen-select',
                         'required' => false,
                         'multiple' => true,
                         'data-placeholder' => 'Select item sets', // @translate
+                        'data-api-base-url' => $urlHelper('api/default', ['resource' => 'item_sets']),
                     ],
                     'options' => [
                         'label' => 'Item sets', // @translate
@@ -138,6 +135,9 @@ class MappingForm extends Form
                     'attributes' => [
                         'id' => 'select-owner',
                         'value' => $currentUser->getId(),
+                        'class' => 'chosen-select',
+                        'data-placeholder' => 'Select a template', // @translate
+                        'data-api-base-url' => $urlHelper('api/default', ['resource' => 'users']),
                     ],
                     'options' => [
                         'label' => 'Owner', // @translate
