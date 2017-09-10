@@ -32,6 +32,14 @@ return [
             'CSVImport\Controller\Index' => Service\Controller\IndexControllerFactory::class,
         ],
     ],
+    'controller_plugins' => [
+        'factories' => [
+            'findResourcesFromIdentifiers' => Service\ControllerPlugin\FindResourcesFromIdentifiersFactory::class,
+        ],
+        'aliases' => [
+            'findResourceFromIdentifier' => 'findResourcesFromIdentifiers',
+        ],
+    ],
     'api_adapters' => [
         'invokables' => [
             'csvimport_entities' => Api\Adapter\EntityAdapter::class,
