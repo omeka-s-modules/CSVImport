@@ -77,6 +77,9 @@ class IndexController extends AbstractActionController
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
+            // TODO Set variables when the form is invalid.
+            $this->messenger()->addError('Invalid settings.'); // @translate
+            return $this->redirect()->toRoute('admin/csvimport');
         } else {
             $importForm = $this->getForm(ImportForm::class);
             $post = array_merge_recursive(
@@ -163,16 +166,8 @@ class IndexController extends AbstractActionController
      */
     protected function orderMappingsForResource($resourceType)
     {
-        $defaultOrder = [
-            'items' => [
-                '\CSVImport\Mapping\PropertyMapping',
-                '\CSVImport\Mapping\ItemMapping',
-                '\CSVImport\Mapping\MediaMapping',
-            ],
-            'users' => [
-                '\CSVImport\Mapping\UserMapping',
-            ],
-        ];
+        $config = include __DIR__ . '/../../config/module.config.php';
+        $defaultOrder = $config['csv_import_mappings'];
         $mappings = $this->config['csv_import_mappings'];
         if (isset($defaultOrder[$resourceType])) {
             return array_values(array_unique(array_merge(

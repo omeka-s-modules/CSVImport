@@ -100,7 +100,10 @@ class ImportForm extends Form
         $resourceTypes = array_keys($this->mappingClasses);
         $valueOptions = [];
         foreach ($resourceTypes as $resourceType) {
-            $valueOptions[$resourceType] = ucfirst($resourceType);
+            // Currently, there is no resource label. It should be in the Omeka
+            // vocabulary, for example "item_sets" => "o:ItemSet" => "Item set".
+            // So there is no translation too.
+            $valueOptions[$resourceType] = str_replace('_', ' ',ucfirst($resourceType));
         }
         $this->add([
                 'name' => 'resource_type',

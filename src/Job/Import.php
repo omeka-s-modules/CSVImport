@@ -3,7 +3,7 @@ namespace CSVImport\Job;
 
 use CSVImport\CsvFile;
 use CSVImport\Entity\CSVImportImport;
-use Doctrine\DBAL\Connection;
+use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use LimitIterator;
 use Omeka\Api\Manager;
 use Omeka\Api\Representation\AbstractResourceRepresentation;
@@ -35,6 +35,11 @@ class Import extends AbstractJob
      * @var Logger
      */
     protected $logger;
+
+    /**
+     * @var FindResourcesFromIdentifiers
+     */
+    protected $findResourcesFromIdentifiers;
 
     /**
      * @var CSVImportImport
@@ -75,19 +80,25 @@ class Import extends AbstractJob
     public function perform()
     {
         ini_set("auto_detect_line_endings", true);
-        $this->logger = $this->getServiceLocator()->get('Omeka\Logger');
-        $this->api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        $services = $this->getServiceLocator();
+        $this->api = $services->get('Omeka\ApiManager');
+        $this->logger = $services->get('Omeka\Logger');
+        $this->findResourcesFromIdentifiers = $services->get('ControllerPluginManager')
+            ->get('findResourcesFromIdentifiers');
+        $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
+        $config = $services->get('Config');
+
         $this->resourceType = $this->getArg('resource_type', 'items');
         $args = $this->job->getArgs();
 
         $mappings = [];
-        $config = $this->getServiceLocator()->get('Config');
         $mappingClasses = $config['csv_import_mappings'][$this->resourceType];
         foreach ($mappingClasses as $mappingClass) {
-            $mappings[] = new $mappingClass($args, $this->getServiceLocator());
+            $mappings[] = new $mappingClass($args, $services);
         }
 
-        $this->csvFile = new CsvFile($this->getServiceLocator()->get('Config'));
+        $this->resourceType = $this->getArg('resource_type', 'items');
+        $this->csvFile = new CsvFile($config);
         $csvFile = $this->csvFile;
         if (isset($args['delimiter'])) {
             $csvFile->setDelimiter($args['delimiter']);
@@ -148,7 +159,7 @@ class Import extends AbstractJob
                 case self::ACTION_UPDATE:
                 case self::ACTION_REPLACE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
+                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierProperty, $this->resourceType);
                     $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
                     $idsToProcess = array_filter($ids);
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
@@ -171,7 +182,7 @@ class Import extends AbstractJob
                     break;
                 case self::ACTION_DELETE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $this->findResourceIdsFromIdentifiers($identifiers, $identifierProperty);
+                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierProperty, $this->resourceType);
                     $idsToProcess = array_filter($ids);
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
@@ -340,81 +351,6 @@ class Import extends AbstractJob
         }
         $this->identifiers = $identifiers;
         return $identifiers;
-    }
-
-    /**
-     * Helper to find a list of resource ids from a list of identifiers.
-     *
-     * @param array $identifiers Identifiers should be unique.
-     * @param string|int $identifierProperty
-     * @return array Associative array with the identifiers as key and the ids
-     * or null as value. Order is kept, but duplicate identifiers are removed.
-     */
-    protected function findResourceIdsFromIdentifiers($identifiers, $identifierProperty)
-    {
-        $identifiers = array_unique(array_filter($identifiers));
-        if (empty($identifiers)) {
-            return [];
-        }
-
-        $resourceTypes = [
-            'item_sets' => 'Omeka\Entity\ItemSet',
-            'items' => 'Omeka\Entity\Item',
-            'media' => 'Omeka\Entity\Media',
-            // Avoid a check.
-            'Omeka\Entity\ItemSet' => 'Omeka\Entity\ItemSet',
-            'Omeka\Entity\Item' => 'Omeka\Entity\Item',
-            'Omeka\Entity\Media' => 'Omeka\Entity\Media',
-        ];
-        if (!isset($resourceTypes[$this->resourceType])) {
-            return [];
-        }
-
-        // The api manager doesn't manage this type of search.
-        $conn = $this->getServiceLocator()->get('Omeka\Connection');
-
-        switch ($identifierProperty) {
-            case 'internal_id':
-                $identifiers = array_map('intval', $identifiers);
-                $quotedIdentifiers = implode(',', $identifiers);
-                $qb = $conn->createQueryBuilder()
-                    ->select('resource.id')
-                    ->from('resource', 'resource')
-                    ->andWhere('resource.resource_type = :resource_type')
-                    ->setParameter(':resource_type', $resourceTypes[$this->resourceType])
-                    // ->andWhere('resource.id in (:ids)')
-                    // ->setParameter(':ids', $identifiers)
-                    ->andWhere("resource.id in ($quotedIdentifiers)")
-                    ->addOrderBy('resource.id', 'ASC');
-                $stmt = $conn->executeQuery($qb, $qb->getParameters());
-                $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
-                $result = array_combine($result, $result);
-                break;
-
-            default:
-                // Search in multiple resource types in one time.
-                $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
-                $quotedIdentifiers = implode(',', $quotedIdentifiers);
-                $qb = $conn->createQueryBuilder()
-                    ->select('value.value', 'value.resource_id')
-                    ->from('value', 'value')
-                    ->leftJoin('value', 'resource', 'resource', 'value.resource_id = resource.id')
-                    ->andWhere('resource.resource_type = :resource_type')
-                    ->setParameter(':resource_type', $resourceTypes[$this->resourceType])
-                    ->andwhere('value.property_id = :property_id')
-                    ->setParameter(':property_id', $identifierProperty)
-                    // ->andWhere('value.value in (:values)')
-                    // ->setParameter(':values', $identifiers)
-                    ->andWhere("value.value in ($quotedIdentifiers)")
-                    ->addOrderBy('resource.id', 'ASC')
-                    ->addOrderBy('value.id', 'ASC');
-                $stmt = $conn->executeQuery($qb, $qb->getParameters());
-                $result = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-                break;
-        }
-
-        // Reorder the result according to the input (simpler in php).
-        return array_replace(array_fill_keys($identifiers, null), $result);
     }
 
     /**
