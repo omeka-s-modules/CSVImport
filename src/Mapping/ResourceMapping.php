@@ -46,6 +46,8 @@ class ResourceMapping extends AbstractMapping
                 $values = explode($multivalueSeparator, $values);
                 $values = array_map('trim', $values);
             }
+            $values = array_filter($values, 'strlen');
+            // Empty values are processed in all cases to set default values.
             $this->processCell($index, $values);
         }
 

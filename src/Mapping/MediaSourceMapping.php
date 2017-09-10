@@ -30,19 +30,20 @@ class MediaSourceMapping extends AbstractMapping
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
-            if (empty($multivalueMap[$index])) {
-                $values = [$values];
-            } else {
-                $values = explode($multivalueSeparator, $values);
-                $values = array_map('trim', $values);
-            }
-
             if (array_key_exists($index, $mediaMap)) {
-                $ingester = $mediaMap[$index];
-                foreach ($values as $mediaDatum) {
-                    if (empty($mediaDatum)) {
-                        continue;
+                if (empty($multivalueMap[$index])) {
+                    $values = [$values];
+                } else {
+                    $values = explode($multivalueSeparator, $values);
+                    $values = array_map('trim', $values);
+                    if ($isMedia) {
+                        array_splice($values, 1);
                     }
+                }
+
+                $ingester = $mediaMap[$index];
+                $values = array_filter($values, 'strlen');
+                foreach ($values as $mediaDatum) {
                     $mediaDatumJson = [
                         'o:ingester' => $ingester,
                         'o:source' => $mediaDatum,

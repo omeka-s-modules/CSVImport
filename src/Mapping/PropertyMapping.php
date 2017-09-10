@@ -34,17 +34,16 @@ class PropertyMapping extends AbstractMapping
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
-            // consider 'literal' as the default type
-            $type = 'literal';
-            if (in_array($index, $urlMap)) {
-                $type = 'uri';
-            }
-
-            if (in_array($index, $referenceMap)) {
-                $type = 'resource';
-            }
-
             if (isset($columnMap[$index])) {
+                // consider 'literal' as the default type
+                $type = 'literal';
+                if (in_array($index, $urlMap)) {
+                    $type = 'uri';
+                }
+                if (in_array($index, $referenceMap)) {
+                    $type = 'resource';
+                }
+
                 foreach ($columnMap[$index] as $propertyTerm => $propertyId) {
                     if (empty($multivalueMap[$index])) {
                         $values = [$values];
@@ -53,6 +52,7 @@ class PropertyMapping extends AbstractMapping
                         $values = array_map('trim', $values);
                     }
 
+                    $values = array_filter($values, 'strlen');
                     foreach ($values as $value) {
                         switch ($type) {
                             case 'uri':
