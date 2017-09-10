@@ -23,7 +23,7 @@ class MediaSourceMapping extends AbstractMapping
     public function processRow(array $row)
     {
         $config = $this->getServiceLocator()->get('Config');
-        $mediaAdapters = $config['csv_import_media_ingester_adapter'];
+        $mediaAdapters = $config['csv_import']['media_ingester_adapter'];
         $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media-source']) ? $this->args['media-source'] : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];

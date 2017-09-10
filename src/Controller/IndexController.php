@@ -167,8 +167,8 @@ class IndexController extends AbstractActionController
     protected function orderMappingsForResource($resourceType)
     {
         $config = include __DIR__ . '/../../config/module.config.php';
-        $defaultOrder = $config['csv_import_mappings'];
-        $mappings = $this->config['csv_import_mappings'];
+        $defaultOrder = $config['csv_import']['mappings'];
+        $mappings = $this->config['csv_import']['mappings'];
         if (isset($defaultOrder[$resourceType])) {
             return array_values(array_unique(array_merge(
                 $defaultOrder[$resourceType], $mappings[$resourceType]
