@@ -106,6 +106,7 @@
             if (! flagType) {
                 flagType = targetLi.data('flag');
             }
+
             // First, check if the flag is already added or if there is
             // already a mapping.
             var hasFlag = activeElement.find('ul.mappings li.' + flagType);
@@ -128,7 +129,13 @@
                 var newInput = $('<input type="hidden" name="' + name + '" value="' + value +'" ></input>');
                 var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
                 newMappingLi.append(newInput);
-                activeElement.find('ul.mappings').append(newMappingLi);
+                // For ergonomy, group elements by type.
+                var existingMappingLi = activeElement.find('ul.mappings .' + flagType).filter(':last');
+                if (existingMappingLi.length) {
+                    existingMappingLi.after(newMappingLi);
+                } else {
+                    activeElement.find('ul.mappings').append(newMappingLi);
+                }
                 Omeka.closeSidebar($(this));
             }
         });
@@ -146,9 +153,15 @@
                 var elementId = activeElement.data('element-id');
                 var newInput = $('<input type="hidden" name="column-property[' + elementId + '][]" ></input>');
                 newInput.val(targetLi.data('property-id'));
-                var newMappingLi = $('<li class="mapping" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
+                var newMappingLi = $('<li class="mapping property" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
                 newMappingLi.append(newInput);
-                activeElement.find('ul.mappings').append(newMappingLi);
+                // For ergonomy, group elements by type.
+                var existingMappingLi = activeElement.find('ul.mappings .property').filter(':last');
+                if (existingMappingLi.length) {
+                    existingMappingLi.after(newMappingLi);
+                } else {
+                    activeElement.find('ul.mappings').append(newMappingLi);
+                }
                 Omeka.closeSidebar($(this));
             }
         });
