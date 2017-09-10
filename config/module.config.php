@@ -32,8 +32,8 @@ return [
             'csvPropertySelector' => 'CSVImport\View\Helper\PropertySelector',
         ],
         'factories' => [
-            'mediaSidebar' => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
             'itemSidebar' => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
+            'mediaSourceSidebar' => 'CSVImport\Service\ViewHelper\MediaSourceSidebarFactory',
         ],
     ],
     'entity_manager' => [
@@ -49,9 +49,9 @@ return [
     ],
     'csv_import_mappings' => [
         'items' => [
-            '\CSVImport\Mapping\PropertyMapping',
-            '\CSVImport\Mapping\MediaMapping',
             '\CSVImport\Mapping\ItemMapping',
+            '\CSVImport\Mapping\PropertyMapping',
+            '\CSVImport\Mapping\MediaSourceMapping',
         ],
         'users' => [
             '\CSVImport\Mapping\UserMapping',

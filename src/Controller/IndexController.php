@@ -165,9 +165,9 @@ class IndexController extends AbstractActionController
     {
         $defaultOrder = [
             'items' => [
-                '\CSVImport\Mapping\PropertyMapping',
                 '\CSVImport\Mapping\ItemMapping',
-                '\CSVImport\Mapping\MediaMapping',
+                '\CSVImport\Mapping\PropertyMapping',
+                '\CSVImport\Mapping\MediaSourceMapping',
             ],
             'users' => [
                 '\CSVImport\Mapping\UserMapping',
