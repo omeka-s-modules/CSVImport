@@ -99,6 +99,19 @@ class MappingForm extends Form
                 ]);
             }
 
+            $this->add([
+                'name' => 'o:is_public',
+                'type' => 'radio',
+                'options' => [
+                    'label' => 'Visibility', // @translate
+                    'info' => 'The default visibility is private if the cell contains "0", "false", "off" or "private" (case insensitive), else it is public.', // @translate
+                    'value_options' => [
+                        '1' => 'Public', // @translate
+                        '0' => 'Private', // @translate
+                    ],
+                ],
+            ]);
+
             if ($resourceType == 'items') {
                 $this->add([
                     'name' => 'o:item_set',
@@ -160,6 +173,10 @@ class MappingForm extends Form
                 'name' => 'o:resource_class[o:id]',
                 'required' => false,
                 ]);
+            $inputFilter->add([
+                'name' => 'o:is_public',
+                'required' => false,
+            ]);
             $inputFilter->add([
                 'name' => 'o:item_set',
                 'required' => false,

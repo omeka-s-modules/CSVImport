@@ -80,6 +80,14 @@ class ResourceMapping extends AbstractMapping
         $this->map['ownerEmail'] = isset($this->args['column-owneremail'])
             ? array_keys($this->args['column-owneremail'])
             : [];
+
+        if (isset($this->args['o:is_public']) && strlen($this->args['o:is_public'])) {
+            $isPublic = $this->args['o:is_public'];
+            $data['o:is_public'] = (int) (bool) $isPublic;
+        }
+        $this->map['isPublic'] = isset($this->args['column-ispublic'])
+            ? array_keys($this->args['column-ispublic'])
+            : [];
     }
 
     /**
@@ -112,6 +120,13 @@ class ResourceMapping extends AbstractMapping
             if ($user) {
                 $data['o:owner'] = ['o:id' => $user->id()];
             }
+        }
+
+        if (in_array($index, $this->map['isPublic'])) {
+            $value = reset($values);
+            $data['o:is_public'] = in_array(strtolower($value), ['off', 'private'])
+                ? 0
+                : (int) (bool) $value;
         }
     }
 
