@@ -110,6 +110,20 @@
             // First, check if the flag is already added or if there is
             // already a mapping.
             var hasFlag = activeElement.find('ul.mappings li.' + flagType);
+
+            // If there is a similar flag that doesn't support multimapping,
+            // remove it.
+            if (hasFlag.length) {
+                var flagUnique = targetLi.data('flag-unique')
+                    || flagType === 'resource-data'
+                    || flagType === 'media-source'
+                    || flagType === 'user-data';
+                if (flagUnique){
+                    activeElement.find('ul.mappings .' + flagType).remove();
+                    hasFlag = activeElement.find('ul.mappings li.' + flagType);
+                }
+            }
+
             if (hasFlag.length === 0) {
                 var elementId = activeElement.data('element-id');
                 // elementId, or index? @TODO: check the naming conventions
