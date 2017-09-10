@@ -189,13 +189,15 @@ class IndexController extends AbstractActionController
 
         // Name of properties must be known to merge data and to process update.
         $api = $this->api();
-        foreach ($args['column-property'] as $column => $ids) {
-            $properties = [];
-            foreach ($ids as $id) {
-                $term = $api->read('properties', $id)->getContent()->term();
-                $properties[$term] = $id;
+        if (array_key_exists('column-property', $args)) {
+            foreach ($args['column-property'] as $column => $ids) {
+                $properties = [];
+                foreach ($ids as $id) {
+                    $term = $api->read('properties', $id)->getContent()->term();
+                    $properties[$term] = $id;
+                }
+                $args['column-property'][$column] = $properties;
             }
-            $args['column-property'][$column] = $properties;
         }
 
         if (!array_key_exists('column-multivalue', $post)) {
@@ -267,11 +269,11 @@ class IndexController extends AbstractActionController
         $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Undo', ['jobId' => $jobId]);
         $response = $this->api()->update('csvimport_imports',
-                    $csvImport->id(),
-                    [
-                        'o:undo_job' => ['o:id' => $job->getId() ],
-                    ]
-                );
+            $csvImport->id(),
+            [
+                'o:undo_job' => ['o:id' => $job->getId() ],
+            ]
+        );
         return $job;
     }
 }
