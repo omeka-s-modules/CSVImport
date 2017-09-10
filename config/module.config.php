@@ -19,6 +19,7 @@ return [
         'factories' => [
             'itemSidebar' => Service\ViewHelper\ItemSidebarFactory::class,
             'mediaSourceSidebar' => Service\ViewHelper\MediaSourceSidebarFactory::class,
+            'resourceSidebar' => Service\ViewHelper\ResourceSidebarFactory::class,
         ],
     ],
     'form_elements' => [
@@ -47,6 +48,10 @@ return [
         ],
     ],
     'csv_import_mappings' => [
+        'item_sets' => [
+            Mapping\ItemSetMapping::class,
+            Mapping\PropertyMapping::class,
+        ],
         'items' => [
             Mapping\ItemMapping::class,
             Mapping\PropertyMapping::class,
@@ -164,6 +169,6 @@ return [
         'Please enter a valid language tag.', // @translate
         'Set multivalue separator for all columns', // @translate
         'Unset multivalue separator for all columns', // @translate
-        'Advanced settings' // @translate
+        'Advanced settings', // @translate
     ],
 ];

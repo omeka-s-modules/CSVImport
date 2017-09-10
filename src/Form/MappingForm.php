@@ -103,7 +103,9 @@ class MappingForm extends Form
                 ],
             ]);
 
-            if ($acl->userIsAllowed('Omeka\Entity\Item', 'change-owner')) {
+            if (($resourceType === 'item_sets' && $acl->userIsAllowed('Omeka\Entity\ItemSet', 'change-owner'))
+                || ($resourceType === 'items' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
+            ) {
                 $this->add([
                     'name' => 'o:owner',
                     'type' => ResourceSelect::class,
@@ -127,7 +129,35 @@ class MappingForm extends Form
                 ]);
             }
 
+            $this->add([
+                'name' => 'o:is_public',
+                'type' => 'radio',
+                'options' => [
+                    'label' => 'Visibility', // @translate
+                    'info' => 'The default visibility is private if the cell contains "0", "false", "off" or "private" (case insensitive), else it is public.', // @translate
+                    'value_options' => [
+                        '1' => 'Public', // @translate
+                        '0' => 'Private', // @translate
+                    ],
+                ],
+            ]);
+
             switch ($resourceType) {
+                case 'item_sets':
+                    $this->add([
+                        'name' => 'o:is_open',
+                        'type' => 'radio',
+                        'options' => [
+                            'label' => 'Open/closed to additions', // @translate
+                            'info' => 'The default openess is closed if the cell contains "0", "false", "off", or "closed" (case insensitive), else it is open.', // @translate
+                            'value_options' => [
+                                '1' => 'Open', // @translate
+                                '0' => 'Closed', // @translate
+                            ],
+                        ],
+                    ]);
+                    break;
+
                 case 'items':
                     $this->add([
                         'name' => 'o:item_set',
@@ -272,6 +302,14 @@ class MappingForm extends Form
             ]);
             $inputFilter->add([
                 'name' => 'o:resource_class[o:id]',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'o:is_public',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'o:is_open',
                 'required' => false,
             ]);
             $inputFilter->add([

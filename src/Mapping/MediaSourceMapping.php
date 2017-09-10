@@ -1,7 +1,7 @@
 <?php
 namespace CSVImport\Mapping;
 
-
+use Zend\View\Renderer\PhpRenderer;
 
 class MediaSourceMapping extends AbstractMapping
 {
@@ -15,12 +15,12 @@ class MediaSourceMapping extends AbstractMapping
         return 'media-source';
     }
 
-    public static function getSidebar($view)
+    public static function getSidebar(PhpRenderer $view)
     {
         return $view->mediaSourceSidebar();
     }
 
-    public function processRow($row)
+    public function processRow(array $row)
     {
         $config = $this->getServiceLocator()->get('Config');
         $mediaAdapters = $config['csv_import_media_ingester_adapter'];
