@@ -444,6 +444,8 @@ class Import extends AbstractJob
     /**
      * Check options used to import.
      *
+     * @todo Mix with check in Import and make it available for external query.
+     *
      * @param array $options Associative array of options.
      */
     protected function checkOptions(array $options)

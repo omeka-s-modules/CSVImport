@@ -4,6 +4,7 @@ namespace CSVImport\Controller;
 use CSVImport\Form\ImportForm;
 use CSVImport\Form\MappingForm;
 use CSVImport\CsvFile;
+use CSVImport\Job\Import;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Settings\UserSettings;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -180,6 +181,8 @@ class IndexController extends AbstractActionController
     /**
      * Helper to clean posted args to get more readable logs.
      *
+     * @todo Mix with check in Import and make it available for external query.
+     *
      * @param array $post
      * @return array
      */
@@ -213,6 +216,11 @@ class IndexController extends AbstractActionController
         if (array_key_exists('multivalue_separator', $post)) {
             unset($args['multivalue_separator']);
             $args['multivalue_separator'] = $post['multivalue_separator'];
+        }
+
+        // Set a default owner for a creation.
+        if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
+            $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
 
         return $args;
