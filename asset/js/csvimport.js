@@ -55,14 +55,6 @@
             }
             activeElement = $(e.target).closest('tr.mappable');
             activeElement.addClass('active');
-            if (activeElement.hasClass('element')) {
-                $('#resource-class-selector').removeClass('active');
-            }
-
-            if (activeElement.hasClass('item-type')) {
-                $('#resource-class-selector').addClass('active');
-                $('#property-selector').removeClass('active');
-            }
 
             var actionElement = $(this);
             $('.sidebar-chooser li').removeClass('active');
@@ -94,59 +86,58 @@
 
         // Generic sidebar actions.
         $('.sidebar.flags li').on('click', function(e){
-            // hijack the multivalue option because it is handled separately below
+            // Hijack the multivalue option because it is handled separately below.
             var targetLi = $(e.target).closest('li');
             if (targetLi.hasClass('column-multivalue')) {
                 return;
             }
             e.stopPropagation();
             e.preventDefault();
-            //looks like a stopPropagation on the selector-parent forces
-            //me to bind the event lower down the DOM, then work back
-            //up to the li
+            // Looks like a stopPropagation on the selector-parent forces me to
+            // bind the event lower down the DOM, then work back up to the li.
 
             if (activeElement == null) {
                 alert(Omeka.jsTranslate('Select an element at the left before choosing a property.'));
-            } else {
-                var flagName = targetLi.find('span').text();
-                var flagType = targetLi.data('flag-type');
-                if (! flagType) {
-                    flagType = targetLi.data('flag');
-                }
-                // First, check if the flag is already added or if there is
-                // already a mapping.
-                var hasFlag = activeElement.find('ul.mappings li.' + flagType);
-                if (hasFlag.length === 0) {
-                    var elementId = activeElement.data('element-id');
-                    //elementId, or index? @TODO: check the naming conventions
-                    //much is copied from Omeka2Importer, and might need clarification
+                return;
+            }
 
-                    var index = elementId;
-                    var name = targetLi.data('flag') + "[" + index + "]";
-                    // Special handling for Media source, which can add flags
-                    // for different media types.
-                    var value;
-                    if (flagType == 'media-source') {
-                        name = 'media-source[' + index + ']';
-                        value = targetLi.data('flag');
-                    } else {
-                        value = 1;
-                    }
-                    var newInput = $('<input type="hidden" name="' + name + '" value="' + value +'" ></input>');
-                    var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
-                    newMappingLi.append(newInput);
-                    activeElement.find('ul.mappings').append(newMappingLi);
-                    Omeka.closeSidebar($(this));
+            var flagName = targetLi.find('span').text();
+            var flagType = targetLi.data('flag-type');
+            if (! flagType) {
+                flagType = targetLi.data('flag');
+            }
+            // First, check if the flag is already added or if there is
+            // already a mapping.
+            var hasFlag = activeElement.find('ul.mappings li.' + flagType);
+            if (hasFlag.length === 0) {
+                var elementId = activeElement.data('element-id');
+                // elementId, or index? @TODO: check the naming conventions
+                // much is copied from Omeka2Importer, and might need clarification
+
+                var index = elementId;
+                var name = targetLi.data('flag') + "[" + index + "]";
+                // Special handling for Media source, which can add flags
+                // for different media types.
+                var value;
+                if (flagType == 'media-source') {
+                    name = 'media-source[' + index + ']';
+                    value = targetLi.data('flag');
+                } else {
+                    value = 1;
                 }
+                var newInput = $('<input type="hidden" name="' + name + '" value="' + value +'" ></input>');
+                var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
+                newMappingLi.append(newInput);
+                activeElement.find('ul.mappings').append(newMappingLi);
+                Omeka.closeSidebar($(this));
             }
         });
 
-        // Specific sidebar action for property selector.
+        // Specific sidebar actions for property selector.
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
-            //looks like a stopPropagation on the selector-parent forces
-            //me to bind the event lower down the DOM, then work back
-            //up to the li
+            // Looks like a stopPropagation on the selector-parent forces me to
+            // bind the event lower down the DOM, then work back up to the li.
             var targetLi = $(e.target).closest('li.selector-child');
 
             // First, check if the property is already added.
@@ -159,29 +150,6 @@
                 newMappingLi.append(newInput);
                 activeElement.find('ul.mappings').append(newMappingLi);
                 Omeka.closeSidebar($(this));
-            }
-        });
-
-        // Specific sidebar action for resource class selector.
-        $('#resource-class-selector li.selector-child').on('click', function(e){
-            e.stopPropagation();
-            //looks like a stopPropagation on the selector-parent forces
-            //me to bind the event lower down the DOM, then work back
-            //up to the li
-            var targetLi = $(e.target).closest('li.selector-child');
-            if (activeElement == null) {
-                alert(Omeka.jsTranslate('Select an item type at the left before choosing a resource class.'));
-            } else {
-                //first, check if a class is already added
-                //var hasMapping = activeElement.find('ul.mappings li');
-                activeElement.find('ul.mappings li').remove();
-                activeElement.find('input').remove();
-                //hasMapping.remove();
-                var typeId = activeElement.data('item-type-id');
-                var newInput = $('<input type="hidden" name="type-class[' + typeId + ']" ></input>');
-                newInput.val(targetLi.data('class-id'));
-                activeElement.find('td.mapping').append(newInput);
-                activeElement.find('ul.mappings').append('<li class="mapping" data-class-id="' + targetLi.data('class-id') + '">' + targetLi.data('child-search') + '</li>');
             }
         });
 
