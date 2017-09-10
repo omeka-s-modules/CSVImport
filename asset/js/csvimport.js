@@ -122,7 +122,7 @@
             if (sidebar.find('.column-name').length > 0) {
                 $('.column-name').text(columnName);
             } else {
-                sidebar.find('h3').append('<span class="column-name">' + columnName + '</span>');
+                sidebar.find('h3').append(' <span class="column-name">' + columnName + '</span>');
             }
 
             var currentSidebar = $('.sidebar.active');
