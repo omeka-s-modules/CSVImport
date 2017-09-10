@@ -1,6 +1,8 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Zend\View\Renderer\PhpRenderer;
+
 class PropertyMapping extends AbstractMapping
 {
     public static function getLabel()
@@ -13,13 +15,13 @@ class PropertyMapping extends AbstractMapping
         return 'property-selector';
     }
 
-    public static function getSidebar($view)
+    public static function getSidebar(PhpRenderer $view)
     {
         $html = $view->csvPropertySelector($view->translate('Properties: '), false);
         return $html;
     }
 
-    public function processRow($row, $itemJson = [])
+    public function processRow(array $row)
     {
         $propertyJson = [];
         $columnMap = isset($this->args['column-property']) ? $this->args['column-property'] : [];

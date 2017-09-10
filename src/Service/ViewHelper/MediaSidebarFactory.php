@@ -2,8 +2,8 @@
 namespace CSVImport\Service\ViewHelper;
 
 use CSVImport\View\Helper\MediaSidebar;
-use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 
 class MediaSidebarFactory implements FactoryInterface
 {

@@ -134,9 +134,13 @@ class IndexController extends AbstractActionController
     protected function orderMappingsForResource($resourceType)
     {
         $defaultOrder = [
-            'items' => [
+            'item_sets' => [
+                '\CSVImport\Mapping\ItemSetMapping',
                 '\CSVImport\Mapping\PropertyMapping',
+            ],
+            'items' => [
                 '\CSVImport\Mapping\ItemMapping',
+                '\CSVImport\Mapping\PropertyMapping',
                 '\CSVImport\Mapping\MediaMapping',
             ],
             'users' => [

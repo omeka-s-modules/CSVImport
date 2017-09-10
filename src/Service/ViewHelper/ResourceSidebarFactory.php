@@ -1,16 +1,16 @@
 <?php
 namespace CSVImport\Service\ViewHelper;
 
-use CSVImport\View\Helper\ItemSidebar;
+use CSVImport\View\Helper\ResourceSidebar;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class ItemSidebarFactory implements FactoryInterface
+class ResourceSidebarFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
         $auth = $services->get('Omeka\AuthenticationService');
         $user = $auth->getIdentity();
-        return new ItemSidebar($user);
+        return new ResourceSidebar($user);
     }
 }

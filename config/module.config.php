@@ -1,4 +1,5 @@
 <?php
+namespace CSVImport;
 
 return [
     'controllers' => [
@@ -34,6 +35,7 @@ return [
         'factories' => [
             'mediaSidebar' => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
             'itemSidebar' => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
+            'resourceSidebar' => Service\ViewHelper\ResourceSidebarFactory::class,
         ],
     ],
     'entity_manager' => [
@@ -48,6 +50,10 @@ return [
         ],
     ],
     'csv_import_mappings' => [
+        'item_sets' => [
+            Mapping\ItemSetMapping::class,
+            Mapping\PropertyMapping::class,
+        ],
         'items' => [
             '\CSVImport\Mapping\PropertyMapping',
             '\CSVImport\Mapping\MediaMapping',

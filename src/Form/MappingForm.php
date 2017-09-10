@@ -30,7 +30,7 @@ class MappingForm extends Form
             ],
         ]);
 
-        if ($resourceType == 'items' || $resourceType == 'item_sets') {
+        if (in_array($resourceType, ['item_sets', 'items'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $this->add([
                 'name' => 'o:resource_template[o:id]',
@@ -76,6 +76,29 @@ class MappingForm extends Form
                 ],
             ]);
 
+            if (($resourceType === 'item_sets' && $acl->userIsAllowed('Omeka\Entity\ItemSet', 'change-owner'))
+                || ($resourceType === 'items' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
+            ) {
+                $this->add([
+                    'name' => 'o:owner',
+                    'type' => ResourceSelect::class,
+                    'attributes' => [
+                        'id' => 'select-owner',
+                        'value' => $currentUser->getId(),
+                    ],
+                    'options' => [
+                        'label' => 'Owner', // @translate
+                        'resource_value_options' => [
+                            'resource' => 'users',
+                            'query' => [],
+                            'option_text_callback' => function ($user) {
+                                return $user->name();
+                            },
+                        ],
+                    ],
+                ]);
+            }
+
             if ($resourceType == 'items') {
                 $this->add([
                     'name' => 'o:item_set',
@@ -97,26 +120,6 @@ class MappingForm extends Form
                             },
                         ],
                     ],
-                ]);
-            }
-            if ($acl->userIsAllowed('Omeka\Entity\Item', 'change-owner')) {
-                $this->add([
-                    'name' => 'o:owner',
-                    'type' => ResourceSelect::class,
-                    'attributes' => [
-                        'id' => 'select-owner',
-                        'value' => $currentUser->getId(),
-                        ],
-                    'options' => [
-                        'label' => 'Owner', // @translate
-                        'resource_value_options' => [
-                            'resource' => 'users',
-                            'query' => [],
-                            'option_text_callback' => function ($user) {
-                                return $user->name();
-                            },
-                            ],
-                        ],
                 ]);
             }
 
