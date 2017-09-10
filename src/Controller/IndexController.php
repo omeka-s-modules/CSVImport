@@ -77,6 +77,9 @@ class IndexController extends AbstractActionController
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
+            // TODO Set variables when the form is invalid.
+            $this->messenger()->addError('Invalid settings.'); // @translate
+            return $this->redirect()->toRoute('admin/csvimport');
         } else {
             $importForm = $this->getForm(ImportForm::class);
             $post = array_merge_recursive(
