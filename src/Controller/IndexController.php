@@ -39,10 +39,15 @@ class IndexController extends AbstractActionController
         $files = $request->getFiles()->toArray();
         $post = $this->params()->fromPost();
         $resourceType = $post['resource_type'];
-        $form = $this->getForm(MappingForm::class, ['resourceType' => $resourceType]);
+        $automapCheckNamesAlone = $post['automap_check_names_alone'];
+        $form = $this->getForm(MappingForm::class, [
+            'resourceType' => $resourceType,
+            'automap_check_names_alone' => $automapCheckNamesAlone,
+        ]);
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
+                $this->saveUserSettings($post);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
@@ -78,7 +83,9 @@ class IndexController extends AbstractActionController
             $view->setVariable('mediaForms', $this->getMediaForms());
 
             $config = $this->config;
-            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType);
+            $automapOptions = [];
+            $automapOptions['check_names_alone'] = (bool) $automapCheckNamesAlone;
+            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
             $mappingsResource = $this->orderMappingsForResource($resourceType);
 
@@ -145,6 +152,21 @@ class IndexController extends AbstractActionController
             )));
         }
         return $mappings[$resourceType];
+    }
+
+    /**
+     * Save user settings.
+     *
+     * @param array $settings
+     */
+    protected function saveUserSettings(array $settings)
+    {
+        foreach ($this->config['csv_import']['user_settings'] as $key => $value) {
+            $name = substr($key, strlen('csv_import_'));
+            if (isset($settings[$name])) {
+                $this->userSettings()->set($key, $settings[$name]);
+            }
+        }
     }
 
     protected function getMediaForms()

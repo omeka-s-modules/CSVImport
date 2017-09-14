@@ -6,29 +6,32 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 class AutomapHeadersToMetadata extends AbstractPlugin
 {
     /**
+     * @var array
+     */
+    protected $configCsvImport;
+
+    /**
+     * @var array
+     */
+    protected $options;
+
+    /**
      * Automap a list of headers to a list of metadata.
      *
      * @param array $headers
      * @param string $resourceType
+     * @param array $options Associative array of options:
+     * - check_names_alone (boolean)
      * @return array Associative array of the index of the headers as key and
      * the matching metadata as value. Only mapped headers are set.
      */
-    public function __invoke(array $headers, $resourceType = null)
+    public function __invoke(array $headers, $resourceType = null, array $options = null)
     {
         $automaps = [];
 
-        $api = $this->getController()->api();
+        $this->options = $options;
 
-        // Trim and remove multiple spaces and no-break spaces (\u00A0 and \u202F)
-        // that may be added automatically in some spreadsheets before or after
-        // ":" or inadvertently and that may be hard to find.
-        $headers = array_map(function ($v) {
-            return preg_replace(
-                '~\s*:\s*~', ':', preg_replace(
-                    '~\s\s+~', ' ', trim(str_replace(
-                        [' ', ' '], ' ', $v
-            ))));
-        }, $headers);
+        $headers = $this->cleanSpaces($headers);
 
         // Prepare the standard lists to check against.
         $lists = [];
@@ -47,6 +50,20 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             array_keys($propertyLists['labels']));
         $lists['lower_labels'] = array_map('strtolower', $lists['labels']);
 
+        $checkNamesAlone = !empty($options['check_names_alone']);
+        if ($checkNamesAlone) {
+            $lists['local_names'] = array_map(function ($v) {
+                $w = explode(':', $v);
+                return end($w);
+            }, $lists['names']);
+            $lists['lower_local_names'] = array_map('strtolower', $lists['local_names']);
+            $lists['local_labels'] = array_map(function ($v) {
+                $w = explode(':', $v);
+                return end($w);
+            }, $lists['labels']);
+            $lists['lower_local_labels'] = array_map('strtolower', $lists['local_labels']);
+        }
+
         foreach ($headers as $index => $header) {
             $lowerHeader = strtolower($header);
             switch ($resourceType) {
@@ -59,7 +76,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     // contains the same keys in the same order, the process can
                     // be done in one step.
                     foreach ($lists as $listName => $list) {
-                        $toSearch = strpos('lower_', $listName) === 0 ? $lowerHeader : $header;
+                        $toSearch = strpos($listName, 'lower_') === 0 ? $lowerHeader : $header;
                         $found = array_search($toSearch, $list, true);
                         if ($found) {
                             $property = $propertyLists['names'][$found];
@@ -106,5 +123,29 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             }
         }
         return $result;
+    }
+
+    /**
+     * Trim and remove multiple spaces and no-break spaces (\u00A0 and \u202F)
+     * that may be added automatically in some spreadsheets before or after ":"
+     * or inadvertently and that may be hard to find.
+     *
+     * @param array $list
+     * @return array
+     */
+    protected function cleanSpaces(array $list)
+    {
+        return array_map(function ($v) {
+            return preg_replace(
+                '~\s*:\s*~', ':', preg_replace(
+                    '~\s\s+~', ' ', trim(str_replace(
+                        [' ', ' '], ' ', $v
+                        ))));
+        }, $list);
+    }
+
+    public function setConfigCsvImport(array $configCsvImport)
+    {
+        $this->configCsvImport = $configCsvImport;
     }
 }

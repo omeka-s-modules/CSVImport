@@ -18,6 +18,15 @@ class MappingForm extends Form
         $acl = $serviceLocator->get('Omeka\Acl');
 
         $this->add([
+            'name' => 'automap_check_names_alone',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('automap_check_names_alone'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
             'name' => 'comment',
             'type' => 'textarea',
             'options' => [

@@ -8,8 +8,8 @@ return [
         ],
     ],
     'controller_plugins' => [
-        'invokables' => [
-            'automapHeadersToMetadata' => Mvc\Controller\Plugin\AutomapHeadersToMetadata::class,
+        'factories' => [
+            'automapHeadersToMetadata' => Service\ControllerPlugin\AutomapHeadersToMetadataFactory::class,
         ],
     ],
     'api_adapters' => [
@@ -69,6 +69,11 @@ return [
         'iiif' => null,
         'oembed' => null,
         'youtube' => null,
+    ],
+    'csv_import' => [
+        'user_settings' => [
+            'csv_import_automap_check_names_alone' => false,
+        ],
     ],
     'router' => [
         'routes' => [
