@@ -23,23 +23,27 @@ class MediaSourceMapping extends AbstractMapping
     public function processRow(array $row)
     {
         $config = $this->getServiceLocator()->get('Config');
-        $mediaAdapters = $config['csv_import_media_ingester_adapter'];
+        $mediaAdapters = $config['csv_import']['media_ingester_adapter'];
         $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media-source']) ? $this->args['media-source'] : [];
-        $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
+
+        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
-            //split $values into an array, so people can have more than one file
-            //in the column
-            $mediaData = explode($multivalueSeparator, $values);
-            $mediaData = array_map('trim', $mediaData);
-
             if (array_key_exists($index, $mediaMap)) {
-                $ingester = $mediaMap[$index];
-                foreach ($mediaData as $mediaDatum) {
-                    if (empty($mediaDatum)) {
-                        continue;
+                if (empty($multivalueMap[$index])) {
+                    $values = [$values];
+                } else {
+                    $values = explode($multivalueSeparator, $values);
+                    $values = array_map('trim', $values);
+                    if ($isMedia) {
+                        array_splice($values, 1);
                     }
+                }
+
+                $ingester = $mediaMap[$index];
+                $values = array_filter($values, 'strlen');
+                foreach ($values as $mediaDatum) {
                     $mediaDatumJson = [
                         'o:ingester' => $ingester,
                         'o:source' => $mediaDatum,

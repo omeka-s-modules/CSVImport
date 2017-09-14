@@ -4,6 +4,7 @@ namespace CSVImport\Controller;
 use CSVImport\Form\ImportForm;
 use CSVImport\Form\MappingForm;
 use CSVImport\CsvFile;
+use CSVImport\Job\Import;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Settings\UserSettings;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -176,8 +177,8 @@ class IndexController extends AbstractActionController
     protected function orderMappingsForResource($resourceType)
     {
         $config = include __DIR__ . '/../../config/module.config.php';
-        $defaultOrder = $config['csv_import_mappings'];
-        $mappings = $this->config['csv_import_mappings'];
+        $defaultOrder = $config['csv_import']['mappings'];
+        $mappings = $this->config['csv_import']['mappings'];
         if (isset($defaultOrder[$resourceType])) {
             return array_values(array_unique(array_merge(
                 $defaultOrder[$resourceType], $mappings[$resourceType]
@@ -200,13 +201,15 @@ class IndexController extends AbstractActionController
 
         // Name of properties must be known to merge data and to process update.
         $api = $this->api();
-        foreach ($args['column-property'] as $column => $ids) {
-            $properties = [];
-            foreach ($ids as $id) {
-                $term = $api->read('properties', $id)->getContent()->term();
-                $properties[$term] = $id;
+        if (array_key_exists('column-property', $args)) {
+            foreach ($args['column-property'] as $column => $ids) {
+                $properties = [];
+                foreach ($ids as $id) {
+                    $term = $api->read('properties', $id)->getContent()->term();
+                    $properties[$term] = $id;
+                }
+                $args['column-property'][$column] = $properties;
             }
-            $args['column-property'][$column] = $properties;
         }
 
         if (!array_key_exists('column-multivalue', $post)) {
@@ -228,6 +231,11 @@ class IndexController extends AbstractActionController
         if (array_key_exists('automap_user_list', $args)) {
             $args['automap_user_list'] = $this->getForm(ImportForm::class)
                 ->convertUserListTextToArray($args['automap_user_list']);
+        }
+
+        // Set a default owner for a creation.
+        if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
+            $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
 
         return $args;
