@@ -2,8 +2,8 @@
 $form->prepare();
 $escapeHtml = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
-$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
+$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 
 $resourceTypeLabels = [
     'items' => $this->translate('items'),
@@ -52,15 +52,14 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                 </td>
                 <td class="mapping element">
                     <ul class="mappings elements">
-                    <?php if(array_key_exists($index, $automaps)): ?>
-                    <?php $property = $automaps[$index]; ?>
-                        <li class="mapping property" data-property-id="<?php echo $property->id(); ?>">
-                            <?php echo $this->translate($property->label()); ?>
+                    <?php if (!empty($automaps[$index])): ?>
+                        <li class="mapping <?php echo $automaps[$index]['class']; ?>"<?php echo $automaps[$index]['special']; ?>>
+                            <?php echo $this->translate($automaps[$index]['label']); ?>
                             <ul class="actions">
-                                <li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
-                                <li><a aria-label="Undo remove mapping" title="Undo remove mapping" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
+                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
+                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
-                            <input value="<?php echo $property->id(); ?>" name="column-property[<?php echo $index; ?>][]" type="hidden">
+                            <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml($automaps[$index]['value']); ?>" type="hidden" />
                         </li>
                     <?php endif; ?>
                     </ul>
@@ -83,7 +82,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                                     <a aria-label="<?php echo $escapeHtml($this->translate('Remove import as Omeka S Resource ID')); ?>" title="<?php echo $escapeHtml($this->translate('Remove import as Omeka S Resource ID')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
                                 </li>
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove import as Omeka S Resource ID')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove import as Omeka S Resource ID')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-reference' name='column-reference[<?php echo $index; ?>]'></input>
@@ -95,7 +94,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                                     <a aria-label="<?php echo $escapeHtml($this->translate('Remove multivalue')); ?>" title="<?php echo $escapeHtml($this->translate('Remove multivalue')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
                                 </li>
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove multivalue')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove multivalue')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
@@ -108,7 +107,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                                     <a aria-label="<?php echo $escapeHtml($this->translate('Remove language')); ?>" title="<?php echo $escapeHtml($this->translate('Remove language')); ?>" class="o-icon-delete remove-option remove-column-language" href="#" style="display: inline;"></a>
                                 </li>
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove language')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove language')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
                             <input type='hidden' disabled='disabled' value='' class='column-option column-language' name='column-language[<?php echo $index; ?>]'></input>

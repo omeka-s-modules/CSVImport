@@ -3,7 +3,7 @@
     <h3><?php echo $this->translate('Media source:'); ?></h3>
     <ul>
     <?php foreach($mediaForms as $type=>$mediaForm): ?>
-        <li data-flag="<?php echo $type; ?>" data-flag-type="media-source">
+        <li data-flag="column-media_source" data-value='<?php echo $type; ?>' data-flag-type='media_source'>
             <a href="#" class="button"><span><?php echo $mediaForm['label']; ?></span></a>
         </li>
     <?php endforeach; ?>

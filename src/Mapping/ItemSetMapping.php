@@ -25,8 +25,8 @@ class ItemSetMapping extends ResourceMapping
             $isOpen = $this->args['o:is_open'];
             $data['o:is_open'] = (int) (bool) $isOpen;
         }
-        $this->map['isOpen'] = isset($this->args['column-isopen'])
-            ? array_keys($this->args['column-isopen'])
+        $this->map['isOpen'] = isset($this->args['column-is_open'])
+            ? array_keys($this->args['column-is_open'])
             : [];
     }
 
@@ -38,7 +38,7 @@ class ItemSetMapping extends ResourceMapping
 
         if (in_array($index, $this->map['isOpen'])) {
             $value = reset($values);
-            $data['o:is_open'] = in_array(strtolower($value), ['off', 'closed'])
+            $data['o:is_open'] = in_array(strtolower($value), ['false', 'off', 'closed'])
                 ? 0
                 : (int) (bool) $value;
         }

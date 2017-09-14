@@ -29,6 +29,24 @@
         setMultivalueSeparatorByDefault();
 
         /*
+         * Main import form.
+         */
+
+        displayUserList();
+
+        $('#automap_check_user_list').on('change', function(e){
+            displayUserList();
+        });
+
+        function displayUserList() {
+            if ($('#automap_check_user_list').prop('checked')) {
+                $('#automap_user_list').closest('.field').show();
+            } else {
+                $('#automap_user_list').closest('.field').hide();
+            }
+        }
+
+        /*
          * Basic import settings tab.
          */
 
@@ -116,7 +134,7 @@
             if (hasFlag.length) {
                 var flagUnique = targetLi.data('flag-unique')
                     || flagType === 'resource-data'
-                    || flagType === 'media-source'
+                    || flagType === 'media_source'
                     || flagType === 'user-data';
                 if (flagUnique){
                     activeElement.find('ul.mappings .' + flagType).remove();
@@ -134,8 +152,7 @@
                 // Special handling for Media source, which can add flags
                 // for different media types.
                 var value;
-                if (flagType == 'media-source') {
-                    name = 'media-source[' + index + ']';
+                if (flagType == 'media_source') {
                     value = targetLi.data('flag');
                 } else {
                     value = 1;

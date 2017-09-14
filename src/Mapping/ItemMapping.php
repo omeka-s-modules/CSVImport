@@ -33,8 +33,8 @@ class ItemMapping extends ResourceMapping
                 $data['o:item_set'][] = ['o:id' => $itemSetId];
             }
         }
-        $this->map['itemSet'] = isset($this->args['column-itemset-id'])
-            ? array_keys($this->args['column-itemset-id'])
+        $this->map['itemSet'] = isset($this->args['column-item_sets'])
+            ? array_keys($this->args['column-item_sets'])
             : [];
     }
 

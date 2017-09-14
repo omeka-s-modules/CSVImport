@@ -4,22 +4,22 @@
     <p><?php echo $this->translate('Data from this column applies to the entire resource being imported.'); ?></p>
     <p><?php echo $this->translate('Settings here will override any corresponding settings in Basic import settings.'); ?></p>
     <ul>
-        <li data-flag="column-resourcetemplate" data-flag-type="resource-data">
+        <li data-flag="column-resource_template" data-flag-type="resource-data">
             <a href="#" class="button"><span><?php echo $this->translate('Resource template name'); ?></span></a>
         </li>
-        <li data-flag="column-resourceclass" data-flag-type="resource-data">
+        <li data-flag="column-resource_class" data-flag-type="resource-data">
             <a href="#" class="button"><span><?php echo $this->translate('Resource class term'); ?></span></a>
         </li>
        <?php if (in_array($userRole, ['global_admin', 'site_admin'])): ?>
-        <li data-flag="column-owneremail" data-flag-type="resource-data">
+        <li data-flag="column-owner_email" data-flag-type="resource-data">
             <a href="#" class="button"><span><?php echo $this->translate('Owner email address'); ?></span></a>
         </li>
        <?php endif; ?>
-        <li data-flag="column-ispublic" data-flag-type="resource-data">
+        <li data-flag="column-is_public" data-flag-type="resource-data">
             <a href="#" class="button"><span><?php echo $this->translate('Visibility public/private'); ?></span></a>
         </li>
         <?php if ($resourceType === 'item_sets'): ?>
-        <li data-flag="column-isopen" data-flag-type="resource-data">
+        <li data-flag="column-is_open" data-flag-type="resource-data">
             <a href="#" class="button"><span><?php echo $this->translate('Open/closed to additions'); ?></span></a>
         </li>
         <?php endif; ?>
