@@ -247,7 +247,9 @@ class Import extends AbstractJob
         $fileData = [];
         $options = [];
         switch ($this->resourceType) {
+            case 'item_sets':
             case 'items':
+            case 'media':
                 // TODO Manage and update file data.
                 switch ($mode) {
                     case self::ACTION_APPEND:
@@ -532,7 +534,7 @@ class Import extends AbstractJob
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The action "%s" requires a resource identifier property.', $action)); // @translate
             }
-            if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['items'])) {
+            if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The action "%s" is not available for resource type "%s" currently.', // @translate
                     $action, $this->resourceType));
