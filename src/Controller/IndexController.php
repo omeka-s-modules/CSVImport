@@ -57,13 +57,20 @@ class IndexController extends AbstractActionController
 
         $files = $request->getFiles()->toArray();
         $post = $this->params()->fromPost();
+        $resourceType = $post['resource_type'];
         $delimiter = $this->getForm(ImportForm::class)->extractCsvOption($post['delimiter']);
         $enclosure = $this->getForm(ImportForm::class)->extractCsvOption($post['enclosure']);
-        $resourceType = $post['resource_type'];
+        $automapCheckNamesAlone = (bool) $post['automap_check_names_alone'];
+        $automapCheckUserList = (bool) $post['automap_check_user_list'];
+        $automapUserList = $this->getForm(ImportForm::class)
+            ->convertUserListTextToArray($post['automap_user_list']);
         $form = $this->getForm(MappingForm::class, [
             'resourceType' => $resourceType,
             'delimiter' => $post['delimiter'],
             'enclosure' => $post['enclosure'],
+            'automap_check_names_alone' => $post['automap_check_names_alone'],
+            'automap_check_user_list' => $post['automap_check_user_list'],
+            'automap_user_list' => $post['automap_user_list'],
         ]);
         if (empty($files)) {
             $form->setData($post);
@@ -110,11 +117,13 @@ class IndexController extends AbstractActionController
             $view->setVariable('mediaForms', $this->getMediaForms());
 
             $config = $this->config;
-            if ($resourceType == 'items' || $resourceType == 'item_sets') {
-                $autoMaps = $this->getAutomaps($columns);
-            } else {
-                $autoMaps = [];
+            $automapOptions = [];
+            $automapOptions['check_names_alone'] = $automapCheckNamesAlone;
+            $automapOptions['normalize'] = true;
+            if ($automapCheckUserList) {
+                $automapOptions['automap_list'] = $automapUserList;
             }
+            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
             $mappingsResource = $this->orderMappingsForResource($resourceType);
 
@@ -180,6 +189,8 @@ class IndexController extends AbstractActionController
     /**
      * Helper to clean posted args to get more readable logs.
      *
+     * @todo Mix with check in Import and make it available for external query.
+     *
      * @param array $post
      * @return array
      */
@@ -213,6 +224,12 @@ class IndexController extends AbstractActionController
             $args['multivalue_separator'] = $post['multivalue_separator'];
         }
 
+        // Convert the user text into an array.
+        if (array_key_exists('automap_user_list', $args)) {
+            $args['automap_user_list'] = $this->getForm(ImportForm::class)
+                ->convertUserListTextToArray($args['automap_user_list']);
+        }
+
         return $args;
     }
 
@@ -226,7 +243,7 @@ class IndexController extends AbstractActionController
         foreach ($this->config['csv_import']['user_settings'] as $key => $value) {
             $name = substr($key, strlen('csv_import_'));
             if (isset($settings[$name])) {
-                $this->userSettings->set($key, $settings[$name]);
+                $this->userSettings()->set($key, $settings[$name]);
             }
         }
     }
@@ -244,22 +261,6 @@ class IndexController extends AbstractActionController
         return $forms;
     }
 
-    protected function getAutomaps($columns)
-    {
-        $autoMaps = [];
-        foreach ($columns as $index => $column) {
-            if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
-                $response = $this->api()->search('properties', ['term' => $column]);
-                $content = $response->getContent();
-                if (! empty($content)) {
-                    $property = $content[0];
-                    $autoMaps[$index] = $property;
-                }
-            }
-        }
-        return $autoMaps;
-    }
-
     protected function undoJob($jobId)
     {
         $response = $this->api()->search('csvimport_imports', ['job_id' => $jobId]);
@@ -267,11 +268,11 @@ class IndexController extends AbstractActionController
         $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Undo', ['jobId' => $jobId]);
         $response = $this->api()->update('csvimport_imports',
-                    $csvImport->id(),
-                    [
-                        'o:undo_job' => ['o:id' => $job->getId() ],
-                    ]
-                );
+            $csvImport->id(),
+            [
+                'o:undo_job' => ['o:id' => $job->getId() ],
+            ]
+        );
         return $job;
     }
 }

@@ -37,6 +37,9 @@ return [
         'factories' => [
             'findResourcesFromIdentifiers' => Service\ControllerPlugin\FindResourcesFromIdentifiersFactory::class,
         ],
+        'factories' => [
+            'automapHeadersToMetadata' => Service\ControllerPlugin\AutomapHeadersToMetadataFactory::class,
+        ],
         'aliases' => [
             'findResourceFromIdentifier' => 'findResourcesFromIdentifiers',
         ],
@@ -69,6 +72,8 @@ return [
         'youtube' => null,
     ],
     'csv_import' => [
+        'automapping' => [
+        ],
         'user_settings' => [
             'csv_import_delimiter' => ',',
             'csv_import_enclosure' => '"',
@@ -76,6 +81,47 @@ return [
             'csv_import_multivalue_by_default' => false,
             'csv_import_global_language' => '',
             'csv_import_identifier_property' => '',
+            'csv_import_automap_check_names_alone' => false,
+            'csv_import_automap_check_user_list' => false,
+            'csv_import_automap_user_list' => [
+                'owner' => 'owner_email',
+                'owner email' => 'owner_email',
+                'resource template' => 'resource_template',
+                'item type' => 'resource_class',
+                'resource class' => 'resource_class',
+                'item sets' => 'item_sets',
+                'item set' => 'item_sets',
+                'collections' => 'item_sets',
+                'collection' => 'item_sets',
+                'media url' => 'media_url',
+                'html' => 'media_html',
+                'iiif' => 'media_iiif',
+                'iiif image' => 'media_iiif',
+                'oembed' => 'media_oEmbed',
+                'youtube' => 'media_youtube',
+                'user' => 'user_name',
+                'username' => 'user_name',
+                'user name' => 'user_name',
+                'email' => 'user_email',
+                'user email' => 'user_email',
+                'role' => 'user_role',
+                'user role' => 'user_role',
+                // From module File Sideload, in order to set them by default.
+                'media' => 'media_file_sideload',
+                'file' => 'media_file_sideload',
+                'files' => 'media_file_sideload',
+                'upload' => 'media_file_sideload',
+                'sideload' => 'media_file_sideload',
+                'file sideload' => 'media_file_sideload',
+                // From module Mapping.
+                'latitude' => 'mapping_latitude',
+                'longitude' => 'mapping_longitude',
+                'latitude / longitude' => 'mapping_latitude_longitude',
+                'latitude/longitude' => 'mapping_latitude_longitude',
+                'default latitude' => 'mapping_default_latitude',
+                'default longitude' => 'mapping_default_longitude',
+                'default zoom' => 'mapping_default_zoom',
+            ],
         ],
     ],
     'router' => [

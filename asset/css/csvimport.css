@@ -124,3 +124,7 @@ li.column-multivalue {
 .item-mapping li.column-multivalue {
     display: block;
 }
+
+#automap_user_list {
+    max-height: inherit;
+}

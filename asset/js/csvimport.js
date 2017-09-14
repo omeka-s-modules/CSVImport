@@ -29,6 +29,24 @@
         setMultivalueSeparatorByDefault();
 
         /*
+         * Main import form.
+         */
+
+        displayUserList();
+
+        $('#automap_check_user_list').on('change', function(e){
+            displayUserList();
+        });
+
+        function displayUserList() {
+            if ($('#automap_check_user_list').prop('checked')) {
+                $('#automap_user_list').closest('.field').show();
+            } else {
+                $('#automap_user_list').closest('.field').hide();
+            }
+        }
+
+        /*
          * Basic import settings tab.
          */
 
