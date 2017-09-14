@@ -12,7 +12,7 @@ class MediaSourceSidebarFactory implements FactoryInterface
         $config = $services->get('Config');
         $translator = $services->get('MvcTranslator');
         $ingesterManager = $services->get('Omeka\Media\Ingester\Manager');
-        $mediaAdapters = $config['csv_import_media_ingester_adapter'];
+        $mediaAdapters = $config['csv_import']['media_ingester_adapter'];
         return new MediaSourceSidebar($ingesterManager, $mediaAdapters, $translator);
     }
 }

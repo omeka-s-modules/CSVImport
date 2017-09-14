@@ -48,28 +48,28 @@ return [
             'csvimport_imports' => Api\Adapter\ImportAdapter::class,
         ],
     ],
-    'csv_import_mappings' => [
-        'item_sets' => [
-            Mapping\ItemSetMapping::class,
-            Mapping\PropertyMapping::class,
-        ],
-        'items' => [
-            Mapping\ItemMapping::class,
-            Mapping\PropertyMapping::class,
-            Mapping\MediaSourceMapping::class,
-        ],
-        'users' => [
-            Mapping\UserMapping::class,
-        ],
-    ],
-    'csv_import_media_ingester_adapter' => [
-        'url' => MediaIngesterAdapter\UrlMediaIngesterAdapter::class,
-        'html' => MediaIngesterAdapter\HtmlMediaIngesterAdapter::class,
-        'iiif' => null,
-        'oembed' => null,
-        'youtube' => null,
-    ],
     'csv_import' => [
+        'mappings' => [
+            'item_sets' => [
+                Mapping\ItemSetMapping::class,
+                Mapping\PropertyMapping::class,
+            ],
+            'items' => [
+                Mapping\ItemMapping::class,
+                Mapping\PropertyMapping::class,
+                Mapping\MediaSourceMapping::class,
+            ],
+            'users' => [
+                Mapping\UserMapping::class,
+            ],
+        ],
+        'media_ingester_adapter' => [
+            'url' => MediaIngesterAdapter\UrlMediaIngesterAdapter::class,
+            'html' => MediaIngesterAdapter\HtmlMediaIngesterAdapter::class,
+            'iiif' => null,
+            'oembed' => null,
+            'youtube' => null,
+        ],
         'automapping' => [
         ],
         'user_settings' => [
