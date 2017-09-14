@@ -216,6 +216,15 @@ class IndexController extends AbstractActionController
             $args['column-multivalue'] = [];
         }
 
+        // Clean resource identifiers.
+        if (array_key_exists('column-resource_identifier', $args)) {
+            foreach ($args['column-resource_identifier'] as $column => $value) {
+                $args['column-resource_identifier'][$column] = json_decode($value, true);
+            }
+        }
+        unset($args['column-resource_identifier_property']);
+        unset($args['column-resource_identifier_type']);
+
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
         unset($args['enclosure']);
@@ -233,7 +242,7 @@ class IndexController extends AbstractActionController
                 ->convertUserListTextToArray($args['automap_user_list']);
         }
 
-// Set a default owner for a creation.
+        // Set a default owner for a creation.
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }

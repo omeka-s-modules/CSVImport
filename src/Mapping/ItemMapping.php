@@ -10,14 +10,9 @@ class ItemMapping extends ResourceMapping
         return 'Item data'; // @translate
     }
 
-    public static function getName()
-    {
-        return 'item-data';
-    }
-
     public static function getSidebar(PhpRenderer $view)
     {
-        return $view->itemSidebar();
+        return $view->resourceSidebar('items');
     }
 
     protected function processGlobalArgs()
