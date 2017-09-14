@@ -30,29 +30,42 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             ))));
         }, $headers);
 
-        // Prepare the list of labels one time to speed up process.
-        $propertyByLabels = $this->listVocabularyAndTermLabels();
+        // Prepare the standard lists to check against.
+        $lists = [];
+
+        // Prepare the list of names and labels one time to speed up process.
+        $propertyLists = $this->listTerms();
+
+        // Because some terms and labels are not standardized (foaf:givenName is
+        // not foaf:givenname), the process must be done case sensitive first.
+        $lists['names'] = array_combine(
+            array_keys($propertyLists['names']),
+            array_keys($propertyLists['names']));
+        $lists['lower_names'] = array_map('strtolower', $lists['names']);
+        $lists['labels'] = array_combine(
+            array_keys($propertyLists['names']),
+            array_keys($propertyLists['labels']));
+        $lists['lower_labels'] = array_map('strtolower', $lists['labels']);
 
         foreach ($headers as $index => $header) {
+            $lowerHeader = strtolower($header);
             switch ($resourceType) {
                 case 'item_sets':
                 case 'items':
                 case 'media':
-                    // Check strict term name, like "dcterms:title".
-                    if (preg_match('/^[a-z0-9_-]+:[a-z0-9_-]+$/i', $header)) {
-                        $response = $api->search('properties', ['term' => $header]);
-                        $content = $response->getContent();
-                        if (!empty($content)) {
-                            $property = reset($content);
+                    // Check strict term name, like "dcterms:title", sensitively
+                    // then insensitively, then term label like "Dublin Core : Title"
+                    // sensitively then insensitively too. Because all the lists
+                    // contains the same keys in the same order, the process can
+                    // be done in one step.
+                    foreach ($lists as $listName => $list) {
+                        $toSearch = strpos('lower_', $listName) === 0 ? $lowerHeader : $header;
+                        $found = array_search($toSearch, $list, true);
+                        if ($found) {
+                            $property = $propertyLists['names'][$found];
                             $automaps[$index] = $property;
-                            continue 2;
+                            continue 3;
                         }
-                    }
-                    // Check vocabulary name and label ("Dublin Core : Title").
-                    if (isset($propertyByLabels[$header])) {
-                        $property = $propertyByLabels[$header];
-                        $automaps[$index] = $property;
-                        continue 2;
                     }
                     break;
                 case 'users':
@@ -64,15 +77,16 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     }
 
     /**
-     * Return the list of properties by labels.
+     * Return the list of properties by names and labels.
      *
-     * @return array Associative array of vocabulary and term labels as keys
-     * (ex: "Dublin Core : Title") and properties as value.
+     * @return array Associative array of term names and term labels as key
+     * (ex: "dcterms:title" and "Dublin Core : Title") in two subarrays ("names"
+     * "labels", and properties as value.
      * Note: Some terms are badly standardized (in foaf, the label "Given name"
-     * matches "foaf:givenName" and "foaf:givenname"), so, in that case, keep
-     * the first property.
+     * matches "foaf:givenName" and "foaf:givenname"), so, in that case, the
+     * index is added to the label, except the first property.
      */
-    protected function listVocabularyAndTermLabels()
+    protected function listTerms()
     {
         $result = [];
         $vocabularies = $this->getController()->api()->search('vocabularies')->getContent();
@@ -82,9 +96,12 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 continue;
             }
             foreach ($properties as $property) {
+                $result['names'][$property->term()] = $property;
                 $name = $vocabulary->label() .  ':' . $property->label();
-                if (!isset($result[$name])) {
-                    $result[$vocabulary->label() .  ':' . $property->label()] = $property;
+                if (isset($result['labels'][$name])) {
+                    $result['labels'][$vocabulary->label() .  ':' . $property->label() . ' (#' . $property->id() . ')'] = $property;
+                } else {
+                    $result['labels'][$vocabulary->label() .  ':' . $property->label()] = $property;
                 }
             }
         }
