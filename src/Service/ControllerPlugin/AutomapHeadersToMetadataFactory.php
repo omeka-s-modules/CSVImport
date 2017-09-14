@@ -9,7 +9,6 @@ class AutomapHeadersToMetadataFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
     {
-        $mediaIngesterManager = $serviceLocator->get('Omeka\Media\Ingester\Manager');
         $config = $serviceLocator->get('Config');
         $plugin = new AutomapHeadersToMetadata();
         $plugin->setConfigCsvImport($config['csv_import']);
