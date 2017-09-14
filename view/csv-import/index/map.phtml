@@ -49,7 +49,7 @@ $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'))
                                 <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
                                 <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
-                            <input name="<?php echo $automaps[$index]['name'] === 'media' ? '' : 'column-'; echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $automaps[$index]['value']; ?>" type="hidden" />
+                            <input name="<?php echo $automaps[$index]['name'] === 'media' ? '' : 'column-'; echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml($automaps[$index]['value']); ?>" type="hidden" />
                         </li>
                     <?php endif; ?>
                     </ul>
