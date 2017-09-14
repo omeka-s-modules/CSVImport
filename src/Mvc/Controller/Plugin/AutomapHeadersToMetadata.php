@@ -19,7 +19,16 @@ class AutomapHeadersToMetadata extends AbstractPlugin
 
         $api = $this->getController()->api();
 
-        $headers = array_map('trim', $headers);
+        // Trim and remove multiple spaces and no-break spaces (\u00A0 and \u202F)
+        // that may be added automatically in some spreadsheets before or after
+        // ":" or inadvertently and that may be hard to find.
+        $headers = array_map(function ($v) {
+            return preg_replace(
+                '~\s*:\s*~', ':', preg_replace(
+                    '~\s\s+~', ' ', trim(str_replace(
+                        [' ', ' '], ' ', $v
+            ))));
+        }, $headers);
         foreach ($headers as $index => $header) {
             switch ($resourceType) {
                 case 'item_sets':
