@@ -91,7 +91,7 @@ class IndexController extends AbstractActionController
             $config = $this->config;
             $automapOptions = [];
             $automapOptions['check_names_alone'] = $automapCheckNamesAlone;
-            $automapOptions['normalize'] = true;
+            $automapOptions['format'] = 'form';
             if ($automapCheckUserList) {
                 $automapOptions['automap_list'] = $automapUserList;
             }
