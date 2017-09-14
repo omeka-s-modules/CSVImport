@@ -45,21 +45,21 @@ class ItemMapping extends AbstractMapping
         }
         $multivalueSeparator = $this->args['multivalue-separator'];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
-        $itemSetMap = isset($this->args['column-itemset-id']) ? array_keys($this->args['column-itemset-id']) : [];
-        $resourceTemplateMap = isset($this->args['column-resourcetemplate']) ? array_keys($this->args['column-resourcetemplate']) : [];
-        $resourceClassMap = isset($this->args['column-resourceclass']) ? array_keys($this->args['column-resourceclass']) : [];
-        $ownerMap = isset($this->args['column-owneremail']) ? array_keys($this->args['column-owneremail']) : [];
+        $itemSetMap = isset($this->args['column-item_sets']) ? array_keys($this->args['column-item_sets']) : [];
+        $resourceTemplateMap = isset($this->args['column-resource_template']) ? array_keys($this->args['column-resource_template']) : [];
+        $resourceClassMap = isset($this->args['column-resource_class']) ? array_keys($this->args['column-resource_class']) : [];
+        $ownerMap = isset($this->args['column-owner_email']) ? array_keys($this->args['column-owner_email']) : [];
 
         foreach ($row as $index => $values) {
             //maybe weird, but just assuming a split for ids for simplicity's sake
             //since a list of ids shouldn't have any weird separators
             $values = explode($multivalueSeparator, $values);
             if (in_array($index, $itemSetMap)) {
-                foreach ($values as $itemSetId) {
-                    $itemSetId = trim($itemSetId);
-                    $itemSet = $this->findItemSet($itemSetId);
+                foreach ($values as $identifier) {
+                    $identifier = trim($identifier);
+                    $itemSet = $this->findItemSet($identifier);
                     if ($itemSet) {
-                        $itemJson['o:item_set'][] = ['o:id' => trim($itemSetId)];
+                        $itemJson['o:item_set'][] = ['o:id' => $itemSet->id()];
                     }
                 }
             }

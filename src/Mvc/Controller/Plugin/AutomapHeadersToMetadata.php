@@ -215,14 +215,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $name = null;
                     continue;
                 }
-                switch ($name) {
-                    case 'media':
-                        $result[$index][$name] = $value;
-                        break;
-                    default:
-                        $result[$index]['column-' . $name] = $value;
-                        break;
-                }
+                $result[$index]['column-' . $name] = $value;
             }
         }
         return $result;
@@ -326,43 +319,47 @@ class AutomapHeadersToMetadata extends AbstractPlugin
 
         $automapping = [
             'owner_email' => [
-                'name' => 'owneremail',
+                'name' => 'owner_email',
                 'label' => $controller->translate('Owner email address'),
-                'class' => 'owneremail',
+                'class' => 'owner-email',
             ],
             'resource_template' => [
-                'name' => 'resourcetemplate',
+                'name' => 'resource_template',
                 'label' => $controller->translate('Resource template name'),
                 'class' => 'item-data',
             ],
             'resource_class' => [
-                'name' => 'resourceclass',
+                'name' => 'resource_class',
                 'label' => $controller->translate('Resource class term'),
                 'class' => 'item-data',
             ],
             'item_sets' => [
-                'name' => 'itemset-id',
+                'name' => 'resources',
+                'value' => [
+                    'property' => 'internal_id',
+                    'type' => 'item_sets',
+                ],
                 'label' => $controller->translate('Item set id'),
                 'class' => 'item-data',
             ],
-            'media' => [
-                'name' => 'media',
+            'media_source' => [
+                'name' => 'media_source',
                 'value' => null,
                 'label' => $controller->translate('Media (%s)'),
-                'class' => 'media',
+                'class' => 'media-source',
             ],
             'user_name' => [
-                'name' => 'user-displayname',
+                'name' => 'user_name',
                 'label' => $controller->translate('Display name'),
-                'class' => 'user-displayname',
+                'class' => 'user-name',
             ],
             'user_email' => [
-                'name' => 'user-email',
+                'name' => 'user_email',
                 'label' => $controller->translate('Email'),
                 'class' => 'user-email',
             ],
             'user_role' => [
-                'name' => 'user-role',
+                'name' => 'user_role',
                 'label' => $controller->translate('Role'),
                 'class' => 'user-role',
             ],

@@ -10,7 +10,7 @@ class MediaMapping extends AbstractMapping
 
     public static function getName()
     {
-        return 'media-import';
+        return 'media-source';
     }
 
     public static function getSidebar($view)
@@ -23,7 +23,7 @@ class MediaMapping extends AbstractMapping
         $config = $this->getServiceLocator()->get('Config');
         $mediaAdapters = $config['csv_import_media_ingester_adapter'];
         $mediaJson = ['o:media' => []];
-        $mediaMap = isset($this->args['media']) ? $this->args['media'] : [];
+        $mediaMap = isset($this->args['column-media_source']) ? $this->args['column-media_source'] : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
         foreach ($row as $index => $values) {

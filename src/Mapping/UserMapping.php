@@ -29,9 +29,9 @@ class UserMapping extends AbstractMapping
      */
     public function processRow($row)
     {
-        $emailIndex = array_keys($this->args['column-user-email'])[0];
-        $nameIndex = array_keys($this->args['column-user-displayname'])[0];
-        $roleIndex = array_keys($this->args['column-user-role'])[0];
+        $emailIndex = array_keys($this->args['column-user_email'])[0];
+        $nameIndex = array_keys($this->args['column-user_name'])[0];
+        $roleIndex = array_keys($this->args['column-user_role'])[0];
         $userJson = [];
 
         foreach ($row as $index => $value) {

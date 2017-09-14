@@ -166,9 +166,8 @@
                     var name = targetLi.data('flag') + "[" + index + "]";
                     //special handling for Media, which can add flags for different media types
                     var value;
-                    if (flagType == 'media') {
-                        name = 'media[' + index + ']';
-                        value = targetLi.data('flag');
+                    if (flagType == 'media_source') {
+                        value = targetLi.data('value');
                     } else {
                         value = 1;
                     }
