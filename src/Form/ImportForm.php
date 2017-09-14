@@ -90,10 +90,7 @@ class ImportForm extends Form
         $list = $this->userSettings->get(
             'csv_import_automap_user_list',
             $defaults['csv_import_automap_user_list']);
-        $value = '';
-        foreach ($list as $name => $mapped) {
-            $value .= $name . ' = ' . $mapped . PHP_EOL;
-        }
+        $value = $this->convertUserListArrayToText($list);
         $this->add([
             'name' => 'automap_user_list',
             'type' => 'textarea',
@@ -114,6 +111,43 @@ class ImportForm extends Form
             'name' => 'csv',
             'required' => true,
         ]);
+    }
+
+    /**
+     * Convert a user list text into an array.
+     *
+     * @param string $text
+     * @return array
+     */
+    public function convertUserListTextToArray($text)
+    {
+        $result = [];
+        $text = str_replace('  ', ' ', $text);
+        $list = array_filter(array_map('trim', explode(PHP_EOL, $text)));
+        foreach ($list as $line) {
+            $map = array_filter(array_map('trim', explode('=', $line)));
+            if (count($map) === 2) {
+                $result[$map[0]] = $map[1];
+            } else {
+                $result[$line] = '';
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Convert a user list array into a text.
+     *
+     * @param array $list
+     * @return string
+     */
+    public function convertUserListArrayToText($list)
+    {
+        $result = '';
+        foreach ($list as $name => $mapped) {
+            $result .= $name . ' = ' . $mapped . PHP_EOL;
+        }
+        return $result;
     }
 
     public function setConfigCsvImport(array $configCsvImport)

@@ -39,14 +39,15 @@ class IndexController extends AbstractActionController
         $files = $request->getFiles()->toArray();
         $post = $this->params()->fromPost();
         $resourceType = $post['resource_type'];
-        $automapCheckNamesAlone = $post['automap_check_names_alone'];
-        $automapCheckUserList = $post['automap_check_user_list'];
-        $automapUserList = $post['automap_user_list'];
+        $automapCheckNamesAlone = (bool) $post['automap_check_names_alone'];
+        $automapCheckUserList = (bool) $post['automap_check_user_list'];
+        $automapUserList = $this->getForm(ImportForm::class)
+            ->convertUserListTextToArray($post['automap_user_list']);
         $form = $this->getForm(MappingForm::class, [
             'resourceType' => $resourceType,
-            'automap_check_names_alone' => $automapCheckNamesAlone,
-            'automap_check_user_list' => $automapCheckUserList,
-            'automap_user_list' => $automapUserList,
+            'automap_check_names_alone' => $post['automap_check_names_alone'],
+            'automap_check_user_list' => $post['automap_check_user_list'],
+            'automap_user_list' => $post['automap_user_list'],
         ]);
         if (empty($files)) {
             $form->setData($post);
@@ -89,10 +90,10 @@ class IndexController extends AbstractActionController
 
             $config = $this->config;
             $automapOptions = [];
-            $automapOptions['check_names_alone'] = (bool) $automapCheckNamesAlone;
+            $automapOptions['check_names_alone'] = $automapCheckNamesAlone;
             $automapOptions['normalize'] = true;
             if ($automapCheckUserList) {
-                $automapOptions['automap_list'] = $this->convertUserListTextToArray($automapUserList);
+                $automapOptions['automap_list'] = $automapUserList;
             }
             $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
@@ -177,26 +178,11 @@ class IndexController extends AbstractActionController
 
         // Convert the user text into an array.
         if (array_key_exists('automap_user_list', $args)) {
-            $args['automap_user_list'] = $this->convertUserListTextToArray($args['automap_user_list']);
+            $args['automap_user_list'] = $this->getForm(ImportForm::class)
+                ->convertUserListTextToArray($args['automap_user_list']);
         }
 
         return $args;
-    }
-
-    protected function convertUserListTextToArray($text)
-    {
-        $result = [];
-        $text = str_replace('  ', ' ', $text);
-        $list = array_filter(array_map('trim', explode(PHP_EOL, $text)));
-        foreach ($list as $line) {
-            $map = array_filter(array_map('trim', explode('=', $line)));
-            if (count($map) === 2) {
-                $result[$map[0]] = $map[1];
-            } else {
-                $result[$line] = '';
-            }
-        }
-        return $result;
     }
 
     /**
