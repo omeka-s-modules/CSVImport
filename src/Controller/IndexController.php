@@ -78,11 +78,7 @@ class IndexController extends AbstractActionController
             $view->setVariable('mediaForms', $this->getMediaForms());
 
             $config = $this->config;
-            if ($resourceType == 'items' || $resourceType == 'item_sets') {
-                $autoMaps = $this->getAutomaps($columns);
-            } else {
-                $autoMaps = [];
-            }
+            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType);
 
             $mappingsResource = $this->orderMappingsForResource($resourceType);
 
@@ -162,23 +158,6 @@ class IndexController extends AbstractActionController
             ];
         }
         return $forms;
-    }
-
-    protected function getAutomaps($columns)
-    {
-        $autoMaps = [];
-        foreach ($columns as $index => $column) {
-            $column = trim($column);
-            if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
-                $response = $this->api()->search('properties', ['term' => $column]);
-                $content = $response->getContent();
-                if (! empty($content)) {
-                    $property = $content[0];
-                    $autoMaps[$index] = $property;
-                }
-            }
-        }
-        return $autoMaps;
     }
 
     protected function undoJob($jobId)

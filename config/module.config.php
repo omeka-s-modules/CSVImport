@@ -1,9 +1,15 @@
 <?php
+namespace CSVImport;
 
 return [
     'controllers' => [
         'factories' => [
             'CSVImport\Controller\Index' => 'CSVImport\Service\Controller\IndexControllerFactory',
+        ],
+    ],
+    'controller_plugins' => [
+        'invokables' => [
+            'automapHeadersToMetadata' => Mvc\Controller\Plugin\AutomapHeadersToMetadata::class,
         ],
     ],
     'api_adapters' => [
