@@ -22,10 +22,13 @@ class MediaSourceMapping extends AbstractMapping
 
     public function processRow(array $row)
     {
+        $data = [];
+
         $config = $this->getServiceLocator()->get('Config');
         $mediaAdapters = $config['csv_import']['media_ingester_adapter'];
-        $mediaJson = ['o:media' => []];
         $mediaMap = isset($this->args['media-source']) ? $this->args['media-source'] : [];
+
+        $isMedia = $this->args['resource_type'] === 'media';
 
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
@@ -52,10 +55,13 @@ class MediaSourceMapping extends AbstractMapping
                         $adapter = new $mediaAdapters[$ingester];
                         $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
                     }
-                    $mediaJson['o:media'][] = $mediaDatumJson;
+                    $data[] = $mediaDatumJson;
                 }
             }
         }
-        return $mediaJson;
+
+        return $this->args['resource_type'] === 'media'
+            ? ($data ? reset($data) : [])
+            : ['o:media' => $data];
     }
 }

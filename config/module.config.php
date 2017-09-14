@@ -61,6 +61,11 @@ return [
                 Mapping\PropertyMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],
+            'media' => [
+                Mapping\MediaMapping::class,
+                Mapping\PropertyMapping::class,
+                Mapping\MediaSourceMapping::class,
+            ],
             'users' => [
                 Mapping\UserMapping::class,
             ],
