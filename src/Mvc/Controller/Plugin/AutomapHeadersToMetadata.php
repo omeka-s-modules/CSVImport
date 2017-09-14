@@ -23,7 +23,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
      * @param array $options Associative array of options:
      * - check_names_alone (boolean)
      * - automap_list (array) An associative array containing specific mappings.
-     * - normalize (boolean) The type of result: for the form or for automatic.
+     * - format (string) The type of result: may be "form", "arguments", or raw.
      * @return array Associative array of the index of the headers as key and
      * the matching metadata as value. Only mapped headers are set.
      */
@@ -115,19 +115,22 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             }
         }
 
-        return empty($options['normalize'])
-            ? $automaps
-            : $this->normalizeAutomaps($automaps, $resourceType);
+        if (empty($options['format']) || !in_array($options['format'], ['form', 'arguments'])) {
+            return $automaps;
+        }
+        return $options['format'] === 'form'
+            ? $this->normalizeAutomapsForForm($automaps, $resourceType)
+            :  $this->normalizeAutomapsAsArguments($automaps, $resourceType);
     }
 
     /**
      * Prepare automaps to be used in a form, and filter it with resource type.
      *
      * @param array $automaps
-     * @param $resourceType
+     * @param string $resourceType
      * @return array
      */
-    protected function normalizeAutomaps(array $automaps, $resourceType)
+    protected function normalizeAutomapsForForm(array $automaps, $resourceType)
     {
         $result = [];
         $controller = $this->getController();
@@ -149,6 +152,42 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             } elseif (is_string($automap)) {
                 if (isset($automapping[$automap])) {
                     $result[$index] = $automapping[$automap];
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Prepare automaps as import arguments, and filter it with resource type.
+     *
+     * @param array $automaps
+     * @param string $resourceType
+     * @return array
+     */
+    protected function normalizeAutomapsAsArguments(array $automaps, $resourceType)
+    {
+        $result = [];
+        $controller = $this->getController();
+        $automapping = empty($this->options['automap_list'])
+            ? []
+            : $this->prepareAutomapping();
+        foreach ($automaps as $index => $automap) {
+            if (is_object($automap)) {
+                if ($automap->getJsonLdType() === 'o:Property') {
+                    $result[$index][$automap->term()] = $automap->id();
+                }
+            } elseif (is_string($automap)) {
+                if (isset($automapping[$automap])) {
+                    $name = $automapping[$automap]['name'];
+                    switch ($name) {
+                        case 'media':
+                            $result[$index][$name] = $automapping[$automap]['value'];
+                            break;
+                        default:
+                            $result[$index]['column-' . $name] = $automapping[$automap]['value'];
+                            break;
+                    }
                 }
             }
         }
