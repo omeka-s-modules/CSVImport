@@ -35,6 +35,7 @@ return [
     ],
     'controller_plugins' => [
         'factories' => [
+            'automapHeadersToMetadata' => Service\ControllerPlugin\AutomapHeadersToMetadataFactory::class,
             'findResourcesFromIdentifiers' => Service\ControllerPlugin\FindResourcesFromIdentifiersFactory::class,
         ],
         'aliases' => [
@@ -69,6 +70,8 @@ return [
         'youtube' => null,
     ],
     'csv_import' => [
+        'automapping' => [
+        ],
         'user_settings' => [
             'csv_import_delimiter' => ',',
             'csv_import_enclosure' => '"',
@@ -76,6 +79,47 @@ return [
             'csv_import_multivalue_by_default' => false,
             'csv_import_global_language' => '',
             'csv_import_identifier_property' => '',
+            'csv_import_automap_check_names_alone' => false,
+            'csv_import_automap_check_user_list' => false,
+            'csv_import_automap_user_list' => [
+                'owner' => 'owner_email',
+                'owner email' => 'owner_email',
+                'resource template' => 'resource_template',
+                'item type' => 'resource_class',
+                'resource class' => 'resource_class',
+                'item sets' => 'item_sets',
+                'item set' => 'item_sets',
+                'collections' => 'item_sets',
+                'collection' => 'item_sets',
+                'media url' => 'media {url}',
+                'html' => 'media {html}',
+                'iiif' => 'media {iiif}',
+                'iiif image' => 'media {iiif}',
+                'oembed' => 'media {oembed}',
+                'youtube' => 'media {youtube}',
+                'user' => 'user_name',
+                'username' => 'user_name',
+                'user name' => 'user_name',
+                'email' => 'user_email',
+                'user email' => 'user_email',
+                'role' => 'user_role',
+                'user role' => 'user_role',
+                // From module File Sideload, in order to set them by default.
+                'media' => 'media {sideload}',
+                'file' => 'media {sideload}',
+                'files' => 'media {sideload}',
+                'upload' => 'media {sideload}',
+                'sideload' => 'media {sideload}',
+                'file sideload' => 'media {sideload}',
+                // From module Mapping.
+                'latitude' => 'mapping_latitude',
+                'longitude' => 'mapping_longitude',
+                'latitude / longitude' => 'mapping_latitude_longitude',
+                'latitude/longitude' => 'mapping_latitude_longitude',
+                'default latitude' => 'mapping_default_latitude',
+                'default longitude' => 'mapping_default_longitude',
+                'default zoom' => 'mapping_default_zoom',
+            ],
         ],
     ],
     'router' => [

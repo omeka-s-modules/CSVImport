@@ -38,6 +38,16 @@ class ImportForm extends Form
     /**
      * @var array
      */
+    protected $configCsvImport;
+
+    /**
+     * @var UserSettings
+     */
+    protected $userSettings;
+
+    /**
+     * @var array
+     */
     protected $mappingClasses;
 
     /**
@@ -45,14 +55,12 @@ class ImportForm extends Form
      */
     protected $defaultSettings;
 
-    /**
-     * @var UserSettings
-     */
-    protected $userSettings;
-
     public function init()
     {
         $this->setAttribute('action', 'csvimport/map');
+
+        $defaults = $this->configCsvImport['user_settings'];
+
         $this->add([
                 'name' => 'csv',
                 'type' => 'file',
@@ -115,6 +123,57 @@ class ImportForm extends Form
                 ],
         ]);
 
+        $this->add([
+            'name' => 'automap_check_names_alone',
+            'type' => 'checkbox',
+            'options' => [
+                'label' => 'Automap with labels alone', // @translate
+                'info' => 'Headers are mapped automatically, case sensitively and not, with standard names ("dcterms:title") and labels ("Dublin Core : Title").' // @translate
+                    . ' ' . 'If checked, an automatic map will be done with names and labels only ("Title") too, Dublin Core first.', // @translate
+            ],
+            'attributes' => [
+                'id' => 'automap_check_names_alone',
+                'value' => (int) (bool) $this->userSettings->get(
+                    'csv_import_automap_check_names_alone',
+                    $defaults['csv_import_automap_check_names_alone']),
+            ],
+        ]);
+
+        $checkUserList = (bool) $this->userSettings->get(
+            'csv_import_automap_check_user_list',
+            $defaults['csv_import_automap_check_user_list']);
+        $this->add([
+            'name' => 'automap_check_user_list',
+            'type' => 'checkbox',
+            'options' => [
+                'label' => 'Automap with user list', // @translate
+                'info' => 'Try to automap first with specific headers, which is useful when a model of spreadsheet file is used.', // @translate
+            ],
+            'attributes' => [
+                'id' => 'automap_check_user_list',
+                'value' => (int) $checkUserList,
+            ],
+        ]);
+
+        $list = $this->userSettings->get(
+            'csv_import_automap_user_list',
+            $defaults['csv_import_automap_user_list']);
+        $value = $this->convertUserListArrayToText($list);
+        $this->add([
+            'name' => 'automap_user_list',
+            'type' => 'textarea',
+            'options' => [
+                'label' => 'Automap user list', // @translate
+                'info' => 'List of user headers used to map the file automagically.' // @translate
+                    . ' ' . 'Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).' // @translate
+            ],
+            'attributes' => [
+                'id' => 'automap_user_list',
+                'rows' => 12,
+                'value' => $value,
+            ],
+        ]);
+
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'csv',
@@ -166,8 +225,55 @@ class ImportForm extends Form
     }
 
     /**
-     * @param array $mappingClasses
+     * Convert a user list text into an array.
+     *
+     * @param string $text
+     * @return array
      */
+    public function convertUserListTextToArray($text)
+    {
+        $result = [];
+        $text = str_replace('  ', ' ', $text);
+        $list = array_filter(array_map('trim', explode(PHP_EOL, $text)));
+        foreach ($list as $line) {
+            $map = array_filter(array_map('trim', explode('=', $line)));
+            if (count($map) === 2) {
+                $result[$map[0]] = $map[1];
+            } else {
+                $result[$line] = '';
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Convert a user list array into a text.
+     *
+     * @param array $list
+     * @return string
+     */
+    public function convertUserListArrayToText($list)
+    {
+        $result = '';
+        foreach ($list as $name => $mapped) {
+            $result .= $name . ' = ' . $mapped . PHP_EOL;
+        }
+        return $result;
+    }
+
+    public function setConfigCsvImport(array $configCsvImport)
+    {
+        $this->configCsvImport = $configCsvImport;
+    }
+
+    public function setUserSettings(UserSettings $userSettings)
+    {
+        $this->userSettings = $userSettings;
+    }
+
+   /**
+    * @param array $mappingClasses
+    */
     public function setMappingClasses(array $mappingClasses)
     {
         $this->mappingClasses = $mappingClasses;
@@ -179,14 +285,6 @@ class ImportForm extends Form
     public function setDefaultSettings(array $defaultSettings)
     {
         $this->defaultSettings= $defaultSettings;
-    }
-
-    /**
-     * @param UserSettings $userSettings
-     */
-    public function setUserSettings(UserSettings $userSettings)
-    {
-        $this->userSettings = $userSettings;
     }
 
     /**

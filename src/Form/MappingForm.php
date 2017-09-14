@@ -51,6 +51,33 @@ class MappingForm extends Form
         ]);
 
         $this->add([
+            'name' => 'automap_check_names_alone',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('automap_check_names_alone'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'automap_check_user_list',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('automap_check_user_list'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'automap_user_list',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('automap_user_list'),
+                'required' => true,
+            ],
+        ]);
+
+        $this->add([
             'name' => 'comment',
             'type' => 'textarea',
             'options' => [
