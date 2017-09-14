@@ -14,6 +14,7 @@ class Import extends AbstractJob
 {
     const ACTION_CREATE = 'create'; // @translate
     const ACTION_APPEND = 'append'; // @translate
+    const ACTION_REVISE = 'revise'; // @translate
     const ACTION_UPDATE = 'update'; // @translate
     const ACTION_REPLACE = 'replace'; // @translate
     const ACTION_DELETE = 'delete'; // @translate
@@ -136,6 +137,7 @@ class Import extends AbstractJob
                     $this->create($data);
                     break;
                 case self::ACTION_APPEND:
+                case self::ACTION_REVISE:
                 case self::ACTION_UPDATE:
                 case self::ACTION_REPLACE:
                     $identifiers = $this->extractIdentifiers($data, $identifierProperty);
@@ -232,8 +234,15 @@ class Import extends AbstractJob
                         $options['isPartial'] = true;
                         $options['collectionAction'] = 'append';
                         break;
+                    case self::ACTION_REVISE:
+                        // Remove empty properties to avoid replacement.
+                        // Warning: default may be automatically set already, so
+                        // they are kept.
+                        $data = $this->removeEmptyData($data);
+                        // No break.
                     case self::ACTION_UPDATE:
                         $options['isPartial'] = true;
+                        // TODO Check when some rows are empty and filled.
                         $options['collectionAction'] = array_key_exists('o:item_set', reset($data))
                             ? 'replace'
                             : 'append';
@@ -472,6 +481,58 @@ class Import extends AbstractJob
     }
 
     /**
+     * Remove empty values from passed data in order not to change current ones.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function removeEmptyData(array $data)
+    {
+        // Data are updated in place.
+        foreach ($data as &$dataValues) {
+            foreach ($dataValues as $name => &$metadata) {
+                switch ($name) {
+                    case 'o:resource_template':
+                    case 'o:resource_class':
+                    case 'o:owner':
+                    case 'o:item':
+                    case 'o:media':
+                        if (empty($metadata) || empty($metadata['o:id'])) {
+                            unset($datavalues[$name]);
+                        }
+                        break;
+                    case 'o:item-set':
+                        if (empty($metadata)) {
+                            unset($datavalues[$name]);
+                        } elseif (array_key_exists('o:id', $metadata) && empty($metadata['o:id'])) {
+                            unset($datavalues[$name]);
+                        }
+                        break;
+                    case 'o:ingester':
+                    case 'o:source':
+                    case 'ingest_filename':
+                        // These values are not updatable and are removed.
+                        unset($datavalues[$name]);
+                        break;
+                    case 'o:is_public':
+                    case 'o:is_open':
+                        if (!in_array($metadata, [0, 1], true)) {
+                            unset($datavalues[$name]);
+                        }
+                        break;
+                    default:
+                        if (is_array($metadata)) {
+                            if (empty($metadata)) {
+                                unset($datavalues[$name]);
+                            }
+                        }
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Deduplicate property values of a resource.
      *
      * @param AbstractResourceRepresentation $representation
@@ -508,6 +569,7 @@ class Import extends AbstractJob
         $allowedActions = [
             self::ACTION_CREATE,
             self::ACTION_APPEND,
+            self::ACTION_REVISE,
             self::ACTION_UPDATE,
             self::ACTION_REPLACE,
             self::ACTION_DELETE,

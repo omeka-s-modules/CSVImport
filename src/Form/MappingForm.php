@@ -153,6 +153,7 @@ class MappingForm extends Form
             $valueOptions = [
                 Import::ACTION_CREATE => 'Create a new resource', // @translate
                 Import::ACTION_APPEND => 'Append data to the resource', // @translate
+                Import::ACTION_REVISE => 'Revise data of the resource', // @translate
                 Import::ACTION_UPDATE => 'Update data of the resource', // @translate
                 Import::ACTION_REPLACE => 'Replace all data of the resource', // @translate
                 Import::ACTION_DELETE => 'Delete the resource', // @translate
@@ -163,6 +164,11 @@ class MappingForm extends Form
                 'type' => 'select',
                 'options' => [
                     'label' => 'Action', // @translate
+                    'info' => 'In addition to the default "Create" and to the common "Delete", to manage most of the common cases, four modes of update are provided:
+- append: add new data to complete the resource;
+- revise: replace existing data to the resource, but don’t update a property when no new data are providing (warning: the default values should not be set);
+- update: replace existing data to the resource, and remove data when no data are providing in an empty cell;
+- replace: remove all properties of the resource, and fill new ones from the data.', // @translate
                     'value_options' => $valueOptions,
                 ],
                 'attributes' => [
