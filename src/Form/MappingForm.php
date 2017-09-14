@@ -17,7 +17,6 @@ class MappingForm extends Form
     {
         $resourceType = $this->getOption('resourceType');
         $serviceLocator = $this->getServiceLocator();
-        $currentUser = $serviceLocator->get('Omeka\AuthenticationService')->getIdentity();
         $userSettings = $serviceLocator->get('Omeka\Settings\User');
         $config = $serviceLocator->get('Config');
         $default = $config['csv_import']['user_settings'];
@@ -134,17 +133,18 @@ class MappingForm extends Form
                 || ($resourceType === 'items' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
             ) {
                 $this->add([
-                    'name' => 'o:owner',
+                    'name' => 'o:owner[o:id]',
                     'type' => ResourceSelect::class,
                     'attributes' => [
                         'id' => 'select-owner',
-                        'value' => $currentUser->getId(),
+                        'value' => '',
                         'class' => 'chosen-select',
                         'data-placeholder' => 'Select a template', // @translate
                         'data-api-base-url' => $urlHelper('api/default', ['resource' => 'users']),
                     ],
                     'options' => [
                         'label' => 'Owner', // @translate
+                        'info' => 'If not set, the default owner will be the current user for a creation.', // @translate
                         'resource_value_options' => [
                             'resource' => 'users',
                             'query' => [],
@@ -152,6 +152,7 @@ class MappingForm extends Form
                                 return $user->name();
                             },
                         ],
+                        'empty_option' => 'Select a user', // @translate
                     ],
                 ]);
             }
@@ -335,6 +336,10 @@ class MappingForm extends Form
             ]);
             $inputFilter->add([
                 'name' => 'o:resource_class[o:id]',
+                'required' => false,
+            ]);
+            $inputFilter->add([
+                'name' => 'o:owner[o:id]',
                 'required' => false,
             ]);
             $inputFilter->add([

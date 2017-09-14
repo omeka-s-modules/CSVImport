@@ -81,10 +81,12 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 'item_sets' => 'Omeka\Entity\ItemSet',
                 'items' => 'Omeka\Entity\Item',
                 'media' => 'Omeka\Entity\Media',
+                'resources' => '',
                 // Avoid a check and make the plugin more flexible.
                 'Omeka\Entity\ItemSet' => 'Omeka\Entity\ItemSet',
                 'Omeka\Entity\Item' => 'Omeka\Entity\Item',
                 'Omeka\Entity\Media' => 'Omeka\Entity\Media',
+                'Omeka\Entity\Resource' => '',
             ];
             if (!isset($resourceTypes[$resourceType])) {
                 return $isSingle ? null : [];
