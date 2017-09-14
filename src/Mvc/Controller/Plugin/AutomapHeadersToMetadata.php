@@ -209,7 +209,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 }
                 switch ($name) {
                     case 'media':
-                        $result[$index][$name] = $value;
+                        $result[$index]['media-source'] = $value;
                         break;
                     default:
                         $result[$index]['column-' . $name] = $value;
@@ -325,23 +325,38 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             'resource_template' => [
                 'name' => 'resourcetemplate',
                 'label' => $controller->translate('Resource template name'),
-                'class' => 'item-data',
+                'class' => 'resource-data',
             ],
             'resource_class' => [
                 'name' => 'resourceclass',
                 'label' => $controller->translate('Resource class term'),
-                'class' => 'item-data',
+                'class' => 'resource-data',
+            ],
+            'is_public' => [
+                'name' => 'ispublic',
+                'label' => $controller->translate('Visibility public/private'),
+                'class' => 'resource-data',
+            ],
+            'is_open' => [
+                'name' => 'isopen',
+                'label' => $controller->translate('Additions open/closed'),
+                'class' => 'resource-data',
             ],
             'item_sets' => [
                 'name' => 'itemset-id',
                 'label' => $controller->translate('Item set id'),
-                'class' => 'item-data',
+                'class' => 'resource-data',
+            ],
+            'items' => [
+                'name' => 'item-id',
+                'label' => $controller->translate('Item id'),
+                'class' => 'resource-data',
             ],
             'media' => [
-                'name' => 'media',
+                'name' => 'media-source',
                 'value' => null,
                 'label' => $controller->translate('Media (%s)'),
-                'class' => 'media',
+                'class' => 'media-source',
             ],
             'user_name' => [
                 'name' => 'user-displayname',
@@ -357,6 +372,11 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'name' => 'user-role',
                 'label' => $controller->translate('Role'),
                 'class' => 'user-role',
+            ],
+            'user_is_active' => [
+                'name' => 'user-is-active',
+                'label' => $controller->translate('User is active'),
+                'class' => 'user-is-active',
             ],
         ];
 
