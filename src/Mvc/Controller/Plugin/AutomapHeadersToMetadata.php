@@ -165,7 +165,15 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                         $result[$index] = $value;
                     }
                 } elseif (isset($automapping[$automap])) {
-                    $result[$index] = $automapping[$automap];
+                    $value = $automapping[$automap];
+                    if ($value !== 1) {
+                        $value['label'] = is_array($value['value'])
+                            ? vsprintf($value['label'], $value['value'])
+                            : sprintf($value['label'], $value['value']);
+                        $result[$index] = $value;
+                    } else {
+                        $result[$index] = $value;
+                    }
                 }
             }
         }
