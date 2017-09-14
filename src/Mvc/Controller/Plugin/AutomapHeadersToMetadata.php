@@ -150,7 +150,21 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $result[$index] = $value;
                 }
             } elseif (is_string($automap)) {
-                if (isset($automapping[$automap])) {
+                // Get the options of the automap.
+                $check = preg_match('~^(.+?)\s*(\{.+\})$~', $automap, $matches);
+                if ($check) {
+                    if (isset($automapping[$matches[1]])) {
+                        $value = $automapping[$matches[1]];
+                        $multipleOptions = @json_decode($matches[2], true);
+                        $value['value'] = $multipleOptions
+                            ? $matches[2]
+                            : trim($matches[2], "\t\r\n {}");
+                        $value['label'] = $multipleOptions
+                            ? vsprintf($value['label'], $multipleOptions)
+                            : sprintf($value['label'], $value['value']);
+                        $result[$index] = $value;
+                    }
+                } elseif (isset($automapping[$automap])) {
                     $result[$index] = $automapping[$automap];
                 }
             }
@@ -178,16 +192,28 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $result[$index][$automap->term()] = $automap->id();
                 }
             } elseif (is_string($automap)) {
-                if (isset($automapping[$automap])) {
-                    $name = $automapping[$automap]['name'];
-                    switch ($name) {
-                        case 'media':
-                            $result[$index][$name] = $automapping[$automap]['value'];
-                            break;
-                        default:
-                            $result[$index]['column-' . $name] = $automapping[$automap]['value'];
-                            break;
+                // Get the options of the automap.
+                $check = preg_match('~^(.+?)\s*(\{.+\})$~', $automap, $matches);
+                if ($check) {
+                    if (isset($automapping[$matches[1]])) {
+                        $name = $automapping[$matches[1]]['name'];
+                        $value = @json_decode($matches[2], true)
+                            ?: trim($matches[2], "\t\r\n {}");
                     }
+                } elseif (isset($automapping[$automap])) {
+                    $name = $automapping[$automap]['name'];
+                    $value = $automapping[$automap]['value'];
+                } else {
+                    $name = null;
+                    continue;
+                }
+                switch ($name) {
+                    case 'media':
+                        $result[$index][$name] = $value;
+                        break;
+                    default:
+                        $result[$index]['column-' . $name] = $value;
+                        break;
                 }
             }
         }
@@ -241,7 +267,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 '~\s*:\s*~', ':', preg_replace(
                     '~\s\s+~', ' ', trim(str_replace(
                         [' ', ' '], ' ', $v
-                        ))));
+            ))));
         }, $list);
     }
 
@@ -311,34 +337,10 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'label' => $controller->translate('Item set id'),
                 'class' => 'item-data',
             ],
-            'media_url' => [
+            'media' => [
                 'name' => 'media',
-                'value' => 'url',
-                'label' => $controller->translate('URL'),
-                'class' => 'media',
-            ],
-            'media_html' => [
-                'name' => 'media',
-                'value' => 'html',
-                'label' => $controller->translate('HTML'),
-                'class' => 'media',
-            ],
-            'media_iiif' => [
-                'name' => 'media',
-                'value' => 'iiif',
-                'label' => $controller->translate('IIIF image'),
-                'class' => 'media',
-            ],
-            'media_oEmbed' => [
-                'name' => 'media',
-                'value' => 'oembed',
-                'label' => $controller->translate('oEmbed'),
-                'class' => 'media',
-            ],
-            'media_youtube' => [
-                'name' => 'media',
-                'value' => 'youtube',
-                'label' => $controller->translate('Youtube'),
+                'value' => null,
+                'label' => $controller->translate('Media (%s)'),
                 'class' => 'media',
             ],
             'user_name' => [
