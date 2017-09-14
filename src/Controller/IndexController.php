@@ -40,16 +40,21 @@ class IndexController extends AbstractActionController
         $post = $this->params()->fromPost();
         $resourceType = $post['resource_type'];
         $automapCheckNamesAlone = $post['automap_check_names_alone'];
+        $automapCheckUserList = $post['automap_check_user_list'];
+        $automapUserList = $post['automap_user_list'];
         $form = $this->getForm(MappingForm::class, [
             'resourceType' => $resourceType,
             'automap_check_names_alone' => $automapCheckNamesAlone,
+            'automap_check_user_list' => $automapCheckUserList,
+            'automap_user_list' => $automapUserList,
         ]);
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
-                $this->saveUserSettings($post);
+                $args = $this->cleanArgs($post);
+                $this->saveUserSettings($args);
                 $dispatcher = $this->jobDispatcher();
-                $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
+                $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
                 $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
@@ -85,6 +90,10 @@ class IndexController extends AbstractActionController
             $config = $this->config;
             $automapOptions = [];
             $automapOptions['check_names_alone'] = (bool) $automapCheckNamesAlone;
+            $automapOptions['normalize'] = true;
+            if ($automapCheckUserList) {
+                $automapOptions['automap_list'] = $this->convertUserListTextToArray($automapUserList);
+            }
             $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
             $mappingsResource = $this->orderMappingsForResource($resourceType);
@@ -152,6 +161,42 @@ class IndexController extends AbstractActionController
             )));
         }
         return $mappings[$resourceType];
+    }
+
+    /**
+     * Helper to clean posted args to get more readable logs.
+     *
+     * @todo Mix with check in Import and make it available for external query.
+     *
+     * @param array $post
+     * @return array
+     */
+    protected function cleanArgs(array $post)
+    {
+        $args = $post;
+
+        // Convert the user text into an array.
+        if (array_key_exists('automap_user_list', $args)) {
+            $args['automap_user_list'] = $this->convertUserListTextToArray($args['automap_user_list']);
+        }
+
+        return $args;
+    }
+
+    protected function convertUserListTextToArray($text)
+    {
+        $result = [];
+        $text = str_replace('  ', ' ', $text);
+        $list = array_filter(array_map('trim', explode(PHP_EOL, $text)));
+        foreach ($list as $line) {
+            $map = array_filter(array_map('trim', explode('=', $line)));
+            if (count($map) === 2) {
+                $result[$map[0]] = $map[1];
+            } else {
+                $result[$line] = '';
+            }
+        }
+        return $result;
     }
 
     /**

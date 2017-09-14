@@ -6,6 +6,20 @@
             + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
             + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
 
+        displayUserList();
+
+        $('#automap_check_user_list').on('change', function(e){
+            displayUserList();
+        });
+
+        function displayUserList() {
+            if ($('#automap_check_user_list').prop('checked')) {
+                $('#automap_user_list').closest('.field').show();
+            } else {
+                $('#automap_user_list').closest('.field').hide();
+            }
+        }
+
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces

@@ -71,6 +71,45 @@ class ImportForm extends Form
             ],
         ]);
 
+        $checkUserList = (bool) $this->userSettings->get(
+            'csv_import_automap_check_user_list',
+            $defaults['csv_import_automap_check_user_list']);
+        $this->add([
+            'name' => 'automap_check_user_list',
+            'type' => 'checkbox',
+            'options' => [
+                'label' => 'Automap with user list', // @translate
+                'info' => 'Try to automap first with specific headers, which is useful when a model of spreadsheet file is used.', // @translate
+            ],
+            'attributes' => [
+                'id' => 'automap_check_user_list',
+                'value' => (int) $checkUserList,
+            ],
+        ]);
+
+        $list = $this->userSettings->get(
+            'csv_import_automap_user_list',
+            $defaults['csv_import_automap_user_list']);
+        $value = '';
+        foreach ($list as $name => $mapped) {
+            $value .= $name . ' = ' . $mapped . PHP_EOL;
+        }
+        $this->add([
+            'name' => 'automap_user_list',
+            'type' => 'textarea',
+            'options' => [
+                'label' => 'Automap user list', // @translate
+                'info' => 'List of user headers used to map the file automagically.' // @translate
+                    . ' ' . 'Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).' // @translate
+            ],
+            'attributes' => [
+                'id' => 'automap_user_list',
+                'rows' => 12,
+                'value' => $value,
+                'style' => $checkUserList ? '' : 'display:none;',
+            ],
+        ]);
+
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'csv',
