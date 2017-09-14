@@ -29,11 +29,16 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                         [' ', ' '], ' ', $v
             ))));
         }, $headers);
+
+        // Prepare the list of labels one time to speed up process.
+        $propertyByLabels = $this->listVocabularyAndTermLabels();
+
         foreach ($headers as $index => $header) {
             switch ($resourceType) {
                 case 'item_sets':
                 case 'items':
                 case 'media':
+                    // Check strict term name, like "dcterms:title".
                     if (preg_match('/^[a-z0-9_-]+:[a-z0-9_-]+$/i', $header)) {
                         $response = $api->search('properties', ['term' => $header]);
                         $content = $response->getContent();
@@ -43,6 +48,12 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                             continue 2;
                         }
                     }
+                    // Check vocabulary name and label ("Dublin Core : Title").
+                    if (isset($propertyByLabels[$header])) {
+                        $property = $propertyByLabels[$header];
+                        $automaps[$index] = $property;
+                        continue 2;
+                    }
                     break;
                 case 'users':
                     break;
@@ -50,5 +61,33 @@ class AutomapHeadersToMetadata extends AbstractPlugin
         }
 
         return $automaps;
+    }
+
+    /**
+     * Return the list of properties by labels.
+     *
+     * @return array Associative array of vocabulary and term labels as keys
+     * (ex: "Dublin Core : Title") and properties as value.
+     * Note: Some terms are badly standardized (in foaf, the label "Given name"
+     * matches "foaf:givenName" and "foaf:givenname"), so, in that case, keep
+     * the first property.
+     */
+    protected function listVocabularyAndTermLabels()
+    {
+        $result = [];
+        $vocabularies = $this->getController()->api()->search('vocabularies')->getContent();
+        foreach ($vocabularies as $vocabulary) {
+            $properties = $vocabulary->properties();
+            if (empty($properties)) {
+                continue;
+            }
+            foreach ($properties as $property) {
+                $name = $vocabulary->label() .  ':' . $property->label();
+                if (!isset($result[$name])) {
+                    $result[$vocabulary->label() .  ':' . $property->label()] = $property;
+                }
+            }
+        }
+        return $result;
     }
 }
