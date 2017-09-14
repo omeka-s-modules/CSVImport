@@ -17,7 +17,6 @@ return [
             'csvPropertySelector' => View\Helper\PropertySelector::class,
         ],
         'factories' => [
-            'itemSidebar' => Service\ViewHelper\ItemSidebarFactory::class,
             'mediaSourceSidebar' => Service\ViewHelper\MediaSourceSidebarFactory::class,
             'resourceSidebar' => Service\ViewHelper\ResourceSidebarFactory::class,
         ],
@@ -56,6 +55,11 @@ return [
             ],
             'items' => [
                 Mapping\ItemMapping::class,
+                Mapping\PropertyMapping::class,
+                Mapping\MediaSourceMapping::class,
+            ],
+            'media' => [
+                Mapping\MediaMapping::class,
                 Mapping\PropertyMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],

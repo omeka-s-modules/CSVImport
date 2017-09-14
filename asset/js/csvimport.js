@@ -109,6 +109,16 @@
             if (targetLi.hasClass('column-multivalue')) {
                 return;
             }
+            // Hijack the resource identifier options, handled separately.
+            var flagData = targetLi.data('flag');
+            if (flagData === 'column-resource_identifier_property' || flagData === 'column-resource_identifier_type' ) {
+                return;
+            }
+            // Check the resource identifier.
+            if (flagData === 'column-resource_identifier' && !checkResourceIdentifier()) {
+                return;
+            }
+
             e.stopPropagation();
             e.preventDefault();
             // Looks like a stopPropagation on the selector-parent forces me to
@@ -122,7 +132,10 @@
             var flagName = targetLi.find('span').text();
             var flagType = targetLi.data('flag-type');
             if (! flagType) {
-                flagType = targetLi.data('flag');
+                flagType = flagData;
+            }
+            if (flagType == undefined) {
+                return;
             }
 
             // First, check if the flag is already added or if there is
@@ -148,17 +161,34 @@
                 // much is copied from Omeka2Importer, and might need clarification
 
                 var index = elementId;
-                var name = targetLi.data('flag') + "[" + index + "]";
+                var name = flagData + "[" + index + "]";
                 // Special handling for Media source, which can add flags
                 // for different media types.
                 var value;
                 if (flagType == 'media-source') {
                     name = 'media-source[' + index + ']';
-                    value = targetLi.data('flag');
+                    value = flagData;
+                } else if (flagData == 'column-resource_identifier') {
+                    var resourceIdentifierPropertyId = $('#column-resource_identifier_property').chosen().val();
+                    var resourceIdentifierProperty = $('#column-resource_identifier_property option[value=' + resourceIdentifierPropertyId + ']');
+                    resourceIdentifierProperty = resourceIdentifierProperty.data('term') || resourceIdentifierProperty.text();
+                    var resourceIdentifierType = $('#column-resource_identifier_type').val();
+                    var resourceIdentifierName = '';
+                    if (resourceIdentifierType === 'item_sets') {
+                        resourceIdentifierName = 'Item set identifier';
+                    } else if (resourceIdentifierType === 'items') {
+                        resourceIdentifierName = 'Item identifier';
+                    } else if (resourceIdentifierType === 'media') {
+                        resourceIdentifierName = 'Media identifier';
+                    } else {
+                        resourceIdentifierName = 'Resource identifier'
+                    }
+                    flagName = Omeka.jsTranslate(resourceIdentifierName) + ' [' + resourceIdentifierProperty + ']';
+                    value = '{"property":"' + resourceIdentifierPropertyId + '","type":"' + resourceIdentifierType + '"}';
                 } else {
                     value = 1;
                 }
-                var newInput = $('<input type="hidden" name="' + name + '" value="' + value +'" ></input>');
+                var newInput = $('<input type="hidden" name="' + name +'" ></input>').val(value);
                 var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
                 newMappingLi.append(newInput);
                 // For ergonomy, group elements by type.
@@ -366,6 +396,28 @@
                 activeElement.find('span.column-language').html(lang);
                 languageInput.prop('disabled', false);
             }
+        }
+
+        function checkResourceIdentifier() {
+            var valid = true;
+            var elementResourceIdentifierProperty = document.getElementById('column-resource_identifier_property');
+            var valueResourceIdentifierProperty = $('#column-resource_identifier_property').chosen().val();
+            var elementResourceIdentifierType = document.getElementById('column-resource_identifier_type');
+            var valueResourceIdentifierType = $('#column-resource_identifier_type').val();
+            if (valueResourceIdentifierProperty === '') {
+                elementResourceIdentifierProperty.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource identifier property.'));
+                elementResourceIdentifierProperty.reportValidity();
+                valid = false;
+            }
+            if (valueResourceIdentifierType !== 'resources' && valueResourceIdentifierType !== 'item_sets' && valueResourceIdentifierType !== 'items' && valueResourceIdentifierType !== 'media') {
+                elementResourceIdentifierType.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource type for identifier.'));
+                elementResourceIdentifierType.reportValidity();
+                valid = false;
+            }
+            if (!valid) {
+                alert(Omeka.jsTranslate('Please enter a valid resource property and/or type for identifier.'));
+            }
+            return valid;
         }
 
     });

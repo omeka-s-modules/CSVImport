@@ -216,6 +216,15 @@ class IndexController extends AbstractActionController
             $args['column-multivalue'] = [];
         }
 
+        // Clean resource identifiers.
+        if (array_key_exists('column-resource_identifier', $args)) {
+            foreach ($args['column-resource_identifier'] as $column => $value) {
+                $args['column-resource_identifier'][$column] = json_decode($value, true);
+            }
+        }
+        unset($args['column-resource_identifier_property']);
+        unset($args['column-resource_identifier_type']);
+
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
         unset($args['enclosure']);

@@ -247,7 +247,9 @@ class Import extends AbstractJob
         $fileData = [];
         $options = [];
         switch ($this->resourceType) {
+            case 'item_sets':
             case 'items':
+            case 'media':
                 // TODO Manage and update file data.
                 switch ($mode) {
                     case self::ACTION_APPEND:

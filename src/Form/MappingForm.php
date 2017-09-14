@@ -89,7 +89,7 @@ class MappingForm extends Form
             ],
         ]);
 
-        if (in_array($resourceType, ['item_sets', 'items'])) {
+        if (in_array($resourceType, ['item_sets', 'items', 'media'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $this->add([
                 'name' => 'o:resource_template[o:id]',
@@ -131,6 +131,7 @@ class MappingForm extends Form
 
             if (($resourceType === 'item_sets' && $acl->userIsAllowed('Omeka\Entity\ItemSet', 'change-owner'))
                 || ($resourceType === 'items' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
+                || ($resourceType === 'media' && $acl->userIsAllowed('Omeka\Entity\Media', 'change-owner'))
             ) {
                 $this->add([
                     'name' => 'o:owner[o:id]',
@@ -200,7 +201,7 @@ class MappingForm extends Form
                         ],
                         'options' => [
                             'label' => 'Item sets', // @translate
-                            'info' => 'Select Item sets for this resource', // @translate
+                            'info' => 'Select item sets for this resource', // @translate
                             'resource_value_options' => [
                                 'resource' => 'item_sets',
                                 'query' => [],
