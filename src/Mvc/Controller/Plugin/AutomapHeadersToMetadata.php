@@ -22,6 +22,8 @@ class AutomapHeadersToMetadata extends AbstractPlugin
      * @param string $resourceType
      * @param array $options Associative array of options:
      * - check_names_alone (boolean)
+     * - automap_list (array) An associative array containing specific mappings.
+     * - normalize (boolean) The type of result: for the form or for automatic.
      * @return array Associative array of the index of the headers as key and
      * the matching metadata as value. Only mapped headers are set.
      */
@@ -35,9 +37,23 @@ class AutomapHeadersToMetadata extends AbstractPlugin
 
         // Prepare the standard lists to check against.
         $lists = [];
+        $automapLists = [];
 
         // Prepare the list of names and labels one time to speed up process.
         $propertyLists = $this->listTerms();
+
+        // Check automapping first.
+        $automapList = empty($options['automap_list']) ? [] : $options['automap_list'];
+        if ($automapList) {
+            $automapList = $this->checkAutomapList($automapList, $propertyLists['names']);
+            $automapLists['base'] = array_combine(
+                array_keys($automapList),
+                array_keys($automapList));
+            $automapLists['lower_base'] = array_map('strtolower', $automapLists['base']);
+            if ($automapLists['base'] === $automapLists['lower_base']) {
+                unset($automapLists['base']);
+            }
+        }
 
         // Because some terms and labels are not standardized (foaf:givenName is
         // not foaf:givenname), the process must be done case sensitive first.
@@ -66,6 +82,15 @@ class AutomapHeadersToMetadata extends AbstractPlugin
 
         foreach ($headers as $index => $header) {
             $lowerHeader = strtolower($header);
+            foreach ($automapLists as $listName => $list) {
+                $toSearch = strpos($listName, 'lower_') === 0 ? $lowerHeader : $header;
+                $found = array_search($toSearch, $list, true);
+                if ($found) {
+                    $automaps[$index] = $automapList[$found];
+                    continue;
+                }
+            }
+
             switch ($resourceType) {
                 case 'item_sets':
                 case 'items':
@@ -90,7 +115,44 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             }
         }
 
-        return $automaps;
+        return empty($options['normalize'])
+            ? $automaps
+            : $this->normalizeAutomaps($automaps, $resourceType);
+    }
+
+    /**
+     * Prepare automaps to be used in a form, and filter it with resource type.
+     *
+     * @param array $automaps
+     * @param $resourceType
+     * @return array
+     */
+    protected function normalizeAutomaps(array $automaps, $resourceType)
+    {
+        $result = [];
+        $controller = $this->getController();
+        $automapping = empty($this->options['automap_list'])
+            ? []
+            : $this->prepareAutomapping();
+        foreach ($automaps as $index => $automap) {
+            if (is_object($automap)) {
+                if ($automap->getJsonLdType() === 'o:Property') {
+                    $value = [];
+                    $value['name'] = 'property';
+                    $value['value'] = $automap->id();
+                    $value['label'] = $controller->translate($automap->label());
+                    $value['class'] = 'property';
+                    $value['special'] = ' data-property-id="' . $automap->id(). '"';
+                    $value['multiple'] = true;
+                    $result[$index] = $value;
+                }
+            } elseif (is_string($automap)) {
+                if (isset($automapping[$automap])) {
+                    $result[$index] = $automapping[$automap];
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -142,6 +204,129 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                         [' ', ' '], ' ', $v
                         ))));
         }, $list);
+    }
+
+    /**
+     * Clean the automap list to format to remove old properties.
+     *
+     * @param unknown $automapList
+     * @param unknown $propertyList
+     * @return array
+     */
+    protected function checkAutomapList($automapList, $propertyList)
+    {
+        $result = $automapList;
+        foreach ($automapList as $name => $value) {
+            if (empty($value)) {
+                unset($result[$name]);
+                continue;
+            }
+            $isProperty = preg_match('/^[a-z0-9_-]+:[a-z0-9_-]+$/i', $value);
+            if ($isProperty) {
+                if (empty($propertyList[$value])) {
+                    unset($result[$name]);
+                } else {
+                    $result[$name] = $propertyList[$value];
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Define the list of common automapping and prepare it.
+     *
+     * @return array
+     */
+    protected function prepareAutomapping()
+    {
+        $controller = $this->getController();
+
+        $defaultAutomapping = [
+            'name' => '',
+            'value' => 1,
+            'label' => '' ,
+            'class' => '',
+            'special' => '',
+            'multiple' => false,
+        ];
+
+        $automapping = [
+            'owner_email' => [
+                'name' => 'owneremail',
+                'label' => $controller->translate('Owner email address'),
+                'class' => 'owneremail',
+            ],
+            'resource_template' => [
+                'name' => 'resourcetemplate',
+                'label' => $controller->translate('Resource template name'),
+                'class' => 'item-data',
+            ],
+            'resource_class' => [
+                'name' => 'resourceclass',
+                'label' => $controller->translate('Resource class term'),
+                'class' => 'item-data',
+            ],
+            'item_sets' => [
+                'name' => 'itemset-id',
+                'label' => $controller->translate('Item set id'),
+                'class' => 'item-data',
+            ],
+            'media_url' => [
+                'name' => 'media',
+                'value' => 'url',
+                'label' => $controller->translate('URL'),
+                'class' => 'media',
+            ],
+            'media_html' => [
+                'name' => 'media',
+                'value' => 'html',
+                'label' => $controller->translate('HTML'),
+                'class' => 'media',
+            ],
+            'media_iiif' => [
+                'name' => 'media',
+                'value' => 'iiif',
+                'label' => $controller->translate('IIIF image'),
+                'class' => 'media',
+            ],
+            'media_oEmbed' => [
+                'name' => 'media',
+                'value' => 'oembed',
+                'label' => $controller->translate('oEmbed'),
+                'class' => 'media',
+            ],
+            'media_youtube' => [
+                'name' => 'media',
+                'value' => 'youtube',
+                'label' => $controller->translate('Youtube'),
+                'class' => 'media',
+            ],
+            'user_name' => [
+                'name' => 'user-displayname',
+                'label' => $controller->translate('Display name'),
+                'class' => 'user-displayname',
+            ],
+            'user_email' => [
+                'name' => 'user-email',
+                'label' => $controller->translate('Email'),
+                'class' => 'user-email',
+            ],
+            'user_role' => [
+                'name' => 'user-role',
+                'label' => $controller->translate('Role'),
+                'class' => 'user-role',
+            ],
+        ];
+
+        $configAutomapping = $this->configCsvImport['automapping'];
+        $automapping = array_merge_recursive($automapping, $configAutomapping);
+
+        foreach ($automapping as &$value) {
+            $value += $defaultAutomapping;
+        }
+
+        return $automapping;
     }
 
     public function setConfigCsvImport(array $configCsvImport)
