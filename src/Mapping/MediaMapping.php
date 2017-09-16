@@ -1,55 +1,76 @@
 <?php
 namespace CSVImport\Mapping;
 
-class MediaMapping extends AbstractMapping
+use CSVImport\Job\Import;
+use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
+use Zend\View\Renderer\PhpRenderer;
+
+class MediaMapping extends ResourceMapping
 {
+    /**
+     * @var FindResourcesFromIdentifiers
+     */
+    protected $findResourceFromIdentifier;
+
     public static function getLabel()
     {
-        return "Media import"; // @translate
+        return 'Media data'; // @translate
     }
 
-    public static function getName()
+    public static function getSidebar(PhpRenderer $view)
     {
-        return 'media-import';
+        return $view->resourceSidebar('media');
     }
 
-    public static function getSidebar($view)
+    protected function processGlobalArgs()
     {
-        return $view->mediaSidebar();
+        parent::processGlobalArgs();
+
+        $data = &$this->data;
+
+        $this->map['columnResourceIdentifier'] = isset($this->args['column-resource_identifier'])
+            ? $this->args['column-resource_identifier']
+            : [];
+
+        $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
+            ->get('findResourceFromIdentifier');
     }
 
-    public function processRow($row)
+    protected function processCell($index, array $values)
     {
-        $config = $this->getServiceLocator()->get('Config');
-        $mediaAdapters = $config['csv_import_media_ingester_adapter'];
-        $mediaJson = ['o:media' => []];
-        $mediaMap = isset($this->args['media']) ? $this->args['media'] : [];
-        $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
-        $multivalueSeparator = $this->args['multivalue-separator'];
-        foreach ($row as $index => $values) {
-            //split $values into an array, so people can have more than one file
-            //in the column
-            $mediaData = explode($multivalueSeparator, $values);
+        parent::processCell($index, $values);
 
-            if (array_key_exists($index, $mediaMap)) {
-                $ingester = $mediaMap[$index];
-                foreach ($mediaData as $mediaDatum) {
-                    $mediaDatum = trim($mediaDatum);
-                    if (empty($mediaDatum)) {
-                        continue;
-                    }
-                    $mediaDatumJson = [
-                        'o:ingester' => $ingester,
-                        'o:source' => $mediaDatum,
-                    ];
-                    if (isset($mediaAdapters[$ingester])) {
-                        $adapter = new $mediaAdapters[$ingester];
-                        $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
-                    }
-                    $mediaJson['o:media'][] = $mediaDatumJson;
+        $data = &$this->data;
+
+        if (isset($this->map['columnResourceIdentifier'][$index])) {
+            // Check params to avoid useless search and improve speed.
+            $action = &$this->args['action'];
+            $resourceType = $this->map['columnResourceIdentifier'][$index]['type'];
+            if ($action === Import::ACTION_CREATE) {
+                if (!in_array($resourceType, ['resources', 'items'])) {
+                    return;
+                }
+                $resourceType = 'items';
+            } else {
+                if (!in_array($resourceType, ['resources', 'media'])) {
+                    return;
+                }
+                $resourceType = 'media';
+            }
+
+            $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+            $resourceId = $findResourceFromIdentifier(
+                reset($values),
+                $this->map['columnResourceIdentifier'][$index]['property'],
+                $this->map['columnResourceIdentifier'][$index]['type']
+            );
+            if ($resourceId) {
+                if ($this->args['action'] === Import::ACTION_CREATE) {
+                    $data['o:item'] = ['o:id' => $resourceId];
+                } else {
+                    $data['o:id'] = $resourceId;
                 }
             }
         }
-        return $mediaJson;
     }
 }

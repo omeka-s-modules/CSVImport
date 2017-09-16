@@ -3,7 +3,7 @@ namespace CSVImport\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 
-class MediaSidebar extends AbstractHelper
+class MediaSourceSidebar extends AbstractHelper
 {
     protected $mediaIngester;
 
@@ -30,7 +30,7 @@ class MediaSidebar extends AbstractHelper
         }
 
         return $this->getView()->partial(
-            'common/media-sidebar',
+            'common/media-source-sidebar',
             [
                 'mediaForms' => $mediaForms,
             ]

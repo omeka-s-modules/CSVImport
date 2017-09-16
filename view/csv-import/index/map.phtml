@@ -2,11 +2,20 @@
 $form->prepare();
 $escapeHtml = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
-$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
-?>
+$this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
 
-<?php echo $this->pageTitle($this->translate('Import Settings'), 1, $this->translate('CSV Import')); ?>
+$resourceTypeLabels = [
+    'items' => $this->translate('items'),
+    'item_sets' => $this->translate('item sets'),
+    'media' => $this->translate('media'),
+    'users' => $this->translate('users'),
+];
+$pageTitle = isset($resourceTypeLabels[$resourceType])
+    ? sprintf($this->translate('Import settings for %s'), $resourceTypeLabels[$resourceType])
+    : $this->translate('Import settings');
+?>
+<?php echo $this->pageTitle($pageTitle, 1, $this->translate('CSV Import')); ?>
 
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>
@@ -19,9 +28,10 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
     </ul>
 </nav>
 
-<input type='hidden' name='csvpath' value='<?php echo $csvpath; ?>' />
-<input type='hidden' name='resource_type' value='<?php echo $resourceType; ?>' />
-<fieldset id='csv-import-basics-fieldset' class="section active">
+<input type="hidden" name="filename" value="<?php echo $filename; ?>" />
+<input type="hidden" name="filesize" value="<?php echo $filesize; ?>" />
+<input type="hidden" name="csvpath" value="<?php echo $csvpath; ?>" />
+<fieldset id="csv-import-basics-fieldset" class="section active">
     <?php echo $this->formCollection($form, false); ?>
 </fieldset>
 
@@ -42,15 +52,14 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 </td>
                 <td class="mapping element">
                     <ul class="mappings elements">
-                    <?php if(array_key_exists($index, $automaps)): ?>
-                    <?php $property = $automaps[$index]; ?>
-                        <li class="mapping" data-property-id="<?php echo $property->id(); ?>">
-                            <?php echo $this->translate($property->label()); ?>
+                    <?php if (!empty($automaps[$index])): ?>
+                        <li class="mapping <?php echo $automaps[$index]['class']; ?>"<?php echo $automaps[$index]['special']; ?>>
+                            <?php echo $this->translate($automaps[$index]['label']); ?>
                             <ul class="actions">
-                                <li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
-                                <li><a aria-label="Undo remove mapping" title="Undo remove mapping" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
+                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
+                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
-                            <input value="<?php echo $property->id(); ?>" name="column-property[<?php echo $index; ?>][]" type="hidden">
+                            <input name="<?php echo $automaps[$index]['name'] === 'media-source' ? '' : 'column-'; echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml($automaps[$index]['value']); ?>" type="hidden" />
                         </li>
                     <?php endif; ?>
                     </ul>
