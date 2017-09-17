@@ -41,8 +41,26 @@
             <?php endif; ?>
 
             <?php if (empty($resourceType) || $resourceType === 'items'): ?>
+            <li data-flag="column-item_sets_property" data-flag-type="option">
+                <?php echo $this->propertySelect([
+                    'name' => 'column-item_sets_property',
+                    'options' => [
+                        'empty_option' => $this->translate('Select below'),
+                        'term_as_value' => false,
+                        'prepend_value_options' => [
+                            'internal_id' => $this->translate('Internal id'),
+                        ],
+                    ],
+                    'attributes' => [
+                        'id' => 'column-item_sets_property',
+                        'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
+                        'class' => 'chosen-select',
+                        'data-placeholder' => $this->translate('Select below'),
+                    ],
+                ]); ?>
+            </li>
             <li data-flag="column-item_sets" data-flag-type="resource-data">
-                <a href="#" class="button"><span><?php echo $this->translate('Item set id'); ?></span></a>
+                <a href="#" class="button"><span><?php echo $this->translate('Set item set'); ?></span></a>
             </li>
             <?php endif; ?>
 

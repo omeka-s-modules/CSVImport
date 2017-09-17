@@ -1,10 +1,16 @@
 <?php
 namespace CSVImport\Mapping;
 
+use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use Zend\View\Renderer\PhpRenderer;
 
 class ResourceMapping extends AbstractMapping
 {
+    /**
+     * @var FindResourcesFromIdentifiers
+     */
+    protected $findResourceFromIdentifier;
+
     /**
      * @var array
      */
@@ -33,6 +39,9 @@ class ResourceMapping extends AbstractMapping
     public function processRow(array $row)
     {
         $this->data = [];
+
+        $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
+            ->get('findResourceFromIdentifier');
 
         // First, pull in the global settings.
         $this->processGlobalArgs();

@@ -205,8 +205,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 if ($check) {
                     if (isset($automapping[$matches[1]])) {
                         $name = $automapping[$matches[1]]['name'];
-                        $value = @json_decode($matches[2], true)
-                            ?: trim($matches[2], "\t\r\n {}");
+                        $value = @json_decode($matches[2], true) ?: trim($matches[2], "\t\r\n {}");
                     }
                 } elseif (isset($automapping[$automap])) {
                     $name = $automapping[$automap]['name'];
@@ -325,7 +324,10 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             ],
             'resource_identifier' => [
                 'name' => 'resource_identifier',
-                'value' => null,
+                'value' =>  [
+                    'property' => 'internal_id',
+                    'type' => 'resource',
+                ],
                 'label' => $controller->translate('Identifier for "%2$s" [%1$s]'),
                 'class' => 'resource-data',
             ],
@@ -355,7 +357,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     'property' => 'internal_id',
                     'type' => 'item_sets',
                 ],
-                'label' => $controller->translate('Item set id'),
+                'label' => $controller->translate('Item set (%s)'),
                 'class' => 'resource-data',
             ],
             'items' => [
@@ -364,22 +366,22 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     'property' => 'internal_id',
                     'type' => 'items',
                 ],
-                'label' => $controller->translate('Item id'),
+                'label' => $controller->translate('Item (%s)'),
                 'class' => 'resource-data',
             ],
             'media' => [
                 'name' => 'resources',
                 'value' => [
                     'property' => 'internal_id',
-                    'type' => 'items',
+                    'type' => 'media',
                 ],
-                'label' => $controller->translate('Item id'),
+                'label' => $controller->translate('Media (%s)'),
                 'class' => 'resource-data',
             ],
             'media_source' => [
                 'name' => 'media_source',
                 'value' => null,
-                'label' => $controller->translate('Media (%s)'),
+                'label' => $controller->translate('Media source (%s)'),
                 'class' => 'media-source',
             ],
             'user_name' => [

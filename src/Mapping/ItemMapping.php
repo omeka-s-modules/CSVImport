@@ -29,7 +29,7 @@ class ItemMapping extends ResourceMapping
             }
         }
         $this->map['itemSet'] = isset($this->args['column-item_sets'])
-            ? array_keys($this->args['column-item_sets'])
+            ? $this->args['column-item_sets']
             : [];
     }
 
@@ -39,25 +39,20 @@ class ItemMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        if (in_array($index, $this->map['itemSet'])) {
-            foreach ($values as $itemSetId) {
-                $itemSet = $this->findItemSet($itemSetId);
-                if ($itemSet) {
-                    $data['o:item_set'][] = ['o:id' => $itemSetId];
+        if (isset($this->map['itemSet'][$index])) {
+            $identifierProperty = $this->map['itemSet'][$index];
+            $resourceType = 'item_sets';
+            $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+            foreach ($values as $identifier) {
+                $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
+                if ($resourceId) {
+                    $data['o:item_set'][] = ['o:id' => $resourceId];
+                } else {
+                    $this->logger->err(sprintf('"%s" (%s) is not a valid item set.', // @translate
+                        $identifier, $identifierProperty));
+                    $this->setHasErr(true);
                 }
             }
         }
-    }
-
-    protected function findItemSet($itemSetId)
-    {
-        $response = $this->api->search('item_sets', ['id' => $itemSetId]);
-        $content = $response->getContent();
-        if (empty($content)) {
-            $this->logger->err(sprintf('"%s" is not a valid item set.', $itemSetId));
-            $this->setHasErr(true);
-            return false;
-        }
-        return $content[0];
     }
 }

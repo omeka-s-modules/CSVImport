@@ -111,7 +111,10 @@
             }
             // Hijack the resource identifier options, handled separately.
             var flagData = targetLi.data('flag');
-            if (flagData === 'column-resource_identifier_property' || flagData === 'column-resource_identifier_type' ) {
+            if (flagData === 'column-resource_identifier_property'
+                || flagData === 'column-resource_identifier_type'
+                || flagData === 'column-item_sets_property'
+            ) {
                 return;
             }
             // Check the resource identifier.
@@ -424,19 +427,22 @@
 
         function checkIdentifier(elementProperty, elementType) {
             var valid = true;
-            var elementResourceIdentifierProperty = document.getElementById('column-resource_identifier_property');
-            var valueResourceIdentifierProperty = $('#column-resource_identifier_property').chosen().val();
-            var elementResourceIdentifierType = document.getElementById('column-resource_identifier_type');
-            var valueResourceIdentifierType = $('#column-resource_identifier_type').val();
+            var elementResourceIdentifierProperty = document.getElementById(elementProperty);
+            var valueResourceIdentifierProperty = $('#' + elementProperty).chosen().val();
             if (valueResourceIdentifierProperty === '') {
                 elementResourceIdentifierProperty.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource identifier property.'));
                 elementResourceIdentifierProperty.reportValidity();
                 valid = false;
             }
-            if (valueResourceIdentifierType !== 'resources' && valueResourceIdentifierType !== 'item_sets' && valueResourceIdentifierType !== 'items' && valueResourceIdentifierType !== 'media') {
-                elementResourceIdentifierType.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource type for identifier.'));
-                elementResourceIdentifierType.reportValidity();
-                valid = false;
+            if (typeof elementType !== undefined) {
+                var elementResourceIdentifierType = document.getElementById(elementType);
+                var valueResourceIdentifierType = $('#' + elementType).val();
+                var resourceTypes = ['resources', 'item_sets', 'items', 'media'];
+                if (resourceTypes.indexOf(valueResourceIdentifierType) >= 0) {
+                    elementResourceIdentifierType.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource type for identifier.'));
+                    elementResourceIdentifierType.reportValidity();
+                    valid = false;
+                }
             }
             if (!valid) {
                 alert(Omeka.jsTranslate('Please enter a valid resource property and/or type for identifier.'));
