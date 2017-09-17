@@ -45,16 +45,6 @@ class ImportForm extends Form
      */
     protected $userSettings;
 
-    /**
-     * @var array
-     */
-    protected $mappingClasses;
-
-    /**
-     * @var array
-     */
-    protected $defaultSettings;
-
     public function init()
     {
         $this->setAttribute('action', 'csvimport/map');
@@ -75,7 +65,7 @@ class ImportForm extends Form
         ]);
 
         $valueOptions = $this->getDelimiterList();
-        $value = $this->userSettings->get('csv_import_delimiter', $this->defaultSettings['csv_import_delimiter']);
+        $value = $this->userSettings->get('csv_import_delimiter', $defaults['csv_import_delimiter']);
         $this->add([
             'name' => 'delimiter',
             'type' => 'select',
@@ -90,7 +80,7 @@ class ImportForm extends Form
         ]);
 
         $valueOptions = $this->getEnclosureList();
-        $value = $this->userSettings->get('csv_import_enclosure', $this->defaultSettings['csv_import_enclosure']);
+        $value = $this->userSettings->get('csv_import_enclosure', $defaults['csv_import_enclosure']);
         $this->add([
             'name' => 'enclosure',
             'type' => 'select',
@@ -105,7 +95,7 @@ class ImportForm extends Form
             ],
         ]);
 
-        $resourceTypes = array_keys($this->mappingClasses);
+        $resourceTypes = array_keys($this->configCsvImport['mappings']);
         $valueOptions = [];
         foreach ($resourceTypes as $resourceType) {
             // Currently, there is no resource label. It should be in the Omeka
@@ -155,9 +145,7 @@ class ImportForm extends Form
             ],
         ]);
 
-        $list = $this->userSettings->get(
-            'csv_import_automap_user_list',
-            $defaults['csv_import_automap_user_list']);
+        $list = $this->userSettings->get('csv_import_automap_user_list', $defaults['csv_import_automap_user_list']);
         $value = $this->convertUserListArrayToText($list);
         $this->add([
             'name' => 'automap_user_list',
@@ -269,22 +257,6 @@ class ImportForm extends Form
     public function setUserSettings(UserSettings $userSettings)
     {
         $this->userSettings = $userSettings;
-    }
-
-    /**
-     * @param array $mappingClasses
-     */
-    public function setMappingClasses(array $mappingClasses)
-    {
-        $this->mappingClasses = $mappingClasses;
-    }
-
-    /**
-     * @param array $defaultSettings
-     */
-    public function setDefaultSettings(array $defaultSettings)
-    {
-        $this->defaultSettings = $defaultSettings;
     }
 
     /**
