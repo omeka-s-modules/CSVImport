@@ -1,8 +1,6 @@
 <?php
 namespace CSVImport\Mapping;
 
-
-
 class MediaSourceMapping extends AbstractMapping
 {
     public static function getLabel()
