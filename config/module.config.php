@@ -88,6 +88,11 @@ return [
             'csv_import_automap_user_list' => [
                 'owner' => 'owner_email',
                 'owner email' => 'owner_email',
+                'id' => 'resources',
+                'internal id' => 'resources',
+                'resource' => 'resources',
+                'resources' => 'resources',
+                'resource identifier' => 'resources {"property":"dcterms:identifier","type":"resources"}',
                 'resource template' => 'resource_template',
                 'item type' => 'resource_class',
                 'resource class' => 'resource_class',
@@ -233,5 +238,6 @@ return [
         'Set multivalue separator for all columns', // @translate
         'Unset multivalue separator for all columns', // @translate
         'Advanced settings', // @translate
+        'Identifier for', // @translate
     ],
 ];

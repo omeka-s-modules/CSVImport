@@ -30,6 +30,7 @@
 namespace CSVImport\Mvc\Controller\Plugin;
 
 use Doctrine\DBAL\Connection;
+use Omeka\Api\Manager as ApiManager;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class FindResourcesFromIdentifiers extends AbstractPlugin
@@ -40,11 +41,17 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     protected $connexion;
 
     /**
+     * @var ApiManager
+     */
+    protected $api;
+
+    /**
      * @param Connection $connexion
      */
-    public function __construct(Connection $connexion)
+    public function __construct(Connection $connexion, ApiManager $apiManager)
     {
         $this->connexion = $connexion;
+        $this->api = $apiManager;
     }
 
     /**
@@ -69,9 +76,15 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             return $isSingle ? null : [];
         }
 
-        $identifierProperty = $identifierProperty === 'internal_id'
-            ? 'internal_id'
-            : (int) $identifierProperty;
+        if ($identifierProperty === 'internal_id') {
+            // Nothing to do.
+        } elseif (is_numeric($identifierProperty)) {
+            $identifierProperty = (int) $identifierProperty;
+        } else {
+            $result = $this->api
+                ->search('properties', ['term' => $identifierProperty])->getContent();
+            $identifierProperty = $result ? $result[0]->id() : null;
+        }
         if (empty($identifierProperty)) {
             return $isSingle ? null : [];
         }

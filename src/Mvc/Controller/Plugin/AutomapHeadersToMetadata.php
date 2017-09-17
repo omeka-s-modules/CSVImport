@@ -323,6 +323,12 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'label' => $controller->translate('Owner email address'),
                 'class' => 'owner-email',
             ],
+            'resource_identifier' => [
+                'name' => 'resource_identifier',
+                'value' => null,
+                'label' => $controller->translate('Identifier for "%2$s" [%1$s]'),
+                'class' => 'resource-data',
+            ],
             'resource_template' => [
                 'name' => 'resource_template',
                 'label' => $controller->translate('Resource template name'),
@@ -350,6 +356,24 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     'type' => 'item_sets',
                 ],
                 'label' => $controller->translate('Item set id'),
+                'class' => 'resource-data',
+            ],
+            'items' => [
+                'name' => 'resources',
+                'value' => [
+                    'property' => 'internal_id',
+                    'type' => 'items',
+                ],
+                'label' => $controller->translate('Item id'),
+                'class' => 'resource-data',
+            ],
+            'media' => [
+                'name' => 'media',
+                'value' => [
+                    'property' => 'internal_id',
+                    'type' => 'items',
+                ],
+                'label' => $controller->translate('Item id'),
                 'class' => 'resource-data',
             ],
             'media_source' => [

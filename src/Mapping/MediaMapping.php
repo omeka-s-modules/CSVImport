@@ -28,8 +28,8 @@ class MediaMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        $this->map['columnResourceIdentifier'] = isset($this->args['column-resource_identifier'])
-            ? $this->args['column-resource_identifier']
+        $this->map['item'] = isset($this->args['column-items'])
+            ? $this->args['column-items']
             : [];
 
         $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
@@ -45,7 +45,9 @@ class MediaMapping extends ResourceMapping
         if (isset($this->map['columnResourceIdentifier'][$index])) {
             // Check params to avoid useless search and improve speed.
             $action = &$this->args['action'];
-            $resourceType = $this->map['columnResourceIdentifier'][$index]['type'];
+            $resourceType = empty($this->map['columnResourceIdentifier'][$index]['type'])
+                ? 'resources'
+                : $this->map['columnResourceIdentifier'][$index]['type'];
             if ($action === Import::ACTION_CREATE) {
                 if (!in_array($resourceType, ['resources', 'items'])) {
                     return;

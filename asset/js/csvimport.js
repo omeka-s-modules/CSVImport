@@ -118,6 +118,14 @@
             if (flagData === 'column-resource_identifier' && !checkResourceIdentifier()) {
                 return;
             }
+            // Check the item set identifier.
+            if (flagData === 'column-item_sets' && !checkItemSetIdentifier()) {
+                return;
+            }
+            // Check the item identifier.
+            if (flagData === 'column-items' && !checkItemIdentifier()) {
+                return;
+            }
 
             e.stopPropagation();
             e.preventDefault();
@@ -172,18 +180,22 @@
                     var resourceIdentifierProperty = $('#column-resource_identifier_property option[value=' + resourceIdentifierPropertyId + ']');
                     resourceIdentifierProperty = resourceIdentifierProperty.data('term') || resourceIdentifierProperty.text();
                     var resourceIdentifierType = $('#column-resource_identifier_type').val();
-                    var resourceIdentifierName = '';
-                    if (resourceIdentifierType === 'item_sets') {
-                        resourceIdentifierName = 'Item set identifier';
-                    } else if (resourceIdentifierType === 'items') {
-                        resourceIdentifierName = 'Item identifier';
-                    } else if (resourceIdentifierType === 'media') {
-                        resourceIdentifierName = 'Media identifier';
-                    } else {
-                        resourceIdentifierName = 'Resource identifier'
-                    }
-                    flagName = Omeka.jsTranslate(resourceIdentifierName) + ' [' + resourceIdentifierProperty + ']';
-                    value = '{"property":"' + resourceIdentifierPropertyId + '","type":"' + resourceIdentifierType + '"}';
+                    flagName = Omeka.jsTranslate('Identifier for') + '"' + resourceIdentifierType + '" [' + resourceIdentifierProperty + ']';
+                    value = '{"property":"' + resourceIdentifierProperty + '","type":"' + resourceIdentifierType + '"}';
+                } else if (flagData == 'column-item_sets') {
+                    var resourceIdentifierPropertyId = $('#column-item_sets_property').chosen().val();
+                    var resourceIdentifierProperty = $('#column-item_sets_property option[value=' + resourceIdentifierPropertyId + ']');
+                    resourceIdentifierProperty = resourceIdentifierProperty.data('term') || resourceIdentifierProperty.text();
+                    var resourceIdentifierType = 'item_sets';
+                    flagName = Omeka.jsTranslate('Item set') + ' [' + resourceIdentifierProperty + ']';
+                    value = resourceIdentifierProperty;
+                } else if (flagData == 'column-items') {
+                    var resourceIdentifierPropertyId = $('#column-items_property').chosen().val();
+                    var resourceIdentifierProperty = $('#column-items_property option[value=' + resourceIdentifierPropertyId + ']');
+                    resourceIdentifierProperty = resourceIdentifierProperty.data('term') || resourceIdentifierProperty.text();
+                    var resourceIdentifierType = 'items';
+                    flagName = Omeka.jsTranslate('Item') + ' [' + resourceIdentifierProperty + ']';
+                    value = resourceIdentifierProperty;
                 } else {
                     value = 1;
                 }
@@ -398,6 +410,18 @@
         }
 
         function checkResourceIdentifier() {
+            return checkIdentifier('column-resource_identifier_property', 'column-resource_identifier_type');
+        }
+
+        function checkItemSetIdentifier() {
+            return checkIdentifier('column-item_sets_property');
+        }
+
+        function checkItemIdentifier() {
+            return checkIdentifier('column-items_property');
+        }
+
+        function checkIdentifier(elementProperty, elementType) {
             var valid = true;
             var elementResourceIdentifierProperty = document.getElementById('column-resource_identifier_property');
             var valueResourceIdentifierProperty = $('#column-resource_identifier_property').chosen().val();
