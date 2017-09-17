@@ -155,7 +155,7 @@
             if (hasFlag.length) {
                 var flagUnique = targetLi.data('flag-unique')
                     || flagType === 'resource-data'
-                    || flagType === 'media_source'
+                    || flagType === 'media-source'
                     || flagType === 'user-data';
                 if (flagUnique){
                     activeElement.find('ul.mappings .' + flagType).remove();
@@ -173,8 +173,9 @@
                 // Special handling for Media source, which can add flags
                 // for different media types.
                 var value;
-                if (flagType == 'media_source') {
-                    value = flagData;
+                if (flagType == 'media-source') {
+                    flagName = Omeka.jsTranslate('Media source') + ' (' + flagName + ')';
+                    value = targetLi.data('value');
                 } else if (flagData == 'column-resource_identifier') {
                     var resourceIdentifierPropertyId = $('#column-resource_identifier_property').chosen().val();
                     var resourceIdentifierProperty = $('#column-resource_identifier_property option[value=' + resourceIdentifierPropertyId + ']');

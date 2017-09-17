@@ -368,7 +368,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'class' => 'resource-data',
             ],
             'media' => [
-                'name' => 'media',
+                'name' => 'resources',
                 'value' => [
                     'property' => 'internal_id',
                     'type' => 'items',
