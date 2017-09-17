@@ -73,7 +73,6 @@ class Import extends AbstractJob
     protected $identifiers;
 
     /**
-     *
      * @var string|int
      */
     protected $identifierProperty;
@@ -391,7 +390,9 @@ class Import extends AbstractJob
      */
     protected function filterDataWithIdentifier(array $data, array $identifiers)
     {
-        $identifiers = array_filter($identifiers, function ($v) { return !empty($v); });
+        $identifiers = array_filter($identifiers, function ($v) {
+            return !empty($v);
+        });
         return array_intersect_key($data, $identifiers);
     }
 
@@ -421,7 +422,9 @@ class Import extends AbstractJob
                 // Nothing to do.
                 break;
             default:
-                array_walk($ids, function(&$v, $k) { $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); }); // @ translate
+                array_walk($ids, function (&$v, $k) {
+                    $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
+                });
                 break;
         }
         return implode(', ', $ids);
@@ -492,7 +495,7 @@ class Import extends AbstractJob
         $data = $representation->jsonSerialize();
         $values = $representation->values();
         foreach ($values as $term => $propertyData) {
-            $data[$term] = array_values(array_map('unserialize', array_unique( array_map(function ($v) {
+            $data[$term] = array_values(array_map('unserialize', array_unique(array_map(function ($v) {
                 return serialize($v->jsonSerialize());
             }, $propertyData['values']))));
         }

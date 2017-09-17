@@ -81,7 +81,7 @@ class ImportForm extends Form
             'type' => 'select',
             'options' => [
                 'label' => 'Column delimiter', // @translate
-                'info'=> 'A single character that will be used to separate columns in the csv file.', // @translate
+                'info' => 'A single character that will be used to separate columns in the csv file.', // @translate
                 'value_options' => $valueOptions,
             ],
             'attributes' => [
@@ -111,7 +111,7 @@ class ImportForm extends Form
             // Currently, there is no resource label. It should be in the Omeka
             // vocabulary, for example "item_sets" => "o:ItemSet" => "Item set".
             // So there is no translation too.
-            $valueOptions[$resourceType] = str_replace('_', ' ',ucfirst($resourceType));
+            $valueOptions[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
         }
         $this->add([
                 'name' => 'resource_type',
@@ -165,7 +165,7 @@ class ImportForm extends Form
             'options' => [
                 'label' => 'Automap user list', // @translate
                 'info' => 'List of user headers used to map the file automagically.' // @translate
-                    . ' ' . 'Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).' // @translate
+                    . ' ' . 'Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).', // @translate
             ],
             'attributes' => [
                 'id' => 'automap_user_list',
@@ -284,7 +284,7 @@ class ImportForm extends Form
      */
     public function setDefaultSettings(array $defaultSettings)
     {
-        $this->defaultSettings= $defaultSettings;
+        $this->defaultSettings = $defaultSettings;
     }
 
     /**
