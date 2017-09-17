@@ -326,12 +326,22 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             'resource_template' => [
                 'name' => 'resource_template',
                 'label' => $controller->translate('Resource template name'),
-                'class' => 'item-data',
+                'class' => 'resource-data',
             ],
             'resource_class' => [
                 'name' => 'resource_class',
                 'label' => $controller->translate('Resource class term'),
-                'class' => 'item-data',
+                'class' => 'resource-data',
+            ],
+            'is_public' => [
+                'name' => 'is_public',
+                'label' => $controller->translate('Visibility public/private'),
+                'class' => 'resource-data',
+            ],
+            'is_open' => [
+                'name' => 'is_open',
+                'label' => $controller->translate('Additions open/closed'),
+                'class' => 'resource-data',
             ],
             'item_sets' => [
                 'name' => 'resources',
@@ -340,7 +350,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     'type' => 'item_sets',
                 ],
                 'label' => $controller->translate('Item set id'),
-                'class' => 'item-data',
+                'class' => 'resource-data',
             ],
             'media_source' => [
                 'name' => 'media_source',
@@ -362,6 +372,11 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'name' => 'user_role',
                 'label' => $controller->translate('Role'),
                 'class' => 'user-role',
+            ],
+            'user_is_active' => [
+                'name' => 'user-is-active',
+                'label' => $controller->translate('User is active'),
+                'class' => 'user-is-active',
             ],
         ];
 
