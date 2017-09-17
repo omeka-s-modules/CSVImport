@@ -6,7 +6,7 @@ $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'))
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 ?>
 
-<?php echo $this->pageTitle($this->translate("Map Elements"), 1, "CSV Import" ); ?>
+<?php echo $this->pageTitle($this->translate('Import Settings'), 1, $this->translate('CSV Import')); ?>
 
 <?php echo $this->form()->openTag($form); ?>
 <fieldset id='page-actions'>
