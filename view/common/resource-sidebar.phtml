@@ -53,12 +53,13 @@
                         'prepend_value_options' => [
                             'internal_id' => $this->translate('Internal id'),
                         ],
+                        'term_as_value' => true,
                     ],
                     'attributes' => [
                         'id' => 'column-item_set_property',
                         'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
                         'class' => 'chosen-select',
-                        'data-placeholder' => $this->translate('Select below'),
+                        'data-placeholder' => $this->translate('Select the identifier below'),
                     ],
                 ]); ?>
             </li>
@@ -81,12 +82,13 @@
                         'prepend_value_options' => [
                             'internal_id' => $this->translate('Internal id'),
                         ],
+                        'term_as_value' => true,
                     ],
                     'attributes' => [
                         'id' => 'column-item_property',
                         'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
                         'class' => 'chosen-select',
-                        'data-placeholder' => $this->translate('Select below'),
+                        'data-placeholder' => $this->translate('Select the identifier below'),
                     ],
                 ]); ?>
             </li>
