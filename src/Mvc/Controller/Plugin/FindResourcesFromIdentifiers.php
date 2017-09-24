@@ -57,6 +57,9 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     /**
      * Find a list of resource ids from a list of identifiers.
      *
+     * When there are true duplicates and case insensitive duplicates, the first
+     * case sensitive is returned, else the first case insensitive resource.
+     *
      * @param array|string $identifiers Identifiers should be unique. If a
      * string is sent, the result will be the resource.
      * @param string|int $identifierProperty
@@ -144,11 +147,37 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 ->setParameter(':resource_type', $resourceType);
         }
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
-        $result = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
+        // replaces the first id by later ids in case of true duplicates.
+        $result = $stmt->fetchAll();
 
         // Reorder the result according to the input (simpler in php and there
-        // is no duplicated identifiers).
-        return array_replace(array_fill_keys($identifiers, null), $result);
+        // is no duplicated identifiers). When there are true duplicates, it
+        // returns the first. When there are case insensitive duplicates, it
+        // returns the first too.
+        $cleanedResult = array_fill_keys($identifiers, null);
+        // Prepare the lowercase result one time only.
+        $lowerResult = array_map(function ($v) {
+            return ['value' => strtolower($v['value']), 'resource_id' => $v['resource_id']];
+        }, $result);
+        foreach ($cleanedResult as $key => $value) {
+            // Look for the first case sensitive result.
+            foreach ($result as $resultValue) {
+                if ($resultValue['value'] == $key) {
+                    $cleanedResult[$key] = $resultValue['resource_id'];
+                    continue 2;
+                }
+            }
+            // Look for the first case insensitive result.
+            $lowerKey = strtolower($key);
+            foreach ($lowerResult as $resultValue) {
+                if ($resultValue['value'] == $lowerKey) {
+                    $cleanedResult[$key] = $resultValue['resource_id'];
+                    continue 2;
+                }
+            }
+        }
+        return $cleanedResult;
     }
 
     protected function findResourcesFromInternalIds($identifiers, $identifierProperty, $resourceType)
