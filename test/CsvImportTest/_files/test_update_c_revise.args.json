@@ -1,6 +1,6 @@
 {
-    "filename": "test_update_update_a.csv",
-    "filesize": "400",
+    "filename": "test_update_c_revise.csv",
+    "filesize": "209",
     "csvpath": "/tmp/omekaVC7i6I",
     "csrf": "f52591fce61290ca7e37476b6016d391-fae7ff339cb9c2377aa89c39cbaf683f",
     "resource_type": "items",
@@ -17,7 +17,7 @@
         "o:id": ""
     },
     "global_language": "",
-    "action": "update",
+    "action": "revise",
     "identifier_property": "dcterms:title",
     "action_unidentified": "skip",
     "column-property": [
@@ -31,10 +31,7 @@
             "dcterms:identifier": 10
         },
         {
-            "dcterms:publisher": 5
-        },
-        {
-            "dcterms:rights": 15
+            "dcterms:date": 7
         }
     ],
     "column-multivalue": [
@@ -43,11 +40,10 @@
         "1",
         "1",
         "1",
-        "1",
         "1"
     ],
     "column-media_source": {
-        "6": "url"
+        "5": "url"
     },
     "delimiter": ",",
     "enclosure": "\"",
