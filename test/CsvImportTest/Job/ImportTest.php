@@ -95,6 +95,45 @@ class ImportTest extends OmekaControllerTestCase
         return $resources;
     }
 
+    public function csvFileUpdateProvider()
+    {
+        return [
+            ['test_skip.csv', ['items', 1]],
+        ];
+    }
+
+    /**
+     * @dataProvider csvFileUpdateProvider
+     * @depends testPerformCreateOne
+     */
+    public function testPerformUpdate($filepath, $options, $resources)
+    {
+        $filepath = $this->basepath . $filepath;
+        $filebase = substr($filepath, 0, -4);
+        list($resourceType, $index) = $options;
+
+        $resource = $resources[$resourceType][$index];
+        $resourceId = $resource->id();
+        $resource = $this->api->read($resourceType, $resourceId)->getContent();
+        $this->assertNotEmpty($resource);
+
+        $this->performProcessForFile($filepath);
+
+        $resource = $this->api->search($resourceType, ['id' => $resourceId])->getContent();
+        $this->assertNotEmpty($resource);
+
+        $resource = reset($resource);
+        $expectedFile = $filebase . '.' . $resourceType . '-' . ($index) . '.' . 'api.json';
+        if (!file_exists($expectedFile)) {
+            return;
+        }
+        $expected = file_get_contents($expectedFile);
+        $expected = $this->cleanApiResult(json_decode($expected, true));
+        $resource = $this->cleanApiResult($resource->getJsonLd());
+        $this->assertNotEmpty($resource);
+        $this->assertEquals($expected, $resource);
+    }
+
     public function csvFileDeleteProvider()
     {
         return [
@@ -104,8 +143,11 @@ class ImportTest extends OmekaControllerTestCase
     }
 
     /**
+     * This test depends on other ones only to avoid check on removed resources.
+     *
      * @dataProvider csvFileDeleteProvider
      * @depends testPerformCreateOne
+     * @depends testPerformUpdate
      */
     public function testPerformDelete($filepath, $options, $resources)
     {
