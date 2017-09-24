@@ -203,6 +203,6 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
 
         // Reorder the result according to the input (simpler in php and there
         // is no duplicated identifiers).
-        return array_replace(array_fill_keys($identifiers, null), $result);
+        return array_replace(array_fill_keys($identifiers, null), array_combine($result, $result));
     }
 }
