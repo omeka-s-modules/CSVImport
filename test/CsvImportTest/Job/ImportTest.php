@@ -79,10 +79,13 @@ class ImportTest extends OmekaControllerTestCase
     public function testPerformCreateOne()
     {
         $filepath = 'test.csv';
-        $totals = ['items' => 3, 'media' => 4];
         $filepath = $this->basepath . $filepath;
-
         $this->performProcessForFile($filepath);
+        $filepath = 'test_update_g_replace.csv';
+        $filepath = $this->basepath . $filepath;
+        $this->performProcessForFile($filepath);
+        $totals = ['item_sets' => 3, 'items' => 3, 'media' => 4];
+
         $this->assertTrue(true);
 
         $resources = [];
@@ -109,8 +112,9 @@ class ImportTest extends OmekaControllerTestCase
             ['test_update_h_replace.csv', ['items', 1]],
             ['test_update_i_append.csv', ['items', 1]],
             ['test_update_j_revise.csv', ['items', 1]],
-            ['test_update_k_update.csv', ['items', 1]],
-            ['test_update_l_replace.csv', ['items', 1]],
+            ['test_update_k_revise.csv', ['items', 1]],
+            ['test_update_l_update.csv', ['items', 1]],
+            ['test_update_m_update.csv', ['items', 1]],
         ];
     }
 
@@ -183,6 +187,10 @@ class ImportTest extends OmekaControllerTestCase
         copy($filepath, $this->tempfile);
 
         $filebase = substr($filepath, 0, -4);
+        $argspath = $filebase . '.args.json';
+        if (!file_exists($argspath)) {
+            $this->markTestSkipped(sprintf('No argument files (%s).', basename($argspath)));
+        }
         $args = json_decode(file_get_contents($filebase . '.args.json'), true);
         $args['csvpath'] = $this->tempfile;
 
@@ -210,6 +218,14 @@ class ImportTest extends OmekaControllerTestCase
         unset($resource['o:created']);
         unset($resource['o:modified']);
         unset($resource['o:owner']['@id']);
+        unset($resource['o:resource_template']['@id']);
+        unset($resource['o:resource_class']['@id']);
+        unset($resource['o:items']['@id']);
+        if (isset($resource['o:item_set'])) {
+            foreach ($resource['o:item_set'] as &$itemSet) {
+                unset($itemSet['@id']);
+            }
+        }
         if (isset($resource['o:media'])) {
             foreach ($resource['o:media'] as &$media) {
                 unset($media['@id']);
@@ -221,6 +237,7 @@ class ImportTest extends OmekaControllerTestCase
             unset($resource['o:original_url']);
             unset($resource['o:thumbnail_urls']);
         }
+
         return $resource;
     }
 }
