@@ -362,7 +362,9 @@ class Import extends AbstractJob
 
                 default:
                     switch ($this->resourceType) {
+                        case 'item_sets':
                         case 'items':
+                        case 'media':
                             foreach ($entityJson as $index => $value) {
                                 if (is_array($value) && !empty($value)) {
                                     $value = reset($value);
