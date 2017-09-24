@@ -587,15 +587,31 @@ class Import extends AbstractJob
      * @param array $newData
      * @return array Merged values extracted from the current and new data.
      */
-    protected function mergePropertyValues(array $currentData, array $newData)
+    protected function mergeMetadata(array $currentData, array $newData)
     {
         // Current values are cleaned too, because they have the property label.
         // So they are deduplicated too.
         $currentValues = $this->extractPropertyValuesFromResource($currentData);
         $newValues = $this->extractPropertyValuesFromResource($newData);
         $mergedValues = array_merge_recursive($currentValues, $newValues);
-        $mergedValues = $this->deduplicatePropertyValues($mergedValues);
-        return $mergedValues;
+        $merged = $this->deduplicatePropertyValues($mergedValues);
+
+        // Merge lists of ids too.
+        foreach (['o:item_set', 'o:item', 'o:media'] as $metadataId) {
+            if (isset($currentData[$metadataId])) {
+                if (isset($newData[$metadataId])) {
+                    $mergedValues = array_merge_recursive($currentData[$metadataId], $newData[$metadataId]);
+                    $merged[$metadataId] = $this->deduplicateIds($mergedValues);
+                } else {
+                    $merged[$metadataId] = $currentData[$metadataId];
+                }
+            } elseif (isset($newData[$metadataId])) {
+                $merged[$metadataId] = $newData[$metadataId];
+            }
+        }
+        // TODO Merge third parties data.
+
+        return $merged;
     }
 
     /**
@@ -633,26 +649,49 @@ class Import extends AbstractJob
     }
 
     /**
-     * Deduplicate values.
+     * Deduplicate data ids for collections of items set, items, media....
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function deduplicateIds($data)
+    {
+        $dataBase = $data;
+        // Base to normalize data in order to deduplicate them in one pass.
+        $base = [];
+        $base['id'] = ['o:id' => 0];
+        // Deduplicate data.
+        $data = array_map('unserialize', array_unique(array_map('serialize',
+            // Normalize data.
+            array_map(function ($v) use ($base) {
+                return isset($v['o:id']) ? ['o:id' => $v['o:id']] : $v;
+        }, $data))));
+        // Keep first original data.
+        $data = array_intersect_key($dataBase, $data);
+        return $data;
+    }
+
+    /**
+     * Deduplicate property values.
      *
      * @param array $values
      * @return array
      */
     protected function deduplicatePropertyValues($values)
     {
-        // Base to normalize values in order to deduplicate them in one pass.
+        // Base to normalize data in order to deduplicate them in one pass.
         $base = [];
         $base['literal'] = ['property_id' => 0, 'type' => 'literal', '@language' => '', '@value' => ''];
         $base['resource'] = ['property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
         $base['url'] = ['property_id' => 0, 'type' => 'url', '@id' => 0, 'o:label' => ''];
-        foreach ($values as $term => $propertyData) {
-            $values[$term] = array_values(
+        foreach ($values as $key => $value) {
+            $values[$key] = array_values(
                 // Deduplicate values.
                 array_map('unserialize', array_unique(array_map('serialize',
                     // Normalize values.
                     array_map(function ($v) use ($base) {
                         return array_replace($base[$v['type']], array_intersect_key($v, $base[$v['type']]));
-            }, $propertyData)))));
+            }, $value)))));
         }
         return $values;
     }
