@@ -484,7 +484,7 @@ class Import extends AbstractJob
 
         // Use arrays to simplify process.
         $currentData = json_decode(json_encode($resource), true);
-        $merged = $this->mergeMetadata($currentData, $data);
+        $merged = $this->mergeMetadata($currentData, $data, true);
         $data = array_replace($data, $merged);
         $newData = array_replace($currentData, $data);
 
@@ -585,10 +585,12 @@ class Import extends AbstractJob
      *
      * @param array $currentData
      * @param array $newData
+     * @param bool $keepIfNull Specify what to do when a value is null.
      * @return array Merged values extracted from the current and new data.
      */
-    protected function mergeMetadata(array $currentData, array $newData)
+    protected function mergeMetadata(array $currentData, array $newData, $keepIfNull = false)
     {
+        // Merge properties.
         // Current values are cleaned too, because they have the property label.
         // So they are deduplicated too.
         $currentValues = $this->extractPropertyValuesFromResource($currentData);
@@ -596,19 +598,53 @@ class Import extends AbstractJob
         $mergedValues = array_merge_recursive($currentValues, $newValues);
         $merged = $this->deduplicatePropertyValues($mergedValues);
 
-        // Merge lists of ids too.
-        foreach (['o:item_set', 'o:item', 'o:media'] as $metadataId) {
-            if (isset($currentData[$metadataId])) {
-                if (isset($newData[$metadataId])) {
-                    $mergedValues = array_merge_recursive($currentData[$metadataId], $newData[$metadataId]);
-                    $merged[$metadataId] = $this->deduplicateIds($mergedValues);
+        // Merge lists of ids.
+        $names = ['o:item_set', 'o:item', 'o:media'];
+        foreach ($names as $name) {
+            if (isset($currentData[$name])) {
+                if (isset($newData[$name])) {
+                    $mergedValues = array_merge_recursive($currentData[$name], $newData[$name]);
+                    $merged[$name] = $this->deduplicateIds($mergedValues);
                 } else {
-                    $merged[$metadataId] = $currentData[$metadataId];
+                    $merged[$name] = $currentData[$name];
                 }
-            } elseif (isset($newData[$metadataId])) {
-                $merged[$metadataId] = $newData[$metadataId];
+            } elseif (isset($newData[$name])) {
+                $merged[$name] = $newData[$name];
             }
         }
+
+        // Merge unique and boolean values (manage "null" too).
+        $names = [
+            'unique' => [
+                'o:resource_template',
+                'o:resource_class',
+            ],
+            'boolean' => [
+                'o:is_public',
+                'o:is_open',
+                'o:is_active',
+            ],
+        ];
+        foreach ($names as $type => $typeNames) {
+            foreach ($typeNames as $name) {
+                if (array_key_exists($name, $currentData)) {
+                    if (array_key_exists($name, $newData)) {
+                        if (is_null($newData[$name])) {
+                            $merged[$name] = $keepIfNull
+                                ? $currentData[$name]
+                                : ($type == 'boolean' ? false : null);
+                        } else {
+                            $merged[$name] = $newData[$name];
+                        }
+                    } else {
+                        $merged[$name] = $currentData[$name];
+                    }
+                } elseif (array_key_exists($name, $newData)) {
+                    $merged[$name] = $newData[$name];
+                }
+            }
+        }
+
         // TODO Merge third parties data.
 
         return $merged;

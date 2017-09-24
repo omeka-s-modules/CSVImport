@@ -101,7 +101,7 @@ class ResourceMapping extends AbstractMapping
             $data['o:owner'] = ['o:id' => (int) $this->args['o:owner']['o:id']];
         }
         if (isset($this->args['o:is_public']) && strlen($this->args['o:is_public'])) {
-            $data['o:is_public'] = (int) (bool) $this->args['o:is_public'];
+            $data['o:is_public'] = (bool) $this->args['o:is_public'];
         }
     }
 
@@ -150,8 +150,8 @@ class ResourceMapping extends AbstractMapping
             $value = reset($values);
             if (strlen($value)) {
                 $data['o:is_public'] = in_array(strtolower($value), ['false', 'off', 'private'])
-                    ? 0
-                    : (int) (bool) $value;
+                    ? false
+                    : (bool) $value;
             }
         }
     }

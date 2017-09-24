@@ -29,7 +29,7 @@ class ItemSetMapping extends ResourceMapping
 
         // Set default values.
         if (isset($this->args['o:is_open']) && strlen($this->args['o:is_open'])) {
-            $data['o:is_open'] = (int) (bool) $this->args['o:is_open'];
+            $data['o:is_open'] = (bool) $this->args['o:is_open'];
         }
     }
 
@@ -43,8 +43,8 @@ class ItemSetMapping extends ResourceMapping
             $value = reset($values);
             if (strlen($value)) {
                 $data['o:is_open'] = in_array(strtolower($value), ['false', 'off', 'closed'])
-                    ? 0
-                    : (int) (bool) $value;
+                    ? false
+                    : (bool) $value;
             }
         }
     }
