@@ -277,8 +277,8 @@ class MappingForm extends Form
                     'label' => 'Action', // @translate
                     'info' => 'In addition to the default "Create" and to the common "Delete", to manage most of the common cases, four modes of update are provided:
 - append: add new data to complete the resource;
-- revise: replace existing data to the resource, but don’t update a property when no new data are provided (warning: take care or unset default values);
-- update: replace existing data to the resource, and remove data when no data are providing in an empty cell;
+- revise: replace existing data to the resource by the ones set in each cell, except if empty (don’t modify data that are not provided, but take care or unset default values);
+- update: replace existing data to the resource by the ones set in each cell, even empty (don’t modify data that are not provided, but take care or unset default values);
 - replace: remove all properties of the resource, and fill new ones from the data.', // @translate
                     'value_options' => $valueOptions,
                 ],

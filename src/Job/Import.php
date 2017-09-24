@@ -264,13 +264,8 @@ class Import extends AbstractJob
                 // TODO Manage and update file data.
                 switch ($action) {
                     case self::ACTION_APPEND:
-                        break;
                     case self::ACTION_REVISE:
-                        break;
                     case self::ACTION_UPDATE:
-                        $options['isPartial'] = true;
-                        // TODO Check when some rows are empty and filled.
-                        $options['collectionAction'] = 'replace';
                         break;
                     case self::ACTION_REPLACE:
                         $options['isPartial'] = false;
@@ -296,11 +291,12 @@ class Import extends AbstractJob
                         $response = $this->append($this->resourceType, $id, $data[$key]);
                         break;
                     case self::ACTION_REVISE:
-                        $response = $this->revise($this->resourceType, $id, $data[$key]);
+                        $response = $this->updateRevise($this->resourceType, $id, $data[$key], self::ACTION_REVISE);
                         break;
                     case self::ACTION_UPDATE:
+                        $response = $this->updateRevise($this->resourceType, $id, $data[$key], self::ACTION_UPDATE);
+                        break;
                     case self::ACTION_REPLACE:
-                    default:
                         $response = $this->api->update($this->resourceType, $id, $data[$key], $fileData, $options);
                         break;
                 }
@@ -496,22 +492,31 @@ class Import extends AbstractJob
     }
 
     /**
-     * Revise a resource (replace values that are set and not empty).
+     * Helper to update or revise a resource.
+     *
+     * The difference between revise and update is that all data that are set
+     * replace current ones with "update", but only the filled ones replace
+     * current one with "revise".
      *
      * @todo What to do with other data, and external data?
      *
      * @param string $resourceType
      * @param int $id
      * @param array $data
+     * @param string $action
      * @return Response
      */
-    protected function revise($resourceType, $id, $data)
+    protected function updateRevise($resourceType, $id, $data, $action)
     {
         $resource = $this->api->read($resourceType, $id)->getContent();
 
         // Use arrays to simplify process.
         $currentData = json_decode(json_encode($resource), true);
-        $data = $this->removeEmptyData($data);
+        switch ($action) {
+            case self::ACTION_REVISE:
+                $data = $this->removeEmptyData($data);
+                break;
+        }
         $replaced = $this->replacePropertyValues($currentData, $data);
         $newData = array_replace($data, $replaced);
 
