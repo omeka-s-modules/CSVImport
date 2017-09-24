@@ -78,6 +78,10 @@ class IndexController extends AbstractActionController
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
                 $this->saveUserSettings($args);
+                unset($args['multivalue_by_default']);
+                if (empty($args['automap_check_user_list'])) {
+                    unset($args['automap_user_list']);
+                }
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
@@ -246,6 +250,11 @@ class IndexController extends AbstractActionController
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
+
+        // Remove sidebar values.
+        unset($args['value-language']);
+        unset($args['column-item_sets_property']);
+        unset($args['column-items_property']);
 
         return $args;
     }
