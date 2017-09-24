@@ -120,7 +120,7 @@ class CsvFile
         if ($line === false) {
             return null;
         }
-        return array_map('trim', $line);
+        return array_map(function ($v) { return trim($v, "\t\n\r   "); }, $line);
     }
 
     /**

@@ -77,7 +77,9 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         if ($isSingle) {
             $identifiers = [$identifiers];
         }
-        $identifiers = array_unique(array_filter(array_map('trim', $identifiers)));
+        $identifiers = array_unique(array_filter(array_map(function ($v) {
+            return trim($v, "\t\n\r   ");
+        }, $identifiers)));
         if (empty($identifiers)) {
             return $isSingle ? null : [];
         }

@@ -79,7 +79,7 @@ class Import extends AbstractJob
 
     public function perform()
     {
-        ini_set("auto_detect_line_endings", true);
+        ini_set('auto_detect_line_endings', true);
         $services = $this->getServiceLocator();
         $this->api = $services->get('Omeka\ApiManager');
         $this->logger = $services->get('Omeka\Logger');
@@ -151,7 +151,7 @@ class Import extends AbstractJob
         while ($file->valid()) {
             $data = [];
             foreach (new LimitIterator($file, $offset, $this->rowsByBatch) as $row) {
-                $row = array_map('trim', $row);
+                $row = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $row);
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
                     $mapped = $mapping->processRow($row);
@@ -565,7 +565,7 @@ class Import extends AbstractJob
                     break;
                 case 'o:is_public':
                 case 'o:is_open':
-                    if (!in_array($metadata, [0, 1], true)) {
+                    if (!is_bool($metadata)) {
                         unset($data[$name]);
                     }
                     break;
