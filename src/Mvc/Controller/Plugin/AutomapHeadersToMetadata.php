@@ -322,13 +322,13 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'label' => $controller->translate('Owner email address'),
                 'class' => 'owner-email',
             ],
-            'resource_identifier' => [
-                'name' => 'resource_identifier',
+            'resource' => [
+                'name' => 'resource',
                 'value' =>  [
                     'property' => 'internal_id',
-                    'type' => 'resource',
+                    'type' => 'resources',
                 ],
-                'label' => $controller->translate('Identifier for "%2$s" [%1$s]'),
+                'label' => $controller->translate('Resource [%s]'),
                 'class' => 'resource-data',
             ],
             'resource_template' => [
@@ -351,31 +351,31 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'label' => $controller->translate('Additions open/closed'),
                 'class' => 'resource-data',
             ],
-            'item_sets' => [
-                'name' => 'resources',
+            'item_set' => [
+                'name' => 'resource',
                 'value' => [
                     'property' => 'internal_id',
                     'type' => 'item_sets',
                 ],
-                'label' => $controller->translate('Item set (%s)'),
+                'label' => $controller->translate('Item set [%s]'),
                 'class' => 'resource-data',
             ],
-            'items' => [
-                'name' => 'resources',
+            'item' => [
+                'name' => 'resource',
                 'value' => [
                     'property' => 'internal_id',
                     'type' => 'items',
                 ],
-                'label' => $controller->translate('Item (%s)'),
+                'label' => $controller->translate('Item [%s]'),
                 'class' => 'resource-data',
             ],
             'media' => [
-                'name' => 'resources',
+                'name' => 'resource',
                 'value' => [
                     'property' => 'internal_id',
                     'type' => 'media',
                 ],
-                'label' => $controller->translate('Media (%s)'),
+                'label' => $controller->translate('Media [%s]'),
                 'class' => 'resource-data',
             ],
             'media_source' => [

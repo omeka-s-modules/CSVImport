@@ -22,8 +22,8 @@ class MediaMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        $this->map['item'] = isset($this->args['column-items'])
-            ? $this->args['column-items']
+        $this->map['item'] = isset($this->args['column-item'])
+            ? $this->args['column-item']
             : [];
     }
 

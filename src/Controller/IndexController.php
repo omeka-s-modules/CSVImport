@@ -220,18 +220,6 @@ class IndexController extends AbstractActionController
             $args['column-multivalue'] = [];
         }
 
-        // Clean resource identifiers.
-        if (array_key_exists('column-resource_identifier', $args)) {
-            foreach ($args['column-resource_identifier'] as $column => $value) {
-                $args['column-resource_identifier'][$column] = json_decode($value, true);
-            }
-        }
-        unset($args['column-resource_property']);
-        unset($args['column-resource_type']);
-        unset($args['column-item_sets_property']);
-        unset($args['column-items_property']);
-        unset($args['column-media_property']);
-
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
         unset($args['enclosure']);
@@ -254,10 +242,12 @@ class IndexController extends AbstractActionController
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
 
-        // Remove sidebar values.
+        // Remove useless input fields from sidebars.
         unset($args['value-language']);
-        unset($args['column-item_sets_property']);
-        unset($args['column-items_property']);
+        unset($args['column-resource_property']);
+        unset($args['column-item_set_property']);
+        unset($args['column-item_property']);
+        unset($args['column-media_property']);
 
         return $args;
     }
