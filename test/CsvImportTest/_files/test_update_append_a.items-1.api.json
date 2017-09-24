@@ -20,12 +20,12 @@
     },
     "o:media": [
         {
-            "@id": "https://localhost/api/media/17",
-            "o:id": 17
+            "@id": "https://localhost/api/media/4",
+            "o:id": 4
         },
         {
-            "@id": "https://localhost/api/media/18",
-            "o:id": 18
+            "@id": "https://localhost/api/media/5",
+            "o:id": 5
         }
     ],
     "o:item_set": [],
@@ -77,6 +77,22 @@
             "property_id": 10,
             "property_label": "Identifier",
             "@value": "doc:thoreau_walden"
+        }
+    ],
+    "dcterms:date": [
+        {
+            "type": "literal",
+            "property_id": 7,
+            "property_label": "Date",
+            "@value": "1854"
+        }
+    ],
+    "dcterms:publisher": [
+        {
+            "type": "literal",
+            "property_id": 5,
+            "property_label": "Publisher",
+            "@value": "Ticknor and Fields: Boston"
         }
     ]
 }

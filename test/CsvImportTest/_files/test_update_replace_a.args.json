@@ -23,16 +23,16 @@
     "action_unidentified": "skip",
     "column-property": [
         {
-            "dcterms:title": "1"
+            "dcterms:title": 1
         },
         {
-            "dcterms:creator": "2"
+            "dcterms:creator": 2
         },
         {
-            "dcterms:description": "4"
+            "dcterms:description": 4
         },
         {
-            "dcterms:rights": "15"
+            "dcterms:rights": 15
         }
     ],
     "column-multivalue": {

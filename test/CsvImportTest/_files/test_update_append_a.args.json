@@ -1,6 +1,6 @@
 {
     "filename": "test_update_append_a.csv",
-    "filesize": "322",
+    "filesize": "369",
     "csvpath": "/tmp/omekaVC7i6I",
     "csrf": "f52591fce61290ca7e37476b6016d391-fae7ff339cb9c2377aa89c39cbaf683f",
     "resource_type": "items",
@@ -22,23 +22,32 @@
     "action_unidentified": "skip",
     "column-property": [
         {
-            "dcterms:title": "1"
+            "dcterms:title": 1
         },
         {
-            "dcterms:description": "4"
+            "dcterms:description": 4
         },
         {
-            "dcterms:identifier": "10"
+            "dcterms:identifier": 10
+        },
+        {
+            "dcterms:date": 7
+        },
+        {
+            "dcterms:publisher": 5
         }
     ],
-    "column-multivalue": {
-        "0": "1",
-        "1": "1",
-        "2": "1",
-        "4": "1"
-    },
+    "column-multivalue": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+    ],
     "column-media_source": {
-        "4": "url"
+        "6": "url"
     },
     "delimiter": ",",
     "enclosure": "\"",
