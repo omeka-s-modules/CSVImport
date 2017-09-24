@@ -317,7 +317,7 @@ class Import extends AbstractJob
         $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
         $deleted = $response->getContent();
         // TODO Get better stats of removed ids in case of error.
-        $idsForLog = $this->idsForLog($ids);
+        $idsForLog = $this->idsForLog($ids, true);
         $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
             count($deleted), $this->resourceType, $idsForLog));
     }
@@ -366,9 +366,9 @@ class Import extends AbstractJob
     /**
      * Helper to map data keys and ids in order to keep duplicate identifiers.
      *
-     * When a document use multiple lines of data, consecutive or not, they have
-     * the same identifiers, but they are lost during the database search, that
-     * returns an simple associative array.
+     * When a document uses multiple lines of data, consecutive or not, they
+     * have the same identifiers, but they are lost during the database search,
+     * that returns a simple associative array.
      *
      * @param array $identifiers Associative array of data ids and identifiers.
      * @param array $ids Associative array of unique identifiers and ids.
@@ -413,18 +413,25 @@ class Import extends AbstractJob
      * Helper to get cleaner log when identifiers are used.
      *
      * @param array $ids
+     * @param bool $hasIdentifierKeys
      * @return string
      */
-    protected function idsForLog($ids)
+    protected function idsForLog($ids, $hasIdentifierKeys = false)
     {
         switch ($this->identifierProperty) {
             case 'internal_id':
                 // Nothing to do.
                 break;
             default:
-                array_walk($ids, function (&$v, $k) {
-                    $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
-                });
+                if ($hasIdentifierKeys) {
+                    array_walk($ids, function (&$v, $k) {
+                        $v = sprintf('"%s" (%d)', $k, $v); // @ translate
+                    });
+                } else {
+                    array_walk($ids, function (&$v, $k) {
+                        $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
+                    });
+                }
                 break;
         }
         return implode(', ', $ids);
