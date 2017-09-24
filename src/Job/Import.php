@@ -142,6 +142,7 @@ class Import extends AbstractJob
                 ->search('properties', ['term' => $identifierProperty])->getContent();
             $identifierPropertyId = $result ? $result[0]->id() : null;
         }
+        $this->identifierProperty = $identifierProperty;
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
         $offset = 1;
@@ -311,9 +312,14 @@ class Import extends AbstractJob
                 continue;
             }
         }
-        $idsForLog = $this->idsForLog($updatedIds);
-        $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
-            count($updatedIds), $this->resourceType, $action, $idsForLog));
+        if ($updatedIds) {
+            $idsForLog = $this->idsForLog($updatedIds);
+            $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
+                count($updatedIds), $this->resourceType, $action, $idsForLog));
+        } else {
+            $this->logger->notice(sprintf('None of the %d %s were updated (%s).', // @translate
+                count($ids), $this->resourceType, $action));
+        }
     }
 
     /**
