@@ -24,10 +24,16 @@ class MediaSourceMapping extends AbstractMapping
     {
         $data = [];
 
+        $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
+            ->get('findResourceFromIdentifier');
+
+        $resourceType = $this->args['resource_type'];
+        $isMedia = $resourceType === 'media';
+
         $config = $this->getServiceLocator()->get('Config');
         $mediaAdapters = $config['csv_import']['media_ingester_adapter'];
         $mediaMap = isset($this->args['column-media_source']) ? $this->args['column-media_source'] : [];
-        $isMedia = $this->args['resource_type'] === 'media';
+        $action = $this->args['action'];
 
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
@@ -54,6 +60,10 @@ class MediaSourceMapping extends AbstractMapping
                         $adapter = new $mediaAdapters[$ingester];
                         $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
                     }
+
+                    // Check if the media is already fetched.
+                    $mediaDatumJson = $this->checkExistingMedia($mediaDatumJson);
+
                     $data[] = $mediaDatumJson;
                 }
             }
@@ -62,5 +72,20 @@ class MediaSourceMapping extends AbstractMapping
         return $this->args['resource_type'] === 'media'
             ? ($data ? reset($data) : [])
             : ['o:media' => $data];
+    }
+
+    protected function checkExistingMedia(array $mediaDatumJson)
+    {
+        $identifier = $mediaDatumJson['o:source'];
+        $resourceType = 'media';
+        $identifierProperty = 'media_source=' . $mediaDatumJson['o:ingester'];
+
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+        $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
+
+        if ($resourceId) {
+            $mediaDatumJson['o:id'] = $resourceId;
+        }
+        return $mediaDatumJson;
     }
 }

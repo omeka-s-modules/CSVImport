@@ -521,7 +521,6 @@ class Import extends AbstractJob
      * to get all the data and to update them here, with a deduplication for
      * values, then a full replacement (not partial).
      *
-     * @todo Manage file and media data.
      * @todo What to do with other data, and external data?
      *
      * @param string $resourceType
