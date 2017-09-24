@@ -48,6 +48,7 @@ class MediaMapping extends ResourceMapping
                     $this->setHasErr(true);
                     return false;
                 }
+                return;
             }
 
             $findResourceFromIdentifier = $this->findResourceFromIdentifier;
