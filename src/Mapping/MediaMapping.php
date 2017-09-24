@@ -22,9 +22,16 @@ class MediaMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        $this->map['item'] = isset($this->args['column-item'])
-            ? $this->args['column-item']
-            : [];
+        // Set columns.
+        if (isset($this->args['column-item'])) {
+            $this->map['item'] = $this->args['column-item'];
+            $data['o:item'] = null;
+        }
+
+        // Set default values.
+        if (!empty($this->args['o:item']['o:id'])) {
+            $data['o:item'] = ['o:id' => (int) $this->args['o:item']['o:id']];
+        }
     }
 
     protected function processCell($index, array $values)

@@ -203,6 +203,18 @@ class IndexController extends AbstractActionController
     {
         $args = $post;
 
+        // Set values as integer.
+        foreach (['o:resource_template', 'o:resource_class', 'o:owner', 'o:item'] as $meta) {
+            if (!empty($args[$meta]['o:id'])) {
+                $args[$meta] = ['o:id' => (int) $args[$meta]['o:id']];
+            }
+        }
+        foreach (['o:is_public', 'o:is_open', 'o:is_active'] as $meta) {
+            if (isset($args[$meta]) && strlen($args[$meta])) {
+                $args[$meta] = (int) $args[$meta];
+            }
+        }
+
         // Name of properties must be known to merge data and to process update.
         $api = $this->api();
         if (array_key_exists('column-property', $args)) {
