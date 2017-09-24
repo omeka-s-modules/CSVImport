@@ -100,6 +100,8 @@ class ImportTest extends OmekaControllerTestCase
         return [
             ['test_skip.csv', ['items', 1]],
             ['test_update_append_a.csv', ['items', 1]],
+            ['test_update_revise_a.csv', ['items', 1]],
+            ['test_update_revise_b.csv', ['items', 1]],
             ['test_update_replace_a.csv', ['items', 1]],
             ['test_update_replace_b.csv', ['items', 1]],
         ];
