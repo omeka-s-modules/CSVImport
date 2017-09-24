@@ -1,6 +1,6 @@
 {
     "filename": "test_skip_items.csv",
-    "filesize": "275",
+    "filesize": "266",
     "csvpath": "/tmp/omeka6fQJqp",
     "csrf": "a2d625785a91be0ae5fc753f4608766d-2d7924c0d92aaedc583451b3546182d2",
     "resource_type": "items",
@@ -19,7 +19,7 @@
     "multivalue_by_default": "0",
     "global_language": "",
     "action": "skip",
-    "identifier_property": "1",
+    "identifier_property": "dcterms:title",
     "action_unidentified": "skip",
     "column-property": [
         {

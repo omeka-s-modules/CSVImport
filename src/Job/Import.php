@@ -130,7 +130,18 @@ class Import extends AbstractJob
         if ($this->hasErr) {
             return $this->endJob();
         }
-        $this->identifierProperty = $identifierProperty;
+
+        // The main identifier property may be used as term or as id in some
+        // places, so prepare it one time only.
+        if ($identifierProperty === 'internal_id') {
+            $identifierPropertyId = $identifierProperty;
+        } elseif (is_numeric($identifierProperty)) {
+            $identifierPropertyId = (int) $identifierProperty;
+        } else {
+            $result = $this->api
+                ->search('properties', ['term' => $identifierProperty])->getContent();
+            $identifierPropertyId = $result ? $result[0]->id() : null;
+        }
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
         $offset = 1;
@@ -159,8 +170,8 @@ class Import extends AbstractJob
                 case self::ACTION_REVISE:
                 case self::ACTION_UPDATE:
                 case self::ACTION_REPLACE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierProperty, $this->resourceType);
+                    $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
+                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierPropertyId, $this->resourceType);
                     $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
                     $idsToProcess = array_filter($ids);
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
@@ -182,8 +193,8 @@ class Import extends AbstractJob
                     $this->update($dataToProcess, $idsToProcess, $action);
                     break;
                 case self::ACTION_DELETE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierProperty, $this->resourceType);
+                    $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
+                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierPropertyId, $this->resourceType);
                     $idsToProcess = array_filter($ids);
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
@@ -329,18 +340,18 @@ class Import extends AbstractJob
      * is recalled with new identifiers.
      *
      * @param array $data
-     * @param int $identifierProperty
+     * @param string|int $identifierPropertyId
      * @return array Associative array mapping the data key as key and the found
      * ids or null as value. Order is kept.
      */
-    protected function extractIdentifiers($data, $identifierProperty = 'internal_id')
+    protected function extractIdentifiers($data, $identifierPropertyId = 'internal_id')
     {
         $identifiers = [];
-        $identifierProperty = $identifierProperty ?: 'internal_id';
+        $identifierPropertyId = $identifierPropertyId ?: 'internal_id';
 
         foreach ($data as $key => $entityJson) {
             $identifier = null;
-            switch ($identifierProperty) {
+            switch ($identifierPropertyId) {
                 case 'internal_id':
                     if (!empty($entityJson['o:id'])) {
                         $identifier = $entityJson['o:id'];
@@ -354,7 +365,7 @@ class Import extends AbstractJob
                                 if (is_array($value) && !empty($value)) {
                                     $value = reset($value);
                                     if (isset($value['property_id'])
-                                        && $value['property_id'] === $identifierProperty
+                                        && $value['property_id'] == $identifierPropertyId
                                         && isset($value['@value'])
                                         && strlen($value['@value'])
                                     ) {

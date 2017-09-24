@@ -301,6 +301,7 @@ class MappingForm extends Form
                     'prepend_value_options' => [
                         'internal_id' => 'Internal id', // @translate
                     ],
+                    'term_as_value' => true,
                 ],
                 'attributes' => [
                     'value' => $userSettings->get(
