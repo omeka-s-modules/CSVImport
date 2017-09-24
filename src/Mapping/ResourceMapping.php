@@ -56,8 +56,9 @@ class ResourceMapping extends AbstractMapping
                 $values = array_map('trim', $values);
             }
             $values = array_filter($values, 'strlen');
-            // Empty values are processed in all cases to set default values.
-            $this->processCell($index, $values);
+            if ($values) {
+                $this->processCell($index, $values);
+            }
         }
 
         return $this->data;
@@ -157,10 +158,6 @@ class ResourceMapping extends AbstractMapping
 
     protected function findResource($identifier, $identifierProperty = 'internal_id')
     {
-        if (empty($identifier)) {
-            return;
-        }
-
         $resourceType = $this->args['resource_type'];
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
         $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
