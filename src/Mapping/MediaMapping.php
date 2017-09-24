@@ -33,37 +33,22 @@ class MediaMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        if (isset($this->map['columnResourceIdentifier'][$index])) {
-            // The parent identifier is needed only to create a media.
-            $action = &$this->args['action'];
-            if ($action !== Import::ACTION_CREATE) {
-                return false;
-            }
-
+        if (isset($this->map['item'][$index])) {
             // Check params to avoid useless search and improve speed.
+            $action = $this->args['action'];
             $identifier = reset($values);
+            $identifierProperty = $this->map['item'][$index] ?: 'internal_id';
+            $resourceType = 'items';
+
             if (empty($identifier)) {
-                $this->logger->err(sprintf('An item identifier is required to process action "%s".', // @translate
-                    $action));
-                $this->setHasErr(true);
-                return false;
-            }
-
-            $identifierProperty = $this->map['columnResourceIdentifier'][$index]['property'];
-            if (empty($identifierProperty)) {
-                $identifierProperty = 'internal_id';
-            }
-
-            $resourceType = $this->map['columnResourceIdentifier'][$index]['type'];
-            if (!empty($resourceType)) {
-                if (!in_array($resourceType, ['resources', 'items'])) {
-                    $this->logger->err(sprintf('"%s" is not a valid resource type to create a media.', // @translate
-                        $resourceType));
+                // The parent identifier is needed only to create a media.
+                if ($action === Import::ACTION_CREATE) {
+                    $this->logger->err(sprintf('An item identifier is required to process action "%s".', // @translate
+                        $action));
                     $this->setHasErr(true);
                     return false;
                 }
             }
-            $resourceType = 'items';
 
             $findResourceFromIdentifier = $this->findResourceFromIdentifier;
             $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);

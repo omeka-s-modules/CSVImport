@@ -142,8 +142,8 @@ class Import extends AbstractJob
                 $row = array_map('trim', $row);
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
-                    $entityJson = array_merge($entityJson, $mapping->processRow($row));
-
+                    $mapped = $mapping->processRow($row);
+                    $entityJson = array_merge($entityJson, $mapped);
                     if ($mapping->getHasErr()) {
                         $this->hasErr = true;
                     }
@@ -333,32 +333,44 @@ class Import extends AbstractJob
      * @return array Associative array mapping the data key as key and the found
      * ids or null as value. Order is kept.
      */
-    protected function extractIdentifiers($data, $identifierProperty)
+    protected function extractIdentifiers($data, $identifierProperty = 'internal_id')
     {
         $identifiers = [];
+        $identifierProperty = $identifierProperty ?: 'internal_id';
+
         foreach ($data as $key => $entityJson) {
             $identifier = null;
-            switch ($this->resourceType) {
-                case 'items':
-                    foreach ($entityJson as $index => $value) {
-                        if (is_array($value) && !empty($value)) {
-                            $value = reset($value);
-                            if (isset($value['property_id'])
-                                && $value['property_id'] === $identifierProperty
-                                && isset($value['@value'])
-                                && strlen($value['@value'])
-                            ) {
-                                $identifier = $value['@value'];
-                                break;
-                            }
-                        }
+            switch ($identifierProperty) {
+                case 'internal_id':
+                    if (!empty($entityJson['o:id'])) {
+                        $identifier = $entityJson['o:id'];
                     }
                     break;
-                case 'users':
-                    break;
+
+                default:
+                    switch ($this->resourceType) {
+                        case 'items':
+                            foreach ($entityJson as $index => $value) {
+                                if (is_array($value) && !empty($value)) {
+                                    $value = reset($value);
+                                    if (isset($value['property_id'])
+                                        && $value['property_id'] === $identifierProperty
+                                        && isset($value['@value'])
+                                        && strlen($value['@value'])
+                                    ) {
+                                        $identifier = $value['@value'];
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        case 'users':
+                            break;
+                    }
             }
             $identifiers[$key] = $identifier;
         }
+
         $this->identifiers = $identifiers;
         return $identifiers;
     }

@@ -67,6 +67,10 @@ class ResourceMapping extends AbstractMapping
     {
         $data = &$this->data;
 
+        $this->map['resource'] = isset($this->args['column-resource'])
+            ? $this->args['column-resource']
+            : [];
+
         if (!empty($this->args['o:resource_template']['o:id'])) {
             $value = $this->args['o:resource_template']['o:id'];
             $data['o:resource_template'] = $value;
@@ -111,6 +115,15 @@ class ResourceMapping extends AbstractMapping
     {
         $data = &$this->data;
 
+        if (isset($this->map['resource'][$index])) {
+            $identifier = reset($values);
+            $identifierProperty = $this->map['resource'][$index] ?: 'internal_id';
+            $resourceId = $this->findResource($identifier, $identifierProperty);
+            if ($resourceId) {
+                $data['o:id'] = $resourceId;
+            }
+        }
+
         if (in_array($index, $this->map['resourceTemplate'])) {
             $resourceTemplate = $this->findResourceTemplate(reset($values));
             if ($resourceTemplate) {
@@ -138,6 +151,25 @@ class ResourceMapping extends AbstractMapping
                 ? 0
                 : (int) (bool) $value;
         }
+    }
+
+    protected function findResource($identifier, $identifierProperty = 'internal_id')
+    {
+        if (empty($identifier)) {
+            return;
+        }
+
+        $resourceType = $this->args['resource_type'];
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+        $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
+        if (empty($resourceId)) {
+            $this->logger->err(sprintf('"%s" (%s) is not a valid resource identifier.', // @translate
+                $identifier, $identifierProperty));
+            $this->setHasErr(true);
+            return false;
+        }
+
+        return $resourceId;
     }
 
     protected function findResourceTemplate($label)
