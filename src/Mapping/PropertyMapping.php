@@ -7,7 +7,7 @@ class PropertyMapping extends AbstractMapping
 {
     public static function getLabel()
     {
-        return "Properties"; // @translate
+        return 'Properties'; // @translate
     }
 
     public static function getName()
@@ -23,40 +23,61 @@ class PropertyMapping extends AbstractMapping
 
     public function processRow(array $row)
     {
-        $propertyJson = [];
+        $data = [];
 
-        $columnMap = isset($this->args['column-property']) ? $this->args['column-property'] : [];
-        $urlMap = isset($this->args['column-url']) ? array_keys($this->args['column-url']) : [];
-        $referenceMap = isset($this->args['column-reference']) ? array_keys($this->args['column-reference']) : [];
-        $languageSettings = isset($this->args['column-language']) ? $this->args['column-language'] : [];
+        // First, pull in the global settings.
+
+        // Set columns.
+        if (isset($this->args['column-property'])) {
+            $propertyMap = $this->args['column-property'];
+            foreach ($propertyMap as $column => $property) {
+                $data[key($property)] = [];
+            }
+        }
+
+        // Return if no column.
+        if (empty($propertyMap)) {
+            return $data;
+        }
+
+        // Get mappings for options.
+        if (isset($this->args['column-url'])) {
+            $urlMap = $this->args['column-url'];
+        }
+        if (isset($this->args['column-reference'])) {
+            $referenceMap = $this->args['column-reference'];
+        }
+        if (isset($this->args['column-language'])) {
+            $languageMap = $this->args['column-language'];
+        }
+
+        // Get default option values.
         $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
 
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
-            if (isset($columnMap[$index])) {
-                // consider 'literal' as the default type
+            if (isset($propertyMap[$index])) {
+                // Consider 'literal' as the default type.
                 $type = 'literal';
-                if (in_array($index, $urlMap)) {
+                if (isset($urlMap[$index])) {
                     $type = 'uri';
-                }
-                if (in_array($index, $referenceMap)) {
+                } elseif (isset($referenceMap[$index])) {
                     $type = 'resource';
                 }
 
-                foreach ($columnMap[$index] as $propertyTerm => $propertyId) {
+                foreach ($propertyMap[$index] as $propertyTerm => $propertyId) {
                     if (empty($multivalueMap[$index])) {
                         $values = [$values];
                     } else {
                         $values = explode($multivalueSeparator, $values);
-                        $values = array_map('trim', $values);
+                        $values = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $values);
                     }
-
                     $values = array_filter($values, 'strlen');
                     foreach ($values as $value) {
                         switch ($type) {
                             case 'uri':
-                                $propertyJson[$propertyTerm][] = [
+                                $data[$propertyTerm][] = [
                                     '@id' => $value,
                                     'property_id' => $propertyId,
                                     'type' => $type,
@@ -64,7 +85,7 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'resource':
-                                $propertyJson[$propertyTerm][] = [
+                                $data[$propertyTerm][] = [
                                     'value_resource_id' => $value,
                                     'property_id' => $propertyId,
                                     'type' => $type,
@@ -83,7 +104,7 @@ class PropertyMapping extends AbstractMapping
                                 if (isset($languageSettings[$index])) {
                                     $literalPropertyJson['@language'] = $languageSettings[$index];
                                 }
-                                $propertyJson[$propertyTerm][] = $literalPropertyJson;
+                                $data[$propertyTerm][] = $literalPropertyJson;
                                 break;
                         }
                     }
@@ -91,6 +112,6 @@ class PropertyMapping extends AbstractMapping
             }
         }
 
-        return $propertyJson;
+        return $data;
     }
 }

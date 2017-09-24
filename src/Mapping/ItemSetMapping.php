@@ -21,13 +21,16 @@ class ItemSetMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        if (isset($this->args['o:is_open']) && strlen($this->args['o:is_open'])) {
-            $isOpen = $this->args['o:is_open'];
-            $data['o:is_open'] = (int) (bool) $isOpen;
+        // Set columns.
+        if (isset($this->args['column-is_open'])) {
+            $this->map['isOpen'] = $this->args['column-is_open'];
+            $data['o:is_open'] = null;
         }
-        $this->map['isOpen'] = isset($this->args['column-is_open'])
-            ? array_keys($this->args['column-is_open'])
-            : [];
+
+        // Set default values.
+        if (isset($this->args['o:is_open']) && strlen($this->args['o:is_open'])) {
+            $data['o:is_open'] = (bool) $this->args['o:is_open'];
+        }
     }
 
     protected function processCell($index, array $values)
@@ -36,11 +39,13 @@ class ItemSetMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        if (in_array($index, $this->map['isOpen'])) {
+        if (isset($this->map['isOpen'][$index])) {
             $value = reset($values);
-            $data['o:is_open'] = in_array(strtolower($value), ['false', 'off', 'closed'])
-                ? 0
-                : (int) (bool) $value;
+            if (strlen($value)) {
+                $data['o:is_open'] = in_array(strtolower($value), ['false', 'off', 'closed'])
+                    ? false
+                    : (bool) $value;
+            }
         }
     }
 }

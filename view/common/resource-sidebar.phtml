@@ -6,6 +6,9 @@
     <div class="resource-mapping mappings">
         <h4><?php echo $this->translate('Generic data'); ?></h4>
         <ul>
+            <li data-flag="column-resource" data-value="internal_id" data-flag-type="resource-data">
+                <a href="#" class="button"><span><?php echo $this->translate('Internal id'); ?></span></a>
+            </li>
             <li data-flag="column-resource_template" data-flag-type="resource-data">
                 <a href="#" class="button"><span><?php echo $this->translate('Resource template name'); ?></span></a>
             </li>
@@ -41,25 +44,26 @@
             <?php endif; ?>
 
             <?php if (empty($resourceType) || $resourceType === 'items'): ?>
-            <li data-flag="column-item_sets_property" data-flag-type="option">
+            <li data-flag="column-item_set_property" data-flag-type="option">
                 <?php echo $this->propertySelect([
-                    'name' => 'column-item_sets_property',
+                    'name' => 'column-item_set_property',
                     'options' => [
                         'empty_option' => $this->translate('Select below'),
                         'term_as_value' => false,
                         'prepend_value_options' => [
                             'internal_id' => $this->translate('Internal id'),
                         ],
+                        'term_as_value' => true,
                     ],
                     'attributes' => [
-                        'id' => 'column-item_sets_property',
+                        'id' => 'column-item_set_property',
                         'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
                         'class' => 'chosen-select',
-                        'data-placeholder' => $this->translate('Select below'),
+                        'data-placeholder' => $this->translate('Select the identifier below'),
                     ],
                 ]); ?>
             </li>
-            <li data-flag="column-item_sets" data-flag-type="resource-data">
+            <li data-flag="column-item_set" data-flag-type="resource-data">
                 <a href="#" class="button"><span><?php echo $this->translate('Set item set'); ?></span></a>
             </li>
             <?php endif; ?>
@@ -69,30 +73,32 @@
             <?php echo $this->translate('There must be an item identifier to create a media.')?>
             <?php echo $this->translate('This is generally "dcterms:identifier", but it may be an internal id.')?>
             </li>
-            <li data-flag="column-items_property" data-flag-type="option">
+            <li data-flag="column-item_property" data-flag-type="option">
                 <?php echo $this->propertySelect([
-                    'name' => 'column-items_property',
+                    'name' => 'column-item_property',
                     'options' => [
                         'empty_option' => $this->translate('Select below'),
                         'term_as_value' => false,
                         'prepend_value_options' => [
                             'internal_id' => $this->translate('Internal id'),
                         ],
+                        'term_as_value' => true,
                     ],
                     'attributes' => [
-                        'id' => 'column-items_property',
+                        'id' => 'column-item_property',
                         'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
                         'class' => 'chosen-select',
-                        'data-placeholder' => $this->translate('Select below'),
+                        'data-placeholder' => $this->translate('Select the identifier below'),
                     ],
                 ]); ?>
             </li>
-            <li data-flag="column-items" data-flag-type="resource-data">
+            <li data-flag="column-item" data-flag-type="resource-data">
                 <a href="#" class="button"><span><?php echo $this->translate('Set item'); ?></span></a>
             </li>
             <?php endif; ?>
         </ul>
     </div>
+
     <?php if (empty($resourceType) || $resourceType === 'items'): ?>
     <div class="resource-mapping options">
         <h4><?php echo $this->translate('Options'); ?></h4>

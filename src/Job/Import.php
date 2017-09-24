@@ -6,7 +6,7 @@ use CSVImport\Entity\CSVImportImport;
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use LimitIterator;
 use Omeka\Api\Manager;
-use Omeka\Api\Representation\AbstractResourceRepresentation;
+use Omeka\Api\Response;
 use Omeka\Job\AbstractJob;
 use Zend\Log\Logger;
 
@@ -79,7 +79,7 @@ class Import extends AbstractJob
 
     public function perform()
     {
-        ini_set("auto_detect_line_endings", true);
+        ini_set('auto_detect_line_endings', true);
         $services = $this->getServiceLocator();
         $this->api = $services->get('Omeka\ApiManager');
         $this->logger = $services->get('Omeka\Logger');
@@ -130,6 +130,18 @@ class Import extends AbstractJob
         if ($this->hasErr) {
             return $this->endJob();
         }
+
+        // The main identifier property may be used as term or as id in some
+        // places, so prepare it one time only.
+        if ($identifierProperty === 'internal_id') {
+            $identifierPropertyId = $identifierProperty;
+        } elseif (is_numeric($identifierProperty)) {
+            $identifierPropertyId = (int) $identifierProperty;
+        } else {
+            $result = $this->api
+                ->search('properties', ['term' => $identifierProperty])->getContent();
+            $identifierPropertyId = $result ? $result[0]->id() : null;
+        }
         $this->identifierProperty = $identifierProperty;
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
@@ -139,11 +151,11 @@ class Import extends AbstractJob
         while ($file->valid()) {
             $data = [];
             foreach (new LimitIterator($file, $offset, $this->rowsByBatch) as $row) {
-                $row = array_map('trim', $row);
+                $row = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $row);
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
-                    $entityJson = array_merge($entityJson, $mapping->processRow($row));
-
+                    $mapped = $mapping->processRow($row);
+                    $entityJson = array_merge($entityJson, $mapped);
                     if ($mapping->getHasErr()) {
                         $this->hasErr = true;
                     }
@@ -159,8 +171,8 @@ class Import extends AbstractJob
                 case self::ACTION_REVISE:
                 case self::ACTION_UPDATE:
                 case self::ACTION_REPLACE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierProperty, $this->resourceType);
+                    $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
+                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierPropertyId, $this->resourceType);
                     $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
                     $idsToProcess = array_filter($ids);
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
@@ -182,8 +194,8 @@ class Import extends AbstractJob
                     $this->update($dataToProcess, $idsToProcess, $action);
                     break;
                 case self::ACTION_DELETE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierProperty);
-                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierProperty, $this->resourceType);
+                    $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
+                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierPropertyId, $this->resourceType);
                     $idsToProcess = array_filter($ids);
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
@@ -235,9 +247,9 @@ class Import extends AbstractJob
      * @param array $data
      * @param array $ids All the ids must exists and the order must be the same
      * than data.
-     * @param string $mode
+     * @param string $action
      */
-    protected function update(array $data, array $ids, $mode)
+    protected function update(array $data, array $ids, $action)
     {
         if (empty($ids)) {
             return;
@@ -250,47 +262,43 @@ class Import extends AbstractJob
             case 'items':
             case 'media':
                 // TODO Manage and update file data.
-                switch ($mode) {
+                switch ($action) {
                     case self::ACTION_APPEND:
-                        $options['isPartial'] = true;
-                        $options['collectionAction'] = 'append';
-                        break;
                     case self::ACTION_REVISE:
-                        // Remove empty properties to avoid replacement.
-                        // Warning: default may be automatically set already, so
-                        // they are kept.
-                        $data = $this->removeEmptyData($data);
-                        // No break.
                     case self::ACTION_UPDATE:
-                        $options['isPartial'] = true;
-                        // TODO Check when some rows are empty and filled.
-                        $options['collectionAction'] = array_key_exists('o:item_set', reset($data))
-                            ? 'replace'
-                            : 'append';
                         break;
                     case self::ACTION_REPLACE:
                         $options['isPartial'] = false;
-                        $options['collectionAction'] = 'replace';
                         break;
                 }
                 break;
+
             default:
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The update mode "%s" is unsupported for %s currently.', // @translate
-                    $mode, $this->resourceType));
+                    $action, $this->resourceType));
                 return;
         }
 
         // In the api manager, batchUpdate() allows to update a set of resources
-        // with the same data. Here, data are specific to each row.
+        // with the same data. Here, data are specific to each row, so each
+        // resource is updated separately.
         $updatedIds = [];
         foreach ($ids as $key => $id) {
             try {
-                $response = $this->api->update($this->resourceType, $id, $data[$key], $fileData, $options);
-                if ($mode === self::ACTION_APPEND) {
-                    // TODO Improve to avoid two consecutive update (deduplicate before or via core methods).
-                    $resource = $response->getContent();
-                    $this->deduplicatePropertyValues($resource);
+                switch ($action) {
+                    case self::ACTION_APPEND:
+                        $response = $this->append($this->resourceType, $id, $data[$key]);
+                        break;
+                    case self::ACTION_REVISE:
+                        $response = $this->updateRevise($this->resourceType, $id, $data[$key], self::ACTION_REVISE);
+                        break;
+                    case self::ACTION_UPDATE:
+                        $response = $this->updateRevise($this->resourceType, $id, $data[$key], self::ACTION_UPDATE);
+                        break;
+                    case self::ACTION_REPLACE:
+                        $response = $this->api->update($this->resourceType, $id, $data[$key], $fileData, $options);
+                        break;
                 }
                 $updatedIds[$key] = $id;
             } catch (\Exception $e) {
@@ -298,9 +306,14 @@ class Import extends AbstractJob
                 continue;
             }
         }
-        $idsForLog = $this->idsForLog($updatedIds);
-        $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
-            count($updatedIds), $this->resourceType, $mode, $idsForLog));
+        if ($updatedIds) {
+            $idsForLog = $this->idsForLog($updatedIds);
+            $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
+                count($updatedIds), $this->resourceType, $action, $idsForLog));
+        } else {
+            $this->logger->notice(sprintf('None of the %d %s were updated (%s).', // @translate
+                count($ids), $this->resourceType, $action));
+        }
     }
 
     /**
@@ -317,7 +330,7 @@ class Import extends AbstractJob
         $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
         $deleted = $response->getContent();
         // TODO Get better stats of removed ids in case of error.
-        $idsForLog = $this->idsForLog($ids);
+        $idsForLog = $this->idsForLog($ids, true);
         $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
             count($deleted), $this->resourceType, $idsForLog));
     }
@@ -329,36 +342,50 @@ class Import extends AbstractJob
      * is recalled with new identifiers.
      *
      * @param array $data
-     * @param int $identifierProperty
+     * @param string|int $identifierPropertyId
      * @return array Associative array mapping the data key as key and the found
      * ids or null as value. Order is kept.
      */
-    protected function extractIdentifiers($data, $identifierProperty)
+    protected function extractIdentifiers($data, $identifierPropertyId = 'internal_id')
     {
         $identifiers = [];
+        $identifierPropertyId = $identifierPropertyId ?: 'internal_id';
+
         foreach ($data as $key => $entityJson) {
             $identifier = null;
-            switch ($this->resourceType) {
-                case 'items':
-                    foreach ($entityJson as $index => $value) {
-                        if (is_array($value) && !empty($value)) {
-                            $value = reset($value);
-                            if (isset($value['property_id'])
-                                && $value['property_id'] === $identifierProperty
-                                && isset($value['@value'])
-                                && strlen($value['@value'])
-                            ) {
-                                $identifier = $value['@value'];
-                                break;
-                            }
-                        }
+            switch ($identifierPropertyId) {
+                case 'internal_id':
+                    if (!empty($entityJson['o:id'])) {
+                        $identifier = $entityJson['o:id'];
                     }
                     break;
-                case 'users':
-                    break;
+
+                default:
+                    switch ($this->resourceType) {
+                        case 'item_sets':
+                        case 'items':
+                        case 'media':
+                            foreach ($entityJson as $index => $value) {
+                                if (is_array($value) && !empty($value)) {
+                                    $value = reset($value);
+                                    if (isset($value['property_id'])
+                                        && $value['property_id'] == $identifierPropertyId
+                                        && isset($value['@value'])
+                                        && strlen($value['@value'])
+                                    ) {
+                                        $identifier = $value['@value'];
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        case 'users':
+                            break;
+                    }
             }
             $identifiers[$key] = $identifier;
         }
+
         $this->identifiers = $identifiers;
         return $identifiers;
     }
@@ -366,9 +393,9 @@ class Import extends AbstractJob
     /**
      * Helper to map data keys and ids in order to keep duplicate identifiers.
      *
-     * When a document use multiple lines of data, consecutive or not, they have
-     * the same identifiers, but they are lost during the database search, that
-     * returns an simple associative array.
+     * When a document uses multiple lines of data, consecutive or not, they
+     * have the same identifiers, but they are lost during the database search,
+     * that returns a simple associative array.
      *
      * @param array $identifiers Associative array of data ids and identifiers.
      * @param array $ids Associative array of unique identifiers and ids.
@@ -413,25 +440,98 @@ class Import extends AbstractJob
      * Helper to get cleaner log when identifiers are used.
      *
      * @param array $ids
+     * @param bool $hasIdentifierKeys
      * @return string
      */
-    protected function idsForLog($ids)
+    protected function idsForLog($ids, $hasIdentifierKeys = false)
     {
         switch ($this->identifierProperty) {
             case 'internal_id':
                 // Nothing to do.
                 break;
             default:
-                array_walk($ids, function (&$v, $k) {
-                    $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
-                });
+                if ($hasIdentifierKeys) {
+                    array_walk($ids, function (&$v, $k) {
+                        $v = sprintf('"%s" (%d)', $k, $v); // @ translate
+                    });
+                } else {
+                    array_walk($ids, function (&$v, $k) {
+                        $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
+                    });
+                }
                 break;
         }
         return implode(', ', $ids);
     }
 
     /**
+     * Update a resource (append with a deduplication check).
+     *
+     * Currently, Omeka S has no method to deduplicate, so a first call is done
+     * to get all the data and to update them here, with a deduplication for
+     * values, then a full replacement (not partial).
+     *
+     * @todo What to do with other data, and external data?
+     *
+     * @param string $resourceType
+     * @param int $id
+     * @param array $data
+     * @return Response
+     */
+    protected function append($resourceType, $id, $data)
+    {
+        $resource = $this->api->read($resourceType, $id)->getContent();
+
+        // Use arrays to simplify process.
+        $currentData = json_decode(json_encode($resource), true);
+        $merged = $this->mergeMetadata($currentData, $data, true);
+        $data = array_replace($data, $merged);
+        $newData = array_replace($currentData, $data);
+
+        $fileData = [];
+        $options['isPartial'] = false;
+        return $this->api->update($resourceType, $id, $newData, $fileData, $options);
+    }
+
+    /**
+     * Helper to update or revise a resource.
+     *
+     * The difference between revise and update is that all data that are set
+     * replace current ones with "update", but only the filled ones replace
+     * current one with "revise".
+     *
+     * @todo What to do with other data, and external data?
+     *
+     * @param string $resourceType
+     * @param int $id
+     * @param array $data
+     * @param string $action
+     * @return Response
+     */
+    protected function updateRevise($resourceType, $id, $data, $action)
+    {
+        $resource = $this->api->read($resourceType, $id)->getContent();
+
+        // Use arrays to simplify process.
+        $currentData = json_decode(json_encode($resource), true);
+        switch ($action) {
+            case self::ACTION_REVISE:
+                $data = $this->removeEmptyData($data);
+                break;
+        }
+        $replaced = $this->replacePropertyValues($currentData, $data);
+        $newData = array_replace($data, $replaced);
+
+        $fileData = [];
+        $options['isPartial'] = true;
+        $options['collectionAction'] = 'replace';
+        return $this->api->update($resourceType, $id, $newData, $fileData, $options);
+    }
+
+    /**
      * Remove empty values from passed data in order not to change current ones.
+     *
+     * @todo Use the mechanism of preprocessBatchUpdate() of the adapter.
      *
      * @param array $data
      * @return array
@@ -439,72 +539,197 @@ class Import extends AbstractJob
     protected function removeEmptyData(array $data)
     {
         // Data are updated in place.
-        foreach ($data as &$dataValues) {
-            foreach ($dataValues as $name => &$metadata) {
-                switch ($name) {
-                    case 'o:resource_template':
-                    case 'o:resource_class':
-                    case 'o:owner':
-                    case 'o:item':
-                    case 'o:media':
-                        if (empty($metadata) || empty($metadata['o:id'])) {
-                            unset($datavalues[$name]);
-                        }
-                        break;
-                    case 'o:item-set':
+        foreach ($data as $name => &$metadata) {
+            switch ($name) {
+                case 'o:resource_template':
+                case 'o:resource_class':
+                case 'o:owner':
+                case 'o:item':
+                    if (empty($metadata) || empty($metadata['o:id'])) {
+                        unset($data[$name]);
+                    }
+                    break;
+                case 'o:media':
+                case 'o:item-set':
+                    if (empty($metadata)) {
+                        unset($data[$name]);
+                    } elseif (array_key_exists('o:id', $metadata) && empty($metadata['o:id'])) {
+                        unset($data[$name]);
+                    }
+                    break;
+                // These values are not updatable and are removed.
+                case 'o:ingester':
+                case 'o:source':
+                case 'ingest_filename':
+                    unset($data[$name]);
+                    break;
+                case 'o:is_public':
+                case 'o:is_open':
+                    if (!is_bool($metadata)) {
+                        unset($data[$name]);
+                    }
+                    break;
+                default:
+                    if (is_array($metadata)) {
                         if (empty($metadata)) {
-                            unset($datavalues[$name]);
-                        } elseif (array_key_exists('o:id', $metadata) && empty($metadata['o:id'])) {
-                            unset($datavalues[$name]);
+                            unset($data[$name]);
                         }
-                        break;
-                    case 'o:ingester':
-                    case 'o:source':
-                    case 'ingest_filename':
-                        // These values are not updatable and are removed.
-                        unset($datavalues[$name]);
-                        break;
-                    case 'o:is_public':
-                    case 'o:is_open':
-                        if (!in_array($metadata, [0, 1], true)) {
-                            unset($datavalues[$name]);
-                        }
-                        break;
-                    default:
-                        if (is_array($metadata)) {
-                            if (empty($metadata)) {
-                                unset($datavalues[$name]);
-                            }
-                        }
-                }
+                    }
             }
         }
         return $data;
     }
 
     /**
-     * Deduplicate property values of a resource.
+     * Merge current and new property values from two full resource metadata.
      *
-     * @param AbstractResourceRepresentation $representation
+     * @param array $currentData
+     * @param array $newData
+     * @param bool $keepIfNull Specify what to do when a value is null.
+     * @return array Merged values extracted from the current and new data.
      */
-    protected function deduplicatePropertyValues(AbstractResourceRepresentation $representation)
+    protected function mergeMetadata(array $currentData, array $newData, $keepIfNull = false)
     {
-        // NOTE The partial update does not seem to work, so take flushed data
-        // and replace them all.
-        // $data = [];
-        $data = $representation->jsonSerialize();
-        $values = $representation->values();
-        foreach ($values as $term => $propertyData) {
-            $data[$term] = array_values(array_map('unserialize', array_unique(array_map(function ($v) {
-                return serialize($v->jsonSerialize());
-            }, $propertyData['values']))));
+        // Merge properties.
+        // Current values are cleaned too, because they have the property label.
+        // So they are deduplicated too.
+        $currentValues = $this->extractPropertyValuesFromResource($currentData);
+        $newValues = $this->extractPropertyValuesFromResource($newData);
+        $mergedValues = array_merge_recursive($currentValues, $newValues);
+        $merged = $this->deduplicatePropertyValues($mergedValues);
+
+        // Merge lists of ids.
+        $names = ['o:item_set', 'o:item', 'o:media'];
+        foreach ($names as $name) {
+            if (isset($currentData[$name])) {
+                if (isset($newData[$name])) {
+                    $mergedValues = array_merge_recursive($currentData[$name], $newData[$name]);
+                    $merged[$name] = $this->deduplicateIds($mergedValues);
+                } else {
+                    $merged[$name] = $currentData[$name];
+                }
+            } elseif (isset($newData[$name])) {
+                $merged[$name] = $newData[$name];
+            }
         }
-        $options = [];
-        // $options['isPartial'] = true;
-        // $options['collectionAction'] = 'append';
-        $options['isPartial'] = false;
-        $options['collectionAction'] = 'replace';
-        $response = $this->api->update($this->resourceType, $representation->id(), $data, [], $options);
+
+        // Merge unique and boolean values (manage "null" too).
+        $names = [
+            'unique' => [
+                'o:resource_template',
+                'o:resource_class',
+            ],
+            'boolean' => [
+                'o:is_public',
+                'o:is_open',
+                'o:is_active',
+            ],
+        ];
+        foreach ($names as $type => $typeNames) {
+            foreach ($typeNames as $name) {
+                if (array_key_exists($name, $currentData)) {
+                    if (array_key_exists($name, $newData)) {
+                        if (is_null($newData[$name])) {
+                            $merged[$name] = $keepIfNull
+                                ? $currentData[$name]
+                                : ($type == 'boolean' ? false : null);
+                        } else {
+                            $merged[$name] = $newData[$name];
+                        }
+                    } else {
+                        $merged[$name] = $currentData[$name];
+                    }
+                } elseif (array_key_exists($name, $newData)) {
+                    $merged[$name] = $newData[$name];
+                }
+            }
+        }
+
+        // TODO Merge third parties data.
+
+        return $merged;
+    }
+
+    /**
+     * Replace current property values by new ones that are set.
+     *
+     * @param array $currentData
+     * @param array $newData
+     * @return array Merged values extracted from the current and new data.
+     */
+    protected function replacePropertyValues(array $currentData, array $newData)
+    {
+        $currentValues = $this->extractPropertyValuesFromResource($currentData);
+        $newValues = $this->extractPropertyValuesFromResource($newData);
+        $updatedValues = array_replace($currentValues, $newValues);
+        return $updatedValues ;
+    }
+
+    /**
+     * Extract property values from a full array of metadata of a resource json.
+     *
+     * @param array $resourceJson
+     * @return array
+     */
+    protected function extractPropertyValuesFromResource($resourceJson)
+    {
+        static $listOfTerms;
+        if (empty($listOfTerms)) {
+            $response = $this->api->search('properties', []);
+            foreach ($response->getContent() as $member) {
+                $term = $member->term();
+                $listOfTerms[$term] = $term;
+            }
+        }
+        return array_intersect_key($resourceJson, $listOfTerms);
+    }
+
+    /**
+     * Deduplicate data ids for collections of items set, items, media....
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function deduplicateIds($data)
+    {
+        $dataBase = $data;
+        // Base to normalize data in order to deduplicate them in one pass.
+        $base = [];
+        $base['id'] = ['o:id' => 0];
+        // Deduplicate data.
+        $data = array_map('unserialize', array_unique(array_map('serialize',
+            // Normalize data.
+            array_map(function ($v) use ($base) {
+                return isset($v['o:id']) ? ['o:id' => $v['o:id']] : $v;
+        }, $data))));
+        // Keep first original data.
+        $data = array_intersect_key($dataBase, $data);
+        return $data;
+    }
+
+    /**
+     * Deduplicate property values.
+     *
+     * @param array $values
+     * @return array
+     */
+    protected function deduplicatePropertyValues($values)
+    {
+        // Base to normalize data in order to deduplicate them in one pass.
+        $base = [];
+        $base['literal'] = ['property_id' => 0, 'type' => 'literal', '@language' => '', '@value' => ''];
+        $base['resource'] = ['property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
+        $base['url'] = ['property_id' => 0, 'type' => 'url', '@id' => 0, 'o:label' => ''];
+        foreach ($values as $key => $value) {
+            $values[$key] = array_values(
+                // Deduplicate values.
+                array_map('unserialize', array_unique(array_map('serialize',
+                    // Normalize values.
+                    array_map(function ($v) use ($base) {
+                        return array_replace($base[$v['type']], array_intersect_key($v, $base[$v['type']]));
+            }, $value)))));
+        }
+        return $values;
     }
 
     /**
@@ -531,7 +756,8 @@ class Import extends AbstractJob
             $this->hasErr = true;
             $this->logger->err(sprintf('Unknown action "%s".', $action));
         }
-        // Another specific check.
+
+        // Specific check when a identifier is required.
         elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
             if (empty($identifierProperty)) {
                 $this->hasErr = true;
@@ -543,10 +769,7 @@ class Import extends AbstractJob
                     $action, $this->resourceType));
             }
         }
-        if ($identifierProperty === 'internal_id') {
-            $this->hasErr = true;
-            $this->logger->err(sprintf('The identifier property "internal_id" is not managed currently.')); // @translate
-        }
+
         if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
             if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
                 $this->hasErr = true;
@@ -561,7 +784,7 @@ class Import extends AbstractJob
         $recordJson = [
             'o:job' => ['o:id' => $this->job->getId()],
             'entity_id' => $resourceReference->id(),
-            'resource_type' => $this->getArg('entity_type', 'items'),
+            'resource_type' => $this->getArg('resource_type', 'items'),
         ];
         return $recordJson;
     }

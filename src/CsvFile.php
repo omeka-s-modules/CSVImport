@@ -107,11 +107,20 @@ class CsvFile
         $this->fileObject->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
     }
 
+    /**
+     * Extract the first line of the csv file as array.
+     *
+     * @return array|null
+     */
     public function getHeaders()
     {
         $this->fileObject->rewind();
         $line = $this->fileObject->current();
-        return array_map('trim', $line);
+        // Avoid an issue with an empty file.
+        if ($line === false) {
+            return null;
+        }
+        return array_map(function ($v) { return trim($v, "\t\n\r   "); }, $line);
     }
 
     /**
@@ -137,7 +146,7 @@ class CsvFile
     }
 
     /**
-     * Return the number of non-empty rows.
+     * Return the number of non-empty rows, headers included.
      *
      * @return int
      */

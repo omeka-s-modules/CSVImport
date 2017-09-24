@@ -53,11 +53,12 @@ class ResourceMapping extends AbstractMapping
                 $values = [$values];
             } else {
                 $values = explode($multivalueSeparator, $values);
-                $values = array_map('trim', $values);
+                $values = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $values);
             }
             $values = array_filter($values, 'strlen');
-            // Empty values are processed in all cases to set default values.
-            $this->processCell($index, $values);
+            if ($values) {
+                $this->processCell($index, $values);
+            }
         }
 
         return $this->data;
@@ -67,37 +68,41 @@ class ResourceMapping extends AbstractMapping
     {
         $data = &$this->data;
 
+        // Set columns.
+        if (isset($this->args['column-resource'])) {
+            $this->map['resource'] = $this->args['column-resource'];
+            $data['o:id'] = null;
+        }
+        if (isset($this->args['column-resource_template'])) {
+            $this->map['resourceTemplate'] = $this->args['column-resource_template'];
+            $data['o:resource_template'] = null;
+        }
+        if (isset($this->args['column-resource_class'])) {
+            $this->map['resourceClass'] = $this->args['column-resource_class'];
+            $data['o:resource_class'] = null;
+        }
+        if (isset($this->args['column-owner_email'])) {
+            $this->map['ownerEmail'] = $this->args['column-owner_email'];
+            $data['o:owner'] = null;
+        }
+        if (isset($this->args['column-is_public'])) {
+            $this->map['isPublic'] = $this->args['column-is_public'];
+            $data['o:is_public'] = null;
+        }
+
+        // Set default values.
         if (!empty($this->args['o:resource_template']['o:id'])) {
-            $value = $this->args['o:resource_template']['o:id'];
-            $data['o:resource_template'] = $value;
+            $data['o:resource_template'] = ['o:id' => (int) $this->args['o:resource_template']['o:id']];
         }
-        $this->map['resourceTemplate'] = isset($this->args['column-resource_template'])
-            ? array_keys($this->args['column-resource_template'])
-            : [];
-
         if (!empty($this->args['o:resource_class']['o:id'])) {
-            $value = $this->args['o:resource_class']['o:id'];
-            $data['o:resource_class'] = $value;
+            $data['o:resource_class'] = ['o:id' => (int) $this->args['o:resource_class']['o:id']];;
         }
-        $this->map['resourceClass'] = isset($this->args['column-resource_class'])
-            ? array_keys($this->args['column-resource_class'])
-            : [];
-
         if (!empty($this->args['o:owner']['o:id'])) {
-            $value = $this->args['o:owner']['o:id'];
-            $data['o:owner'] = ['o:id' => $value];
+            $data['o:owner'] = ['o:id' => (int) $this->args['o:owner']['o:id']];
         }
-        $this->map['ownerEmail'] = isset($this->args['column-owner_email'])
-            ? array_keys($this->args['column-owner_email'])
-            : [];
-
         if (isset($this->args['o:is_public']) && strlen($this->args['o:is_public'])) {
-            $value = $this->args['o:is_public'];
-            $data['o:is_public'] = (int) (bool) $value;
+            $data['o:is_public'] = (bool) $this->args['o:is_public'];
         }
-        $this->map['isPublic'] = isset($this->args['column-is_public'])
-            ? array_keys($this->args['column-is_public'])
-            : [];
     }
 
     /**
@@ -111,33 +116,59 @@ class ResourceMapping extends AbstractMapping
     {
         $data = &$this->data;
 
-        if (in_array($index, $this->map['resourceTemplate'])) {
+        if (isset($this->map['resource'][$index])) {
+            $identifier = reset($values);
+            $identifierProperty = $this->map['resource'][$index] ?: 'internal_id';
+            $resourceId = $this->findResource($identifier, $identifierProperty);
+            if ($resourceId) {
+                $data['o:id'] = $resourceId;
+            }
+        }
+
+        if (isset($this->map['resourceTemplate'][$index])) {
             $resourceTemplate = $this->findResourceTemplate(reset($values));
             if ($resourceTemplate) {
                 $data['o:resource_template'] = ['o:id' => $resourceTemplate->id()];
             }
         }
 
-        if (in_array($index, $this->map['resourceClass'])) {
+        if (isset($this->map['resourceClass'][$index])) {
             $resourceClass = $this->findResourceClass(reset($values));
             if ($resourceClass) {
                 $data['o:resource_class'] = ['o:id' => $resourceClass->id()];
             }
         }
 
-        if (in_array($index, $this->map['ownerEmail'])) {
+        if (isset($this->map['ownerEmail'][$index])) {
             $user = $this->findUser(reset($values));
             if ($user) {
                 $data['o:owner'] = ['o:id' => $user->id()];
             }
         }
 
-        if (in_array($index, $this->map['isPublic'])) {
+        if (isset($this->map['isPublic'][$index])) {
             $value = reset($values);
-            $data['o:is_public'] = in_array(strtolower($value), ['false', 'off', 'private'])
-                ? 0
-                : (int) (bool) $value;
+            if (strlen($value)) {
+                $data['o:is_public'] = in_array(strtolower($value), ['false', 'off', 'private'])
+                    ? false
+                    : (bool) $value;
+            }
         }
+    }
+
+    protected function findResource($identifier, $identifierProperty = 'internal_id')
+    {
+        $resourceType = $this->args['resource_type'];
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+        $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
+        if (empty($resourceId)) {
+            $this->logger->err(sprintf('"%s" (%s) is not a valid resource identifier.', // @translate
+                $identifier, $identifierProperty));
+            $this->setHasErr(true);
+            return false;
+        }
+
+        return $resourceId;
     }
 
     protected function findResourceTemplate($label)

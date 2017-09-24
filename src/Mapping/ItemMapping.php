@@ -21,16 +21,19 @@ class ItemMapping extends ResourceMapping
 
         $data = &$this->data;
 
-        if (!empty($this->args['o:item_set'])) {
-            $itemSets = $this->args['o:item_set'];
+        // Set columns.
+        if (isset($this->args['column-item_set'])) {
+            $this->map['itemSet'] = $this->args['column-item_set'];
             $data['o:item_set'] = [];
-            foreach ($itemSets as $itemSetId) {
-                $data['o:item_set'][] = ['o:id' => $itemSetId];
+        }
+
+        // Set default values.
+        if (!empty($this->args['o:item_set'])) {
+            $data['o:item_set'] = [];
+            foreach ($this->args['o:item_set'] as $id) {
+                $data['o:item_set'][] = ['o:id' => (int) $id];
             }
         }
-        $this->map['itemSet'] = isset($this->args['column-item_sets'])
-            ? $this->args['column-item_sets']
-            : [];
     }
 
     protected function processCell($index, array $values)

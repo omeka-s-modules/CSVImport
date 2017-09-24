@@ -78,6 +78,10 @@ class IndexController extends AbstractActionController
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
                 $this->saveUserSettings($args);
+                unset($args['multivalue_by_default']);
+                if (empty($args['automap_check_user_list'])) {
+                    unset($args['automap_user_list']);
+                }
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
@@ -199,6 +203,18 @@ class IndexController extends AbstractActionController
     {
         $args = $post;
 
+        // Set values as integer.
+        foreach (['o:resource_template', 'o:resource_class', 'o:owner', 'o:item'] as $meta) {
+            if (!empty($args[$meta]['o:id'])) {
+                $args[$meta] = ['o:id' => (int) $args[$meta]['o:id']];
+            }
+        }
+        foreach (['o:is_public', 'o:is_open', 'o:is_active'] as $meta) {
+            if (isset($args[$meta]) && strlen($args[$meta])) {
+                $args[$meta] = (int) $args[$meta];
+            }
+        }
+
         // Name of properties must be known to merge data and to process update.
         $api = $this->api();
         if (array_key_exists('column-property', $args)) {
@@ -206,24 +222,26 @@ class IndexController extends AbstractActionController
                 $properties = [];
                 foreach ($ids as $id) {
                     $term = $api->read('properties', $id)->getContent()->term();
-                    $properties[$term] = $id;
+                    $properties[$term] = (int) $id;
                 }
                 $args['column-property'][$column] = $properties;
+            }
+        }
+
+        // Check the identifier property.
+        if (array_key_exists('identifier_property', $args)) {
+            $identifierProperty = $args['identifier_property'];
+            if (empty($identifierProperty) && $identifierProperty !== 'internal_id') {
+                $properties = $api->search('properties', ['term' => $identifierProperty])->getContent();
+                if (empty($properties)) {
+                    $args['identifier_property'] = null;
+                }
             }
         }
 
         if (!array_key_exists('column-multivalue', $post)) {
             $args['column-multivalue'] = [];
         }
-
-        // Clean resource identifiers.
-        if (array_key_exists('column-resource_identifier', $args)) {
-            foreach ($args['column-resource_identifier'] as $column => $value) {
-                $args['column-resource_identifier'][$column] = json_decode($value, true);
-            }
-        }
-        unset($args['column-resource_identifier_property']);
-        unset($args['column-resource_identifier_type']);
 
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
@@ -246,6 +264,13 @@ class IndexController extends AbstractActionController
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
+
+        // Remove useless input fields from sidebars.
+        unset($args['value-language']);
+        unset($args['column-resource_property']);
+        unset($args['column-item_set_property']);
+        unset($args['column-item_property']);
+        unset($args['column-media_property']);
 
         return $args;
     }

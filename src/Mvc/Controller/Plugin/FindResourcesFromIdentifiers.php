@@ -57,35 +57,54 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     /**
      * Find a list of resource ids from a list of identifiers.
      *
+     * When there are true duplicates and case insensitive duplicates, the first
+     * case sensitive is returned, else the first case insensitive resource.
+     *
+     * @todo Manage Media source html.
+     *
      * @param array|string $identifiers Identifiers should be unique. If a
      * string is sent, the result will be the resource.
-     * @param string|int $identifierProperty
+     * @param string|int $identifierName Property as integer or term, media
+     * ingester or "internal_id".
      * @param string $resourceType The resource type if any.
      * @return array|int|null Associative array with the identifiers as key and the ids
      * or null as value. Order is kept, but duplicate identifiers are removed.
      * If $identifiers is a string, return directly the resource id, or null.
      */
-    public function __invoke($identifiers, $identifierProperty, $resourceType = null)
+    public function __invoke($identifiers, $identifierName, $resourceType = null)
     {
         $isSingle = is_string($identifiers);
         if ($isSingle) {
             $identifiers = [$identifiers];
         }
-        $identifiers = array_unique(array_filter(array_map('trim', $identifiers)));
+        $identifiers = array_unique(array_filter(array_map(function ($v) {
+            return trim($v, "\t\n\r   ");
+        }, $identifiers)));
         if (empty($identifiers)) {
             return $isSingle ? null : [];
         }
 
-        if ($identifierProperty === 'internal_id') {
-            // Nothing to do.
-        } elseif (is_numeric($identifierProperty)) {
-            $identifierProperty = (int) $identifierProperty;
+        $identifierType = null;
+        if (in_array($identifierName, ['internal_id'])) {
+            $identifierType = 'internal_id';
+        } elseif (strpos($identifierName, 'media_source=') === 0) {
+            $identifierType = 'media_source';
+            $resourceType = 'media';
+            $identifierName = trim(substr($identifierName, strlen('media_source=')));
+            // TODO Currently, the media source cannot be html.
+            if ($identifierName === 'name') {
+                return $isSingle ? null : [];
+            }
+        } elseif (is_numeric($identifierName)) {
+            $identifierType = 'property';
+            $identifierName = (int) $identifierName;
         } else {
             $result = $this->api
-                ->search('properties', ['term' => $identifierProperty])->getContent();
-            $identifierProperty = $result ? $result[0]->id() : null;
+                ->search('properties', ['term' => $identifierName])->getContent();
+            $identifierType = 'property';
+            $identifierName = $result ? $result[0]->id() : null;
         }
-        if (empty($identifierProperty)) {
+        if (empty($identifierName)) {
             return $isSingle ? null : [];
         }
 
@@ -107,51 +126,22 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             $resourceType = $resourceTypes[$resourceType];
         }
 
-        switch ($identifierProperty) {
+        switch ($identifierType) {
             case 'internal_id':
-                $result = $this->findResourcesFromInternalIds($identifiers, $identifierProperty, $resourceType);
+                $result = $this->findResourcesFromInternalIds($identifiers, $resourceType);
                 break;
-            default:
-                $result = $this->findResourcesFromPropertyIds($identifiers, $identifierProperty, $resourceType);
+            case 'property':
+                $result = $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
+                break;
+            case 'media_source':
+                $result = $this->findResourcesFromMediaSource($identifiers, $identifierName);
                 break;
         }
 
         return $isSingle ? ($result ? reset($result) : null) : $result;
     }
 
-    protected function findResourcesFromPropertyIds($identifiers, $identifierProperty, $resourceType)
-    {
-        // The api manager doesn't manage this type of search.
-        $conn = $this->connexion;
-
-        // Search in multiple resource types in one time.
-        $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
-        $quotedIdentifiers = implode(',', $quotedIdentifiers);
-        $qb = $conn->createQueryBuilder()
-            ->select('value.value', 'value.resource_id')
-            ->from('value', 'value')
-            ->leftJoin('value', 'resource', 'resource', 'value.resource_id = resource.id')
-            ->andwhere('value.property_id = :property_id')
-            ->setParameter(':property_id', $identifierProperty)
-            // ->andWhere('value.value in (:values)')
-            // ->setParameter(':values', $identifiers)
-            ->andWhere("value.value in ($quotedIdentifiers)")
-            ->addOrderBy('resource.id', 'ASC')
-            ->addOrderBy('value.id', 'ASC');
-        if ($resourceType) {
-            $qb
-                ->andWhere('resource.resource_type = :resource_type')
-                ->setParameter(':resource_type', $resourceType);
-        }
-        $stmt = $conn->executeQuery($qb, $qb->getParameters());
-        $result = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
-
-        // Reorder the result according to the input (simpler in php and there
-        // is no duplicated identifiers).
-        return array_replace(array_fill_keys($identifiers, null), $result);
-    }
-
-    protected function findResourcesFromInternalIds($identifiers, $identifierProperty, $resourceType)
+    protected function findResourcesFromInternalIds($identifiers, $resourceType)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connexion;
@@ -174,6 +164,103 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
 
         // Reorder the result according to the input (simpler in php and there
         // is no duplicated identifiers).
-        return array_replace(array_fill_keys($identifiers, null), $result);
+        return array_replace(array_fill_keys($identifiers, null), array_combine($result, $result));
+    }
+
+    protected function findResourcesFromPropertyIds($identifiers, $identifierPropertyId, $resourceType)
+    {
+        // The api manager doesn't manage this type of search.
+        $conn = $this->connexion;
+
+        // Search in multiple resource types in one time.
+        $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
+        $quotedIdentifiers = implode(',', $quotedIdentifiers);
+        $qb = $conn->createQueryBuilder()
+            ->select('value.value as identifier', 'value.resource_id as id')
+            ->from('value', 'value')
+            ->leftJoin('value', 'resource', 'resource', 'value.resource_id = resource.id')
+            ->andwhere('value.property_id = :property_id')
+            ->setParameter(':property_id', $identifierPropertyId)
+            // ->andWhere('value.value in (:values)')
+            // ->setParameter(':values', $identifiers)
+            ->andWhere("value.value in ($quotedIdentifiers)")
+            ->addOrderBy('resource.id', 'ASC')
+            ->addOrderBy('value.id', 'ASC');
+        if ($resourceType) {
+            $qb
+                ->andWhere('resource.resource_type = :resource_type')
+                ->setParameter(':resource_type', $resourceType);
+        }
+        $stmt = $conn->executeQuery($qb, $qb->getParameters());
+        // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
+        // replaces the first id by later ids in case of true duplicates.
+        $result = $stmt->fetchAll();
+
+        return $this->cleanResult($identifiers, $result);
+    }
+
+    protected function findResourcesFromMediaSource($identifiers, $ingesterName)
+    {
+        // The api manager doesn't manage this type of search.
+        $conn = $this->connexion;
+
+        // Search in multiple resource types in one time.
+        $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
+        $quotedIdentifiers = implode(',', $quotedIdentifiers);
+        $qb = $conn->createQueryBuilder()
+            ->select('media.source as identifier', 'media.id as id')
+            ->from('media', 'media')
+            ->andwhere('media.ingester = :ingester')
+            ->setParameter(':ingester', $ingesterName)
+            // ->andWhere('media.source in (:sources)')
+            // ->setParameter(':sources', $identifiers)
+            ->andwhere("media.source in ($quotedIdentifiers)")
+            ->addOrderBy('media.id', 'ASC');
+        $stmt = $conn->executeQuery($qb, $qb->getParameters());
+        // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
+        // replaces the first id by later ids in case of true duplicates.
+        $result = $stmt->fetchAll();
+
+        return $this->cleanResult($identifiers, $result);
+    }
+
+    /**
+     * Reorder the result according to the input (simpler in php and there is no
+     * duplicated identifiers). When there are true duplicates, it returns the
+     * first. When there are case insensitive duplicates, it returns the first
+     * too.
+     *
+     * @param array $identifiers
+     * @param array $result
+     * @return array
+     */
+    protected function cleanResult(array $identifiers, array $result)
+    {
+        $cleanedResult = array_fill_keys($identifiers, null);
+
+        // Prepare the lowercase result one time only.
+        $lowerResult = array_map(function ($v) {
+            return ['identifier' => strtolower($v['identifier']), 'id' => $v['id']];
+        }, $result);
+
+        foreach ($cleanedResult as $key => $value) {
+            // Look for the first case sensitive result.
+            foreach ($result as $resultValue) {
+                if ($resultValue['identifier'] == $key) {
+                    $cleanedResult[$key] = $resultValue['id'];
+                    continue 2;
+                }
+            }
+            // Look for the first case insensitive result.
+            $lowerKey = strtolower($key);
+            foreach ($lowerResult as $resultValue) {
+                if ($resultValue['identifier'] == $lowerKey) {
+                    $cleanedResult[$key] = $resultValue['id'];
+                    continue 2;
+                }
+            }
+        }
+
+        return $cleanedResult;
     }
 }

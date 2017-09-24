@@ -29,7 +29,10 @@ interface MappingInterface
     public static function getSidebar(PhpRenderer $view);
 
     /**
-     * Process a row from the CSV file
+     * Process a row from the CSV file.
+     *
+     * Note: the empty values should be set too in the returned data in order to
+     * manage some updates.
      *
      * @param array $row
      * @return array $entityJson including the added data
