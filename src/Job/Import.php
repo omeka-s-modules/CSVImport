@@ -709,7 +709,7 @@ class Import extends AbstractJob
         $recordJson = [
             'o:job' => ['o:id' => $this->job->getId()],
             'entity_id' => $resourceReference->id(),
-            'resource_type' => $this->getArg('entity_type', 'items'),
+            'resource_type' => $this->getArg('resource_type', 'items'),
         ];
         return $recordJson;
     }
