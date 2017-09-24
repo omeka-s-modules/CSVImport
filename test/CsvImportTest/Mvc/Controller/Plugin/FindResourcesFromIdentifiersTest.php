@@ -10,9 +10,7 @@ class FindResourcesFromIdentifiersTest extends OmekaControllerTestCase
     protected $api;
     protected $findResourcesFromIdentifier;
 
-    protected $itemSet;
-    protected $item;
-    protected $media;
+    protected $resources;
 
     public function setUp()
     {
@@ -26,45 +24,57 @@ class FindResourcesFromIdentifiersTest extends OmekaControllerTestCase
         $this->loginAsAdmin();
 
         // 10 is property id of dcterms:identifier.
-        $this->itemSet = $this->api->create('item_sets', [
+        $this->resources[] = $this->api->create('item_sets', [
             'dcterms:identifier' => [
-                0 => [
-                    'property_id' => 10,
-                    'type' => 'literal',
-                    '@value' => 'foo item set',
-                ],
+                ['property_id' => 10, 'type' => 'literal', '@value' => 'Foo Item Set'],
             ],
         ])->getContent();
 
-        $this->item = $this->api->create('items', [
+        $this->resources[] = $this->api->create('items', [
             'dcterms:identifier' => [
-                0 => [
-                    'property_id' => 10,
-                    'type' => 'literal',
-                    '@value' => 'foo item',
-                ],
+                ['property_id' => 10, 'type' => 'literal', '@value' => 'Foo Item'],
             ],
         ])->getContent();
 
-        $this->media = $this->api->create('media',
-            [
-                'dcterms:identifier' => [
-                    0 => [
-                        'property_id' => 10,
-                        'type' => 'literal',
-                        '@value' => 'foo media',
-                    ],
-                ],
-                'o:ingester' => 'html',
-                'html' => '<p>This <strong>is</strong> <em>html</em>.</p>',
-                'o:item' => ['o:id' => $this->item->id()],
+        $this->resources[] = $this->api->create('media', [
+            'dcterms:identifier' => [
+                ['property_id' => 10, 'type' => 'literal', '@value' => 'Foo Media'],
+            ],
+            'o:ingester' => 'html',
+            'html' => '<p>This <strong>is</strong> <em>html</em>.</p>',
+            'o:item' => ['o:id' => $this->resources[1]->id()],
+        ])->getContent();
+
+        // Check a case insensitive duplicate (should return the first).
+        $this->resources[] = $this->api->create('item_sets', [
+            'dcterms:identifier' => [
+                ['property_id' => 10, 'type' => 'literal', '@value' => 'foo item set'],
+            ],
+        ])->getContent();
+
+        // Allows to check a true duplicate (should return the first).
+        $this->resources[] = $this->api->create('items', [
+            'dcterms:identifier' => [
+                ['property_id' => 10, 'type' => 'literal', '@value' => 'Foo Item'],
+            ],
         ])->getContent();
     }
 
     public function tearDown()
     {
-        $this->api()->delete('item_sets', $this->itemSet->id());
-        $this->api()->delete('items', $this->item->id());
+        $map = [
+            'o:ItemSet' => 'item_sets',
+            'o:Item' => 'items',
+            'o:Media' => 'media',
+        ];
+        foreach ($this->resources as $resource) {
+            $resourceType = $resource->getResourceJsonLdType();
+            if ($resourceType === 'o:Media') {
+                continue;
+            }
+            $this->api()->delete($map[$resourceType], $resource->id());
+        }
+        $this->resources = [];
     }
 
     public function testNoIdentifier()
@@ -85,36 +95,60 @@ class FindResourcesFromIdentifiersTest extends OmekaControllerTestCase
         $this->assertEmpty($resources);
     }
 
-    public function testItemSetIdentifier()
+    /**
+     * @dataProvider resourceIdentifierProvider
+     */
+    public function testResourceIdentifier($identifier, $identifierProperty, $resourceType, $expected)
     {
-        $findResourcesFromIdentifier = $this->findResourcesFromIdentifier;
-        $resource = $findResourcesFromIdentifier('foo item set', 10, 'item_sets');
-        $this->assertEquals($this->itemSet->id(), $resource);
+        $expected = is_null($expected) ? null : $this->resources[$expected]->id();
 
-        $resources = $findResourcesFromIdentifier(['foo item set'], 10, 'item_sets');
+        $findResourcesFromIdentifier = $this->findResourcesFromIdentifier;
+
+        $resource = $findResourcesFromIdentifier($identifier, $identifierProperty, $resourceType);
+        $this->assertEquals($expected, $resource);
+
+        $resources = $findResourcesFromIdentifier([$identifier], $identifierProperty, $resourceType);
         $this->assertEquals(1, count($resources));
-        $this->assertEquals($this->itemSet->id(), $resources['foo item set']);
+        $this->assertEquals($expected, $resources[$identifier]);
     }
 
-    public function testItemIdentifier()
+    public function resourceIdentifierProvider()
     {
-        $findResourcesFromIdentifier = $this->findResourcesFromIdentifier;
-        $resource = $findResourcesFromIdentifier('foo item', 10, 'items');
-        $this->assertEquals($this->item->id(), $resource);
-
-        $resources = $findResourcesFromIdentifier(['foo item'], 10, 'items');
-        $this->assertEquals(1, count($resources));
-        $this->assertEquals($this->item->id(), $resources['foo item']);
+        return [
+            ['Foo Item Set', 10, 'item_sets', 0],
+            ['Foo Item', 10, 'items', 1],
+            ['Foo Media', 10, 'media', 2],
+            ['foo item set', 10, 'item_sets', 3],
+            ['unknown', 10, 'item_sets', null],
+            ['unknown', 10, 'items', null],
+            ['unknown', 10, 'media', null],
+        ];
     }
 
-    public function testMediaIdentifier()
+    /**
+     * @dataProvider resourceIdentifiersProvider
+     */
+    public function testResourceIdentifiers($identifiers, $identifierProperty, $resourceType, $expecteds)
     {
-        $findResourcesFromIdentifier = $this->findResourcesFromIdentifier;
-        $resource = $findResourcesFromIdentifier('foo media', 10, 'media');
-        $this->assertEquals($this->media->id(), $resource);
+        foreach ($expecteds as &$expected) {
+            $expected = is_null($expected) ? null : $this->resources[$expected]->id();
+        }
 
-        $resources = $findResourcesFromIdentifier(['foo media'], 10, 'media');
-        $this->assertEquals(1, count($resources));
-        $this->assertEquals($this->media->id(), $resources['foo media']);
+        $findResourcesFromIdentifier = $this->findResourcesFromIdentifier;
+
+        $resources = $findResourcesFromIdentifier($identifiers, $identifierProperty, $resourceType);
+        $this->assertEquals(count(array_unique($identifiers)), count($resources));
+        $this->assertEquals($expecteds, array_values($resources));
+    }
+
+    public function resourceIdentifiersProvider()
+    {
+        return [
+            [['Foo Item Set'], 10, 'item_sets', [0]],
+            [['Foo Item Set', 'foo item set'], 10, 'item_sets', [0, 3]],
+            [['foo item set', 'Foo Item Set'], 10, 'item_sets', [3, 0]],
+            [['foo item set', 'Foo Item Set', 'foo item set'], 10, 'item_sets', [3, 0]],
+            [['foo item set', 'unknown', 'Foo Item Set', 'foo item set'], 10, 'item_sets', [3, null, 0]],
+        ];
     }
 }
