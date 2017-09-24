@@ -6,7 +6,7 @@ use CSVImport\Entity\CSVImportImport;
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use LimitIterator;
 use Omeka\Api\Manager;
-use Omeka\Api\Representation\AbstractResourceRepresentation;
+use Omeka\Api\Response;
 use Omeka\Job\AbstractJob;
 use Zend\Log\Logger;
 
@@ -246,9 +246,9 @@ class Import extends AbstractJob
      * @param array $data
      * @param array $ids All the ids must exists and the order must be the same
      * than data.
-     * @param string $mode
+     * @param string $action
      */
-    protected function update(array $data, array $ids, $mode)
+    protected function update(array $data, array $ids, $action)
     {
         if (empty($ids)) {
             return;
@@ -261,10 +261,8 @@ class Import extends AbstractJob
             case 'items':
             case 'media':
                 // TODO Manage and update file data.
-                switch ($mode) {
+                switch ($action) {
                     case self::ACTION_APPEND:
-                        $options['isPartial'] = true;
-                        $options['collectionAction'] = 'append';
                         break;
                     case self::ACTION_REVISE:
                         // Remove empty properties to avoid replacement.
@@ -275,33 +273,37 @@ class Import extends AbstractJob
                     case self::ACTION_UPDATE:
                         $options['isPartial'] = true;
                         // TODO Check when some rows are empty and filled.
-                        $options['collectionAction'] = array_key_exists('o:item_set', reset($data))
-                            ? 'replace'
-                            : 'append';
+                        $options['collectionAction'] = 'replace';
                         break;
                     case self::ACTION_REPLACE:
                         $options['isPartial'] = false;
-                        $options['collectionAction'] = 'replace';
                         break;
                 }
                 break;
+
             default:
                 $this->hasErr = true;
                 $this->logger->err(sprintf('The update mode "%s" is unsupported for %s currently.', // @translate
-                    $mode, $this->resourceType));
+                    $action, $this->resourceType));
                 return;
         }
 
         // In the api manager, batchUpdate() allows to update a set of resources
-        // with the same data. Here, data are specific to each row.
+        // with the same data. Here, data are specific to each row, so each
+        // resource is updated separately.
         $updatedIds = [];
         foreach ($ids as $key => $id) {
             try {
-                $response = $this->api->update($this->resourceType, $id, $data[$key], $fileData, $options);
-                if ($mode === self::ACTION_APPEND) {
-                    // TODO Improve to avoid two consecutive update (deduplicate before or via core methods).
-                    $resource = $response->getContent();
-                    $this->deduplicatePropertyValues($resource);
+                switch ($action) {
+                    case self::ACTION_APPEND:
+                        $response = $this->append($this->resourceType, $id, $data[$key]);
+                        break;
+                    case self::ACTION_REVISE:
+                    case self::ACTION_UPDATE:
+                    case self::ACTION_REPLACE:
+                    default:
+                        $response = $this->api->update($this->resourceType, $id, $data[$key], $fileData, $options);
+                        break;
                 }
                 $updatedIds[$key] = $id;
             } catch (\Exception $e) {
@@ -311,7 +313,7 @@ class Import extends AbstractJob
         }
         $idsForLog = $this->idsForLog($updatedIds);
         $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
-            count($updatedIds), $this->resourceType, $mode, $idsForLog));
+            count($updatedIds), $this->resourceType, $action, $idsForLog));
     }
 
     /**
@@ -513,28 +515,95 @@ class Import extends AbstractJob
     }
 
     /**
-     * Deduplicate property values of a resource.
+     * Update a resource (append with a deduplication check).
      *
-     * @param AbstractResourceRepresentation $representation
+     * Currently, Omeka S has no method to deduplicate, so a first call is done
+     * to get all the data and to update them here, with a deduplication for
+     * values, then a full replacement (not partial).
+     *
+     * @todo Manage file and media data.
+     * @todo What to do with other data, and external data?
+     *
+     * @param string $resourceType
+     * @param int $id
+     * @param array $data
+     * @return Response
      */
-    protected function deduplicatePropertyValues(AbstractResourceRepresentation $representation)
+    protected function append($resourceType, $id, $data)
     {
-        // NOTE The partial update does not seem to work, so take flushed data
-        // and replace them all.
-        // $data = [];
-        $data = $representation->jsonSerialize();
-        $values = $representation->values();
-        foreach ($values as $term => $propertyData) {
-            $data[$term] = array_values(array_map('unserialize', array_unique(array_map(function ($v) {
-                return serialize($v->jsonSerialize());
-            }, $propertyData['values']))));
-        }
-        $options = [];
-        // $options['isPartial'] = true;
-        // $options['collectionAction'] = 'append';
+        $resource = $this->api->read($resourceType, $id)->getContent();
+
+        // Use arrays to simplify process.
+        $currentData = json_decode(json_encode($resource), true);
+        $merged = $this->mergeMetadata($currentData, $data);
+        $data = array_replace($data, $merged);
+        $newData = array_replace($currentData, $data);
+
+        $fileData = [];
         $options['isPartial'] = false;
-        $options['collectionAction'] = 'replace';
-        $response = $this->api->update($this->resourceType, $representation->id(), $data, [], $options);
+        return $this->api->update($resourceType, $id, $newData, $fileData, $options);
+    }
+
+    /**
+     * Merge current and new property values from two full resource metadata.
+     *
+     * @param array $currentData
+     * @param array $newData
+     * @return array Merged values extracted from the current and new data.
+     */
+    protected function mergePropertyValues(array $currentData, array $newData)
+    {
+        // Current values are cleaned too, because they have the property label.
+        // So they are deduplicated too.
+        $currentValues = $this->extractPropertyValuesFromResource($currentData);
+        $newValues = $this->extractPropertyValuesFromResource($newData);
+        $mergedValues = array_merge_recursive($currentValues, $newValues);
+        $mergedValues = $this->deduplicatePropertyValues($mergedValues);
+        return $mergedValues;
+    }
+
+    /**
+     * Extract property values from a full array of metadata of a resource json.
+     *
+     * @param array $resourceJson
+     * @return array
+     */
+    protected function extractPropertyValuesFromResource($resourceJson)
+    {
+        static $listOfTerms;
+        if (empty($listOfTerms)) {
+            $response = $this->api->search('properties', []);
+            foreach ($response->getContent() as $member) {
+                $term = $member->term();
+                $listOfTerms[$term] = $term;
+            }
+        }
+        return array_intersect_key($resourceJson, $listOfTerms);
+    }
+
+    /**
+     * Deduplicate values.
+     *
+     * @param array $values
+     * @return array
+     */
+    protected function deduplicatePropertyValues($values)
+    {
+        // Base to normalize values in order to deduplicate them in one pass.
+        $base = [];
+        $base['literal'] = ['property_id' => 0, 'type' => 'literal', '@language' => '', '@value' => ''];
+        $base['resource'] = ['property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
+        $base['url'] = ['property_id' => 0, 'type' => 'url', '@id' => 0, 'o:label' => ''];
+        foreach ($values as $term => $propertyData) {
+            $values[$term] = array_values(
+                // Deduplicate values.
+                array_map('unserialize', array_unique(array_map('serialize',
+                    // Normalize values.
+                    array_map(function ($v) use ($base) {
+                        return array_replace($base[$v['type']], array_intersect_key($v, $base[$v['type']]));
+            }, $propertyData)))));
+        }
+        return $values;
     }
 
     /**

@@ -210,7 +210,7 @@ class IndexController extends AbstractActionController
                 $properties = [];
                 foreach ($ids as $id) {
                     $term = $api->read('properties', $id)->getContent()->term();
-                    $properties[$term] = $id;
+                    $properties[$term] = (int) $id;
                 }
                 $args['column-property'][$column] = $properties;
             }
