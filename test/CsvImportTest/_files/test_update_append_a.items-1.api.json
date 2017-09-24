@@ -35,6 +35,32 @@
             "property_id": 1,
             "property_label": "Title",
             "@value": "Walden"
+        },
+        {
+            "type": "literal",
+            "property_id": 1,
+            "property_label": "Title",
+            "@value": "Walden; or, Life in the Wood"
+        }
+    ],
+    "dcterms:description": [
+        {
+            "type": "literal",
+            "property_id": 4,
+            "property_label": "Description",
+            "@value": "A man seeks simplicity."
+        },
+        {
+            "type": "literal",
+            "property_id": 4,
+            "property_label": "Description",
+            "@value": "A man seeks simplicity!"
+        },
+        {
+            "type": "literal",
+            "property_id": 4,
+            "property_label": "Description",
+            "@value": "New description"
         }
     ],
     "dcterms:creator": [
@@ -42,15 +68,15 @@
             "type": "literal",
             "property_id": 2,
             "property_label": "Creator",
-            "@value": "Thoreau Henry David"
+            "@value": "Henry David Thoreau"
         }
     ],
-    "dcterms:rights": [
+    "dcterms:identifier": [
         {
             "type": "literal",
-            "property_id": 15,
-            "property_label": "Rights",
-            "@value": "Public domain"
+            "property_id": 10,
+            "property_label": "Identifier",
+            "@value": "doc:thoreau_walden"
         }
     ]
 }
