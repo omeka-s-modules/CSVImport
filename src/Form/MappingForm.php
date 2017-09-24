@@ -279,7 +279,7 @@ class MappingForm extends Form
 - append: add new data to complete the resource;
 - revise: replace existing data to the resource, but don’t update a property when no new data are providing (warning: the default values should not be set);
 - update: replace existing data to the resource, and remove data when no data are providing in an empty cell;
-- replace: remove all properties of the resource, and fill new ones from the data.', // @translate
+- replace: remove all properties of the resource, and fill new ones from the data (warning: currently, the attached media will be replaced in all cases).', // @translate
                     'value_options' => $valueOptions,
                 ],
                 'attributes' => [
