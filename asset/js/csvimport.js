@@ -181,10 +181,15 @@
                 } else if (flagData == 'column-resource') {
                     var resourceType = 'resources';
                     var resourcePropertyId = $('#column-resource_property').chosen().val();
-                    var resourceProperty = $('#column-resource_property option[value=' + resourcePropertyId + ']');
-                    resourceProperty = resourceProperty.data('term') || resourceProperty.text();
-                    flagName = Omeka.jsTranslate('Resource') + ' [' + resourceProperty + ']';
-                    value = resourceProperty;
+                    if (resourcePropertyId) {
+                        var resourceProperty = $('#column-resource_property option[value=' + resourcePropertyId + ']');
+                        resourceProperty = resourceProperty.data('term') || resourceProperty.text();
+                        flagName = Omeka.jsTranslate('Resource') + ' [' + resourceProperty + ']';
+                        value = resourceProperty;
+                    } else {
+                        flagName = $(this).text();
+                        value = targetLi.data('value') || value;
+                    }
                 } else if (flagData == 'column-item_set') {
                     var resourceType = 'item_sets';
                     var resourcePropertyId = $('#column-item_set_property').chosen().val();

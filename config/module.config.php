@@ -88,8 +88,8 @@ return [
             'csv_import_automap_user_list' => [
                 'owner' => 'owner_email',
                 'owner email' => 'owner_email',
-                'id' => 'resource',
-                'internal id' => 'resource',
+                'id' => 'internal_id',
+                'internal id' => 'internal_id',
                 'resource' => 'resource',
                 'resources' => 'resource',
                 'resource id' => 'resource',

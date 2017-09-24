@@ -53,13 +53,14 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                 <td class="mapping element">
                     <ul class="mappings elements">
                     <?php if (!empty($automaps[$index])): ?>
+                        <?php $value = $automaps[$index]['value']; ?>
                         <li class="mapping <?php echo $automaps[$index]['class']; ?>"<?php echo $automaps[$index]['special']; ?>>
                             <?php echo $this->translate($automaps[$index]['label']); ?>
                             <ul class="actions">
                                 <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
                                 <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
-                            <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml($automaps[$index]['value']); ?>" type="hidden" />
+                            <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml(is_array($value) ? json_encode($value) : $value); ?>" type="hidden" />
                         </li>
                     <?php endif; ?>
                     </ul>

@@ -538,7 +538,8 @@ class Import extends AbstractJob
             $this->hasErr = true;
             $this->logger->err(sprintf('Unknown action "%s".', $action));
         }
-        // Another specific check.
+
+        // Specific check when a identifier is required.
         elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
             if (empty($identifierProperty)) {
                 $this->hasErr = true;
@@ -550,10 +551,7 @@ class Import extends AbstractJob
                     $action, $this->resourceType));
             }
         }
-        if ($identifierProperty === 'internal_id') {
-            $this->hasErr = true;
-            $this->logger->err(sprintf('The identifier property "internal_id" is not managed currently.')); // @translate
-        }
+
         if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
             if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
                 $this->hasErr = true;
