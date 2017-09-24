@@ -70,6 +70,60 @@ class ImportTest extends OmekaControllerTestCase
         }
     }
 
+    /**
+     * This false test allows to prepare a list of resources and to use them in
+     * dependencies for performance reasons.
+     *
+     * @return array
+     */
+    public function testPerformCreateOne()
+    {
+        $filepath = 'test.csv';
+        $totals = ['items' => 3, 'media' => 4];
+        $filepath = $this->basepath . $filepath;
+
+        $this->performProcessForFile($filepath);
+        $this->assertTrue(true);
+
+        $resources = [];
+        foreach ($totals as $resourceType => $total) {
+            $result = $this->api->search($resourceType)->getContent();
+            foreach ($result as $key => $resource) {
+                $resources[$resourceType][$key + 1] = $resource;
+            }
+        }
+        return $resources;
+    }
+
+    public function csvFileDeleteProvider()
+    {
+        return [
+            ['test_delete_items.csv', ['items', 2]],
+            ['test_delete_media.csv', ['media', 4]],
+        ];
+    }
+
+    /**
+     * @dataProvider csvFileDeleteProvider
+     * @depends testPerformCreateOne
+     */
+    public function testPerformDelete($filepath, $options, $resources)
+    {
+        $filepath = $this->basepath . $filepath;
+        $filebase = substr($filepath, 0, -4);
+        list($resourceType, $index) = $options;
+
+        $resource = $resources[$resourceType][$index];
+        $resourceId = $resource->id();
+        $resource = $this->api->read($resourceType, $resourceId)->getContent();
+        $this->assertNotEmpty($resource);
+
+        $this->performProcessForFile($filepath);
+
+        $resource = $this->api->search($resourceType, ['id' => $resourceId])->getContent();
+        $this->assertEmpty($resource);
+    }
+
     protected function performProcessForFile($filepath)
     {
         copy($filepath, $this->tempfile);
