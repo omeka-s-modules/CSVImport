@@ -266,11 +266,7 @@ class Import extends AbstractJob
                     case self::ACTION_APPEND:
                         break;
                     case self::ACTION_REVISE:
-                        // Remove empty properties to avoid replacement.
-                        // Warning: default may be automatically set already, so
-                        // they are kept.
-                        $data = $this->removeEmptyData($data);
-                        // No break.
+                        break;
                     case self::ACTION_UPDATE:
                         $options['isPartial'] = true;
                         // TODO Check when some rows are empty and filled.
@@ -300,6 +296,8 @@ class Import extends AbstractJob
                         $response = $this->append($this->resourceType, $id, $data[$key]);
                         break;
                     case self::ACTION_REVISE:
+                        $response = $this->revise($this->resourceType, $id, $data[$key]);
+                        break;
                     case self::ACTION_UPDATE:
                     case self::ACTION_REPLACE:
                     default:
@@ -469,58 +467,6 @@ class Import extends AbstractJob
     }
 
     /**
-     * Remove empty values from passed data in order not to change current ones.
-     *
-     * @param array $data
-     * @return array
-     */
-    protected function removeEmptyData(array $data)
-    {
-        // Data are updated in place.
-        foreach ($data as &$dataValues) {
-            foreach ($dataValues as $name => &$metadata) {
-                switch ($name) {
-                    case 'o:resource_template':
-                    case 'o:resource_class':
-                    case 'o:owner':
-                    case 'o:item':
-                    case 'o:media':
-                        if (empty($metadata) || empty($metadata['o:id'])) {
-                            unset($datavalues[$name]);
-                        }
-                        break;
-                    case 'o:item-set':
-                        if (empty($metadata)) {
-                            unset($datavalues[$name]);
-                        } elseif (array_key_exists('o:id', $metadata) && empty($metadata['o:id'])) {
-                            unset($datavalues[$name]);
-                        }
-                        break;
-                    case 'o:ingester':
-                    case 'o:source':
-                    case 'ingest_filename':
-                        // These values are not updatable and are removed.
-                        unset($datavalues[$name]);
-                        break;
-                    case 'o:is_public':
-                    case 'o:is_open':
-                        if (!in_array($metadata, [0, 1], true)) {
-                            unset($datavalues[$name]);
-                        }
-                        break;
-                    default:
-                        if (is_array($metadata)) {
-                            if (empty($metadata)) {
-                                unset($datavalues[$name]);
-                            }
-                        }
-                }
-            }
-        }
-        return $data;
-    }
-
-    /**
      * Update a resource (append with a deduplication check).
      *
      * Currently, Omeka S has no method to deduplicate, so a first call is done
@@ -550,6 +496,84 @@ class Import extends AbstractJob
     }
 
     /**
+     * Revise a resource (replace values that are set and not empty).
+     *
+     * @todo What to do with other data, and external data?
+     *
+     * @param string $resourceType
+     * @param int $id
+     * @param array $data
+     * @return Response
+     */
+    protected function revise($resourceType, $id, $data)
+    {
+        $resource = $this->api->read($resourceType, $id)->getContent();
+
+        // Use arrays to simplify process.
+        $currentData = json_decode(json_encode($resource), true);
+        $data = $this->removeEmptyData($data);
+        $replaced = $this->replacePropertyValues($currentData, $data);
+        $newData = array_replace($data, $replaced);
+
+        $fileData = [];
+        $options['isPartial'] = true;
+        $options['collectionAction'] = 'replace';
+        return $this->api->update($resourceType, $id, $newData, $fileData, $options);
+    }
+
+    /**
+     * Remove empty values from passed data in order not to change current ones.
+     *
+     * @todo Use the mechanism of preprocessBatchUpdate() of the adapter.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function removeEmptyData(array $data)
+    {
+        // Data are updated in place.
+        foreach ($data as $name => &$metadata) {
+            switch ($name) {
+                case 'o:resource_template':
+                case 'o:resource_class':
+                case 'o:owner':
+                case 'o:item':
+                    if (empty($metadata) || empty($metadata['o:id'])) {
+                        unset($data[$name]);
+                    }
+                    break;
+                case 'o:media':
+                case 'o:item-set':
+                    if (empty($metadata)) {
+                        unset($data[$name]);
+                    } elseif (array_key_exists('o:id', $metadata) && empty($metadata['o:id'])) {
+                        unset($data[$name]);
+                    }
+                    break;
+                // These values are not updatable and are removed.
+                case 'o:ingester':
+                case 'o:source':
+                case 'ingest_filename':
+                    unset($data[$name]);
+                    break;
+                case 'o:is_public':
+                case 'o:is_open':
+                    if (!in_array($metadata, [0, 1], true)) {
+                        unset($data[$name]);
+                    }
+                    break;
+                default:
+                    if (is_array($metadata)) {
+                        if (empty($metadata)) {
+                            unset($data[$name]);
+                        }
+                    }
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Merge current and new property values from two full resource metadata.
      *
      * @param array $currentData
@@ -565,6 +589,21 @@ class Import extends AbstractJob
         $mergedValues = array_merge_recursive($currentValues, $newValues);
         $mergedValues = $this->deduplicatePropertyValues($mergedValues);
         return $mergedValues;
+    }
+
+    /**
+     * Replace current property values by new ones that are set.
+     *
+     * @param array $currentData
+     * @param array $newData
+     * @return array Merged values extracted from the current and new data.
+     */
+    protected function replacePropertyValues(array $currentData, array $newData)
+    {
+        $currentValues = $this->extractPropertyValuesFromResource($currentData);
+        $newValues = $this->extractPropertyValuesFromResource($newData);
+        $updatedValues = array_replace($currentValues, $newValues);
+        return $updatedValues ;
     }
 
     /**
