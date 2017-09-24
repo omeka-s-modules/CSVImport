@@ -226,8 +226,11 @@ class IndexController extends AbstractActionController
                 $args['column-resource_identifier'][$column] = json_decode($value, true);
             }
         }
-        unset($args['column-resource_identifier_property']);
-        unset($args['column-resource_identifier_type']);
+        unset($args['column-resource_property']);
+        unset($args['column-resource_type']);
+        unset($args['column-item_sets_property']);
+        unset($args['column-items_property']);
+        unset($args['column-media_property']);
 
         // "unset()" allows to keep all csv parameters together in args.
         unset($args['delimiter']);
