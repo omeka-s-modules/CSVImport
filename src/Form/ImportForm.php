@@ -111,6 +111,9 @@ class ImportForm extends Form
                     'info' => 'The type of data being imported', // @translate
                     'value_options' => $valueOptions,
                 ],
+                'attributes' => [
+                    'value' => 'items',
+                ],
         ]);
 
         $this->add([
