@@ -47,7 +47,7 @@ class IndexController extends AbstractActionController
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
-                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId()); // @translate
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
         } else {
