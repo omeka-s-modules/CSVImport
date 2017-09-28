@@ -70,7 +70,7 @@ class IndexController extends AbstractActionController
 
             $isUtf8 = $csvFile->isUtf8();
             if (! $csvFile->isUtf8()) {
-                $this->messenger()->addError('File is not UTF-8 encoded.');
+                $this->messenger()->addError('File is not UTF-8 encoded.'); // @translate
                 return $this->redirect()->toRoute('admin/csvimport');
             }
 
