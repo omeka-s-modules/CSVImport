@@ -1,28 +1,96 @@
 <?php
 namespace CSVImport;
 
-use SplFileObject;
+use LimitIterator;
 use Omeka\Service\Exception\ConfigException;
+use SplFileObject;
 
 class CsvFile
 {
+    /**
+     * Default delimiter of fgetcsv().
+     *
+     * @var string
+     */
+    const DEFAULT_DELIMITER = ',';
+
+    /**
+     * Default enclosure of fgetcsv().
+     *
+     * @var string
+     */
+    const DEFAULT_ENCLOSURE = '"';
+
+    /**
+     * Default escape of fgetcsv().
+     *
+     * @var string
+     */
+    const DEFAULT_ESCAPE = '\\';
+
+    /**
+     * @var SplFileObject
+     */
     public $fileObject;
 
+    /**
+     * @var string
+     */
     public $tempPath;
 
+    /**
+     * Csv delimiter of the file (default to standard).
+     *
+     * @var string
+     */
+    public $delimiter = self::DEFAULT_DELIMITER;
+
+    /**
+     * Csv enclosure of the file (default to standard).
+     *
+     * @var string
+     */
+    public $enclosure = self::DEFAULT_ENCLOSURE;
+
+    /**
+     * Csv escape of the file (default to standard).
+     *
+     * @var string
+     */
+    public $escape = self::DEFAULT_ESCAPE;
+
+    /**
+     * @var array
+     */
     public $config;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $this->config = $config;
     }
 
+    /**
+     * Check if the file is utf-8 formatted.
+     *
+     * @return bool
+     */
     public function isUtf8()
     {
+        $result = true;
+        // Check all the file, because the headers are generally ascii.
+        // Nevertheless, check the lines one by one as text to avoid a memory
+        // overflow with a big csv file.
+        $this->fileObject->setFlags(0);
         $this->fileObject->rewind();
-        $string = $this->fileObject->fgets();
-        $isUtf8 = mb_detect_encoding($string, 'UTF-8', true);
-        return $isUtf8 == 'UTF-8';
+        foreach (new LimitIterator($this->fileObject) as $line) {
+            if (mb_detect_encoding($line, 'UTF-8', true) !== 'UTF-8') {
+                $result = false;
+                break;
+            }
+        }
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        return $result;
     }
 
     public function moveToTemp($systemTempPath)
@@ -34,14 +102,25 @@ class CsvFile
     {
         $tempPath = $this->getTempPath();
         $this->fileObject = new SplFileObject($tempPath);
-        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $this->fileObject->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
     }
 
+    /**
+     * Extract the first line of the csv file as array.
+     *
+     * @return array|null
+     */
     public function getHeaders()
     {
         $this->fileObject->rewind();
-        $line = $this->fileObject->fgetcsv();
-        return $line;
+        $line = $this->fileObject->current();
+        // Avoid an issue with an empty file.
+        if ($line === false) {
+            return null;
+        }
+        return array_map(function ($v) { return trim($v, "\t\n\r   "); }, $line);
     }
 
     /**
@@ -67,11 +146,60 @@ class CsvFile
     }
 
     /**
+     * Return the number of non-empty rows, headers included.
+     *
+     * @return int
+     */
+    public function countRows()
+    {
+        // FileObject has no countRows() method, so count them one by one.
+        // $file->key() + 1 cannot be used, because we want non-empty rows only.
+        $file = $this->fileObject;
+        $file->rewind();
+        $index = 0;
+        while ($file->valid()) {
+            ++$index;
+            $file->next();
+        }
+        return $index;
+    }
+
+    /**
      * Use this to set the known (already-uploaded) csv file's path to where omekas puts it.
      */
     public function setTempPath($tempPath)
     {
         $this->tempPath = $tempPath;
+    }
+
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    public function setDelimiter($delimiter)
+    {
+        $this->delimiter = $delimiter;
+    }
+
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    public function setEnclosure($enclosure)
+    {
+        $this->enclosure = $enclosure;
+    }
+
+    public function getEscape()
+    {
+        return $this->escape;
+    }
+
+    public function setEscape($escape)
+    {
+        $this->escape = $escape;
     }
 
     /**

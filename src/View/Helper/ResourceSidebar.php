@@ -3,7 +3,7 @@ namespace CSVImport\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 
-class ItemSidebar extends AbstractHelper
+class ResourceSidebar extends AbstractHelper
 {
     protected $user;
 
@@ -12,13 +12,14 @@ class ItemSidebar extends AbstractHelper
         $this->user = $user;
     }
 
-    public function __invoke()
+    public function __invoke($resourceType = null)
     {
         $userRole = $this->user->getRole();
         return $this->getView()->partial(
-            'common/item-sidebar',
+            'common/resource-sidebar',
             [
                 'userRole' => $userRole,
+                'resourceType' => $resourceType,
             ]
         );
     }
