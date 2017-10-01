@@ -107,6 +107,8 @@ return [
                 'collection id' => 'item_set',
                 'item set identifier' => 'item_set {dcterms:identifier}',
                 'collection identifier' => 'item_set {dcterms:identifier}',
+                'item set title' => 'item_set {dcterms:title}',
+                'collection title' => 'item_set {dcterms:title}',
                 'additions' => 'is_open',
                 'open' => 'is_open',
                 'item' => 'item',
