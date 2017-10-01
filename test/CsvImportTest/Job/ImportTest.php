@@ -1,9 +1,10 @@
 <?php
 namespace CSVImportTest\Mvc\Controller\Plugin;
 
-use OmekaTestHelper\Controller\OmekaControllerTestCase;
 use CSVImport\Job\Import;
 use Omeka\Entity\Job;
+use Omeka\Stdlib\Message;
+use OmekaTestHelper\Controller\OmekaControllerTestCase;
 
 class ImportTest extends OmekaControllerTestCase
 {
@@ -189,7 +190,7 @@ class ImportTest extends OmekaControllerTestCase
         $filebase = substr($filepath, 0, -4);
         $argspath = $filebase . '.args.json';
         if (!file_exists($argspath)) {
-            $this->markTestSkipped(sprintf('No argument files (%s).', basename($argspath)));
+            $this->markTestSkipped(new Message('No argument files (%s).', basename($argspath)));
         }
         $args = json_decode(file_get_contents($filebase . '.args.json'), true);
         $args['csvpath'] = $this->tempfile;

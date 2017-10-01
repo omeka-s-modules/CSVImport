@@ -8,6 +8,7 @@ use LimitIterator;
 use Omeka\Api\Manager;
 use Omeka\Api\Response;
 use Omeka\Job\AbstractJob;
+use Omeka\Stdlib\Message;
 use Zend\Log\Logger;
 
 class Import extends AbstractJob
@@ -186,7 +187,7 @@ class Import extends AbstractJob
                         case self::ACTION_SKIP:
                             if ($idsRemaining) {
                                 $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
-                                $this->logger->info(sprintf('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                                $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                                     implode('", "', $identifiersRemaining)));
                             }
                             break;
@@ -200,7 +201,7 @@ class Import extends AbstractJob
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
                         $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
-                        $this->logger->info(sprintf('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                        $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                             implode('", "', $identifiersRemaining)));
                     }
                     $this->delete($idsToProcess);
@@ -275,7 +276,7 @@ class Import extends AbstractJob
 
             default:
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The update mode "%s" is unsupported for %s currently.', // @translate
+                $this->logger->err(new Message('The update mode "%s" is unsupported for %s currently.', // @translate
                     $action, $this->resourceType));
                 return;
         }
@@ -308,10 +309,10 @@ class Import extends AbstractJob
         }
         if ($updatedIds) {
             $idsForLog = $this->idsForLog($updatedIds);
-            $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
+            $this->logger->info(new Message('%d %s were updated (%s): %s.', // @translate
                 count($updatedIds), $this->resourceType, $action, $idsForLog));
         } else {
-            $this->logger->notice(sprintf('None of the %d %s were updated (%s).', // @translate
+            $this->logger->notice(new Message('None of the %d %s were updated (%s).', // @translate
                 count($ids), $this->resourceType, $action));
         }
     }
@@ -331,7 +332,7 @@ class Import extends AbstractJob
         $deleted = $response->getContent();
         // TODO Get better stats of removed ids in case of error.
         $idsForLog = $this->idsForLog($ids, true);
-        $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
+        $this->logger->info(new Message('%d %s were removed: %s.', // @translate
             count($deleted), $this->resourceType, $idsForLog));
     }
 
@@ -452,11 +453,11 @@ class Import extends AbstractJob
             default:
                 if ($hasIdentifierKeys) {
                     array_walk($ids, function (&$v, $k) {
-                        $v = sprintf('"%s" (%d)', $k, $v); // @ translate
+                        $v = new Message('"%s" (%d)', $k, $v); // @ translate
                     });
                 } else {
                     array_walk($ids, function (&$v, $k) {
-                        $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
+                        $v = new Message('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
                     });
                 }
                 break;
@@ -754,18 +755,18 @@ class Import extends AbstractJob
         ];
         if (!in_array($action, $allowedActions)) {
             $this->hasErr = true;
-            $this->logger->err(sprintf('Unknown action "%s".', $action));
+            $this->logger->err(new Message('Unknown action "%s".', $action));
         }
 
         // Specific check when a identifier is required.
         elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
             if (empty($identifierProperty)) {
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The action "%s" requires a resource identifier property.', $action)); // @translate
+                $this->logger->err(new Message('The action "%s" requires a resource identifier property.', $action)); // @translate
             }
             if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The action "%s" is not available for resource type "%s" currently.', // @translate
+                $this->logger->err(new Message('The action "%s" is not available for resource type "%s" currently.', // @translate
                     $action, $this->resourceType));
             }
         }
@@ -773,7 +774,7 @@ class Import extends AbstractJob
         if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
             if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The action "%s" for unidentified resources is not managed.', // @translate
+                $this->logger->err(new Message('The action "%s" for unidentified resources is not managed.', // @translate
                     $actionUnidentified));
             }
         }

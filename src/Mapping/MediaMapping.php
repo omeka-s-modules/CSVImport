@@ -2,6 +2,7 @@
 namespace CSVImport\Mapping;
 
 use CSVImport\Job\Import;
+use Omeka\Stdlib\Message;
 use Zend\View\Renderer\PhpRenderer;
 
 class MediaMapping extends ResourceMapping
@@ -50,7 +51,7 @@ class MediaMapping extends ResourceMapping
             if (empty($identifier)) {
                 // The parent identifier is needed only to create a media.
                 if ($action === Import::ACTION_CREATE) {
-                    $this->logger->err(sprintf('An item identifier is required to process action "%s".', // @translate
+                    $this->logger->err(new Message('An item identifier is required to process action "%s".', // @translate
                         $action));
                     $this->setHasErr(true);
                     return false;
@@ -63,7 +64,7 @@ class MediaMapping extends ResourceMapping
             if ($resourceId) {
                 $data['o:item'] = ['o:id' => $resourceId];
             } else {
-                $this->logger->err(sprintf('"%s" (%s) is not a valid item identifier.', // @translate
+                $this->logger->err(new Message('"%s" (%s) is not a valid item identifier.', // @translate
                     $identifier, $identifierProperty));
                 $this->setHasErr(true);
                 return false;

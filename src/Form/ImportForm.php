@@ -86,8 +86,7 @@ class ImportForm extends Form
             'type' => 'select',
             'options' => [
                 'label' => 'Column enclosure', // @translate
-                'info' => 'A single character that will be used to separate columns in the csv file.' // @translate
-                    . ' ' . 'The enclosure can be omitted when the content does not contain the delimiter.', // @translate
+                'info' => 'A single character that will be used to separate columns in the csv file. The enclosure can be omitted when the content does not contain the delimiter.', // @translate
                 'value_options' => $valueOptions,
             ],
             'attributes' => [
@@ -121,8 +120,7 @@ class ImportForm extends Form
             'type' => 'checkbox',
             'options' => [
                 'label' => 'Automap with labels alone', // @translate
-                'info' => 'Headers are mapped automatically, case sensitively and not, with standard names ("dcterms:title") and labels ("Dublin Core : Title").' // @translate
-                    . ' ' . 'If checked, an automatic map will be done with names and labels only ("Title") too, Dublin Core first.', // @translate
+                'info' => 'Headers are mapped automatically, case sensitively and not, with standard names ("dcterms:title") and labels ("Dublin Core : Title"). If checked, an automatic map will be done with names and labels only ("Title") too, Dublin Core first.', // @translate
             ],
             'attributes' => [
                 'id' => 'automap_check_names_alone',
@@ -155,8 +153,7 @@ class ImportForm extends Form
             'type' => 'textarea',
             'options' => [
                 'label' => 'Automap user list', // @translate
-                'info' => 'List of user headers used to map the file automagically.' // @translate
-                    . ' ' . 'Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).', // @translate
+                'info' => 'List of user headers used to map the file automagically. Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).', // @translate
             ],
             'attributes' => [
                 'id' => 'automap_user_list',

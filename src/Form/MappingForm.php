@@ -293,9 +293,7 @@ class MappingForm extends Form
                 'type' => PropertySelect::class,
                 'options' => [
                     'label' => 'Resource identifier property', // @translate
-                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them.' // @translate
-                        . ' ' . 'One column of the file must map the selected property.' // @translate
-                        . ' ' . 'In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
+                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them. One column of the file must map the selected property. In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
                     'empty_option' => 'Select below', // @translate
                     'term_as_value' => false,
                     'prepend_value_options' => [
@@ -317,8 +315,7 @@ class MappingForm extends Form
                 'type' => 'radio',
                 'options' => [
                     'label' => 'Action on unidentified resources', // @translate
-                    'info' => 'This option determines what to do when a resource does not exist but the action applies to an existing resource ("Append", "Update", or "Replace").' // @translate
-                        . ' ' . 'This option is not used when the main action is "Create", "Delete" or "Skip".', // @translate
+                    'info' => 'This option determines what to do when a resource does not exist but the action applies to an existing resource ("Append", "Update", or "Replace"). This option is not used when the main action is "Create", "Delete" or "Skip".', // @translate
                     'value_options' => [
                         Import::ACTION_SKIP => 'Skip the row', // @translate
                         Import::ACTION_CREATE => 'Create a new resource', // @translate
