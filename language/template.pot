@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-05 16:42-0400\n"
+"POT-Creation-Date: 2017-09-28 12:59-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,12 +94,12 @@ msgid "Users info"
 msgstr ""
 
 #: view/csv-import/index/index.phtml:6 view/csv-import/index/map.phtml:9
-#: view/csv-import/index/past-imports.phtml:7
-msgid "CSV Import"
+msgid "Import Settings"
 msgstr ""
 
-#: view/csv-import/index/map.phtml:9
-msgid "Import Settings"
+#: view/csv-import/index/index.phtml:6 view/csv-import/index/map.phtml:9
+#: view/csv-import/index/past-imports.phtml:7
+msgid "CSV Import"
 msgstr ""
 
 #: view/csv-import/index/map.phtml:17
@@ -188,11 +188,19 @@ msgstr ""
 msgid "Undo in progress"
 msgstr ""
 
+#: src/Controller/IndexController.php:50
+msgid "Importing in Job ID "
+msgstr ""
+
+#: src/Controller/IndexController.php:73
+msgid "File is not UTF-8 encoded."
+msgstr ""
+
 #: src/Mapping/ItemMapping.php:8
 msgid "Item data"
 msgstr ""
 
-#: src/Mapping/MediaMapping.php:10
+#: src/Mapping/MediaMapping.php:8
 msgid "Media import"
 msgstr ""
 

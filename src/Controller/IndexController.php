@@ -86,7 +86,7 @@ class IndexController extends AbstractActionController
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
-                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId()); // @translate
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
             // TODO Set variables when the form is invalid.
@@ -114,7 +114,7 @@ class IndexController extends AbstractActionController
 
             $isUtf8 = $csvFile->isUtf8();
             if (! $csvFile->isUtf8()) {
-                $this->messenger()->addError('File is not UTF-8 encoded.');
+                $this->messenger()->addError('File is not UTF-8 encoded.'); // @translate
                 return $this->redirect()->toRoute('admin/csvimport');
             }
 
