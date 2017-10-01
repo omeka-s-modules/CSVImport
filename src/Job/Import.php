@@ -755,7 +755,7 @@ class Import extends AbstractJob
         ];
         if (!in_array($action, $allowedActions)) {
             $this->hasErr = true;
-            $this->logger->err(new Message('Unknown action "%s".', $action));
+            $this->logger->err(new Message('Unknown action "%s".', $action)); // @translate
         }
 
         // Specific check when a identifier is required.

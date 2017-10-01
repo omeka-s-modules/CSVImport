@@ -190,7 +190,7 @@ class ImportTest extends OmekaControllerTestCase
         $filebase = substr($filepath, 0, -4);
         $argspath = $filebase . '.args.json';
         if (!file_exists($argspath)) {
-            $this->markTestSkipped(new Message('No argument files (%s).', basename($argspath)));
+            $this->markTestSkipped(new Message('No argument files (%s).', basename($argspath))); // @translate
         }
         $args = json_decode(file_get_contents($filebase . '.args.json'), true);
         $args['csvpath'] = $this->tempfile;
