@@ -124,6 +124,14 @@ class Import extends AbstractJob
         $this->importRecord = $response->getContent();
 
         // Check options.
+        if (empty($this->resourceType)) {
+            $this->hasErr = true;
+            $this->logger->err('Resource type is empty.'); // @translate
+        }
+        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'users'])) {
+            $this->hasErr = true;
+            $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
+        }
         $action = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
         $identifierProperty = empty($args['identifier_property']) ? null : $args['identifier_property'];
         $actionUnidentified = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
