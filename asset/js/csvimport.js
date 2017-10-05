@@ -1,9 +1,11 @@
 (function ($) {
     var activeElement = null;
 
-    var actionsHtml = '<ul class="actions"><li><a aria-label="Remove mapping" title="Remove mapping" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li></ul>';
-
     $(document).ready(function() {
+        var actionsHtml = '<ul class="actions"><li><a aria-label="'
+            + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li><li><a aria-label="'
+            + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li></ul>';
+
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
             //looks like a stopPropagation on the selector-parent forces
@@ -35,7 +37,7 @@
             //up to the li
             var targetLi = $(e.target).closest('li.selector-child');
             if (activeElement == null) {
-                alert("Select an item type at the left before choosing a resource class.");
+                alert(Omeka.jsTranslate('Select an item type at the left before choosing a resource class.'));
             } else {
                 //first, check if a class is already added
                 //var hasMapping = activeElement.find('ul.mappings li');
@@ -119,14 +121,19 @@
         });
 
         $('.sidebar.flags li').on('click', function(e){
+            // hijack the multivalue option because it is handled separately below
+            var targetLi = $(e.target).closest('li');
+            if (targetLi.hasClass('column-multivalue')) {
+                return;
+            }
             e.stopPropagation();
             e.preventDefault();
             //looks like a stopPropagation on the selector-parent forces
             //me to bind the event lower down the DOM, then work back
             //up to the li
-            var targetLi = $(e.target).closest('li');
+
             if (activeElement == null) {
-                alert("Select an element at the left before choosing a property.");
+                alert(Omeka.jsTranslate('Select an element at the left before choosing a property.'));
             } else {
                 var flagName = targetLi.find('span').text();
                 var flagType = targetLi.data('flag-type');
@@ -135,7 +142,6 @@
                 }
                 //first, check if the flag is already added
                 //or if there is already any media mapping
-
                 var hasFlag = activeElement.find('ul.mappings li.' + flagType);
                 if (hasFlag.length === 0) {
                     var elementId = activeElement.data('element-id');
@@ -160,15 +166,11 @@
                 }
             }
         });
-        
-        
-        
-        
+
         $('.sidebar').on('click', '.button.language', function(e) {
             setLanguage(e);
-
         });
-        
+
         $('.sidebar').on('click', '.button.column-url', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -177,14 +179,14 @@
             activeElement.find('input.column-reference').prop('disabled', true);
             activeElement.find('li.column-reference').hide();
         });
-        
+
         $('.sidebar').on('click', '.button.column-multivalue', function(e){
             e.stopPropagation();
             e.preventDefault();
             activeElement.find('input.column-multivalue').prop('disabled', false);
             activeElement.find('li.column-multivalue').show();
         });
-        
+
         $('.sidebar').on('click', '.button.column-reference', function(e){
             e.stopPropagation();
             e.preventDefault();
@@ -194,88 +196,67 @@
             activeElement.find('li.column-url').hide();
         });
 
-        
-        $('ul.options').on('click',  'a.remove-url', function(e){
+        $('ul.options').on('click', 'a.remove-option', function(e){
             e.stopPropagation();
             e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-url').prop('disabled', true);
-            parent.find('li.column-url').hide();
+            var optionToRemove = $(this).parents('li.option');
+            optionToRemove.find('input.column-option').prop('disabled', true);
+            optionToRemove.addClass('delete');
+            optionToRemove.find('.restore-option').show();
+            optionToRemove.find('.remove-option').hide();
         });
-        
-        $('ul.options').on('click',  'a.remove-multivalue', function(e){
+
+        $('ul.options').on('click', 'a.restore-option', function(e){
             e.stopPropagation();
             e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-multivalue').prop('disabled', true);
-            parent.find('li.column-multivalue').hide();
+            var optionToRestore = $(this).parents('li.option');
+            optionToRestore.find('input.column-option').prop('disabled', false);
+            optionToRestore.removeClass('delete');
+            optionToRestore.find('.remove-option').show();
+            optionToRestore.find('.restore-option').hide();
         });
-        
-        $('ul.options').on('click',  'a.remove-reference', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-reference').prop('disabled', true);
-            parent.find('li.column-reference').hide();
-        });
-        
-        $('ul.options').on('click',  'a.remove-column-language', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var parent = $(this).parents('.options');
-            parent.find('input.column-language').prop('disabled', true);
-            parent.find('li.column-language').hide();
-        });
-        
+
         /*
          * Modified from resource-form.js in core
          */
-        
+
         $('input.value-language').on('keyup', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            var languageTag = this.value;
-            // @see http://stackoverflow.com/questions/7035825/regular-expression-for-a-language-tag-as-defined-by-bcp47
-            // Removes `|[A-Za-z]{4}|[A-Za-z]{5,8}` from the "language" portion
-            // becuase, while in the spec, it does not represent current usage.
-            if ('' == languageTag
-                || languageTag.match(/^(((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))|((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?))(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+))$/)) {
-                this.setCustomValidity('');
-            } else {
-                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
-            }
+            this.setCustomValidity(
+                Omeka.langIsValid(this.value) ? '' : Omeka.jsTranslate('Please enter a valid language tag.')
+            );
         });
-        
+
         /*
          * Prevent accidental form submission when entering a language tag
          * and hitting enter by setting the language as if clicking the button
          */
-        
+
         $('input.value-language').on('keypress', function(e) {
             if (e.keyCode == 13 ) {
                 setLanguage(e);
             }
         });
-        
+
         function setLanguage(e) {
             e.stopPropagation();
             e.preventDefault();
             var valueLanguageElement = document.getElementById('value-language');
             var lang = $(valueLanguageElement).val();
             if (lang == '') {
-                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
+                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag.'));
             }
             if (typeof valueLanguageElement.reportValidity === 'function') {
                 var valid = valueLanguageElement.reportValidity();
             } else {
                 var valid = valueLanguageElement.checkValidity();
                 if (! valid) {
-                    alert(Omeka.jsTranslate("Please enter a valid language tag"));
+                    alert(Omeka.jsTranslate('Please enter a valid language tag.'));
                 }
             }
-            
+
             if (valid && lang != '') {
-                
                 var languageInput = activeElement.find('input.column-language');
                 languageInput.val(lang);
                 activeElement.find('li.column-language').show();
@@ -283,6 +264,6 @@
                 languageInput.prop('disabled', false);
             }
         }
-        
+
     });
 })(jQuery);

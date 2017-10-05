@@ -14,11 +14,6 @@
     float: right;
 }
 
-#mapping-data td,
-#mapping-data th {
-    vertical-align: top;
-}
-
 #mapping-data td:first-of-type {
     padding: 9px .5em;
 }
@@ -48,18 +43,38 @@ td.comment {
     max-width: 300px;
 }
 
-ul {
+ul.mappings.elements {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-ul.actions {
-    float: right;
+.sidebar ul {
+    padding-left: 0;
+}
+
+ul.options {
+    padding: unset;
+}
+
+ul.options li {
+    display: flex;
+}
+
+li {
+    list-style: none;
+}
+
+li.mapping {
+    display: flex;
 }
 
 li.mapping.delete {
-    text-decoration: line-through;
+    background-color: #fcc;
+}
+
+li.option.delete {
+    background-color: #fcc;
 }
 
 .sidebar a.button {
@@ -73,6 +88,7 @@ li.mapping.delete {
 .sidebar-chooser a.button {
     font-size: 13px;
     margin: 3px 0;
+    width: 100px;
 }
 
 #media-sidebar a {
@@ -97,3 +113,14 @@ input.value-language[type="text"] {
     margin: 3px;
 }
 
+div.language.options {
+    padding-left: 12px;
+}
+
+li.column-multivalue {
+    display: flex;
+}
+
+.item-mapping li.column-multivalue {
+    display: block;
+}

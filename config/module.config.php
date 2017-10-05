@@ -9,11 +9,21 @@ return [
     'api_adapters' => [
         'invokables' => [
             'csvimport_entities' => 'CSVImport\Api\Adapter\EntityAdapter',
-            'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter'
+            'csvimport_imports' => 'CSVImport\Api\Adapter\ImportAdapter',
+        ],
+    ],
+    'translator' => [
+        'translation_file_patterns' => [
+            [
+                'type' => 'gettext',
+                'base_dir' => OMEKA_PATH . '/modules/CSVImport/language',
+                'pattern' => '%s.mo',
+                'text_domain' => null,
+            ],
         ],
     ],
     'view_manager' => [
-        'template_path_stack'      => [
+        'template_path_stack' => [
             OMEKA_PATH . '/modules/CSVImport/view',
         ],
     ],
@@ -21,9 +31,9 @@ return [
         'invokables' => [
             'csvPropertySelector' => 'CSVImport\View\Helper\PropertySelector',
         ],
-        'factories'  => [
-            'mediaSidebar'    => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
-            'itemSidebar'     => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
+        'factories' => [
+            'mediaSidebar' => 'CSVImport\Service\ViewHelper\MediaSidebarFactory',
+            'itemSidebar' => 'CSVImport\Service\ViewHelper\ItemSidebarFactory',
         ],
     ],
     'entity_manager' => [
@@ -44,14 +54,14 @@ return [
             '\CSVImport\Mapping\ItemMapping',
         ],
         'users' => [
-            '\CSVImport\Mapping\UserMapping'
+            '\CSVImport\Mapping\UserMapping',
         ],
     ],
     'csv_import_media_ingester_adapter' => [
-        'url'     => 'CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter',
-        'html'    => 'CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter',
-        'iiif'    => null,
-        'oembed'  => null,
+        'url' => 'CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter',
+        'html' => 'CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter',
+        'iiif' => null,
+        'oembed' => null,
         'youtube' => null,
     ],
     'router' => [
@@ -59,38 +69,38 @@ return [
             'admin' => [
                 'child_routes' => [
                     'csvimport' => [
-                        'type'    => 'Literal',
+                        'type' => 'Literal',
                         'options' => [
-                            'route'    => '/csvimport',
+                            'route' => '/csvimport',
                             'defaults' => [
                                 '__NAMESPACE__' => 'CSVImport\Controller',
-                                'controller'    => 'Index',
-                                'action'        => 'index',
+                                'controller' => 'Index',
+                                'action' => 'index',
                             ],
                         ],
                         'may_terminate' => true,
                         'child_routes' => [
                             'past-imports' => [
-                                'type'    => 'Literal',
+                                'type' => 'Literal',
                                 'options' => [
                                     'route' => '/past-imports',
                                     'defaults' => [
                                         '__NAMESPACE__' => 'CSVImport\Controller',
-                                        'controller'    => 'Index',
-                                        'action'        => 'past-imports',
+                                        'controller' => 'Index',
+                                        'action' => 'past-imports',
                                     ],
-                                ]
+                                ],
                             ],
                             'map' => [
-                                'type'    => 'Literal',
+                                'type' => 'Literal',
                                 'options' => [
                                     'route' => '/map',
                                     'defaults' => [
                                         '__NAMESPACE__' => 'CSVImport\Controller',
-                                        'controller'    => 'Index',
-                                        'action'        => 'map',
+                                        'controller' => 'Index',
+                                        'action' => 'map',
                                     ],
-                                ]
+                                ],
                             ],
                         ],
                     ],
@@ -101,30 +111,37 @@ return [
     'navigation' => [
         'AdminModule' => [
             [
-                'label'      => 'CSV Import',
-                'route'      => 'admin/csvimport',
-                'resource'   => 'CSVImport\Controller\Index',
-                'pages'      => [
+                'label' => 'CSV Import',
+                'route' => 'admin/csvimport',
+                'resource' => 'CSVImport\Controller\Index',
+                'pages' => [
                     [
-                        'label'      => 'Import',
+                        'label'      => 'Import', // @translate
                         'route'      => 'admin/csvimport',
                         'resource'   => 'CSVImport\Controller\Index',
                     ],
                     [
-                        'label'      => 'Import',
+                        'label'      => 'Import', // @translate
                         'route'      => 'admin/csvimport/map',
                         'resource'   => 'CSVImport\Controller\Index',
                         'visible'    => false,
                     ],
                     [
-                        'label'      => 'Past Imports',
+                        'label'      => 'Past Imports', // @translate
                         'route'      => 'admin/csvimport/past-imports',
                         'controller' => 'Index',
-                        'action'     => 'past-imports',
-                        'resource'   => 'CSVImport\Controller\Index',
+                        'action' => 'past-imports',
+                        'resource' => 'CSVImport\Controller\Index',
                     ],
                 ],
             ],
         ],
-    ]
+    ],
+    'js_translate_strings' => [
+        'Remove mapping', // @translate
+        'Undo remove mapping', // @translate
+        'Select an item type at the left before choosing a resource class.', // @translate
+        'Select an element at the left before choosing a property.', // @translate
+        'Please enter a valid language tag.', // @translate
+    ],
 ];

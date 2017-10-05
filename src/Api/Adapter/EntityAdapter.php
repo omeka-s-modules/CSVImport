@@ -13,17 +13,17 @@ class EntityAdapter extends AbstractEntityAdapter
     {
         return 'CSVImport\Entity\CSVImportEntity';
     }
-    
+
     public function getResourceName()
     {
         return 'csvimport_entities';
     }
-    
+
     public function getRepresentationClass()
     {
         return 'CSVImport\Api\Representation\EntityRepresentation';
     }
-    
+
     public function buildQuery(QueryBuilder $qb, array $query)
     {
         if (isset($query['job_id'])) {
@@ -54,11 +54,11 @@ class EntityAdapter extends AbstractEntityAdapter
             $job = $this->getAdapter('jobs')->findEntity($data['o:job']['o:id']);
             $entity->setJob($job);
         }
-        
+
         if (isset($data['resource_type'])) {
             $entity->setResourceType($data['resource_type']);
         }
-        
+
         if (isset($data['entity_id'])) {
             $entity->setEntityId($data['entity_id']);
         }

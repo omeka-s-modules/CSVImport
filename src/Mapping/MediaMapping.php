@@ -1,15 +1,11 @@
 <?php
 namespace CSVImport\Mapping;
 
-use CSVImport\Mapping\AbstractMapping;
-use CSVImport\MediaIngesterAdapter\HtmlMediaIngesterAdapter;
-use CSVImport\MediaIngesterAdapter\UrlMediaIngesterAdapter;
-
 class MediaMapping extends AbstractMapping
 {
     public static function getLabel()
     {
-        return "Media Import";
+        return "Media import"; // @translate
     }
 
     public static function getName()
@@ -20,7 +16,6 @@ class MediaMapping extends AbstractMapping
     public static function getSidebar($view)
     {
         return $view->mediaSidebar();
-
     }
 
     public function processRow($row)
@@ -31,21 +26,21 @@ class MediaMapping extends AbstractMapping
         $mediaMap = isset($this->args['media']) ? $this->args['media'] : [];
         $multivalueMap = isset($this->args['column-multivalue']) ? array_keys($this->args['column-multivalue']) : [];
         $multivalueSeparator = $this->args['multivalue-separator'];
-        foreach($row as $index => $values) {
+        foreach ($row as $index => $values) {
             //split $values into an array, so people can have more than one file
             //in the column
             $mediaData = explode($multivalueSeparator, $values);
 
             if (array_key_exists($index, $mediaMap)) {
                 $ingester = $mediaMap[$index];
-                foreach($mediaData as $mediaDatum) {
+                foreach ($mediaData as $mediaDatum) {
                     $mediaDatum = trim($mediaDatum);
-                    if(empty($mediaDatum)) {
+                    if (empty($mediaDatum)) {
                         continue;
                     }
                     $mediaDatumJson = [
                         'o:ingester' => $ingester,
-                        'o:source'   => $mediaDatum,
+                        'o:source' => $mediaDatum,
                     ];
                     if (isset($mediaAdapters[$ingester])) {
                         $adapter = new $mediaAdapters[$ingester];
@@ -55,7 +50,6 @@ class MediaMapping extends AbstractMapping
                 }
             }
         }
-
         return $mediaJson;
     }
 }

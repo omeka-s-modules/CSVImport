@@ -14,26 +14,26 @@ class ImportForm extends Form
                 'name' => 'csv',
                 'type' => 'file',
                 'options' => [
-                    'label' => 'CSV File', // @translate
-                    'info'  => 'The CSV File to upload', //@translate
+                    'label' => 'CSV file', // @translate
+                    'info' => 'The CSV file to upload', //@translate
                 ],
                 'attributes' => [
                     'id' => 'csv',
-                    'required' => 'true'
-                ]
+                    'required' => 'true',
+                ],
         ]);
 
         $resourceTypes = array_keys($this->mappingClasses);
         $valueOptions = [];
-        foreach($resourceTypes as $resourceType) {
+        foreach ($resourceTypes as $resourceType) {
             $valueOptions[$resourceType] = ucfirst($resourceType);
         }
         $this->add([
                 'name' => 'resource_type',
                 'type' => 'select',
                 'options' => [
-                    'label' => 'Import Type', // @translate
-                    'info'  => 'The type of data being imported', // @translate
+                    'label' => 'Import type', // @translate
+                    'info' => 'The type of data being imported', // @translate
                     'value_options' => $valueOptions,
                 ],
         ]);

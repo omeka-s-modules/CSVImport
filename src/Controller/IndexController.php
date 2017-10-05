@@ -10,15 +10,15 @@ use Zend\View\Model\ViewModel;
 class IndexController extends AbstractActionController
 {
     protected $mediaIngesterManager;
-    
+
     protected $config;
-    
+
     public function __construct(array $config, \Omeka\Media\Ingester\Manager $mediaIngesterManager)
     {
         $this->config = $config;
         $this->mediaIngesterManager = $mediaIngesterManager;
     }
-    
+
     public function indexAction()
     {
         $view = new ViewModel;
@@ -31,7 +31,7 @@ class IndexController extends AbstractActionController
     {
         $view = new ViewModel;
         $request = $this->getRequest();
-        
+
         if (!$request->isPost()) {
             return $this->redirect()->toRoute('admin/csvimport');
         }
@@ -47,7 +47,7 @@ class IndexController extends AbstractActionController
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $post);
                 //the Omeka2Import record is created in the job, so it doesn't
                 //happen until the job is done
-                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId());
+                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId()); // @translate
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
         } else {
@@ -70,7 +70,7 @@ class IndexController extends AbstractActionController
 
             $isUtf8 = $csvFile->isUtf8();
             if (! $csvFile->isUtf8()) {
-                $this->messenger()->addError('File is not UTF-8 encoded.');
+                $this->messenger()->addError('File is not UTF-8 encoded.'); // @translate
                 return $this->redirect()->toRoute('admin/csvimport');
             }
 
@@ -78,16 +78,18 @@ class IndexController extends AbstractActionController
             $view->setVariable('mediaForms', $this->getMediaForms());
 
             $config = $this->config;
-            if($resourceType == 'items' || $resourceType == 'item_sets') {
+            if ($resourceType == 'items' || $resourceType == 'item_sets') {
                 $autoMaps = $this->getAutomaps($columns);
             } else {
                 $autoMaps = [];
             }
 
+            $mappingsResource = $this->orderMappingsForResource($resourceType);
+
             $view->setVariable('form', $form);
             $view->setVariable('automaps', $autoMaps);
             $view->setVariable('resourceType', $resourceType);
-            $view->setVariable('mappings', $config['csv_import_mappings'][$resourceType]);
+            $view->setVariable('mappings', $mappingsResource);
             $view->setVariable('columns', $columns);
             $view->setVariable('csvpath', $csvPath);
         }
@@ -108,14 +110,45 @@ class IndexController extends AbstractActionController
         $view = new ViewModel;
         $page = $this->params()->fromQuery('page', 1);
         $query = $this->params()->fromQuery() + [
-            'page'       => $page,
-            'sort_by'    => $this->params()->fromQuery('sort_by', 'id'),
-            'sort_order' => $this->params()->fromQuery('sort_order', 'desc')
+            'page' => $page,
+            'sort_by' => $this->params()->fromQuery('sort_by', 'id'),
+            'sort_order' => $this->params()->fromQuery('sort_order', 'desc'),
         ];
         $response = $this->api()->search('csvimport_imports', $query);
         $this->paginator($response->getTotalResults(), $page);
         $view->setVariable('imports', $response->getContent());
         return $view;
+    }
+
+    /**
+     * Helper to order buttons on the mapping form for a resource type.
+     *
+     * For ergonomic reasons, it’s cleaner to keep the buttons of modules after
+     * the default ones. This is only needed in the mapping form. The default
+     * order is set in this module config too, before Zend merge.
+     *
+     * @param string $resourceType
+     * @return array
+     */
+    protected function orderMappingsForResource($resourceType)
+    {
+        $defaultOrder = [
+            'items' => [
+                '\CSVImport\Mapping\PropertyMapping',
+                '\CSVImport\Mapping\ItemMapping',
+                '\CSVImport\Mapping\MediaMapping',
+            ],
+            'users' => [
+                '\CSVImport\Mapping\UserMapping',
+            ],
+        ];
+        $mappings = $this->config['csv_import_mappings'];
+        if (isset($defaultOrder[$resourceType])) {
+            return array_values(array_unique(array_merge(
+                $defaultOrder[$resourceType], $mappings[$resourceType]
+            )));
+        }
+        return $mappings[$resourceType];
     }
 
     protected function getMediaForms()
@@ -134,7 +167,7 @@ class IndexController extends AbstractActionController
     protected function getAutomaps($columns)
     {
         $autoMaps = [];
-        foreach($columns as $index=>$column) {
+        foreach ($columns as $index => $column) {
             $column = trim($column);
             if (preg_match('/^[a-z0-9-_]+:[a-z0-9-_]+$/i', $column)) {
                 $response = $this->api()->search('properties', ['term' => $column]);
@@ -147,16 +180,17 @@ class IndexController extends AbstractActionController
         }
         return $autoMaps;
     }
-    
-    protected function undoJob($jobId) {
+
+    protected function undoJob($jobId)
+    {
         $response = $this->api()->search('csvimport_imports', ['job_id' => $jobId]);
         $csvImport = $response->getContent()[0];
         $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Undo', ['jobId' => $jobId]);
-        $response = $this->api()->update('csvimport_imports', 
-                    $csvImport->id(), 
+        $response = $this->api()->update('csvimport_imports',
+                    $csvImport->id(),
                     [
-                        'o:undo_job' => ['o:id' => $job->getId() ]
+                        'o:undo_job' => ['o:id' => $job->getId() ],
                     ]
                 );
         return $job;

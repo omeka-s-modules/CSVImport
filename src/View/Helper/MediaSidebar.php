@@ -5,15 +5,17 @@ use Zend\View\Helper\AbstractHelper;
 
 class MediaSidebar extends AbstractHelper
 {
-
     protected $mediaIngester;
 
     protected $mediaAdapters;
 
-    public function __construct($mediaIngestManager, $mediaAdapters)
+    protected $translator;
+
+    public function __construct($mediaIngestManager, $mediaAdapters, $translator)
     {
         $this->mediaAdapters = $mediaAdapters;
         $this->mediaIngester = $mediaIngestManager;
+        $this->translator = $translator;
     }
 
     public function __invoke()
@@ -22,7 +24,7 @@ class MediaSidebar extends AbstractHelper
         foreach ($this->mediaIngester->getRegisteredNames() as $ingester) {
             if (array_key_exists($ingester, $this->mediaAdapters)) {
                 $mediaForms[$ingester] = [
-                    'label' => $this->mediaIngester->get($ingester)->getLabel(),
+                    'label' => $this->translator->translate($this->mediaIngester->get($ingester)->getLabel()),
                 ];
             }
         }

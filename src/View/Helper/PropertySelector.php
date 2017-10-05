@@ -28,10 +28,10 @@ class PropertySelector extends AbstractHelper
         return $this->getView()->partial(
             'common/csv-property-selector',
             [
-                'vocabularies'       => $vocabResponse->getContent(),
+                'vocabularies' => $vocabResponse->getContent(),
                 'totalPropertyCount' => $propResponse->getTotalResults(),
-                'propertySelectorText'               => $propertySelectorText,
-                'state'              => $active ? 'always-open' : ''
+                'propertySelectorText' => $propertySelectorText,
+                'state' => $active ? 'always-open' : '',
             ]
         );
     }

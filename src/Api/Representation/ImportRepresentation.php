@@ -8,20 +8,20 @@ class ImportRepresentation extends AbstractEntityRepresentation
     public function getJsonLd()
     {
         $undo_job = null;
-        if($this->undoJob()) {
+        if ($this->undoJob()) {
             $undo_job = $this->undoJob()->getReference();
         }
 
         return [
-            'added_count'    => $this->addedCount(),
-            'updated_count'  => $this->updatedCount(),
-            'comment'        => $this->comment(),
-            'resource_type'  => $this->resourceType(),
-            'o:job'          => $this->job()->getReference(),
-            'o:undo_job'     => $undo_job
+            'added_count' => $this->addedCount(),
+            'updated_count' => $this->updatedCount(),
+            'comment' => $this->comment(),
+            'resource_type' => $this->resourceType(),
+            'o:job' => $this->job()->getReference(),
+            'o:undo_job' => $undo_job,
         ];
     }
-    
+
     public function getJsonLdType()
     {
         return 'o:CSVimportImport';
@@ -53,7 +53,7 @@ class ImportRepresentation extends AbstractEntityRepresentation
     {
         return $this->resource->getResourceType();
     }
-    
+
     public function hasErr()
     {
         return $this->resource->getHasErr();

@@ -21,6 +21,5 @@ class ItemSidebar extends AbstractHelper
                 'userRole' => $userRole,
             ]
         );
-        
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace CSVImport\MediaIngesterAdapter;
 
-
 class UrlMediaIngesterAdapter implements MediaIngesterAdapterInterface
 {
     public function getJson($mediaDatum)
