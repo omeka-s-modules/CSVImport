@@ -41,6 +41,7 @@ class ImportTest extends OmekaControllerTestCase
     {
         return [
             ['test.csv', ['items' => 3, 'media' => 4]],
+            ['test_empty_lines.csv', ['items' => 3]],
         ];
     }
 

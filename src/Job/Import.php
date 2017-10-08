@@ -154,6 +154,7 @@ class Import extends AbstractJob
         $this->identifierProperty = $identifierProperty;
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
+        $emptyLines = 0;
         $offset = 1;
         $file = $csvFile->fileObject;
         $file->rewind();
@@ -161,6 +162,10 @@ class Import extends AbstractJob
             $data = [];
             foreach (new LimitIterator($file, $offset, $this->rowsByBatch) as $row) {
                 $row = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $row);
+                if (!array_filter($row, function ($v) { return strlen($v); })) {
+                    ++$emptyLines;
+                    continue;
+                }
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
                     $mapped = $mapping->processRow($row);
@@ -223,6 +228,11 @@ class Import extends AbstractJob
             // the current key (read ahead), because there may be empty lines.
             // The file may be empty in case of incomplete batch at the end.
             $offset = $file ? $file->key() : null;
+        }
+
+        if ($emptyLines) {
+            $this->logger->info(new Message('%d empty lines were skipped.', // @translate
+                $emptyLines));
         }
 
         $this->endJob();
