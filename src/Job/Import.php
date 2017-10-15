@@ -140,6 +140,10 @@ class Import extends AbstractJob
             return $this->endJob();
         }
 
+        if (!empty($args['rows_by_batch'])) {
+            $this->rowsByBatch = (int) $args['rows_by_batch'];
+        }
+
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
         if ($identifierProperty === 'internal_id') {
@@ -258,8 +262,14 @@ class Import extends AbstractJob
         if (empty($data)) {
             return;
         }
-        $createResponse = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
-        $createContent = $createResponse->getContent();
+
+        if (count($data) == 1) {
+            $createResponse = $this->api->create($this->resourceType, reset($data));
+            $createContent = [$createResponse->getContent()];
+        } else {
+            $createResponse = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
+            $createContent = $createResponse->getContent();
+        }
         $this->addedCount = $this->addedCount + count($createContent);
 
         $createImportEntitiesJson = [];

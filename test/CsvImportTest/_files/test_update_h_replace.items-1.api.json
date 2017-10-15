@@ -23,18 +23,18 @@
   },
   "o:media": [
     {
-      "@id": "https://localhost/api/media/15",
-      "o:id": 15
+      "@id": "https://localhost/api/media/142",
+      "o:id": 142
     },
     {
-      "@id": "https://localhost/api/media/16",
-      "o:id": 16
+      "@id": "https://localhost/api/media/143",
+      "o:id": 143
     }
   ],
   "o:item_set": [
     {
-      "@id": "https://localhost/api/item_sets/11",
-      "o:id": 12
+      "@id": "https://localhost/api/item_sets/139",
+      "o:id": 139
     }
   ],
   "dcterms:title": [
@@ -92,7 +92,7 @@
       "type": "literal",
       "property_id": 10,
       "property_label": "Identifier",
-      "@value": "doc:thoreau_walden"
+      "@value": "thoreau_walden_1854"
     }
   ]
 }

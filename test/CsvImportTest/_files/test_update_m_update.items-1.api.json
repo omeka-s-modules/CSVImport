@@ -24,14 +24,14 @@
   },
   "o:media": [
     {
-      "@id": "https://localhost/api/media/17",
-      "o:id": 17
+      "@id": "https://localhost/api/media/144",
+      "o:id": 144
     }
   ],
   "o:item_set": [
     {
-      "@id": "https://localhost/api/item_sets/11",
-      "o:id": 11
+      "@id": "https://localhost/api/item_sets/138",
+      "o:id": 138
     }
   ],
   "dcterms:title": [
@@ -53,7 +53,7 @@
       "type": "literal",
       "property_id": 10,
       "property_label": "Identifier",
-      "@value": "doc:thoreau_walden"
+      "@value": "thoreau_walden_1854"
     }
   ],
   "dcterms:date": [

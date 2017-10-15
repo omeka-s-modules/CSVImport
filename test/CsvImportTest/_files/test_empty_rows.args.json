@@ -1,5 +1,5 @@
 {
-    "filename": "test_empty_lines.csv",
+    "filename": "test_empty_rows.csv",
     "filesize": "107",
     "csvpath": "/tmp/omeka3ERNHH",
     "csrf": "7a29e1b60d54536632b5d70dd9ddb1b4-6b95b83bf7819a0ae9c3cd4c1b1803b2",

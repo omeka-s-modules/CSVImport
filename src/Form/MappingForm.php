@@ -328,6 +328,23 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $this->add([
+                'name' => 'rows_by_batch',
+                'type' => 'Number',
+                'options' => [
+                    'label' => 'Number of rows to process by batch', // @translate
+                    'info' => 'By default, rows are processed by 20. In some cases, to set a value of 1 may avoid issues. This param does not apply for updates.', // @translate
+                ],
+                'attributes' => [
+                    'value' => $userSettings->get(
+                        'csv_import_rows_by_batch',
+                        $default['csv_import_rows_by_batch']),
+                    'class' => 'advanced-settings',
+                    'min'  => '1',
+                    'step' => '1',
+                ],
+            ]);
+
             $inputFilter = $this->getInputFilter();
             $inputFilter->add([
                 'name' => 'o:resource_template[o:id]',
