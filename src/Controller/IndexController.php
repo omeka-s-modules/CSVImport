@@ -7,6 +7,7 @@ use CSVImport\CsvFile;
 use CSVImport\Job\Import;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Settings\UserSettings;
+use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -84,9 +85,18 @@ class IndexController extends AbstractActionController
                 }
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
-                //the Omeka2Import record is created in the job, so it doesn't
-                //happen until the job is done
-                $this->messenger()->addSuccess('Importing in Job ID ' . $job->getId()); // @translate
+                // The CsvImport record is created in the job, so it doesn't
+                // happen until the job is done.
+                $message = new Message(
+                    'Importing in background (%sjob #%d%s)', // @translate
+                    sprintf('<a href="%s">',
+                        htmlspecialchars($this->url()->fromRoute('admin/id', ['controller' => 'job', 'id' => $job->getId()]))
+                    ),
+                    $job->getId(),
+                   '</a>'
+                );
+                $message->setEscapeHtml(false);
+                $this->messenger()->addSuccess($message);
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
             // TODO Set variables when the form is invalid.
@@ -153,7 +163,10 @@ class IndexController extends AbstractActionController
                 $undoJob = $this->undoJob($jobId);
                 $undoJobIds[] = $undoJob->getId();
             }
-            $this->messenger()->addSuccess('Undo in progress in the following jobs: ' . implode(', ', $undoJobIds));
+            $message = new Message(
+                'Undo in progress in the following jobs: %s', // @translate
+                implode(', ', $undoJobIds));
+            $this->messenger()->addSuccess($message);
         }
         $view = new ViewModel;
         $page = $this->params()->fromQuery('page', 1);
