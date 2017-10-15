@@ -205,6 +205,16 @@ class Import extends AbstractJob
                             }
                             break;
                     }
+                    // Manage the special case where an item is updated and a
+                    // media is provided: it should be identified too in order
+                    // to update the one that belongs to this specified item.
+                    // It cannot be done during mapping, because the id of the
+                    // item is not known from the media source. In particular,
+                    // it avoids false positives in case of multiple files with
+                    // the same name for different items.
+                    if ($this->resourceType === 'items') {
+                        $dataToProcess = $this->identifyMedia($dataToProcess, $idsToProcess);
+                    }
                     $this->update($dataToProcess, $idsToProcess, $action);
                     break;
                 case self::ACTION_DELETE:
@@ -355,6 +365,44 @@ class Import extends AbstractJob
     }
 
     /**
+     * Identify media of a list of items.
+     *
+     * To be used with rows that contain a media source.
+     * The identifiers of media themselves are found as standard resources.
+     *
+     * @param array $data
+     * @param array $ids All the ids must exists and the order must be the same
+     * than data.
+     * @return array
+     */
+    protected function identifyMedia(array $data, array $ids)
+    {
+        $findResourceFromIdentifier = $this->findResourcesFromIdentifiers;
+        foreach ($data as $key => &$entityJson) {
+            if (empty($entityJson['o:media'])) {
+                continue;
+            }
+            foreach ($entityJson['o:media'] as &$media) {
+                if (!empty($media['o:id'])) {
+                    continue;
+                }
+                if (empty($media['o:source']) || empty($media['o:ingester'])) {
+                    continue;
+                }
+                $identifierProperties = [];
+                $identifierProperties['o:ingester'] = $media['o:ingester'];
+                $identifierProperties['o:item']['o:id'] = $ids[$key];
+                $resourceId = $findResourceFromIdentifier(
+                    $media['o:source'], $identifierProperties, 'media');
+                if ($resourceId) {
+                    $media['o:id'] = $resourceId;
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Helper to find identifiers from a batch of rows.
      *
      * The list of associated identifiers are kept as a class property until it
@@ -418,7 +466,8 @@ class Import extends AbstractJob
      *
      * @param array $identifiers Associative array of data ids and identifiers.
      * @param array $ids Associative array of unique identifiers and ids.
-     * @return array
+     * @return array Associative array with data id as key and resource id as
+     * value.
      */
     protected function assocIdentifierKeysAndIds(array $identifiers, array $ids)
     {
