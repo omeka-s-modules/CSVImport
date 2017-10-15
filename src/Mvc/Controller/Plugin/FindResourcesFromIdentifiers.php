@@ -64,8 +64,8 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
      *
      * @param array|string $identifiers Identifiers should be unique. If a
      * string is sent, the result will be the resource.
-     * @param string|int $identifierName Property as integer or term, media
-     * ingester or "internal_id".
+     * @param string|int|array $identifierName Property as integer or term,
+     * media ingester or "internal_id", or an array with multiple conditions.
      * @param string $resourceType The resource type if any.
      * @return array|int|null Associative array with the identifiers as key and the ids
      * or null as value. Order is kept, but duplicate identifiers are removed.
@@ -85,16 +85,22 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         }
 
         $identifierType = null;
-        if (in_array($identifierName, ['internal_id'])) {
-            $identifierType = 'internal_id';
-        } elseif (strpos($identifierName, 'media_source=') === 0) {
-            $identifierType = 'media_source';
-            $resourceType = 'media';
-            $identifierName = trim(substr($identifierName, strlen('media_source=')));
-            // TODO Currently, the media source cannot be html.
-            if ($identifierName === 'name') {
-                return $isSingle ? null : [];
+        // Process identifierName as an array.
+        if (is_array($identifierName)) {
+            if (isset($identifierName['o:ingester'])) {
+                // TODO Currently, the media source cannot be html.
+                if ($identifierName['o:ingester'] === 'html') {
+                    return $isSingle ? null : [];
+                }
+                $identifierType = 'media_source';
+                $resourceType = 'media';
+                $itemId = empty($identifierName['o:item']['o:id']) ? null : $identifierName['o:item']['o:id'];
+                $identifierName = $identifierName['o:ingester'];
             }
+        }
+        // Here, identifierName is a string or an integer.
+        elseif (in_array($identifierName, ['internal_id'])) {
+            $identifierType = 'internal_id';
         } elseif (is_numeric($identifierName)) {
             $identifierType = 'property';
             $identifierName = (int) $identifierName;
@@ -134,7 +140,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 $result = $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
                 break;
             case 'media_source':
-                $result = $this->findResourcesFromMediaSource($identifiers, $identifierName);
+                $result = $this->findResourcesFromMediaSource($identifiers, $identifierName, $itemId);
                 break;
         }
 
@@ -199,7 +205,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         return $this->cleanResult($identifiers, $result);
     }
 
-    protected function findResourcesFromMediaSource($identifiers, $ingesterName)
+    protected function findResourcesFromMediaSource($identifiers, $ingesterName, $itemId = null)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connexion;
@@ -216,6 +222,11 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             // ->setParameter(':sources', $identifiers)
             ->andwhere("media.source in ($quotedIdentifiers)")
             ->addOrderBy('media.id', 'ASC');
+        if ($itemId) {
+            $qb
+                ->andWhere('media.item_id = :item_id')
+                ->setParameter(':item_id', $itemId);
+        }
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
         // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
         // replaces the first id by later ids in case of true duplicates.

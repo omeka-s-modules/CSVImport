@@ -104,7 +104,8 @@ class MediaSourceMapping extends AbstractMapping
     {
         $identifier = $mediaDatumJson['o:source'];
         $resourceType = 'media';
-        $identifierProperty = 'media_source=' . $mediaDatumJson['o:ingester'];
+        $identifierProperties = [];
+        $identifierProperties['o:ingester'] = $mediaDatumJson['o:ingester'];
 
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
         $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
