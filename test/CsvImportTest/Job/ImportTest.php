@@ -37,6 +37,17 @@ class ImportTest extends OmekaControllerTestCase
         }
     }
 
+    protected function deleteAllResources()
+    {
+        $resourceTypes = ['item_sets', 'items'];
+        foreach ($resourceTypes as $resourceType) {
+            $result = $this->api()->search($resourceType)->getContent();
+            foreach ($result as $resource) {
+                $this->api()->delete($resourceType, $resource->id());
+            }
+        }
+    }
+
     public function csvFileProvider()
     {
         return [
@@ -70,6 +81,8 @@ class ImportTest extends OmekaControllerTestCase
                 $this->assertEquals($expected, $resource);
             }
         }
+
+        $this->deleteAllResources();
     }
 
     /**
