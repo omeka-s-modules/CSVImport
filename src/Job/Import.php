@@ -8,6 +8,7 @@ use LimitIterator;
 use Omeka\Api\Manager;
 use Omeka\Api\Response;
 use Omeka\Job\AbstractJob;
+use Omeka\Stdlib\Message;
 use Zend\Log\Logger;
 
 class Import extends AbstractJob
@@ -123,6 +124,14 @@ class Import extends AbstractJob
         $this->importRecord = $response->getContent();
 
         // Check options.
+        if (empty($this->resourceType)) {
+            $this->hasErr = true;
+            $this->logger->err('Resource type is empty.'); // @translate
+        }
+        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'users'])) {
+            $this->hasErr = true;
+            $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
+        }
         $action = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
         $identifierProperty = empty($args['identifier_property']) ? null : $args['identifier_property'];
         $actionUnidentified = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
@@ -145,6 +154,7 @@ class Import extends AbstractJob
         $this->identifierProperty = $identifierProperty;
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
+        $emptyLines = 0;
         $offset = 1;
         $file = $csvFile->fileObject;
         $file->rewind();
@@ -152,6 +162,10 @@ class Import extends AbstractJob
             $data = [];
             foreach (new LimitIterator($file, $offset, $this->rowsByBatch) as $row) {
                 $row = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $row);
+                if (!array_filter($row, function ($v) { return strlen($v); })) {
+                    ++$emptyLines;
+                    continue;
+                }
                 $entityJson = [];
                 foreach ($mappings as $mapping) {
                     $mapped = $mapping->processRow($row);
@@ -186,10 +200,20 @@ class Import extends AbstractJob
                         case self::ACTION_SKIP:
                             if ($idsRemaining) {
                                 $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
-                                $this->logger->info(sprintf('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                                $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                                     implode('", "', $identifiersRemaining)));
                             }
                             break;
+                    }
+                    // Manage the special case where an item is updated and a
+                    // media is provided: it should be identified too in order
+                    // to update the one that belongs to this specified item.
+                    // It cannot be done during mapping, because the id of the
+                    // item is not known from the media source. In particular,
+                    // it avoids false positives in case of multiple files with
+                    // the same name for different items.
+                    if ($this->resourceType === 'items') {
+                        $dataToProcess = $this->identifyMedia($dataToProcess, $idsToProcess);
                     }
                     $this->update($dataToProcess, $idsToProcess, $action);
                     break;
@@ -200,7 +224,7 @@ class Import extends AbstractJob
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
                         $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
-                        $this->logger->info(sprintf('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                        $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                             implode('", "', $identifiersRemaining)));
                     }
                     $this->delete($idsToProcess);
@@ -214,6 +238,11 @@ class Import extends AbstractJob
             // the current key (read ahead), because there may be empty lines.
             // The file may be empty in case of incomplete batch at the end.
             $offset = $file ? $file->key() : null;
+        }
+
+        if ($emptyLines) {
+            $this->logger->info(new Message('%d empty lines were skipped.', // @translate
+                $emptyLines));
         }
 
         $this->endJob();
@@ -275,7 +304,7 @@ class Import extends AbstractJob
 
             default:
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The update mode "%s" is unsupported for %s currently.', // @translate
+                $this->logger->err(new Message('The update mode "%s" is unsupported for %s currently.', // @translate
                     $action, $this->resourceType));
                 return;
         }
@@ -308,10 +337,10 @@ class Import extends AbstractJob
         }
         if ($updatedIds) {
             $idsForLog = $this->idsForLog($updatedIds);
-            $this->logger->info(sprintf('%d %s were updated (%s): %s.', // @translate
+            $this->logger->info(new Message('%d %s were updated (%s): %s.', // @translate
                 count($updatedIds), $this->resourceType, $action, $idsForLog));
         } else {
-            $this->logger->notice(sprintf('None of the %d %s were updated (%s).', // @translate
+            $this->logger->notice(new Message('None of the %d %s were updated (%s).', // @translate
                 count($ids), $this->resourceType, $action));
         }
     }
@@ -331,8 +360,46 @@ class Import extends AbstractJob
         $deleted = $response->getContent();
         // TODO Get better stats of removed ids in case of error.
         $idsForLog = $this->idsForLog($ids, true);
-        $this->logger->info(sprintf('%d %s were removed: %s.', // @translate
+        $this->logger->info(new Message('%d %s were removed: %s.', // @translate
             count($deleted), $this->resourceType, $idsForLog));
+    }
+
+    /**
+     * Identify media of a list of items.
+     *
+     * To be used with rows that contain a media source.
+     * The identifiers of media themselves are found as standard resources.
+     *
+     * @param array $data
+     * @param array $ids All the ids must exists and the order must be the same
+     * than data.
+     * @return array
+     */
+    protected function identifyMedia(array $data, array $ids)
+    {
+        $findResourceFromIdentifier = $this->findResourcesFromIdentifiers;
+        foreach ($data as $key => &$entityJson) {
+            if (empty($entityJson['o:media'])) {
+                continue;
+            }
+            foreach ($entityJson['o:media'] as &$media) {
+                if (!empty($media['o:id'])) {
+                    continue;
+                }
+                if (empty($media['o:source']) || empty($media['o:ingester'])) {
+                    continue;
+                }
+                $identifierProperties = [];
+                $identifierProperties['o:ingester'] = $media['o:ingester'];
+                $identifierProperties['o:item']['o:id'] = $ids[$key];
+                $resourceId = $findResourceFromIdentifier(
+                    $media['o:source'], $identifierProperties, 'media');
+                if ($resourceId) {
+                    $media['o:id'] = $resourceId;
+                }
+            }
+        }
+        return $data;
     }
 
     /**
@@ -399,7 +466,8 @@ class Import extends AbstractJob
      *
      * @param array $identifiers Associative array of data ids and identifiers.
      * @param array $ids Associative array of unique identifiers and ids.
-     * @return array
+     * @return array Associative array with data id as key and resource id as
+     * value.
      */
     protected function assocIdentifierKeysAndIds(array $identifiers, array $ids)
     {
@@ -452,11 +520,11 @@ class Import extends AbstractJob
             default:
                 if ($hasIdentifierKeys) {
                     array_walk($ids, function (&$v, $k) {
-                        $v = sprintf('"%s" (%d)', $k, $v); // @ translate
+                        $v = new Message('"%s" (%d)', $k, $v); // @ translate
                     });
                 } else {
                     array_walk($ids, function (&$v, $k) {
-                        $v = sprintf('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
+                        $v = new Message('"%s" (%d)', $this->identifiers[$k], $v); // @ translate
                     });
                 }
                 break;
@@ -754,18 +822,18 @@ class Import extends AbstractJob
         ];
         if (!in_array($action, $allowedActions)) {
             $this->hasErr = true;
-            $this->logger->err(sprintf('Unknown action "%s".', $action));
+            $this->logger->err(new Message('Unknown action "%s".', $action)); // @translate
         }
 
         // Specific check when a identifier is required.
         elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
             if (empty($identifierProperty)) {
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The action "%s" requires a resource identifier property.', $action)); // @translate
+                $this->logger->err(new Message('The action "%s" requires a resource identifier property.', $action)); // @translate
             }
             if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The action "%s" is not available for resource type "%s" currently.', // @translate
+                $this->logger->err(new Message('The action "%s" is not available for resource type "%s" currently.', // @translate
                     $action, $this->resourceType));
             }
         }
@@ -773,7 +841,7 @@ class Import extends AbstractJob
         if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
             if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
                 $this->hasErr = true;
-                $this->logger->err(sprintf('The action "%s" for unidentified resources is not managed.', // @translate
+                $this->logger->err(new Message('The action "%s" for unidentified resources is not managed.', // @translate
                     $actionUnidentified));
             }
         }

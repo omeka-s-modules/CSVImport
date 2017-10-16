@@ -1,6 +1,7 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Omeka\Stdlib\Message;
 use Zend\View\Renderer\PhpRenderer;
 
 class ItemMapping extends ResourceMapping
@@ -51,7 +52,7 @@ class ItemMapping extends ResourceMapping
                 if ($resourceId) {
                     $data['o:item_set'][] = ['o:id' => $resourceId];
                 } else {
-                    $this->logger->err(sprintf('"%s" (%s) is not a valid item set.', // @translate
+                    $this->logger->err(new Message('"%s" (%s) is not a valid item set.', // @translate
                         $identifier, $identifierProperty));
                     $this->setHasErr(true);
                 }

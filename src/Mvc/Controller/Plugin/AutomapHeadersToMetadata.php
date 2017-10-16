@@ -197,7 +197,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
         foreach ($automaps as $index => $automap) {
             if (is_object($automap)) {
                 if ($automap->getJsonLdType() === 'o:Property') {
-                    $result[$index][$automap->term()] = $automap->id();
+                    $result['column-property'][$index][$automap->term()] = $automap->id();
                 }
             } elseif (is_string($automap)) {
                 // Get the options of the automap.
@@ -214,7 +214,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $name = null;
                     continue;
                 }
-                $result[$index]['column-' . $name] = $value;
+                $result['column-' . $name][$index] = $value;
             }
         }
         return $result;

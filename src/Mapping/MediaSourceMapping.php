@@ -85,9 +85,6 @@ class MediaSourceMapping extends AbstractMapping
                         $mediaDatumJson = array_merge($mediaDatumJson, $adapter->getJson($mediaDatum));
                     }
 
-                    // Check if the media is already fetched.
-                    $mediaDatumJson = $this->checkExistingMedia($mediaDatumJson);
-
                     // Don't add to array, because the default media may be set.
                     if ($isMedia) {
                         return $mediaDatumJson;
@@ -98,20 +95,5 @@ class MediaSourceMapping extends AbstractMapping
         }
 
         return ['o:media' => $data];
-    }
-
-    protected function checkExistingMedia(array $mediaDatumJson)
-    {
-        $identifier = $mediaDatumJson['o:source'];
-        $resourceType = 'media';
-        $identifierProperty = 'media_source=' . $mediaDatumJson['o:ingester'];
-
-        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
-        $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
-
-        if ($resourceId) {
-            $mediaDatumJson['o:id'] = $resourceId;
-        }
-        return $mediaDatumJson;
     }
 }

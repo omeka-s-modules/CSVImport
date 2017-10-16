@@ -2,6 +2,7 @@
 namespace CSVImport\Mapping;
 
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
+use Omeka\Stdlib\Message;
 use Zend\View\Renderer\PhpRenderer;
 
 class ResourceMapping extends AbstractMapping
@@ -162,7 +163,7 @@ class ResourceMapping extends AbstractMapping
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
         $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
         if (empty($resourceId)) {
-            $this->logger->err(sprintf('"%s" (%s) is not a valid resource identifier.', // @translate
+            $this->logger->err(new Message('"%s" (%s) is not a valid resource identifier.', // @translate
                 $identifier, $identifierProperty));
             $this->setHasErr(true);
             return false;
@@ -176,14 +177,14 @@ class ResourceMapping extends AbstractMapping
         $response = $this->api->search('resource_templates', ['label' => $label]);
         $content = $response->getContent();
         if (empty($content)) {
-            $this->logger->err(sprintf('"%s" is not a valid Resource Template name.', $label)); // @translate
+            $this->logger->err(new Message('"%s" is not a valid Resource Template name.', $label)); // @translate
             $this->setHasErr(true);
             return false;
         }
         $template = $content[0];
         $templateLabel = $template->label();
         if ($label != $templateLabel) {
-            $this->logger->err(sprintf('"%s" is not a valid Resource Template name.', $label)); // @translate
+            $this->logger->err(new Message('"%s" is not a valid Resource Template name.', $label)); // @translate
             $this->setHasErr(true);
             return false;
         }
@@ -195,16 +196,18 @@ class ResourceMapping extends AbstractMapping
         $response = $this->api->search('resource_classes', ['term' => $term]);
         $content = $response->getContent();
         if (empty($content)) {
-            $this->logger->err(sprintf('"%s" is not a valid resource class.', $term) // @translate
-                . ' ' . 'Resource Classes must be a Class found on the Vocabularies page.'); // @translate
+            $message = new Message('"%s" is not a valid resource class.', $term); // @translate;
+            $message .= ' ' . $this->translate('Resource Classes must be a Class found on the Vocabularies page.'); // @translate
+            $this->logger->err($message);
             $this->setHasErr(true);
             return false;
         }
         $class = $content[0];
         $classTerm = $class->term();
         if ($term != $classTerm) {
-            $this->logger->err(sprintf('"%s" is not a valid resource class.', $term) // @translate
-                . ' ' . 'Resource Classes must be a Class found on the Vocabularies page.'); // @translate
+            $message = new Message('"%s" is not a valid resource class.', $term); // @translate;
+            $message .= ' ' . $this->translate('Resource Classes must be a Class found on the Vocabularies page.'); // @translate
+            $this->logger->err($message);
             $this->setHasErr(true);
             return false;
         }
@@ -216,14 +219,14 @@ class ResourceMapping extends AbstractMapping
         $response = $this->api->search('users', ['email' => $email]);
         $content = $response->getContent();
         if (empty($content)) {
-            $this->logger->err(sprintf('"%s" is not a valid user email address.', $email)); // @translate
+            $this->logger->err(new Message('"%s" is not a valid user email address.', $email)); // @translate
             $this->setHasErr(true);
             return false;
         }
         $user = $content[0];
         $userEmail = $user->email();
         if ($email != $userEmail) {
-            $this->logger->err(sprintf('"%s" is not a valid user email address.', $email)); // @translate
+            $this->logger->err(new Message('"%s" is not a valid user email address.', $email)); // @translate
             $this->setHasErr(true);
             return false;
         }
