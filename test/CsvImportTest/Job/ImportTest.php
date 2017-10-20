@@ -2,6 +2,7 @@
 namespace CSVImportTest\Mvc\Controller\Plugin;
 
 use CSVImport\Job\Import;
+use CSVImportTest\Mock\Media\Ingester\MockUrl;
 use Omeka\Entity\Job;
 use Omeka\Stdlib\Message;
 use OmekaTestHelper\Controller\OmekaControllerTestCase;
@@ -19,6 +20,8 @@ class ImportTest extends OmekaControllerTestCase
     {
         parent::setup();
 
+        $this->overrideConfig();
+
         $services = $this->getServiceLocator();
         $this->entityManager = $services->get('Omeka\EntityManager');
         $this->auth = $services->get('Omeka\AuthenticationService');
@@ -30,6 +33,26 @@ class ImportTest extends OmekaControllerTestCase
         $this->tempfile = tempnam(sys_get_temp_dir(), 'omk');
     }
 
+    protected function overrideConfig()
+    {
+        require_once __DIR__ . '/../Mock/Media/Ingester/MockUrl.php';
+
+        $services = $this->getServiceLocator();
+
+        $services->setAllowOverride(true);
+
+        $downloader = $services->get('Omeka\File\Downloader');
+        $validator = $services->get('Omeka\File\Validator');
+        $tempFileFactory = $services->get('Omeka\File\TempFileFactory');
+
+        $mediaIngesterManager = $services->get('Omeka\Media\Ingester\Manager');
+        $mediaIngesterManager->setAllowOverride(true);
+        $mockUrl = new MockUrl($downloader, $validator);
+        $mockUrl->setTempFileFactory($tempFileFactory);
+        $mediaIngesterManager->setService('url', $mockUrl);
+        $mediaIngesterManager->setAllowOverride(false);
+    }
+
     public function tearDown()
     {
         if (file_exists($this->tempfile)) {
@@ -37,11 +60,24 @@ class ImportTest extends OmekaControllerTestCase
         }
     }
 
+    protected function deleteAllResources()
+    {
+        $resourceTypes = ['item_sets', 'items'];
+        foreach ($resourceTypes as $resourceType) {
+            $result = $this->api()->search($resourceType)->getContent();
+            foreach ($result as $resource) {
+                $this->api()->delete($resourceType, $resource->id());
+            }
+        }
+    }
+
     public function csvFileProvider()
     {
         return [
             ['test.csv', ['items' => 3, 'media' => 4]],
-            ['test_empty_lines.csv', ['items' => 3]],
+            ['test_empty_rows.csv', ['items' => 3]],
+            ['test_many_rows_html.csv', ['items' => 30]],
+            ['test_many_rows_url.csv', ['items' => 30]],
         ];
     }
 
@@ -70,6 +106,8 @@ class ImportTest extends OmekaControllerTestCase
                 $this->assertEquals($expected, $resource);
             }
         }
+
+        $this->deleteAllResources();
     }
 
     /**
@@ -182,6 +220,18 @@ class ImportTest extends OmekaControllerTestCase
 
         $resource = $this->api->search($resourceType, ['id' => $resourceId])->getContent();
         $this->assertEmpty($resource);
+    }
+
+    /**
+     * Quick simple way to check import of url.
+     *
+     * @param string $filepath
+     * @param string $basePathColumn
+     * @return string
+     */
+    protected function addBasePath($filepath, $basePathColumn)
+    {
+        copy($filepath, $this->tempfile);
     }
 
     protected function performProcessForFile($filepath)

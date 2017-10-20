@@ -1,14 +1,17 @@
 {
     "@context": "https://localhost/api-context",
-    "@id": "https://localhost/api/items/1",
+    "@id": "https://localhost/api/items/3",
     "@type": "o:Item",
-    "o:id": 1,
+    "o:id": 3,
     "o:is_public": true,
     "o:owner": {
         "@id": "https://localhost/api/users/1",
         "o:id": 1
     },
-    "o:resource_class": null,
+    "o:resource_class": {
+        "@id": "http://localhost/OmekaS/api/resource_classes/31",
+        "o:id": 31
+    },
     "o:resource_template": null,
     "o:created": {
         "@value": "2000-01-01T00:00:00+00:00",
@@ -20,12 +23,8 @@
     },
     "o:media": [
         {
-            "@id": "https://localhost/api/media/134",
-            "o:id": 134
-        },
-        {
-            "@id": "https://localhost/api/media/135",
-            "o:id": 135
+            "@id": "https://localhost/api/media/130",
+            "o:id": 130
         }
     ],
     "o:item_set": [],
@@ -34,23 +33,15 @@
             "type": "literal",
             "property_id": 1,
             "property_label": "Title",
-            "@value": "Walden"
+            "@value": "ddd title"
         }
     ],
-    "dcterms:description": [
+    "dcterms:identifier": [
         {
             "type": "literal",
-            "property_id": 4,
-            "property_label": "Description",
-            "@value": "A man seeks simplicity."
-        }
-    ],
-    "dcterms:creator": [
-        {
-            "type": "literal",
-            "property_id": 2,
-            "property_label": "Creator",
-            "@value": "Henry David Thoreau"
+            "property_id": 10,
+            "property_label": "Identifier",
+            "@value": "ddd"
         }
     ]
 }

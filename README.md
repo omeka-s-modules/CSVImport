@@ -87,8 +87,8 @@ In case of a duplicate, only the first will be processed. The processed resource
 Four modes of update are provided:
 
 - append: add new data to complete the resource;
-- revise: replace existing data to the resource by the ones set in each cell, except if empty (don’t modify data that are not provided, but take care or unset default values);
-- update: replace existing data to the resource by the ones set in each cell, even empty (don’t modify data that are not provided, but take care or unset default values);
+- revise: replace existing data to the resource by the ones set in each cell, except if empty (don’t modify data that are not provided, except default values);
+- update: replace existing data to the resource by the ones set in each cell, even empty (don’t modify data that are not provided, except default values);
 - replace: remove all properties of the resource, and fill new ones from the data.
 
 ### Deleting entities

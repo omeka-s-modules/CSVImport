@@ -267,6 +267,10 @@ class IndexController extends AbstractActionController
             $args['multivalue_separator'] = $post['multivalue_separator'];
         }
 
+        if (!empty($post['rows_by_batch'])) {
+            $args['rows_by_batch'] = (int) $post['rows_by_batch'];
+        }
+
         // Convert the user text into an array.
         if (array_key_exists('automap_user_list', $args)) {
             $args['automap_user_list'] = $this->getForm(ImportForm::class)
