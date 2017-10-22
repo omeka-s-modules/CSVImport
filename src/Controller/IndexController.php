@@ -67,7 +67,7 @@ class IndexController extends AbstractActionController
         $automapUserList = $this->getForm(ImportForm::class)
             ->convertUserListTextToArray($post['automap_user_list']);
         $form = $this->getForm(MappingForm::class, [
-            'resourceType' => $resourceType,
+            'resource_type' => $resourceType,
             'delimiter' => $post['delimiter'],
             'enclosure' => $post['enclosure'],
             'automap_check_names_alone' => $post['automap_check_names_alone'],

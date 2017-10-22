@@ -3,6 +3,7 @@
 namespace CSVImport\Form;
 
 use CSVImport\Job\Import;
+use Omeka\Form\Element\ItemSetSelect;
 use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Omeka\Form\Element\ResourceClassSelect;
@@ -15,7 +16,7 @@ class MappingForm extends Form
 
     public function init()
     {
-        $resourceType = $this->getOption('resourceType');
+        $resourceType = $this->getOption('resource_type');
         $serviceLocator = $this->getServiceLocator();
         $userSettings = $serviceLocator->get('Omeka\Settings\User');
         $config = $serviceLocator->get('Config');
@@ -190,14 +191,12 @@ class MappingForm extends Form
                 case 'items':
                     $this->add([
                         'name' => 'o:item_set',
-                        'type' => ResourceSelect::class,
+                        'type' => ItemSetSelect::class,
                         'attributes' => [
                             'id' => 'select-item-set',
                             'class' => 'chosen-select',
-                            'required' => false,
                             'multiple' => true,
                             'data-placeholder' => 'Select item sets', // @translate
-                            'data-api-base-url' => $urlHelper('api/default', ['resource' => 'item_sets']),
                         ],
                         'options' => [
                             'label' => 'Item sets', // @translate
@@ -205,9 +204,6 @@ class MappingForm extends Form
                             'resource_value_options' => [
                                 'resource' => 'item_sets',
                                 'query' => [],
-                                'option_text_callback' => function ($itemSet) {
-                                    return $itemSet->displayTitle();
-                                },
                             ],
                         ],
                     ]);
