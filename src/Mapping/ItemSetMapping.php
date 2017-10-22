@@ -42,7 +42,7 @@ class ItemSetMapping extends ResourceMapping
         if (isset($this->map['isOpen'][$index])) {
             $value = reset($values);
             if (strlen($value)) {
-                $data['o:is_open'] = in_array(strtolower($value), ['false', 'off', 'closed'])
+                $data['o:is_open'] = in_array(strtolower($value), ['false', 'no', 'off', 'closed'])
                     ? false
                     : (bool) $value;
             }

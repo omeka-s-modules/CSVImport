@@ -150,7 +150,7 @@ class ResourceMapping extends AbstractMapping
         if (isset($this->map['isPublic'][$index])) {
             $value = reset($values);
             if (strlen($value)) {
-                $data['o:is_public'] = in_array(strtolower($value), ['false', 'off', 'private'])
+                $data['o:is_public'] = in_array(strtolower($value), ['false', 'no', 'off', 'private'])
                     ? false
                     : (bool) $value;
             }
