@@ -28,6 +28,14 @@ interface MappingInterface
      */
     public static function getSidebar(PhpRenderer $view);
 
+
+    /**
+     * Define if the current row has an error.
+     *
+     * @return bool
+     */
+    public function getHasErr();
+
     /**
      * Process a row from the CSV file.
      *

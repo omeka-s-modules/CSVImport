@@ -23,6 +23,8 @@ class PropertyMapping extends AbstractMapping
 
     public function processRow(array $row)
     {
+        // Reset the data and the map between rows.
+        $this->setHasErr(false);
         $data = [];
 
         // First, pull in the global settings.

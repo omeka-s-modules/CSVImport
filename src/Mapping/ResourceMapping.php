@@ -39,7 +39,10 @@ class ResourceMapping extends AbstractMapping
 
     public function processRow(array $row)
     {
+        // Reset the data and the map between rows.
+        $this->setHasErr(false);
         $this->data = [];
+        $this->map = [];
 
         $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
             ->get('findResourceFromIdentifier');

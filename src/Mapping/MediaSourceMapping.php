@@ -22,6 +22,8 @@ class MediaSourceMapping extends AbstractMapping
 
     public function processRow(array $row)
     {
+        // Reset the data and the map between rows.
+        $this->setHasErr(false);
         $data = [];
 
         $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')

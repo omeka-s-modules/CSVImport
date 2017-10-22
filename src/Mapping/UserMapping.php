@@ -28,6 +28,8 @@ class UserMapping extends AbstractMapping
      */
     public function processRow(array $row)
     {
+        // Reset the data and the map between rows.
+        $this->setHasErr(false);
         $userJson = [];
 
         $emailIndex = array_keys($this->args['column-user_email'])[0];
