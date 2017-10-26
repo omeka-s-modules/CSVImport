@@ -329,7 +329,7 @@ class MappingForm extends Form
                 'type' => 'Number',
                 'options' => [
                     'label' => 'Number of rows to process by batch', // @translate
-                    'info' => 'By default, rows are processed by 20. In some cases, to set a value of 1 may avoid issues. This param does not apply for updates.', // @translate
+                    'info' => 'By default, rows are processed by 20. In some cases, to set a value of 1 may avoid issues.', // @translate
                 ],
                 'attributes' => [
                     'value' => $userSettings->get(

@@ -263,17 +263,18 @@ class Import extends AbstractJob
             return;
         }
 
+        // May fix some issues when a module doesn't manage batch create.
         if (count($data) == 1) {
-            $createResponse = $this->api->create($this->resourceType, reset($data));
-            $createContent = [$createResponse->getContent()];
+            $response = $this->api->create($this->resourceType, reset($data));
+            $contents = $response ? [$response->getContent()] : [];
         } else {
-            $createResponse = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
-            $createContent = $createResponse->getContent();
+            $response = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
+            $contents = $response->getContent();
         }
-        $this->addedCount = $this->addedCount + count($createContent);
+        $this->addedCount = $this->addedCount + count($contents);
 
         $createImportEntitiesJson = [];
-        foreach ($createContent as $resourceReference) {
+        foreach ($contents as $resourceReference) {
             $createImportEntitiesJson[] = $this->buildImportRecordJson($resourceReference);
         }
         $createImportRecordResponse = $this->api->batchCreate(
@@ -366,12 +367,18 @@ class Import extends AbstractJob
         if (empty($ids)) {
             return;
         }
-        $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
-        $deleted = $response->getContent();
+        // May fix some issues when a module doesn't manage batch delete.
+        if (count($ids) == 1) {
+            $response = $this->api->delete($this->resourceType, reset($ids));
+            $contents = $response ? [$response->getContent()] : [];
+        } else {
+            $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
+            $contents = $response->getContent();
+        }
         // TODO Get better stats of removed ids in case of error.
         $idsForLog = $this->idsForLog($ids, true);
         $this->logger->info(new Message('%d %s were removed: %s.', // @translate
-            count($deleted), $this->resourceType, $idsForLog));
+            count($contents), $this->resourceType, $idsForLog));
     }
 
     /**
