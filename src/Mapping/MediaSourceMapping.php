@@ -5,17 +5,10 @@ use Zend\View\Renderer\PhpRenderer;
 
 class MediaSourceMapping extends AbstractMapping
 {
-    public static function getLabel()
-    {
-        return 'Media source'; // @translate
-    }
+    protected $label = 'Media source'; // @translate
+    protected $name = 'media-source';
 
-    public static function getName()
-    {
-        return 'media-source';
-    }
-
-    public static function getSidebar(PhpRenderer $view)
+    public function getSidebar(PhpRenderer $view)
     {
         return $view->mediaSourceSidebar();
     }

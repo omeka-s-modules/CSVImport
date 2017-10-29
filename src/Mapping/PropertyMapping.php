@@ -5,20 +5,12 @@ use Zend\View\Renderer\PhpRenderer;
 
 class PropertyMapping extends AbstractMapping
 {
-    public static function getLabel()
-    {
-        return 'Properties'; // @translate
-    }
+    protected $label = 'Properties'; // @translate
+    protected $name = 'property-selector';
 
-    public static function getName()
+    public function getSidebar(PhpRenderer $view)
     {
-        return 'property-selector';
-    }
-
-    public static function getSidebar(PhpRenderer $view)
-    {
-        $html = $view->csvPropertySelector($view->translate('Properties:'), false);
-        return $html;
+        return $view->csvPropertySelector($view->translate('Properties:'), false);
     }
 
     public function processRow(array $row)

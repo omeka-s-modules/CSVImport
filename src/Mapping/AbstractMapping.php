@@ -8,19 +8,19 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 abstract class AbstractMapping implements MappingInterface
 {
     /**
+     * @var string
+     */
+    protected $label;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
      * @var array
      */
     protected $args;
-
-    /**
-     * @var ApiManager
-     */
-    protected $api;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
 
     /**
      * @var ServiceLocatorInterface
@@ -28,16 +28,36 @@ abstract class AbstractMapping implements MappingInterface
     protected $serviceLocator;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var ApiManager
+     */
+    protected $api;
+
+    /**
      * @var bool
      */
     protected $hasErr = false;
 
-    public function __construct(array $args, ServiceLocatorInterface $serviceLocator)
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function init(array $args, ServiceLocatorInterface $serviceLocator)
     {
         $this->args = $args;
+        $this->serviceLocator = $serviceLocator;
         $this->logger = $serviceLocator->get('Omeka\Logger');
         $this->api = $serviceLocator->get('Omeka\ApiManager');
-        $this->serviceLocator = $serviceLocator;
     }
 
     public function getServiceLocator()

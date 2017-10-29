@@ -95,7 +95,9 @@ class Import extends AbstractJob
         $mappings = [];
         $mappingClasses = $config['csv_import']['mappings'][$this->resourceType];
         foreach ($mappingClasses as $mappingClass) {
-            $mappings[] = new $mappingClass($args, $services);
+            $mapping = new $mappingClass();
+            $mapping->init($args, $services);
+            $mappings[] = $mapping;
         }
 
         $this->resourceType = $this->getArg('resource_type', 'items');

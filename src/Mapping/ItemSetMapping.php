@@ -3,8 +3,8 @@ namespace CSVImport\Mapping;
 
 class ItemSetMapping extends AbstractResourceMapping
 {
-    static protected $label = 'Item set data'; // @translate
-    static protected $resourceType = 'item_sets';
+    protected $label = 'Item set data'; // @translate
+    protected $resourceType = 'item_sets';
 
     protected function processGlobalArgs()
     {

@@ -140,7 +140,7 @@ class IndexController extends AbstractActionController
             }
             $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
-            $mappingsResource = $this->orderMappingsForResource($resourceType);
+            $mappingsResource = $this->getMappingsForResource($resourceType);
 
             $view->setVariable('form', $form);
             $view->setVariable('automaps', $autoMaps);
@@ -182,26 +182,32 @@ class IndexController extends AbstractActionController
     }
 
     /**
-     * Helper to order buttons on the mapping form for a resource type.
-     *
-     * For ergonomic reasons, it’s cleaner to keep the buttons of modules after
-     * the default ones. This is only needed in the mapping form. The default
-     * order is set in this module config too, before Zend merge.
+     * Helper to return ordered mappings of the selected resource type.
      *
      * @param string $resourceType
      * @return array
      */
-    protected function orderMappingsForResource($resourceType)
+    protected function getMappingsForResource($resourceType)
     {
+        // First reorder mappings: for ergonomic reasons, it’s cleaner to keep
+        // the buttons of modules after the default ones. This is only needed in
+        // the mapping form. The default order is set in this module config too,
+        // before Zend merge.
         $config = include __DIR__ . '/../../config/module.config.php';
         $defaultOrder = $config['csv_import']['mappings'];
         $mappings = $this->config['csv_import']['mappings'];
         if (isset($defaultOrder[$resourceType])) {
-            return array_values(array_unique(array_merge(
+            $mappingClasses = array_values(array_unique(array_merge(
                 $defaultOrder[$resourceType], $mappings[$resourceType]
             )));
+        } else {
+            $mappingClasses = $mappings[$resourceType];
         }
-        return $mappings[$resourceType];
+        $mappings = [];
+        foreach ($mappingClasses as $mappingClass) {
+            $mappings[] = new $mappingClass();
+        }
+        return $mappings;
     }
 
     /**

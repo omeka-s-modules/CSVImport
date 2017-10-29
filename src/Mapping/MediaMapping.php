@@ -3,8 +3,8 @@ namespace CSVImport\Mapping;
 
 class MediaMapping extends AbstractResourceMapping
 {
-    static protected $label = 'Media data'; // @translate
-    static protected $resourceType = 'media';
+    protected $label = 'Media data'; // @translate
+    protected $resourceType = 'media';
 
     protected function processGlobalArgs()
     {

@@ -3,12 +3,14 @@ namespace CSVImport\Mapping;
 
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use Omeka\Stdlib\Message;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
 abstract class AbstractResourceMapping extends AbstractMapping
 {
-    static protected $label;
-    static protected $resourceType;
+    protected $label;
+    protected $name = 'resource-data';
+    protected $resourceType;
 
     /**
      * @var FindResourcesFromIdentifiers
@@ -25,19 +27,16 @@ abstract class AbstractResourceMapping extends AbstractMapping
      */
     protected $map;
 
-    public static function getLabel()
+    public function getSidebar(PhpRenderer $view)
     {
-        return self::$label;
+        return $view->resourceSidebar($this->resourceType);
     }
 
-    public static function getName()
+    public function init(array $args, ServiceLocatorInterface $serviceLocator)
     {
-        return self::$resourceType;
-    }
-
-    public static function getSidebar(PhpRenderer $view)
-    {
-        return $view->resourceSidebar(self::$resourceType);
+        parent::init($args, $serviceLocator);
+        $this->findResourceFromIdentifier = $serviceLocator->get('ControllerPluginManager')
+            ->get('findResourceFromIdentifier');
     }
 
     public function processRow(array $row)
@@ -46,9 +45,6 @@ abstract class AbstractResourceMapping extends AbstractMapping
         $this->setHasErr(false);
         $this->data = [];
         $this->map = [];
-
-        $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
-            ->get('findResourceFromIdentifier');
 
         // First, pull in the global settings.
         $this->processGlobalArgs();
