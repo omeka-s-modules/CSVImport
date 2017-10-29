@@ -263,6 +263,14 @@ class Import extends AbstractJob
             return;
         }
 
+        // Manage an exception: media must be created with an item.
+        if ($this->resourceType === 'media') {
+            $data = $this->checkMedias($data);
+            if (empty($data)) {
+                return;
+            }
+        }
+
         // May fix some issues when a module doesn't manage batch create.
         if (count($data) == 1) {
             $response = $this->api->create($this->resourceType, reset($data));
@@ -379,6 +387,29 @@ class Import extends AbstractJob
         $idsForLog = $this->idsForLog($ids, true);
         $this->logger->info(new Message('%d %s were removed: %s.', // @translate
             count($contents), $this->resourceType, $idsForLog));
+    }
+
+    /**
+     * Check if medias to create belong to an existing item.
+     *
+     * To be used when importing media, that must have an item id.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function checkMedias(array $data)
+    {
+        foreach ($data as $key => $entityJson) {
+            if (empty($entityJson['o:item'])) {
+                unset($data[$key]);
+                $this->hasErr = true;
+                $this->logger->err(new Message('A media to create is not attached to an item (%s).', // @translate
+                    empty($entityJson['o:source'])
+                        ? $entityJson['o:ingester']
+                        : $entityJson['o:ingester'] . ': ' . $entityJson['o:source']));
+            }
+        }
+        return $data;
     }
 
     /**

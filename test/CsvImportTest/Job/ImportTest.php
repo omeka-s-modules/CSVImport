@@ -91,6 +91,7 @@ SQL;
             ['test_many_rows_url.csv', ['items' => 30]],
             ['test_media_order.csv', ['media' => 3], false, true],
             ['test_media_order_add.csv', ['media' => 4], false],
+            ['test_media_order_add_no_item.csv', ['media' => 4]],
         ];
     }
 
