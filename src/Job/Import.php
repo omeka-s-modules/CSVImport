@@ -54,9 +54,9 @@ class Import extends AbstractJob
     protected $csvFile;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $addedCount;
+    protected $resourceType;
 
     /**
      * @var bool
@@ -64,9 +64,9 @@ class Import extends AbstractJob
     protected $hasErr = false;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $resourceType;
+    protected $stats;
 
     /**
      * @var array
@@ -126,8 +126,8 @@ class Import extends AbstractJob
             'o:job' => ['o:id' => $this->job->getId()],
             'comment' => 'Job started',
             'resource_type' => $this->resourceType,
-            'added_count' => 0,
             'has_err' => false,
+            'stats' => [],
         ];
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $this->importRecord = $response->getContent();
@@ -219,6 +219,7 @@ class Import extends AbstractJob
                         case self::ACTION_SKIP:
                             if ($idsRemaining) {
                                 $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                                $this->stats(self::ACTION_SKIP, $identifiersRemaining);
                                 $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                                     implode('", "', $identifiersRemaining)));
                             }
@@ -243,13 +244,14 @@ class Import extends AbstractJob
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
                         $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                        $this->stats(self::ACTION_SKIP, $identifiersRemaining);
                         $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                             implode('", "', $identifiersRemaining)));
                     }
                     $this->delete($idsToProcess);
                     break;
                 case self::ACTION_SKIP:
-                    // No process.
+                    $this->stats(self::ACTION_SKIP, $data);
                     break;
             }
 
@@ -298,12 +300,13 @@ class Import extends AbstractJob
             $response = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
             $contents = $response->getContent();
         }
-        $this->addedCount = $this->addedCount + count($contents);
 
         // Manage the position of created medias, that can’t be set directly.
         if ($this->resourceType === 'media') {
             $this->reorderMedias($contents);
         }
+
+        $this->stats(self::ACTION_CREATE, $data, $contents);
 
         $createImportEntitiesJson = [];
         foreach ($contents as $resourceReference) {
@@ -380,6 +383,7 @@ class Import extends AbstractJob
         }
         if ($updatedIds) {
             $idsForLog = $this->idsForLog($updatedIds);
+            $this->stats($action, $data, $updatedIds);
             $this->logger->info(new Message('%d %s were updated (%s): %s.', // @translate
                 count($updatedIds), $this->resourceType, $action, $idsForLog));
         } else {
@@ -409,6 +413,7 @@ class Import extends AbstractJob
         }
         // TODO Get better stats of removed ids in case of error.
         $idsForLog = $this->idsForLog($ids, true);
+        $this->stats(self::ACTION_DELETE, $ids, $contents);
         $this->logger->info(new Message('%d %s were removed: %s.', // @translate
             count($contents), $this->resourceType, $idsForLog));
     }
@@ -1023,6 +1028,72 @@ SQL;
         }
     }
 
+    /**
+     * Set the total of added, updated or deleted resources and processed rows.
+     *
+     * @todo Identify skipped rows and errors.
+     *
+     * @param string $action
+     * @param array $data
+     * @param array $result
+     */
+    protected function stats($action, array $data = [], array $result = [])
+    {
+        $actions = [
+            self::ACTION_CREATE => 'added',
+            self::ACTION_APPEND => 'updated',
+            self::ACTION_REVISE => 'updated',
+            self::ACTION_UPDATE => 'updated',
+            self::ACTION_REPLACE => 'updated',
+            self::ACTION_DELETE => 'deleted',
+            self::ACTION_SKIP => 'skipped',
+        ];
+        $process = $actions[$action];
+
+        $total = empty($this->stats[$process][$this->resourceType])
+            ? 0
+            : $this->stats[$process][$this->resourceType];
+
+        switch ($process) {
+            case 'added':
+            case 'updated':
+            case 'deleted':
+                $this->stats[$process][$this->resourceType] = $total + count($result);
+                break;
+            case 'skipped':
+                $this->stats[$process][$this->resourceType] = $total + count($data);
+                // $this->stats['rows']['skipped'] = [];
+                // $this->stats['rows']['error'] = [];
+                break;
+        }
+
+        // Manage an exception for items: count media too.
+        if ($this->resourceType === 'items') {
+            switch ($process) {
+                case 'added':
+                    $itemIds = array_map(function ($v) {
+                        return $v->id();
+                    }, $result);
+                    if ($itemIds) {
+                        $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
+                        $query = $entityManager ->createQuery(
+                            sprintf('SELECT COUNT(media.id) FROM Omeka\Entity\Media media WHERE media.item IN (%s)',
+                                implode(',', $itemIds)));
+                        $total = $query->getSingleScalarResult();
+                        if ($total) {
+                            $this->stats[$process]['media'] = $total;
+                        }
+                    }
+                    break;
+                case 'updated':
+                case 'deleted':
+                case 'skipped':
+                    // TODO Count updated / deleted / skipped media when updating items.
+                    break;
+            }
+        }
+    }
+
     protected function buildImportRecordJson($resourceReference)
     {
         $recordJson = [
@@ -1037,8 +1108,8 @@ SQL;
     {
         $csvImportJson = [
             'comment' => $this->getArg('comment'),
-            'added_count' => $this->addedCount,
             'has_err' => $this->hasErr,
+            'stats' => $this->stats,
         ];
         $response = $this->api->update('csvimport_imports', $this->importRecord->id(), $csvImportJson);
         $this->csvFile->delete();
