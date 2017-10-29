@@ -29,7 +29,7 @@
     "column-media_source": {
         "1": "url"
     },
-    "delimiter": ",",
+    "delimiter": "\t",
     "enclosure": "\"",
     "escape": "\\",
     "multivalue_separator": ","

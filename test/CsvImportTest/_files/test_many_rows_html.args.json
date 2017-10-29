@@ -49,7 +49,7 @@
     "column-media_source": {
         "6": "html"
     },
-    "delimiter": ",",
+    "delimiter": "\t",
     "enclosure": "\"",
     "escape": "\\",
     "multivalue_separator": "|",
