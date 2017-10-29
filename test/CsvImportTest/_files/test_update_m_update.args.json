@@ -1,7 +1,8 @@
 {
     "filename": "test_update_m_update.csv",
     "filesize": "365",
-    "csvpath": "/tmp/omekagz5Tpw",
+    "filepath": "/tmp/omekagz5Tpw",
+    "media_type": "text/csv",
     "csrf": "a835e00ad21bbde5bd8ebbec3b50d860-ae930ce3b74035f378189eb812cb38df",
     "resource_type": "items",
     "automap_check_names_alone": "0",

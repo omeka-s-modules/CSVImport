@@ -45,7 +45,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 </span>
                 <br />
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()]), ['target' => '_blank']); ?>
+                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
                 </span>
                 <?php if ($job->log()): ?>
                 /
@@ -80,7 +80,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 }
                 ?>
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()]), ['target' => '_blank']); ?>
+                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
                 </span>
                 <?php if ($undoJob->log()): ?>
                 /

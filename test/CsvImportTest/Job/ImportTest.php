@@ -82,7 +82,7 @@ SQL;
         $this->entityManager->clear();
     }
 
-    public function csvFileProvider()
+    public function sourceProvider()
     {
         return [
             ['test.csv', ['items' => 3, 'media' => 4]],
@@ -98,7 +98,7 @@ SQL;
     }
 
     /**
-     * @dataProvider csvFileProvider
+     * @dataProvider sourceProvider
      */
     public function testPerformCreate($filepath, $totals, $resetResources = true, $createItem = false)
     {
@@ -160,7 +160,7 @@ SQL;
         return $resources;
     }
 
-    public function csvFileUpdateProvider()
+    public function sourceUpdateProvider()
     {
         return [
             ['test_skip.csv', ['items', 1]],
@@ -181,7 +181,7 @@ SQL;
     }
 
     /**
-     * @dataProvider csvFileUpdateProvider
+     * @dataProvider sourceUpdateProvider
      * @depends testPerformCreateOne
      */
     public function testPerformUpdate($filepath, $options, $resources)
@@ -212,7 +212,7 @@ SQL;
         $this->assertEquals($expected, $resource);
     }
 
-    public function csvFileDeleteProvider()
+    public function sourceDeleteProvider()
     {
         return [
             ['test_delete_items.csv', ['items', 2]],
@@ -223,7 +223,7 @@ SQL;
     /**
      * This test depends on other ones only to avoid check on removed resources.
      *
-     * @dataProvider csvFileDeleteProvider
+     * @dataProvider sourceDeleteProvider
      * @depends testPerformCreateOne
      * @depends testPerformUpdate
      */
@@ -272,7 +272,7 @@ SQL;
             $this->markTestSkipped(new Message('No argument files (%s).', basename($argspath))); // @translate
         }
         $args = json_decode(file_get_contents($filebase . '.args.json'), true);
-        $args['csvpath'] = $this->tempfile;
+        $args['filepath'] = $this->tempfile;
 
         $job = new Job;
         $job->setStatus(Job::STATUS_STARTING);

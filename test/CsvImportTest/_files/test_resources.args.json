@@ -1,7 +1,8 @@
 {
     "filename": "test_resources.csv",
     "filesize": "1604",
-    "csvpath": "\/tmp\/omekaxDqIlX",
+    "filepath": "\/tmp\/omekaxDqIlX",
+    "media_type": "text/csv",
     "csrf": "54f388e341f7723835cf5b1302fbfa7c-ce9d8538934dc961ba10af58e9d84244",
     "resource_type": "resources",
     "automap_check_names_alone": "0",

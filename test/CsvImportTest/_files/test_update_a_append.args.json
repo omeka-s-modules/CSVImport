@@ -1,7 +1,8 @@
 {
     "filename": "test_update_a_append.csv",
     "filesize": "369",
-    "csvpath": "/tmp/omekaVC7i6I",
+    "filepath": "/tmp/omekaVC7i6I",
+    "media_type": "text/csv",
     "csrf": "f52591fce61290ca7e37476b6016d391-fae7ff339cb9c2377aa89c39cbaf683f",
     "resource_type": "items",
     "automap_check_names_alone": "0",

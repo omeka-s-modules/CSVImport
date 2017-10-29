@@ -1,7 +1,8 @@
 {
     "filename": "test_update_i_append.csv",
     "filesize": "390",
-    "csvpath": "/tmp/omekaRmDvAL",
+    "filepath": "/tmp/omekaRmDvAL",
+    "media_type": "text/csv",
     "csrf": "db85ea2f5cc050086324a589f9b619c2-ec9f596f493926866d2ecd0dd85e79d1",
     "resource_type": "items",
     "automap_check_names_alone": "0",

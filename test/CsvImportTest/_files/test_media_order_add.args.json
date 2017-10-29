@@ -1,7 +1,8 @@
 {
     "filename": "test_media_order_add.csv",
     "filesize": "226",
-    "csvpath": "\/tmp\/omekauqhPjv",
+    "filepath": "\/tmp\/omekauqhPjv",
+    "media_type": "text/csv",
     "csrf": "1ed4cffa47d92c14640067e49c0473c5-27ab929ad66355a1f8bae4393984d306",
     "resource_type": "media",
     "automap_check_names_alone": "0",
