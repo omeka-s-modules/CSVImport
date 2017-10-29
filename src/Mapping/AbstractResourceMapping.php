@@ -5,8 +5,11 @@ use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use Omeka\Stdlib\Message;
 use Zend\View\Renderer\PhpRenderer;
 
-class ResourceMapping extends AbstractMapping
+abstract class AbstractResourceMapping extends AbstractMapping
 {
+    static protected $label;
+    static protected $resourceType;
+
     /**
      * @var FindResourcesFromIdentifiers
      */
@@ -24,17 +27,17 @@ class ResourceMapping extends AbstractMapping
 
     public static function getLabel()
     {
-        return "Resource data"; // @translate
+        return self::$label;
     }
 
     public static function getName()
     {
-        return 'resource-data';
+        return self::$resourceType;
     }
 
     public static function getSidebar(PhpRenderer $view)
     {
-        return $view->resourceSidebar();
+        return $view->resourceSidebar(self::$resourceType);
     }
 
     public function processRow(array $row)
@@ -109,6 +112,57 @@ class ResourceMapping extends AbstractMapping
         }
     }
 
+    protected function processGlobalArgsItemSet()
+    {
+        $data = &$this->data;
+
+        // Set columns.
+        if (isset($this->args['column-is_open'])) {
+            $this->map['isOpen'] = $this->args['column-is_open'];
+            $data['o:is_open'] = null;
+        }
+
+        // Set default values.
+        if (isset($this->args['o:is_open']) && strlen($this->args['o:is_open'])) {
+            $data['o:is_open'] = (bool) $this->args['o:is_open'];
+        }
+    }
+
+    protected function processGlobalArgsItem()
+    {
+        $data = &$this->data;
+
+        // Set columns.
+        if (isset($this->args['column-item_set'])) {
+            $this->map['itemSet'] = $this->args['column-item_set'];
+            $data['o:item_set'] = [];
+        }
+
+        // Set default values.
+        if (!empty($this->args['o:item_set'])) {
+            $data['o:item_set'] = [];
+            foreach ($this->args['o:item_set'] as $id) {
+                $data['o:item_set'][] = ['o:id' => (int) $id];
+            }
+        }
+    }
+
+    protected function processGlobalArgsMedia()
+    {
+        $data = &$this->data;
+
+        // Set columns.
+        if (isset($this->args['column-item'])) {
+            $this->map['item'] = $this->args['column-item'];
+            $data['o:item'] = null;
+        }
+
+        // Set default values.
+        if (!empty($this->args['o:item']['o:id'])) {
+            $data['o:item'] = ['o:id' => (int) $this->args['o:item']['o:id']];
+        }
+    }
+
     /**
      * Process the content of a cell (one csv value).
      *
@@ -156,6 +210,76 @@ class ResourceMapping extends AbstractMapping
                 $data['o:is_public'] = in_array(strtolower($value), ['false', 'no', 'off', 'private'])
                     ? false
                     : (bool) $value;
+            }
+        }
+    }
+
+    protected function processCellItemSet($index, array $values)
+    {
+        $data = &$this->data;
+
+        if (isset($this->map['isOpen'][$index])) {
+            $value = reset($values);
+            if (strlen($value)) {
+                $data['o:is_open'] = in_array(strtolower($value), ['false', 'no', 'off', 'closed'])
+                    ? false
+                    : (bool) $value;
+            }
+        }
+    }
+
+    protected function processCellItem($index, array $values)
+    {
+        $data = &$this->data;
+
+        if (isset($this->map['itemSet'][$index])) {
+            $identifierProperty = $this->map['itemSet'][$index];
+            $resourceType = 'item_sets';
+            $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+            foreach ($values as $identifier) {
+                $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
+                if ($resourceId) {
+                    $data['o:item_set'][] = ['o:id' => $resourceId];
+                } else {
+                    $this->logger->err(new Message('"%s" (%s) is not a valid item set.', // @translate
+                        $identifier, $identifierProperty));
+                    $this->setHasErr(true);
+                }
+            }
+        }
+    }
+
+    protected function processCellMedia($index, array $values)
+    {
+        $data = &$this->data;
+
+        if (isset($this->map['item'][$index])) {
+            // Check params to avoid useless search and improve speed.
+            $action = $this->args['action'];
+            $identifier = reset($values);
+            $identifierProperty = $this->map['item'][$index] ?: 'internal_id';
+            $resourceType = 'items';
+
+            if (empty($identifier)) {
+                // The parent identifier is needed only to create a media.
+                if ($action === Import::ACTION_CREATE) {
+                    $this->logger->err(new Message('An item identifier is required to process action "%s".', // @translate
+                        $action));
+                    $this->setHasErr(true);
+                    return false;
+                }
+                return;
+            }
+
+            $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+            $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
+            if ($resourceId) {
+                $data['o:item'] = ['o:id' => $resourceId];
+            } else {
+                $this->logger->err(new Message('"%s" (%s) is not a valid item identifier.', // @translate
+                    $identifier, $identifierProperty));
+                $this->setHasErr(true);
+                return false;
             }
         }
     }

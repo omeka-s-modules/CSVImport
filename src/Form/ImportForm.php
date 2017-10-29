@@ -97,9 +97,7 @@ class ImportForm extends Form
         $resourceTypes = array_keys($this->configCsvImport['mappings']);
         $valueOptions = [];
         foreach ($resourceTypes as $resourceType) {
-            // Currently, there is no resource label. It should be in the Omeka
-            // vocabulary, for example "item_sets" => "o:ItemSet" => "Item set".
-            // So there is no translation too.
+            // Currently, there is no resource label, so no translation.
             $valueOptions[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
         }
         $this->add([
