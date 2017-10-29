@@ -216,6 +216,8 @@ class IndexController extends AbstractActionController
         if ($mediaType === 'text/plain') {
             $extensions = [
                 'csv' => 'text/csv',
+                'tab' => 'text/tab-separated-values',
+                'tsv' => 'text/tab-separated-values',
             ];
             $extension = strtolower(pathinfo($fileData['name'], PATHINFO_EXTENSION));
             if (isset($extensions[$extension])) {
@@ -321,6 +323,9 @@ class IndexController extends AbstractActionController
                 $args['delimiter'] = $this->getForm(ImportForm::class)->extractParameter($post['delimiter']);
                 $args['enclosure'] = $this->getForm(ImportForm::class)->extractParameter($post['enclosure']);
                 $args['escape'] = \CSVImport\Source\CsvFile::DEFAULT_ESCAPE;
+                break;
+            case 'text/tab-separated-values':
+                // Nothing to do.
                 break;
         }
 

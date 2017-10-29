@@ -53,6 +53,7 @@ return [
     'csv_import' => [
         'sources' => [
             'text/csv' => Source\CsvFile::class,
+            'text/tab-separated-values' => Source\TsvFile::class,
         ],
         'mappings' => [
             'item_sets' => [
