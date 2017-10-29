@@ -1,5 +1,4 @@
 <?php
-
 namespace CSVImport\Form;
 
 use CSVImport\Job\Import;

@@ -1,10 +1,10 @@
 <?php
 namespace CSVImport\Job;
 
-use CSVImport\CsvFile;
 use CSVImport\Entity\CSVImportImport;
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
-use LimitIterator;
+use CSVImport\Source\SourceInterface;
+use finfo;
 use Omeka\Api\Manager;
 use Omeka\Api\Response;
 use Omeka\Job\AbstractJob;
@@ -49,9 +49,9 @@ class Import extends AbstractJob
     protected $importRecord;
 
     /**
-     * @var CsvFile
+     * @var SourceInterface
      */
-    protected $csvFile;
+    protected $source;
 
     /**
      * @var string
@@ -76,12 +76,27 @@ class Import extends AbstractJob
     /**
      * @var array
      */
+    protected $mappings;
+
+    /**
+     * @var array
+     */
     protected $identifiers;
 
     /**
      * @var string|int
      */
-    protected $identifierProperty;
+    protected $identifierPropertyId;
+
+    /**
+     * @var bool
+     */
+    protected $importResource;
+
+    /**
+     * @var int
+     */
+    protected $emptyLines;
 
     public function perform()
     {
@@ -91,36 +106,23 @@ class Import extends AbstractJob
         $this->logger = $services->get('Omeka\Logger');
         $this->findResourcesFromIdentifiers = $services->get('ControllerPluginManager')
             ->get('findResourcesFromIdentifiers');
-        $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
         $config = $services->get('Config');
 
         $this->args = $this->job->getArgs();
         $args = &$this->args;
 
-        $this->resourceType = $this->getArg('resource_type', 'items');
-        $importResource = $this->resourceType === 'resources';
+        $filepath = $this->getArg('filepath');
 
-        $mappings = [];
+        $this->resourceType = $this->getArg('resource_type', 'items');
+        $this->importResource = $this->resourceType === 'resources';
+
+        $this->mappings = [];
         $mappingClasses = $config['csv_import']['mappings'][$this->resourceType];
         foreach ($mappingClasses as $mappingClass) {
             $mapping = new $mappingClass();
             $mapping->init($args, $services);
-            $mappings[] = $mapping;
+            $this->mappings[] = $mapping;
         }
-
-        $this->csvFile = new CsvFile($config);
-        $csvFile = $this->csvFile;
-        if (isset($args['delimiter'])) {
-            $csvFile->setDelimiter($args['delimiter']);
-        }
-        if (isset($args['enclosure'])) {
-            $csvFile->setEnclosure($args['enclosure']);
-        }
-        if (isset($args['escape'])) {
-            $csvFile->setEscape($args['escape']);
-        }
-        $csvFile->setTempPath($this->getArg('csvpath'));
-        $csvFile->loadFromTempPath();
 
         $csvImportJson = [
             'o:job' => ['o:id' => $this->job->getId()],
@@ -137,6 +139,34 @@ class Import extends AbstractJob
             return $this->endJob();
         }
 
+        $source = $this->getSource($filepath, $this->getArg('media_type'));
+        if (empty($source)) {
+            $this->hasErr = true;
+            $this->logger->err('The file seems empty.'); // @translate
+            return $this->endJob();
+        }
+        $source->init($config);
+        $source->setSource($filepath);
+        $source->setParameters($args);
+        $this->source = $source;
+        if (!$source->isValid()) {
+            $this->hasErr = true;
+            $this->logger->err('The file is not valid.'); // @translate
+            return $this->endJob();
+        }
+
+        // The main identifier property may be used as term or as id in some
+        // places, so prepare it one time only.
+        if (empty($args['identifier_property']) || $args['identifier_property'] === 'internal_id') {
+            $this->identifierPropertyId = $args['identifier_property'];
+        } elseif (is_numeric($args['identifier_property'])) {
+            $this->identifierPropertyId = (int) $args['identifier_property'];
+        } else {
+            $result = $this->api
+            ->search('properties', ['term' => $args['identifier_property']])->getContent();
+            $this->identifierPropertyId = $result ? $result[0]->id() : null;
+        }
+
         if (!empty($args['rows_by_batch'])) {
             $this->rowsByBatch = (int) $args['rows_by_batch'];
         }
@@ -150,127 +180,136 @@ class Import extends AbstractJob
             $this->rowsByBatch = 1;
         }
 
-        // The main identifier property may be used as term or as id in some
-        // places, so prepare it one time only.
-        if ($args['identifier_property']=== 'internal_id') {
-            $identifierPropertyId = $args['identifier_property'];
-        } elseif (is_numeric($args['identifier_property'])) {
-            $identifierPropertyId = (int) $args['identifier_property'];
-        } else {
-            $result = $this->api
-                ->search('properties', ['term' => $args['identifier_property']])->getContent();
-            $identifierPropertyId = $result ? $result[0]->id() : null;
-        }
-        $this->identifierProperty = $args['identifier_property'];
+        $this->emptyLines = 0;
 
-        // Skip the first (header) row, and blank ones (cf. CsvFile object).
-        $emptyLines = 0;
+        // Skip the first (header) row, and blank ones.
         $offset = 1;
-        $file = $csvFile->fileObject;
-        $file->rewind();
-        while ($file->valid()) {
-            $data = [];
-            foreach (new LimitIterator($file, $offset, $this->rowsByBatch) as $row) {
-                $row = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $row);
-                if (!array_filter($row, function ($v) { return strlen($v); })) {
-                    ++$emptyLines;
-                    continue;
-                }
-                $entityJson = [];
-                foreach ($mappings as $mapping) {
-                    $mapped = $mapping->processRow($row);
-                    $entityJson = array_merge($entityJson, $mapped);
-                    if ($mapping->getHasErr()) {
-                        $this->hasErr = true;
-                    }
-                }
-                $data[] = $entityJson;
-            }
+        while (($rows = $source->getRows($offset, $this->rowsByBatch)) !== null) {
+            $data = $this->mapRows($rows);
+            $this->processBatchData($data);
+            $offset += $this->rowsByBatch;
+        };
 
-            if ($importResource) {
-                $data = $this->checkResources($data);
-                // Because the import of resources is done by row, the resource
-                // type is known and may be set.
-                if (isset($data[0])) {
-                    $this->resourceType = $data[0]['resource_type'];
-                }
-            }
-
-            switch ($args['action']) {
-                case self::ACTION_CREATE:
-                    $this->create($data);
-                    break;
-                case self::ACTION_APPEND:
-                case self::ACTION_REVISE:
-                case self::ACTION_UPDATE:
-                case self::ACTION_REPLACE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
-                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierPropertyId, $this->resourceType);
-                    $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
-                    $idsToProcess = array_filter($ids);
-                    $idsRemaining = array_diff_key($ids, $idsToProcess);
-                    $dataToProcess = array_intersect_key($data, $idsToProcess);
-                    // The creation occurs before the update in all cases.
-                    switch ($args['action_unidentified']) {
-                        case self::ACTION_CREATE:
-                            $dataToCreate = array_intersect_key($data, $idsRemaining);
-                            $this->create($dataToCreate);
-                            break;
-                        case self::ACTION_SKIP:
-                            if ($idsRemaining) {
-                                $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
-                                $this->stats(self::ACTION_SKIP, $identifiersRemaining);
-                                $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
-                                    implode('", "', $identifiersRemaining)));
-                            }
-                            break;
-                    }
-                    // Manage the special case where an item is updated and a
-                    // media is provided: it should be identified too in order
-                    // to update the one that belongs to this specified item.
-                    // It cannot be done during mapping, because the id of the
-                    // item is not known from the media source. In particular,
-                    // it avoids false positives in case of multiple files with
-                    // the same name for different items.
-                    if ($this->resourceType === 'items') {
-                        $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
-                    }
-                    $this->update($dataToProcess, $idsToProcess, $args['action']);
-                    break;
-                case self::ACTION_DELETE:
-                    $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
-                    $ids = $findResourcesFromIdentifiers($identifiers, $identifierPropertyId, $this->resourceType);
-                    $idsToProcess = array_filter($ids);
-                    $idsRemaining = array_diff_key($ids, $idsToProcess);
-                    if ($idsRemaining) {
-                        $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
-                        $this->stats(self::ACTION_SKIP, $identifiersRemaining);
-                        $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
-                            implode('", "', $identifiersRemaining)));
-                    }
-                    $this->delete($idsToProcess);
-                    break;
-                case self::ACTION_SKIP:
-                    $this->stats(self::ACTION_SKIP, $data);
-                    break;
-            }
-
-            if ($importResource) {
-                $this->resourceType = 'resources';
-            }
-
-            // The next offset is not the previous offset + the batch size but
-            // the current key (read ahead), because there may be empty lines.
-            // The file may be empty in case of incomplete batch at the end.
-            $offset = $file ? $file->key() : null;
-        }
-
-        if ($emptyLines) {
+        if ($this->emptyLines) {
             $this->logger->info(new Message('%d empty lines were skipped.', // @translate
-                $emptyLines));
+                $this->emptyLines));
         }
 
         $this->endJob();
+    }
+
+    /**
+     * Convert a list of rows into standard data.
+     *
+     * @param array $rows
+     * @return array
+     */
+    protected function mapRows(array $rows)
+    {
+        $data = [];
+        foreach ($rows as $row) {
+            if (!array_filter($row, function ($v) { return strlen($v); })) {
+                $this->emptyLines++;
+                continue;
+            }
+            $entityJson = [];
+            foreach ($this->mappings as $mapping) {
+                $mapped = $mapping->processRow($row);
+                $entityJson = array_merge($entityJson, $mapped);
+                if ($mapping->getHasErr()) {
+                    $this->hasErr = true;
+                }
+            }
+            $data[] = $entityJson;
+        }
+        return $data;
+    }
+
+    /**
+     * Process the import on a set of mapped rows.mappings
+     *
+     * @param array $data
+     */
+    protected function processBatchData(array $data)
+    {
+        $args = &$this->args;
+
+        if ($this->importResource) {
+            $data = $this->checkResources($data);
+            // Because the import of resources is done by row, the resource
+            // type is known and can be set.
+            if (isset($data[0])) {
+                $this->resourceType = $data[0]['resource_type'];
+            }
+        }
+
+        switch ($args['action']) {
+            case self::ACTION_CREATE:
+                $this->create($data);
+                break;
+
+            case self::ACTION_APPEND:
+            case self::ACTION_REVISE:
+            case self::ACTION_UPDATE:
+            case self::ACTION_REPLACE:
+                $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
+                $identifiers = $this->extractIdentifiers($data);
+                $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
+                $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
+                $idsToProcess = array_filter($ids);
+                $idsRemaining = array_diff_key($ids, $idsToProcess);
+                $dataToProcess = array_intersect_key($data, $idsToProcess);
+                // The creation occurs before the update in all cases.
+                switch ($args['action_unidentified']) {
+                    case self::ACTION_CREATE:
+                        $dataToCreate = array_intersect_key($data, $idsRemaining);
+                        $this->create($dataToCreate);
+                        break;
+                    case self::ACTION_SKIP:
+                        if ($idsRemaining) {
+                            $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                            $this->stats(self::ACTION_SKIP, $identifiersRemaining);
+                            $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                                implode('", "', $identifiersRemaining)));
+                        }
+                        break;
+                }
+                // Manage the special case where an item is updated and a
+                // media is provided: it should be identified too in order
+                // to update the one that belongs to this specified item.
+                // It cannot be done during mapping, because the id of the
+                // item is not known from the media source. In particular,
+                // it avoids false positives in case of multiple files with
+                // the same name for different items.
+                if ($this->resourceType === 'items') {
+                    $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
+                }
+                $this->update($dataToProcess, $idsToProcess, $args['action']);
+                break;
+
+            case self::ACTION_DELETE:
+                $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
+                $identifiers = $this->extractIdentifiers($data);
+                $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
+                $idsToProcess = array_filter($ids);
+                $idsRemaining = array_diff_key($ids, $idsToProcess);
+                if ($idsRemaining) {
+                    $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                    $this->stats(self::ACTION_SKIP, $identifiersRemaining);
+                    $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
+                        implode('", "', $identifiersRemaining)));
+                }
+                $this->delete($idsToProcess);
+                break;
+
+            case self::ACTION_SKIP:
+                $this->stats(self::ACTION_SKIP, $data);
+                break;
+        }
+
+        if ($this->importResource) {
+            $this->resourceType = 'resources';
+        }
     }
 
     /**
@@ -405,7 +444,11 @@ class Import extends AbstractJob
         }
         // May fix some issues when a module doesn't manage batch delete.
         if (count($ids) == 1) {
-            $response = $this->api->delete($this->resourceType, reset($ids));
+            // TODO Implement on delete cascade in the entity CSVImportEntity.
+            try {
+                $response = $this->api->delete($this->resourceType, reset($ids));
+            } catch (\Omeka\Api\Exception\NotFoundException $e) {
+            }
             $contents = $response ? [$response->getContent()] : [];
         } else {
             $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
@@ -434,7 +477,7 @@ class Import extends AbstractJob
                 $this->hasErr = true;
                 $this->logger->err(new Message('A media to create is not attached to an item (%s).', // @translate
                     empty($entityJson['o:source'])
-                        ? $entityJson['o:ingester']
+                        ? (isset($entityJson['o:ingester']) ? $entityJson['o:ingester'] : 'unknown ingester') // @translate
                         : $entityJson['o:ingester'] . ': ' . $entityJson['o:source']));
             }
         }
@@ -577,18 +620,16 @@ SQL;
      * is recalled with new identifiers.
      *
      * @param array $data
-     * @param string|int $identifierPropertyId
      * @return array Associative array mapping the data key as key and the found
      * ids or null as value. Order is kept.
      */
-    protected function extractIdentifiers($data, $identifierPropertyId = 'internal_id')
+    protected function extractIdentifiers(array $data)
     {
         $identifiers = [];
-        $identifierPropertyId = $identifierPropertyId ?: 'internal_id';
 
         foreach ($data as $key => $entityJson) {
             $identifier = null;
-            switch ($identifierPropertyId) {
+            switch ($this->identifierPropertyId) {
                 case 'internal_id':
                     if (!empty($entityJson['o:id'])) {
                         $identifier = $entityJson['o:id'];
@@ -604,7 +645,7 @@ SQL;
                                 if (is_array($value) && !empty($value)) {
                                     $value = reset($value);
                                     if (isset($value['property_id'])
-                                        && $value['property_id'] == $identifierPropertyId
+                                        && $value['property_id'] == $this->identifierPropertyId
                                         && isset($value['@value'])
                                         && strlen($value['@value'])
                                     ) {
@@ -681,7 +722,7 @@ SQL;
      */
     protected function idsForLog($ids, $hasIdentifierKeys = false)
     {
-        switch ($this->identifierProperty) {
+        switch ($this->args['identifier_property']) {
             case 'internal_id':
                 // Nothing to do.
                 break;
@@ -969,6 +1010,42 @@ SQL;
     }
 
     /**
+     * Get the source class to manage the file, according to its media type.
+     *
+     * @param string $filepath
+     * @param string $mediaType Needed for some types of file without extension.
+     * @return SourceInterface|null
+     */
+    protected function getSource($filepath, $mediaType = null)
+    {
+        if (empty($mediaType)) {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mediaType = $finfo->file($filepath);
+
+            // Manage an exception for a very common format, undetected by fileinfo.
+            if ($mediaType === 'text/plain') {
+                $extensions = [
+                    'csv' => 'text/csv',
+                    'tab' => 'text/tab-separated-values',
+                    'tsv' => 'text/tab-separated-values',
+                ];
+                $extension = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
+                if (isset($extensions[$extension])) {
+                    $mediaType = $extensions[$extension];
+                }
+            }
+        }
+
+        $sources = $this->getServiceLocator()->get('Config')['csv_import']['sources'];
+        if (!isset($sources[$mediaType])) {
+            return;
+        }
+
+        $source = new $sources[$mediaType];
+        return $source;
+    }
+
+    /**
      * Check options used to import.
      *
      * @todo Mix with check in Import and make it available for external query.
@@ -1081,7 +1158,9 @@ SQL;
                                 implode(',', $itemIds)));
                         $total = $query->getSingleScalarResult();
                         if ($total) {
-                            $this->stats[$process]['media'] = $total;
+                            $this->stats[$process]['media'] = isset($this->stats[$process]['media'])
+                                ? $this->stats[$process]['media'] + $total
+                                : $total;
                         }
                     }
                     break;
@@ -1112,6 +1191,8 @@ SQL;
             'stats' => $this->stats,
         ];
         $response = $this->api->update('csvimport_imports', $this->importRecord->id(), $csvImportJson);
-        $this->csvFile->delete();
+        if ($this->source) {
+            $this->source->clean();
+        }
     }
 }

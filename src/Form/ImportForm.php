@@ -52,53 +52,55 @@ class ImportForm extends Form
         $defaults = $this->configCsvImport['user_settings'];
 
         $this->add([
-                'name' => 'csv',
+                'name' => 'source',
                 'type' => 'file',
                 'options' => [
-                    'label' => 'CSV file', // @translate
-                    'info' => 'The CSV file to upload', //@translate
+                    'label' => 'Spreadsheet (csv or ods)', // @translate
+                    'info' => 'The CSV or the ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
                 ],
                 'attributes' => [
-                    'id' => 'csv',
+                    'id' => 'source',
                     'required' => 'true',
                 ],
         ]);
 
-        $valueOptions = $this->getDelimiterList();
+        // TODO Move the specific parameters into the source class.
+
+        $valueParameters = $this->getDelimiterList();
         $value = $this->userSettings->get('csv_import_delimiter', $defaults['csv_import_delimiter']);
         $this->add([
             'name' => 'delimiter',
             'type' => 'select',
             'options' => [
-                'label' => 'Column delimiter', // @translate
+                'label' => 'CSV column delimiter', // @translate
                 'info' => 'A single character that will be used to separate columns in the csv file.', // @translate
-                'value_options' => $valueOptions,
+                'value_options' => $valueParameters,
             ],
             'attributes' => [
-                'value' => $this->integrateCsvOption($value),
+                'value' => $this->integrateParameter($value),
             ],
         ]);
 
-        $valueOptions = $this->getEnclosureList();
+        $valueParameters = $this->getEnclosureList();
         $value = $this->userSettings->get('csv_import_enclosure', $defaults['csv_import_enclosure']);
         $this->add([
             'name' => 'enclosure',
             'type' => 'select',
             'options' => [
-                'label' => 'Column enclosure', // @translate
+                'label' => 'CSV column enclosure', // @translate
                 'info' => 'A single character that will be used to separate columns in the csv file. The enclosure can be omitted when the content does not contain the delimiter.', // @translate
-                'value_options' => $valueOptions,
+                'value_options' => $valueParameters,
             ],
             'attributes' => [
-                'value' => $this->integrateCsvOption($value),
+                'value' => $this->integrateParameter($value),
             ],
         ]);
 
         $resourceTypes = array_keys($this->configCsvImport['mappings']);
-        $valueOptions = [];
+        $valueParameters = [];
         foreach ($resourceTypes as $resourceType) {
             // Currently, there is no resource label, so no translation.
-            $valueOptions[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
+            $valueParameters[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
         }
         $this->add([
                 'name' => 'resource_type',
@@ -106,7 +108,7 @@ class ImportForm extends Form
                 'options' => [
                     'label' => 'Import type', // @translate
                     'info' => 'The type of data being imported', // @translate
-                    'value_options' => $valueOptions,
+                    'value_options' => $valueParameters,
                 ],
                 'attributes' => [
                     'value' => 'items',
@@ -162,7 +164,7 @@ class ImportForm extends Form
 
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
-            'name' => 'csv',
+            'name' => 'source',
             'required' => true,
         ]);
         $inputFilter->add([
@@ -183,7 +185,7 @@ class ImportForm extends Form
      * @param string $value
      * @return string
      */
-    public function extractCsvOption($value)
+    public function extractParameter($value)
     {
         if (strpos($value, '__>') === 0
             && ($pos = strpos($value, '<__')) == (strlen($value) - 3)
@@ -202,7 +204,7 @@ class ImportForm extends Form
      * @param string $value
      * @return string
      */
-    public function integrateCsvOption($value)
+    public function integrateParameter($value)
     {
         $specialValues = ["\r", "\t", ' '];
         return in_array($value, $specialValues, true)

@@ -3,9 +3,11 @@ namespace CSVImport\Controller;
 
 use CSVImport\Form\ImportForm;
 use CSVImport\Form\MappingForm;
-use CSVImport\CsvFile;
+use CSVImport\Source\SourceInterface;
 use CSVImport\Job\Import;
+use finfo;
 use Omeka\Media\Ingester\Manager;
+use Omeka\Service\Exception\ConfigException;
 use Omeka\Settings\UserSettings;
 use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -13,6 +15,11 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
+    /**
+     * @var string
+     */
+    protected $tempPath;
+
     /**
      * @var array
      */
@@ -59,21 +66,15 @@ class IndexController extends AbstractActionController
 
         $files = $request->getFiles()->toArray();
         $post = $this->params()->fromPost();
-        $resourceType = $post['resource_type'];
-        $delimiter = $this->getForm(ImportForm::class)->extractCsvOption($post['delimiter']);
-        $enclosure = $this->getForm(ImportForm::class)->extractCsvOption($post['enclosure']);
-        $automapCheckNamesAlone = (bool) $post['automap_check_names_alone'];
-        $automapCheckUserList = (bool) $post['automap_check_user_list'];
-        $automapUserList = $this->getForm(ImportForm::class)
-            ->convertUserListTextToArray($post['automap_user_list']);
-        $form = $this->getForm(MappingForm::class, [
-            'resource_type' => $resourceType,
-            'delimiter' => $post['delimiter'],
-            'enclosure' => $post['enclosure'],
-            'automap_check_names_alone' => $post['automap_check_names_alone'],
-            'automap_check_user_list' => $post['automap_check_user_list'],
-            'automap_user_list' => $post['automap_user_list'],
-        ]);
+        $mappingOptions = array_intersect_key($post, array_flip([
+            'resource_type',
+            'delimiter',
+            'enclosure',
+            'automap_check_names_alone',
+            'automap_check_user_list',
+            'automap_user_list',
+        ]));
+        $form = $this->getForm(MappingForm::class, $mappingOptions);
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
@@ -99,58 +100,75 @@ class IndexController extends AbstractActionController
                 $this->messenger()->addSuccess($message);
                 return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
             }
-            // TODO Set variables when the form is invalid.
+
+            // TODO Keep user variables when the form is invalid.
             $this->messenger()->addError('Invalid settings.'); // @translate
             return $this->redirect()->toRoute('admin/csvimport');
-        } else {
-            $importForm = $this->getForm(ImportForm::class);
-            $post = array_merge_recursive(
-                $request->getPost()->toArray(),
-                $request->getFiles()->toArray()
-            );
-            $importForm->setData($post);
-            if (!$importForm->isValid()) {
-                $this->messenger()->addFormErrors($importForm);
-                return $this->redirect()->toRoute('admin/csvimport');
-            }
-
-            $tmpFile = $post['csv']['tmp_name'];
-            $csvFile = new CsvFile($this->config);
-            $csvFile->setDelimiter($delimiter);
-            $csvFile->setEnclosure($enclosure);
-            $csvPath = $csvFile->getTempPath();
-            $csvFile->moveToTemp($tmpFile);
-            $csvFile->loadFromTempPath();
-
-            $isUtf8 = $csvFile->isUtf8();
-            if (! $csvFile->isUtf8()) {
-                $this->messenger()->addError('File is not UTF-8 encoded.'); // @translate
-                return $this->redirect()->toRoute('admin/csvimport');
-            }
-
-            $columns = $csvFile->getHeaders();
-            $view->setVariable('mediaForms', $this->getMediaForms());
-
-            $config = $this->config;
-            $automapOptions = [];
-            $automapOptions['check_names_alone'] = $automapCheckNamesAlone;
-            $automapOptions['format'] = 'form';
-            if ($automapCheckUserList) {
-                $automapOptions['automap_list'] = $automapUserList;
-            }
-            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
-
-            $mappingsResource = $this->getMappingsForResource($resourceType);
-
-            $view->setVariable('form', $form);
-            $view->setVariable('automaps', $autoMaps);
-            $view->setVariable('resourceType', $resourceType);
-            $view->setVariable('mappings', $mappingsResource);
-            $view->setVariable('columns', $columns);
-            $view->setVariable('csvpath', $csvPath);
-            $view->setVariable('filename', $post['csv']['name']);
-            $view->setVariable('filesize', $post['csv']['size']);
         }
+
+        $importForm = $this->getForm(ImportForm::class);
+        $post = array_merge_recursive(
+            $request->getPost()->toArray(),
+            $request->getFiles()->toArray()
+        );
+        $importForm->setData($post);
+        if (!$importForm->isValid()) {
+            $this->messenger()->addFormErrors($importForm);
+            return $this->redirect()->toRoute('admin/csvimport');
+        }
+
+        $source = $this->getSource($post['source']);
+        if (empty($source)) {
+            $this->messenger()->addError('The format of the source cannot be detected.'); // @translate
+            return $this->redirect()->toRoute('admin/csvimport');
+        }
+
+        $resourceType = $post['resource_type'];
+        $mediaType = $source->getMediaType();
+        $post['media_type'] = $mediaType;
+        $tempPath = $this->getTempPath();
+        $this->moveToTemp($post['source']['tmp_name']);
+        $args = $this->cleanArgs($post);
+
+        $source->init($this->config);
+        $source->setSource($tempPath);
+        $source->setParameters($args);
+
+        if (!$source->isValid()) {
+            $message = $source->getErrorMessage() ?: 'The file is not valid.'; // @translate
+            $this->messenger()->addError($message);
+            return $this->redirect()->toRoute('admin/csvimport');
+        }
+
+        $columns = $source->getHeaders();
+        if (empty($columns)) {
+            $message = $source->getErrorMessage() ?: 'The file has no headers.'; // @translate
+            $this->messenger()->addError($message);
+            return $this->redirect()->toRoute('admin/csvimport');
+        }
+
+        $automapCheckNamesAlone = (bool) $post['automap_check_names_alone'];
+        $automapCheckUserList = (bool) $post['automap_check_user_list'];
+        $automapUserList = $this->getForm(ImportForm::class)
+            ->convertUserListTextToArray($post['automap_user_list']);
+        $automapOptions = [];
+        $automapOptions['check_names_alone'] = $automapCheckNamesAlone;
+        $automapOptions['format'] = 'form';
+        if ($automapCheckUserList) {
+            $automapOptions['automap_list'] = $automapUserList;
+        }
+        $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
+
+        $view->setVariable('form', $form);
+        $view->setVariable('resourceType', $resourceType);
+        $view->setVariable('filepath', $tempPath);
+        $view->setVariable('filename', $post['source']['name']);
+        $view->setVariable('filesize', $post['source']['size']);
+        $view->setVariable('mediaType', $mediaType);
+        $view->setVariable('columns', $columns);
+        $view->setVariable('automaps', $autoMaps);
+        $view->setVariable('mappings', $this->getMappingsForResource($resourceType));
+        $view->setVariable('mediaForms', $this->getMediaForms());
         return $view;
     }
 
@@ -179,6 +197,39 @@ class IndexController extends AbstractActionController
         $this->paginator($response->getTotalResults(), $page);
         $view->setVariable('imports', $response->getContent());
         return $view;
+    }
+
+    /**
+     * Get the source class to manage the file, according to its media type.
+     *
+     * @todo Use the class TempFile before.
+     *
+     * @param array $fileData File data from a post ($_FILES).
+     * @return SourceInterface|null
+     */
+    protected function getSource(array $fileData)
+    {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mediaType = $finfo->file($fileData['tmp_name']);
+
+        // Manage an exception for a very common format, undetected by fileinfo.
+        if ($mediaType === 'text/plain') {
+            $extensions = [
+                'csv' => 'text/csv',
+            ];
+            $extension = strtolower(pathinfo($fileData['name'], PATHINFO_EXTENSION));
+            if (isset($extensions[$extension])) {
+                $mediaType = $extensions[$extension];
+            }
+        }
+
+        $sources = $this->config['csv_import']['sources'];
+        if (!isset($sources[$mediaType])) {
+            return;
+        }
+
+        $source = new $sources[$mediaType];
+        return $source;
     }
 
     /**
@@ -262,12 +313,17 @@ class IndexController extends AbstractActionController
             $args['column-multivalue'] = [];
         }
 
-        // "unset()" allows to keep all csv parameters together in args.
+        // TODO Move to the source class.
         unset($args['delimiter']);
         unset($args['enclosure']);
-        $args['delimiter'] = $this->getForm(ImportForm::class)->extractCsvOption($post['delimiter']);
-        $args['enclosure'] = $this->getForm(ImportForm::class)->extractCsvOption($post['enclosure']);
-        $args['escape'] = CsvFile::DEFAULT_ESCAPE;
+        switch ($post['media_type']) {
+            case 'text/csv':
+                $args['delimiter'] = $this->getForm(ImportForm::class)->extractParameter($post['delimiter']);
+                $args['enclosure'] = $this->getForm(ImportForm::class)->extractParameter($post['enclosure']);
+                $args['escape'] = \CSVImport\Source\CsvFile::DEFAULT_ESCAPE;
+                break;
+        }
+
         if (array_key_exists('multivalue_separator', $post)) {
             unset($args['multivalue_separator']);
             $args['multivalue_separator'] = $post['multivalue_separator'];
@@ -325,6 +381,38 @@ class IndexController extends AbstractActionController
         }
         ksort($forms);
         return $forms;
+    }
+
+    /**
+     * Move a file to the temp path.
+     *
+     * @param string $systemTempPath
+     */
+    protected function moveToTemp($systemTempPath)
+    {
+        move_uploaded_file($systemTempPath, $this->getTempPath());
+    }
+
+    /**
+     * Get the path to the temporary file.
+     *
+     * @param null|string $tempDir
+     * @return string
+     */
+    protected function getTempPath($tempDir = null)
+    {
+        if (isset($this->tempPath)) {
+            return $this->tempPath;
+        }
+        if (!isset($tempDir)) {
+            $config = $this->config;
+            if (!isset($config['temp_dir'])) {
+                throw new ConfigException('Missing temporary directory configuration');
+            }
+            $tempDir = $config['temp_dir'];
+        }
+        $this->tempPath = tempnam($tempDir, 'omeka');
+        return $this->tempPath;
     }
 
     protected function undoJob($jobId)

@@ -51,6 +51,9 @@ return [
         ],
     ],
     'csv_import' => [
+        'sources' => [
+            'text/csv' => Source\CsvFile::class,
+        ],
         'mappings' => [
             'item_sets' => [
                 Mapping\ItemSetMapping::class,
@@ -134,6 +137,7 @@ return [
                 'media id' => 'media',
                 'media identifier' => 'media {dcterms:identifier}',
                 'media url' => 'media_source {url}',
+                'media html' => 'media_source {html}',
                 'html' => 'media_source {html}',
                 'iiif' => 'media_source {iiif}',
                 'iiif image' => 'media_source {iiif}',

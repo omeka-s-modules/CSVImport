@@ -30,10 +30,10 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         <li><a href="#mapping-data"><?php echo $this->translate('Map to Omeka S data'); ?></a></li>
     </ul>
 </nav>
-
 <input type="hidden" name="filename" value="<?php echo $filename; ?>" />
 <input type="hidden" name="filesize" value="<?php echo $filesize; ?>" />
-<input type="hidden" name="csvpath" value="<?php echo $csvpath; ?>" />
+<input type="hidden" name="filepath" value="<?php echo $filepath; ?>" />
+<input type="hidden" name="media_type" value="<?php echo $mediaType; ?>" />
 <fieldset id="csv-import-basics-fieldset" class="section active">
     <?php echo $this->formCollection($form, false); ?>
 </fieldset>
@@ -42,7 +42,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $this->translate("CSV column"); ?></th>
+                <th><?php echo $this->translate("Column headers"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
                 <th><?php echo $this->translate("Mapping options"); ?></th>
             </tr>
