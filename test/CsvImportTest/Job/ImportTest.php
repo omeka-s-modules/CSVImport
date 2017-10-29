@@ -94,6 +94,7 @@ SQL;
             ['test_media_order_add_no_item.tsv', ['media' => 4]],
             ['test_resources.tsv', ['item_sets' => 1, 'items' => 3, 'media' => 3], false],
             ['test_resources_update.tsv', ['item_sets' => 1, 'items' => 3, 'media' => 4]],
+            ['test_resources_heritage.ods', ['item_sets' => 2, 'items' => 15, 'media' => 23]],
         ];
     }
 

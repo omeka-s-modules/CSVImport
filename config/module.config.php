@@ -52,6 +52,7 @@ return [
     ],
     'csv_import' => [
         'sources' => [
+            'application/vnd.oasis.opendocument.spreadsheet' => Source\OpenDocumentSpreadsheet::class,
             'text/csv' => Source\CsvFile::class,
             'text/tab-separated-values' => Source\TsvFile::class,
         ],

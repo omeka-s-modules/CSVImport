@@ -55,8 +55,8 @@ class ImportForm extends Form
                 'name' => 'source',
                 'type' => 'file',
                 'options' => [
-                    'label' => 'Spreadsheet (csv or ods)', // @translate
-                    'info' => 'The CSV or the ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
+                    'label' => 'Spreadsheet (csv, tsv or ods)', // @translate
+                    'info' => 'The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
                 ],
                 'attributes' => [
                     'id' => 'source',

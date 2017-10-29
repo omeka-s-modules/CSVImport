@@ -1,10 +1,13 @@
 {
+    "require": {
+        "box/spout": "^2.7"
+    },
     "require-dev": {
         "biblibre/omeka-s-test-helper": "dev-master"
     },
     "autoload-dev": {
         "psr-4": {
-            "CleanUrlTest\\": "test/CsvImportTest/"
+            "CsvImportTest\\": "test/CsvImportTest/"
         }
     }
 }
