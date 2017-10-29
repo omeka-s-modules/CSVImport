@@ -8,6 +8,7 @@ namespace CSVImport\Source;
  */
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\ReaderInterface;
+use Omeka\Stdlib\Message;
 
 abstract class AbstractSpreadsheet extends AbstractSource
 {
@@ -25,6 +26,24 @@ abstract class AbstractSpreadsheet extends AbstractSource
      * @var int
      */
     protected $position = 0;
+
+    public function isValid()
+    {
+        if (!extension_loaded('zip') || !extension_loaded('xml')) {
+            $this->errorMessage = new Message('To process import of a %s file, the php extensions "zip" and "xml" are required.', // @translate
+                $this->readerType);
+            return false;
+        }
+
+        $iterator = $this->getIterator();
+        if (!$iterator) {
+            $this->errorMessage = 'No file to process.'; // @translate
+            return false;
+        }
+
+        $this->errorMessage = '';
+        return true;
+    }
 
     public function countRows()
     {
