@@ -217,7 +217,7 @@ class Import extends AbstractJob
                     // it avoids false positives in case of multiple files with
                     // the same name for different items.
                     if ($this->resourceType === 'items') {
-                        $dataToProcess = $this->identifyMedia($dataToProcess, $idsToProcess);
+                        $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
                     }
                     $this->update($dataToProcess, $idsToProcess, $action);
                     break;
@@ -280,6 +280,11 @@ class Import extends AbstractJob
             $contents = $response->getContent();
         }
         $this->addedCount = $this->addedCount + count($contents);
+
+        // Manage the position of created medias, that can’t be set directly.
+        if ($this->resourceType === 'media') {
+            $this->reorderMedias($contents);
+        }
 
         $createImportEntitiesJson = [];
         foreach ($contents as $resourceReference) {
@@ -423,7 +428,7 @@ class Import extends AbstractJob
      * than data.
      * @return array
      */
-    protected function identifyMedia(array $data, array $ids)
+    protected function identifyMedias(array $data, array $ids)
     {
         $findResourceFromIdentifier = $this->findResourcesFromIdentifiers;
         foreach ($data as $key => &$entityJson) {
@@ -448,6 +453,74 @@ class Import extends AbstractJob
             }
         }
         return $data;
+    }
+
+    /**
+     * Move created medias at the last position of items.
+     *
+     * @todo Move this process in the core.
+     *
+     * @param array $resources
+     */
+    protected function reorderMedias(array $resources)
+    {
+        // Note: the position is not available in representation.
+
+        $mediaIds = [];
+        foreach ($resources as $resource) {
+            // "Batch Create" returns a reference and "Create" a representation.
+            if ($resource->resourceName() === 'media') {
+                $mediaIds[] = $resource->id();
+            }
+        }
+        $mediaIds = array_map('intval', $mediaIds);
+        if (empty($mediaIds)) {
+            return;
+        }
+
+        // TODO Add the rank by item to this query to process a unique step.
+        $query = <<<'SQL'
+SELECT item_id, id, position FROM media
+WHERE item_id IN (SELECT DISTINCT item.id FROM item JOIN media ON media.item_id = item.id WHERE media.id IN (%s))
+ORDER BY item_id ASC, -position DESC, id ASC;
+SQL;
+
+        $services = $this->getServiceLocator();
+        $conn = $services->get('Omeka\Connection');
+        $stmt = $conn->query(sprintf($query, implode(',', $mediaIds)));
+        $result = $stmt->fetchAll();
+
+        $itemId = 0;
+        foreach ($result as $key => $value) {
+            if ($value['item_id'] != $itemId) {
+                $position = 1;
+                $itemId = $value['item_id'];
+            } else {
+                ++$position;
+            }
+            if ($value['position'] === $position) {
+                unset($result[$key]);
+            } else {
+                $result[$key]['position'] = $position;
+            }
+        }
+        if (empty($result)) {
+            return;
+        }
+
+        // Update positions of remaining media.
+        $entityManager = $services->get('Omeka\EntityManager');
+        $qb = $entityManager->createQueryBuilder();
+        $queryBase = $qb
+            ->update(\Omeka\Entity\Media::class, 'm')
+            ->where('m.id = ?1');
+        foreach ($result as $value) {
+            $query = $queryBase
+                ->set('m.position', $value['position'])
+                ->setParameter(1, $value['id'])
+                ->getQuery()
+                ->execute();
+        }
     }
 
     /**
