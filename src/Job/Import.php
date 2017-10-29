@@ -333,7 +333,12 @@ class Import extends AbstractJob
 
         // May fix some issues when a module doesn't manage batch create.
         if (count($data) == 1) {
-            $response = $this->api->create($this->resourceType, reset($data));
+            try {
+                $response = $this->api->create($this->resourceType, reset($data));
+            } catch (\Exception $e) {
+                $this->logger->err((string) $e);
+                $response = null;
+            }
             $contents = $response ? [$response->getContent()] : [];
         } else {
             $response = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
@@ -447,7 +452,9 @@ class Import extends AbstractJob
             // TODO Implement on delete cascade in the entity CSVImportEntity.
             try {
                 $response = $this->api->delete($this->resourceType, reset($ids));
-            } catch (\Omeka\Api\Exception\NotFoundException $e) {
+            } catch (\Exception $e) {
+                $this->logger->err((string) $e);
+                $response = null;
             }
             $contents = $response ? [$response->getContent()] : [];
         } else {
