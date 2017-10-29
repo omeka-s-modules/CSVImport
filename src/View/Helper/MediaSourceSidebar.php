@@ -28,6 +28,7 @@ class MediaSourceSidebar extends AbstractHelper
                 ];
             }
         }
+        ksort($mediaForms);
 
         return $this->getView()->partial(
             'common/media-source-sidebar',

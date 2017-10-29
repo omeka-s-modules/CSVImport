@@ -317,6 +317,7 @@ class IndexController extends AbstractActionController
                 'label' => $mediaIngester->get($ingester)->getLabel(),
             ];
         }
+        ksort($forms);
         return $forms;
     }
 
