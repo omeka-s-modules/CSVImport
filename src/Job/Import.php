@@ -478,49 +478,45 @@ class Import extends AbstractJob
             return;
         }
 
-        // TODO Add the rank by item to this query to process a unique step.
-        $query = <<<'SQL'
-SELECT item_id, id, position FROM media
-WHERE item_id IN (SELECT DISTINCT item.id FROM item JOIN media ON media.item_id = item.id WHERE media.id IN (%s))
-ORDER BY item_id ASC, -position DESC, id ASC;
-SQL;
-
         $services = $this->getServiceLocator();
         $conn = $services->get('Omeka\Connection');
-        $stmt = $conn->query(sprintf($query, implode(',', $mediaIds)));
-        $result = $stmt->fetchAll();
 
-        $itemId = 0;
-        foreach ($result as $key => $value) {
-            if ($value['item_id'] != $itemId) {
-                $position = 1;
-                $itemId = $value['item_id'];
-            } else {
-                ++$position;
-            }
-            if ($value['position'] === $position) {
-                unset($result[$key]);
-            } else {
-                $result[$key]['position'] = $position;
-            }
-        }
-        if (empty($result)) {
-            return;
-        }
+        // Get the item ids first to avoid a sort issue with the subquery below.
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->select('media.item_id')
+            ->from('media', 'media')
+            ->where($qb->expr()->in('id', $mediaIds))
+            ->groupBy('media.item_id')
+            ->orderBy('media.item_id', 'ASC');
+        $stmt = $conn->executeQuery($qb, $qb->getParameters());
+        $itemIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
 
-        // Update positions of remaining media.
+        // Get the media rank by item in one query even when position is set.
+        // Note: in the subquery, the variable item_id should be set after rank.
+        // If the media ids are used, a sort issue appears:
+        // WHERE item_id IN (SELECT item_id FROM `media` WHERE id IN (%s) GROUP BY item_id ORDER BY item_id ASC)
+        $conn->exec('SET @item_id = 0; SET @rank = 1;');
+        $query = <<<'SQL'
+SELECT id, rank FROM (
+    SELECT id, @rank := IF(@item_id = item_id, @rank + 1, 1) AS rank, @item_id := item_id AS item
+    FROM media
+    WHERE item_id IN (%s)
+    ORDER BY item_id ASC, -position DESC, id ASC
+) AS media_rank;
+SQL;
+        $stmt = $conn->query(sprintf($query, implode(',', $itemIds)));
+        $mediaRanks = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        // Update positions of the updated media.
         $entityManager = $services->get('Omeka\EntityManager');
-        $qb = $entityManager->createQueryBuilder();
-        $queryBase = $qb
-            ->update(\Omeka\Entity\Media::class, 'm')
-            ->where('m.id = ?1');
-        foreach ($result as $value) {
-            $query = $queryBase
-                ->set('m.position', $value['position'])
-                ->setParameter(1, $value['id'])
-                ->getQuery()
-                ->execute();
+        $mediaRepository = $entityManager->getRepository(\Omeka\Entity\Media::class);
+        $medias = $mediaRepository->findById(array_keys($mediaRanks));
+        foreach ($medias as $media) {
+            $rank = $mediaRanks[$media->getId()];
+            $media->setPosition($rank);
         }
+        $entityManager->flush();
     }
 
     /**
