@@ -6,6 +6,11 @@
     <div class="resource-mapping mappings">
         <h4><?php echo $this->translate('Generic data'); ?></h4>
         <ul>
+            <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
+            <li data-flag="column-resource_type" data-flag-type="resource-data">
+                <a href="#" class="button"><span><?php echo $this->translate('Resource type'); ?></span></a>
+            </li>
+            <?php endif; ?>
             <li data-flag="column-resource" data-value="internal_id" data-flag-type="resource-data">
                 <a href="#" class="button"><span><?php echo $this->translate('Internal id'); ?></span></a>
             </li>
@@ -30,6 +35,7 @@
             'items' => $this->translate('items'),
             'item_sets' => $this->translate('item sets'),
             'media' => $this->translate('media'),
+            'resources' => $this->translate('resources'),
         ];
         echo isset($resourceTypeLabels[$resourceType])
             ? sprintf($this->translate('Specific data for %s'), $resourceTypeLabels[$resourceType])
@@ -37,13 +43,13 @@
         ?>
         </h4>
         <ul>
-            <?php if (empty($resourceType) || $resourceType === 'item_sets'): ?>
+            <?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
             <li data-flag="column-is_open" data-flag-type="resource-data">
                 <a href="#" class="button"><span><?php echo $this->translate('Open/closed to additions'); ?></span></a>
             </li>
             <?php endif; ?>
 
-            <?php if (empty($resourceType) || $resourceType === 'items'): ?>
+            <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
             <li data-flag="column-item_set_property" data-flag-type="option">
                 <?php echo $this->propertySelect([
                     'name' => 'column-item_set_property',
@@ -68,7 +74,7 @@
             </li>
             <?php endif; ?>
 
-            <?php if (empty($resourceType) || $resourceType === 'media'): ?>
+            <?php if (empty($resourceType) || in_array($resourceType, ['media', 'resources'])): ?>
             <li>
             <?php echo $this->translate('There must be an item identifier to create a media.')?>
             <?php echo $this->translate('This is generally "dcterms:identifier", but it may be an internal id.')?>
@@ -99,7 +105,7 @@
         </ul>
     </div>
 
-    <?php if (empty($resourceType) || $resourceType === 'items'): ?>
+    <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
     <div class="resource-mapping options">
         <h4><?php echo $this->translate('Options'); ?></h4>
         <ul>

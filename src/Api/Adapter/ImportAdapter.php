@@ -9,11 +9,6 @@ use Omeka\Stdlib\ErrorStore;
 
 class ImportAdapter extends AbstractEntityAdapter
 {
-    public function getEntityClass()
-    {
-        return 'CSVImport\Entity\CSVImportImport';
-    }
-
     public function getResourceName()
     {
         return 'csvimport_imports';
@@ -21,7 +16,12 @@ class ImportAdapter extends AbstractEntityAdapter
 
     public function getRepresentationClass()
     {
-        return 'CSVImport\Api\Representation\ImportRepresentation';
+        return \CSVImport\Api\Representation\ImportRepresentation::class;
+    }
+
+    public function getEntityClass()
+    {
+        return \CSVImport\Entity\CSVImportImport::class;
     }
 
     public function hydrate(Request $request, EntityInterface $entity,
@@ -37,10 +37,6 @@ class ImportAdapter extends AbstractEntityAdapter
             $entity->setUndoJob($job);
         }
 
-        if (isset($data['added_count'])) {
-            $entity->setAddedCount($data['added_count']);
-        }
-
         if (isset($data['comment'])) {
             $entity->setComment($data['comment']);
         }
@@ -51,6 +47,10 @@ class ImportAdapter extends AbstractEntityAdapter
 
         if (isset($data['has_err'])) {
             $entity->setHasErr($data['has_err']);
+        }
+
+        if (isset($data['stats'])) {
+            $entity->setStats($data['stats']);
         }
     }
 

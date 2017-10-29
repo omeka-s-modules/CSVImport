@@ -1,6 +1,7 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
 interface MappingInterface
@@ -10,14 +11,14 @@ interface MappingInterface
      *
      * @return string
      */
-    public static function getLabel();
+    public function getLabel();
 
     /**
      * Return a name to use in the form to identify this mapping's components
      *
      * @return string
      */
-    public static function getName();
+    public function getName();
 
     /**
      * Return the HTML for the sidebar for setting mappings
@@ -26,7 +27,22 @@ interface MappingInterface
      * @param PHPRenderer $view
      * @return string
      */
-    public static function getSidebar(PhpRenderer $view);
+    public function getSidebar(PhpRenderer $view);
+
+    /**
+     * Define if the current row has an error.
+     *
+     * @return bool
+     */
+    public function getHasErr();
+
+    /**
+     * Prepare for the mapping process.
+     *
+     * @param array $args
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function init(array $args, ServiceLocatorInterface $serviceLocator);
 
     /**
      * Process a row from the CSV file.

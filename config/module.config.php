@@ -6,6 +6,9 @@ return [
         'mapping_classes_paths' => [
             __DIR__ . '/../src/Entity',
         ],
+        'proxy_paths' => [
+            __DIR__ . '/../data/doctrine-proxies',
+        ],
     ],
     'view_manager' => [
         'template_path_stack' => [
@@ -63,6 +66,11 @@ return [
                 Mapping\PropertyMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],
+            'resources' => [
+                Mapping\ResourceMapping::class,
+                Mapping\PropertyMapping::class,
+                Mapping\MediaSourceMapping::class,
+            ],
             'users' => [
                 Mapping\UserMapping::class,
             ],
@@ -95,6 +103,12 @@ return [
                 'resources' => 'resource',
                 'resource id' => 'resource',
                 'resource identifier' => 'resource {dcterms:identifier}',
+                'record' => 'resource',
+                'records' => 'resource',
+                'record id' => 'resource',
+                'record identifier' => 'resource {dcterms:identifier}',
+                'resource type' => 'resource_type',
+                'record type' => 'resource_type',
                 'resource template' => 'resource_template',
                 'item type' => 'resource_class',
                 'resource class' => 'resource_class',

@@ -5,17 +5,10 @@ use Zend\View\Renderer\PhpRenderer;
 
 class UserMapping extends AbstractMapping
 {
-    public static function getLabel()
-    {
-        return 'User info'; // @translate
-    }
+    protected $label = 'User info'; // @translate
+    protected $name = 'user-data';
 
-    public static function getName()
-    {
-        return 'user-data';
-    }
-
-    public static function getSidebar(PhpRenderer $view)
+    public function getSidebar(PhpRenderer $view)
     {
         return $view->partial('common/user-sidebar');
     }
@@ -28,6 +21,8 @@ class UserMapping extends AbstractMapping
      */
     public function processRow(array $row)
     {
+        // Reset the data and the map between rows.
+        $this->setHasErr(false);
         $userJson = [];
 
         $emailIndex = array_keys($this->args['column-user_email'])[0];

@@ -54,9 +54,9 @@ class Import extends AbstractJob
     protected $csvFile;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $addedCount;
+    protected $resourceType;
 
     /**
      * @var bool
@@ -64,9 +64,14 @@ class Import extends AbstractJob
     protected $hasErr = false;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $resourceType;
+    protected $stats;
+
+    /**
+     * @var array
+     */
+    protected $args;
 
     /**
      * @var array
@@ -89,16 +94,20 @@ class Import extends AbstractJob
         $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
         $config = $services->get('Config');
 
+        $this->args = $this->job->getArgs();
+        $args = &$this->args;
+
         $this->resourceType = $this->getArg('resource_type', 'items');
-        $args = $this->job->getArgs();
+        $importResource = $this->resourceType === 'resources';
 
         $mappings = [];
         $mappingClasses = $config['csv_import']['mappings'][$this->resourceType];
         foreach ($mappingClasses as $mappingClass) {
-            $mappings[] = new $mappingClass($args, $services);
+            $mapping = new $mappingClass();
+            $mapping->init($args, $services);
+            $mappings[] = $mapping;
         }
 
-        $this->resourceType = $this->getArg('resource_type', 'items');
         $this->csvFile = new CsvFile($config);
         $csvFile = $this->csvFile;
         if (isset($args['delimiter'])) {
@@ -117,25 +126,13 @@ class Import extends AbstractJob
             'o:job' => ['o:id' => $this->job->getId()],
             'comment' => 'Job started',
             'resource_type' => $this->resourceType,
-            'added_count' => 0,
             'has_err' => false,
+            'stats' => [],
         ];
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $this->importRecord = $response->getContent();
 
-        // Check options.
-        if (empty($this->resourceType)) {
-            $this->hasErr = true;
-            $this->logger->err('Resource type is empty.'); // @translate
-        }
-        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'users'])) {
-            $this->hasErr = true;
-            $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
-        }
-        $action = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
-        $identifierProperty = empty($args['identifier_property']) ? null : $args['identifier_property'];
-        $actionUnidentified = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
-        $this->checkOptions(compact('action', 'identifierProperty', 'actionUnidentified'));
+        $this->checkOptions();
         if ($this->hasErr) {
             return $this->endJob();
         }
@@ -144,18 +141,27 @@ class Import extends AbstractJob
             $this->rowsByBatch = (int) $args['rows_by_batch'];
         }
 
+        // The core allows batch processes only for creation and deletion.
+        if (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])
+            // It allows to identify resources too, so to use a new resource
+            // from a previous row.
+            || ($args['action'] === self::ACTION_CREATE && $this->resourceType === 'resources')
+        ) {
+            $this->rowsByBatch = 1;
+        }
+
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
-        if ($identifierProperty === 'internal_id') {
-            $identifierPropertyId = $identifierProperty;
-        } elseif (is_numeric($identifierProperty)) {
-            $identifierPropertyId = (int) $identifierProperty;
+        if ($args['identifier_property']=== 'internal_id') {
+            $identifierPropertyId = $args['identifier_property'];
+        } elseif (is_numeric($args['identifier_property'])) {
+            $identifierPropertyId = (int) $args['identifier_property'];
         } else {
             $result = $this->api
-                ->search('properties', ['term' => $identifierProperty])->getContent();
+                ->search('properties', ['term' => $args['identifier_property']])->getContent();
             $identifierPropertyId = $result ? $result[0]->id() : null;
         }
-        $this->identifierProperty = $identifierProperty;
+        $this->identifierProperty = $args['identifier_property'];
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
         $emptyLines = 0;
@@ -181,7 +187,16 @@ class Import extends AbstractJob
                 $data[] = $entityJson;
             }
 
-            switch ($action) {
+            if ($importResource) {
+                $data = $this->checkResources($data);
+                // Because the import of resources is done by row, the resource
+                // type is known and may be set.
+                if (isset($data[0])) {
+                    $this->resourceType = $data[0]['resource_type'];
+                }
+            }
+
+            switch ($args['action']) {
                 case self::ACTION_CREATE:
                     $this->create($data);
                     break;
@@ -196,7 +211,7 @@ class Import extends AbstractJob
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     $dataToProcess = array_intersect_key($data, $idsToProcess);
                     // The creation occurs before the update in all cases.
-                    switch ($actionUnidentified) {
+                    switch ($args['action_unidentified']) {
                         case self::ACTION_CREATE:
                             $dataToCreate = array_intersect_key($data, $idsRemaining);
                             $this->create($dataToCreate);
@@ -204,6 +219,7 @@ class Import extends AbstractJob
                         case self::ACTION_SKIP:
                             if ($idsRemaining) {
                                 $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                                $this->stats(self::ACTION_SKIP, $identifiersRemaining);
                                 $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                                     implode('", "', $identifiersRemaining)));
                             }
@@ -217,9 +233,9 @@ class Import extends AbstractJob
                     // it avoids false positives in case of multiple files with
                     // the same name for different items.
                     if ($this->resourceType === 'items') {
-                        $dataToProcess = $this->identifyMedia($dataToProcess, $idsToProcess);
+                        $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
                     }
-                    $this->update($dataToProcess, $idsToProcess, $action);
+                    $this->update($dataToProcess, $idsToProcess, $args['action']);
                     break;
                 case self::ACTION_DELETE:
                     $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
@@ -228,14 +244,19 @@ class Import extends AbstractJob
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     if ($idsRemaining) {
                         $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                        $this->stats(self::ACTION_SKIP, $identifiersRemaining);
                         $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                             implode('", "', $identifiersRemaining)));
                     }
                     $this->delete($idsToProcess);
                     break;
                 case self::ACTION_SKIP:
-                    // No process.
+                    $this->stats(self::ACTION_SKIP, $data);
                     break;
+            }
+
+            if ($importResource) {
+                $this->resourceType = 'resources';
             }
 
             // The next offset is not the previous offset + the batch size but
@@ -263,17 +284,32 @@ class Import extends AbstractJob
             return;
         }
 
-        if (count($data) == 1) {
-            $createResponse = $this->api->create($this->resourceType, reset($data));
-            $createContent = [$createResponse->getContent()];
-        } else {
-            $createResponse = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
-            $createContent = $createResponse->getContent();
+        // Manage an exception: media must be created with an item.
+        if ($this->resourceType === 'media') {
+            $data = $this->checkMedias($data);
+            if (empty($data)) {
+                return;
+            }
         }
-        $this->addedCount = $this->addedCount + count($createContent);
+
+        // May fix some issues when a module doesn't manage batch create.
+        if (count($data) == 1) {
+            $response = $this->api->create($this->resourceType, reset($data));
+            $contents = $response ? [$response->getContent()] : [];
+        } else {
+            $response = $this->api->batchCreate($this->resourceType, $data, [], ['continueOnError' => true]);
+            $contents = $response->getContent();
+        }
+
+        // Manage the position of created medias, that can’t be set directly.
+        if ($this->resourceType === 'media') {
+            $this->reorderMedias($contents);
+        }
+
+        $this->stats(self::ACTION_CREATE, $data, $contents);
 
         $createImportEntitiesJson = [];
-        foreach ($createContent as $resourceReference) {
+        foreach ($contents as $resourceReference) {
             $createImportEntitiesJson[] = $this->buildImportRecordJson($resourceReference);
         }
         $createImportRecordResponse = $this->api->batchCreate(
@@ -347,6 +383,7 @@ class Import extends AbstractJob
         }
         if ($updatedIds) {
             $idsForLog = $this->idsForLog($updatedIds);
+            $this->stats($action, $data, $updatedIds);
             $this->logger->info(new Message('%d %s were updated (%s): %s.', // @translate
                 count($updatedIds), $this->resourceType, $action, $idsForLog));
         } else {
@@ -366,12 +403,42 @@ class Import extends AbstractJob
         if (empty($ids)) {
             return;
         }
-        $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
-        $deleted = $response->getContent();
+        // May fix some issues when a module doesn't manage batch delete.
+        if (count($ids) == 1) {
+            $response = $this->api->delete($this->resourceType, reset($ids));
+            $contents = $response ? [$response->getContent()] : [];
+        } else {
+            $response = $this->api->batchDelete($this->resourceType, $ids, [], ['continueOnError' => true]);
+            $contents = $response->getContent();
+        }
         // TODO Get better stats of removed ids in case of error.
         $idsForLog = $this->idsForLog($ids, true);
+        $this->stats(self::ACTION_DELETE, $ids, $contents);
         $this->logger->info(new Message('%d %s were removed: %s.', // @translate
-            count($deleted), $this->resourceType, $idsForLog));
+            count($contents), $this->resourceType, $idsForLog));
+    }
+
+    /**
+     * Check if medias to create belong to an existing item.
+     *
+     * To be used when importing media, that must have an item id.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function checkMedias(array $data)
+    {
+        foreach ($data as $key => $entityJson) {
+            if (empty($entityJson['o:item'])) {
+                unset($data[$key]);
+                $this->hasErr = true;
+                $this->logger->err(new Message('A media to create is not attached to an item (%s).', // @translate
+                    empty($entityJson['o:source'])
+                        ? $entityJson['o:ingester']
+                        : $entityJson['o:ingester'] . ': ' . $entityJson['o:source']));
+            }
+        }
+        return $data;
     }
 
     /**
@@ -385,7 +452,7 @@ class Import extends AbstractJob
      * than data.
      * @return array
      */
-    protected function identifyMedia(array $data, array $ids)
+    protected function identifyMedias(array $data, array $ids)
     {
         $findResourceFromIdentifier = $this->findResourcesFromIdentifiers;
         foreach ($data as $key => &$entityJson) {
@@ -407,6 +474,97 @@ class Import extends AbstractJob
                 if ($resourceId) {
                     $media['o:id'] = $resourceId;
                 }
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Move created medias at the last position of items.
+     *
+     * @todo Move this process in the core.
+     *
+     * @param array $resources
+     */
+    protected function reorderMedias(array $resources)
+    {
+        // Note: the position is not available in representation.
+
+        $mediaIds = [];
+        foreach ($resources as $resource) {
+            // "Batch Create" returns a reference and "Create" a representation.
+            if ($resource->resourceName() === 'media') {
+                $mediaIds[] = $resource->id();
+            }
+        }
+        $mediaIds = array_map('intval', $mediaIds);
+        if (empty($mediaIds)) {
+            return;
+        }
+
+        $services = $this->getServiceLocator();
+        $conn = $services->get('Omeka\Connection');
+
+        // Get the item ids first to avoid a sort issue with the subquery below.
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->select('media.item_id')
+            ->from('media', 'media')
+            ->where($qb->expr()->in('id', $mediaIds))
+            ->groupBy('media.item_id')
+            ->orderBy('media.item_id', 'ASC');
+        $stmt = $conn->executeQuery($qb, $qb->getParameters());
+        $itemIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+
+        // Get the media rank by item in one query even when position is set.
+        // Note: in the subquery, the variable item_id should be set after rank.
+        // If the media ids are used, a sort issue appears:
+        // WHERE item_id IN (SELECT item_id FROM `media` WHERE id IN (%s) GROUP BY item_id ORDER BY item_id ASC)
+        $conn->exec('SET @item_id = 0; SET @rank = 1;');
+        $query = <<<'SQL'
+SELECT id, rank FROM (
+    SELECT id, @rank := IF(@item_id = item_id, @rank + 1, 1) AS rank, @item_id := item_id AS item
+    FROM media
+    WHERE item_id IN (%s)
+    ORDER BY item_id ASC, -position DESC, id ASC
+) AS media_rank;
+SQL;
+        $stmt = $conn->query(sprintf($query, implode(',', $itemIds)));
+        $mediaRanks = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        // Update positions of the updated media.
+        $entityManager = $services->get('Omeka\EntityManager');
+        $mediaRepository = $entityManager->getRepository(\Omeka\Entity\Media::class);
+        $medias = $mediaRepository->findById(array_keys($mediaRanks));
+        foreach ($medias as $media) {
+            $rank = $mediaRanks[$media->getId()];
+            $media->setPosition($rank);
+        }
+        $entityManager->flush();
+    }
+
+    /**
+     * Check if resources have a resource type.
+     *
+     * To be used when importing resources.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function checkResources(array $data)
+    {
+        foreach ($data as $key => $entityJson) {
+            if (empty($entityJson['resource_type'])) {
+                // TODO Try to find the resource type according to other values.
+                // Warning: default values may be set.
+                unset($data[$key]);
+                $this->hasErr = true;
+                $this->logger->err(new Message('A resource type is required to import a resource.')); // @translate
+            }
+            // Avoid MediaSourceMapping issue when the resource type is unknown.
+            elseif ($entityJson['resource_type'] === 'media') {
+                $data[$key] += reset($data[$key]['o:media']);
+                unset($data[$key]['o:media']);
             }
         }
         return $data;
@@ -814,12 +972,24 @@ class Import extends AbstractJob
      * Check options used to import.
      *
      * @todo Mix with check in Import and make it available for external query.
-     *
-     * @param array $options Associative array of options.
      */
-    protected function checkOptions(array $options)
+    protected function checkOptions()
     {
-        extract($options);
+        if (empty($this->resourceType)) {
+            $this->hasErr = true;
+            $this->logger->err('Resource type is empty.'); // @translate
+        }
+
+        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'resources', 'users'])) {
+            $this->hasErr = true;
+            $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
+        }
+
+        $args = &$this->args;
+
+        $args['action'] = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
+        $args['identifier_property'] = empty($args['identifier_property']) ? null : $args['identifier_property'];
+        $args['action_unidentified'] = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
 
         $allowedActions = [
             self::ACTION_CREATE,
@@ -830,29 +1000,96 @@ class Import extends AbstractJob
             self::ACTION_DELETE,
             self::ACTION_SKIP,
         ];
-        if (!in_array($action, $allowedActions)) {
+        if (!in_array($args['action'], $allowedActions)) {
             $this->hasErr = true;
-            $this->logger->err(new Message('Unknown action "%s".', $action)); // @translate
+            $this->logger->err(new Message('Unknown action "%s".', $args['action'])); // @translate
         }
 
         // Specific check when a identifier is required.
-        elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
-            if (empty($identifierProperty)) {
+        elseif (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_SKIP])) {
+            if (empty($args['identifier_property'])) {
                 $this->hasErr = true;
-                $this->logger->err(new Message('The action "%s" requires a resource identifier property.', $action)); // @translate
+                $this->logger->err(new Message('The action "%s" requires a resource identifier property.', // @translate
+                    $args['action']));
             }
-            if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
+            if ($args['action'] !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media', 'resources'])) {
                 $this->hasErr = true;
                 $this->logger->err(new Message('The action "%s" is not available for resource type "%s" currently.', // @translate
-                    $action, $this->resourceType));
+                    $args['action'], $this->resourceType));
             }
         }
 
-        if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
-            if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
+        if (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
+            if (!in_array($args['action_unidentified'], [self::ACTION_SKIP, self::ACTION_CREATE])) {
                 $this->hasErr = true;
                 $this->logger->err(new Message('The action "%s" for unidentified resources is not managed.', // @translate
-                    $actionUnidentified));
+                    $args['action_unidentified']));
+            }
+        }
+    }
+
+    /**
+     * Set the total of added, updated or deleted resources and processed rows.
+     *
+     * @todo Identify skipped rows and errors.
+     *
+     * @param string $action
+     * @param array $data
+     * @param array $result
+     */
+    protected function stats($action, array $data = [], array $result = [])
+    {
+        $actions = [
+            self::ACTION_CREATE => 'added',
+            self::ACTION_APPEND => 'updated',
+            self::ACTION_REVISE => 'updated',
+            self::ACTION_UPDATE => 'updated',
+            self::ACTION_REPLACE => 'updated',
+            self::ACTION_DELETE => 'deleted',
+            self::ACTION_SKIP => 'skipped',
+        ];
+        $process = $actions[$action];
+
+        $total = empty($this->stats[$process][$this->resourceType])
+            ? 0
+            : $this->stats[$process][$this->resourceType];
+
+        switch ($process) {
+            case 'added':
+            case 'updated':
+            case 'deleted':
+                $this->stats[$process][$this->resourceType] = $total + count($result);
+                break;
+            case 'skipped':
+                $this->stats[$process][$this->resourceType] = $total + count($data);
+                // $this->stats['rows']['skipped'] = [];
+                // $this->stats['rows']['error'] = [];
+                break;
+        }
+
+        // Manage an exception for items: count media too.
+        if ($this->resourceType === 'items') {
+            switch ($process) {
+                case 'added':
+                    $itemIds = array_map(function ($v) {
+                        return $v->id();
+                    }, $result);
+                    if ($itemIds) {
+                        $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
+                        $query = $entityManager ->createQuery(
+                            sprintf('SELECT COUNT(media.id) FROM Omeka\Entity\Media media WHERE media.item IN (%s)',
+                                implode(',', $itemIds)));
+                        $total = $query->getSingleScalarResult();
+                        if ($total) {
+                            $this->stats[$process]['media'] = $total;
+                        }
+                    }
+                    break;
+                case 'updated':
+                case 'deleted':
+                case 'skipped':
+                    // TODO Count updated / deleted / skipped media when updating items.
+                    break;
             }
         }
     }
@@ -862,7 +1099,7 @@ class Import extends AbstractJob
         $recordJson = [
             'o:job' => ['o:id' => $this->job->getId()],
             'entity_id' => $resourceReference->id(),
-            'resource_type' => $this->getArg('resource_type', 'items'),
+            'resource_type' => $this->resourceType,
         ];
         return $recordJson;
     }
@@ -871,8 +1108,8 @@ class Import extends AbstractJob
     {
         $csvImportJson = [
             'comment' => $this->getArg('comment'),
-            'added_count' => $this->addedCount,
             'has_err' => $this->hasErr,
+            'stats' => $this->stats,
         ];
         $response = $this->api->update('csvimport_imports', $this->importRecord->id(), $csvImportJson);
         $this->csvFile->delete();

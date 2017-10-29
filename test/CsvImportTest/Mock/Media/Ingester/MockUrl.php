@@ -32,6 +32,8 @@ class MockUrl extends Url
         $tempFile = $this->tempFileFactory->build();
         $tempFile->setSourceName($uripath);
 
+        copy($uripath, $tempFile->getTempPath());
+
         $media->setStorageId($tempFile->getStorageId());
         $media->setExtension($tempFile->getExtension());
         $media->setMediaType($tempFile->getMediaType());

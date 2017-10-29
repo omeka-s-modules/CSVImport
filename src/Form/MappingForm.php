@@ -3,6 +3,7 @@
 namespace CSVImport\Form;
 
 use CSVImport\Job\Import;
+use Omeka\Form\Element\ItemSetSelect;
 use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Omeka\Form\Element\ResourceClassSelect;
@@ -15,7 +16,7 @@ class MappingForm extends Form
 
     public function init()
     {
-        $resourceType = $this->getOption('resourceType');
+        $resourceType = $this->getOption('resource_type');
         $serviceLocator = $this->getServiceLocator();
         $userSettings = $serviceLocator->get('Omeka\Settings\User');
         $config = $serviceLocator->get('Config');
@@ -89,7 +90,7 @@ class MappingForm extends Form
             ],
         ]);
 
-        if (in_array($resourceType, ['item_sets', 'items', 'media'])) {
+        if (in_array($resourceType, ['item_sets', 'items', 'media', 'resources'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $this->add([
                 'name' => 'o:resource_template[o:id]',
@@ -132,6 +133,8 @@ class MappingForm extends Form
             if (($resourceType === 'item_sets' && $acl->userIsAllowed('Omeka\Entity\ItemSet', 'change-owner'))
                 || ($resourceType === 'items' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
                 || ($resourceType === 'media' && $acl->userIsAllowed('Omeka\Entity\Media', 'change-owner'))
+                // No rule for resources, so use item.
+                || ($resourceType === 'resources' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
             ) {
                 $this->add([
                     'name' => 'o:owner[o:id]',
@@ -163,7 +166,7 @@ class MappingForm extends Form
                 'type' => 'radio',
                 'options' => [
                     'label' => 'Visibility', // @translate
-                    'info' => 'The default visibility is private if the cell contains "0", "false", "off" or "private" (case insensitive), else it is public.', // @translate
+                    'info' => 'The default visibility is private if the cell contains "0", "false", "no", "off" or "private" (case insensitive), else it is public.', // @translate
                     'value_options' => [
                         '1' => 'Public', // @translate
                         '0' => 'Private', // @translate
@@ -190,24 +193,51 @@ class MappingForm extends Form
                 case 'items':
                     $this->add([
                         'name' => 'o:item_set',
-                        'type' => ResourceSelect::class,
+                        'type' => ItemSetSelect::class,
                         'attributes' => [
                             'id' => 'select-item-set',
                             'class' => 'chosen-select',
-                            'required' => false,
                             'multiple' => true,
                             'data-placeholder' => 'Select item sets', // @translate
-                            'data-api-base-url' => $urlHelper('api/default', ['resource' => 'item_sets']),
                         ],
                         'options' => [
                             'label' => 'Item sets', // @translate
-                            'info' => 'Select item sets for this resource', // @translate
                             'resource_value_options' => [
                                 'resource' => 'item_sets',
                                 'query' => [],
-                                'option_text_callback' => function ($itemSet) {
-                                    return $itemSet->displayTitle();
-                                },
+                            ],
+                        ],
+                    ]);
+                    break;
+
+                case 'resources':
+                    $this->add([
+                        'name' => 'o:is_open',
+                        'type' => 'radio',
+                        'options' => [
+                            'label' => 'Item sets open/closed to additions', // @translate
+                            'info' => 'The default openess is closed if the cell contains "0", "false", "off", or "closed" (case insensitive), else it is open.', // @translate
+                            'value_options' => [
+                                '1' => 'Open', // @translate
+                                '0' => 'Closed', // @translate
+                            ],
+                        ],
+                    ]);
+
+                    $this->add([
+                        'name' => 'o:item_set',
+                        'type' => ItemSetSelect::class,
+                        'attributes' => [
+                            'id' => 'select-item-set',
+                            'class' => 'chosen-select',
+                            'multiple' => true,
+                            'data-placeholder' => 'Select item sets', // @translate
+                        ],
+                        'options' => [
+                            'label' => 'Item sets for items', // @translate
+                            'resource_value_options' => [
+                                'resource' => 'item_sets',
+                                'query' => [],
                             ],
                         ],
                     ]);
@@ -333,7 +363,7 @@ class MappingForm extends Form
                 'type' => 'Number',
                 'options' => [
                     'label' => 'Number of rows to process by batch', // @translate
-                    'info' => 'By default, rows are processed by 20. In some cases, to set a value of 1 may avoid issues. This param does not apply for updates.', // @translate
+                    'info' => 'By default, rows are processed by 20. In some cases, to set a value of 1 may avoid issues.', // @translate
                 ],
                 'attributes' => [
                     'value' => $userSettings->get(

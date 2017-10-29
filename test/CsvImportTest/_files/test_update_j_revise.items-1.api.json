@@ -3,7 +3,7 @@
   "@id": "https://localhost/api/items/1",
   "@type": "o:Item",
   "o:id": 1,
-  "o:is_public": true,
+  "o:is_public": false,
   "o:owner": {
     "@id": "https://localhost/api/users/1",
     "o:id": 1
@@ -25,18 +25,18 @@
   },
   "o:media": [
     {
-      "@id": "https://localhost/api/media/142",
-      "o:id": 142
+      "@id": "https://localhost/api/media/12",
+      "o:id": 12
     },
     {
-      "@id": "https://localhost/api/media/143",
-      "o:id": 143
+      "@id": "https://localhost/api/media/13",
+      "o:id": 13
     }
   ],
   "o:item_set": [
     {
-      "@id": "https://localhost/api/item_sets/138",
-      "o:id": 138
+      "@id": "https://localhost/api/item_sets/8",
+      "o:id": 8
     }
   ],
   "dcterms:title": [

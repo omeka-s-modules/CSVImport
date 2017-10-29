@@ -95,6 +95,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 case 'item_sets':
                 case 'items':
                 case 'media':
+                case 'resources':
                     // Check strict term name, like "dcterms:title", sensitively
                     // then insensitively, then term label like "Dublin Core : Title"
                     // sensitively then insensitively too. Because all the lists
@@ -332,6 +333,11 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 'name' => 'resource',
                 'value' =>  'internal_id',
                 'label' => $controller->translate('Resource [%s]'),
+                'class' => 'resource-data',
+            ],
+            'resource_type' => [
+                'name' => 'resource_type',
+                'label' => $controller->translate('Resource type'),
                 'class' => 'resource-data',
             ],
             'resource_template' => [

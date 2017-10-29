@@ -14,7 +14,7 @@ class CSVImportEntity extends AbstractEntity
      * @Column(type="integer")
      * @GeneratedValue
      */
-    public $id;
+    protected $id;
 
     /**
      * @ManyToOne(targetEntity="Omeka\Entity\Job")
@@ -38,16 +38,6 @@ class CSVImportEntity extends AbstractEntity
         return $this->id;
     }
 
-    public function getEntityId()
-    {
-        return $this->entity_id;
-    }
-
-    public function setEntityId($entityId)
-    {
-        $this->entity_id = $entityId;
-    }
-
     public function setJob(Job $job)
     {
         $this->job = $job;
@@ -56,6 +46,16 @@ class CSVImportEntity extends AbstractEntity
     public function getJob()
     {
         return $this->job;
+    }
+
+    public function getEntityId()
+    {
+        return $this->entity_id;
+    }
+
+    public function setEntityId($entityId)
+    {
+        $this->entity_id = $entityId;
     }
 
     public function setResourceType($resourceType)

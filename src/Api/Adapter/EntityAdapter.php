@@ -9,19 +9,19 @@ use Omeka\Stdlib\ErrorStore;
 
 class EntityAdapter extends AbstractEntityAdapter
 {
-    public function getEntityClass()
-    {
-        return 'CSVImport\Entity\CSVImportEntity';
-    }
-
     public function getResourceName()
     {
         return 'csvimport_entities';
     }
 
+    public function getEntityClass()
+    {
+        return \CSVImport\Entity\CSVImportEntity::class;
+    }
+
     public function getRepresentationClass()
     {
-        return 'CSVImport\Api\Representation\EntityRepresentation';
+        return \CSVImport\Api\Representation\EntityRepresentation::class;
     }
 
     public function buildQuery(QueryBuilder $qb, array $query)
@@ -55,12 +55,12 @@ class EntityAdapter extends AbstractEntityAdapter
             $entity->setJob($job);
         }
 
-        if (isset($data['resource_type'])) {
-            $entity->setResourceType($data['resource_type']);
-        }
-
         if (isset($data['entity_id'])) {
             $entity->setEntityId($data['entity_id']);
+        }
+
+        if (isset($data['resource_type'])) {
+            $entity->setResourceType($data['resource_type']);
         }
     }
 }

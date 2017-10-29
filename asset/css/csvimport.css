@@ -130,3 +130,13 @@ li.column-multivalue {
 #automap_user_list {
     max-height: inherit;
 }
+
+.csv-import-job-param,
+.csv-import-job-log {
+    font-size: smaller;
+    font-style: italic;
+}
+
+.csvimporter.jobs td ul {
+    padding-left: 0;
+}

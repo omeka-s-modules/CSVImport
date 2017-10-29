@@ -23,11 +23,6 @@ class CSVImportImport extends AbstractEntity
     protected $job;
 
     /**
-     * @Column(type="integer")
-     */
-    protected $addedCount;
-
-    /**
      * @OneToOne(targetEntity="Omeka\Entity\Job")
      * @JoinColumn(nullable=true)
      */
@@ -47,6 +42,11 @@ class CSVImportImport extends AbstractEntity
      * @Column(type="boolean")
      */
     protected $has_err;
+
+    /**
+     * @Column(type="json_array")
+     */
+    protected $stats;
 
     public function getId()
     {
@@ -71,16 +71,6 @@ class CSVImportImport extends AbstractEntity
     public function getUndoJob()
     {
         return $this->undoJob;
-    }
-
-    public function setAddedCount($count)
-    {
-        $this->addedCount = $count;
-    }
-
-    public function getAddedCount()
-    {
-        return $this->addedCount;
     }
 
     public function setComment($comment)
@@ -111,5 +101,15 @@ class CSVImportImport extends AbstractEntity
     public function getHasErr()
     {
         return $this->has_err;
+    }
+
+    public function setStats($stats)
+    {
+        $this->stats = $stats;
+    }
+
+    public function getStats()
+    {
+        return $this->stats;
     }
 }
