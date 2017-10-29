@@ -21,14 +21,15 @@ class MockUrl extends Url
         $data = $request->getContent();
         $uri = $data['ingest_url'];
 
-        // Use normal ingester for remote url.
+        // Replace a remote url by a local mock one.
         if (strpos($uri, 'http://localhost/') !== 0) {
-            parent::ingest($media, $request, $errorStore);
-            return;
+            $extension = strtolower(pathinfo($uri, PATHINFO_EXTENSION));
+            $uri = $extension === 'png'
+                ? 'http://localhost/modules/CSVImport/test/CsvImportTest/_files/image_test_1.png'
+                : 'http://localhost/modules/CSVImport/test/CsvImportTest/_files/image_test.jpg';
         }
 
         $uripath = realpath(str_replace('http://localhost/', __DIR__ . '/../../../../../../../', $uri));
-
         $tempFile = $this->tempFileFactory->build();
         $tempFile->setSourceName($uripath);
 

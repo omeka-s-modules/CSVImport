@@ -303,6 +303,7 @@ SQL;
         unset($resource['o:resource_template']['@id']);
         unset($resource['o:resource_class']['@id']);
         unset($resource['o:items']['@id']);
+        unset($resource['o:sha256']);
         if (isset($resource['o:item_set'])) {
             foreach ($resource['o:item_set'] as &$itemSet) {
                 unset($itemSet['@id']);

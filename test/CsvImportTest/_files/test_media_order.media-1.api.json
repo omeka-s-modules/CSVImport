@@ -33,7 +33,7 @@
     "@id": "http://localhost/api/items/1",
     "o:id": 1
   },
-  "o:source": "http://localhost/modules/CSVImport/test/CsvImportTest/_files/image_test.png",
+  "o:source": "http://localhost/modules/CSVImport/test/CsvImportTest/_files/image_test_1.png",
   "o:media_type": "image/png",
   "o:sha256": "f3e26ad78620fd2ac1b358f8c36d3c1bad85c6896940683ff777afbd37ad48fb",
   "o:filename": "653d7f27e2f4a33b21e7a8d7fa50ebb9d8f268e4.png",
