@@ -306,7 +306,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
         }
         $template = $content[0];
         $templateLabel = $template->label();
-        if ($label != $templateLabel) {
+        if (strtolower($label) != strtolower($templateLabel)) {
             $this->logger->err(new Message('"%s" is not a valid Resource Template name.', $label)); // @translate
             $this->setHasErr(true);
             return false;
@@ -316,20 +316,21 @@ abstract class AbstractResourceMapping extends AbstractMapping
 
     protected function findResourceClass($term)
     {
+        // TODO Allow to find a resource class by label.
         $response = $this->api->search('resource_classes', ['term' => $term]);
         $content = $response->getContent();
         if (empty($content)) {
-            $message = new Message('"%s" is not a valid resource class.', $term); // @translate;
-            $message .= ' ' . $this->translate('Resource Classes must be a Class found on the Vocabularies page.'); // @translate
+            $message = new Message('"%s" is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.', // @translate;
+                $term);
             $this->logger->err($message);
             $this->setHasErr(true);
             return false;
         }
         $class = $content[0];
         $classTerm = $class->term();
-        if ($term != $classTerm) {
-            $message = new Message('"%s" is not a valid resource class.', $term); // @translate;
-            $message .= ' ' . $this->translate('Resource Classes must be a Class found on the Vocabularies page.'); // @translate
+        if (strtolower($term) != strtolower($classTerm)) {
+            $message = new Message('"%s" is not a valid resource class. Resource Classes must be a Class found on the Vocabularies page.', // @translate;
+                $term);
             $this->logger->err($message);
             $this->setHasErr(true);
             return false;
@@ -348,7 +349,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
         }
         $user = $content[0];
         $userEmail = $user->email();
-        if ($email != $userEmail) {
+        if (strtolower($email) != strtolower($userEmail)) {
             $this->logger->err(new Message('"%s" is not a valid user email address.', $email)); // @translate
             $this->setHasErr(true);
             return false;
