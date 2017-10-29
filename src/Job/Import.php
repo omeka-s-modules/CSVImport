@@ -94,9 +94,11 @@ class Import extends AbstractJob
         $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
         $config = $services->get('Config');
 
-        $this->resourceType = $this->getArg('resource_type', 'items');
         $this->args = $this->job->getArgs();
         $args = &$this->args;
+
+        $this->resourceType = $this->getArg('resource_type', 'items');
+        $importResource = $this->resourceType === 'resources';
 
         $mappings = [];
         $mappingClasses = $config['csv_import']['mappings'][$this->resourceType];
@@ -106,7 +108,6 @@ class Import extends AbstractJob
             $mappings[] = $mapping;
         }
 
-        $this->resourceType = $this->getArg('resource_type', 'items');
         $this->csvFile = new CsvFile($config);
         $csvFile = $this->csvFile;
         if (isset($args['delimiter'])) {
@@ -138,6 +139,15 @@ class Import extends AbstractJob
 
         if (!empty($args['rows_by_batch'])) {
             $this->rowsByBatch = (int) $args['rows_by_batch'];
+        }
+
+        // The core allows batch processes only for creation and deletion.
+        if (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])
+            // It allows to identify resources too, so to use a new resource
+            // from a previous row.
+            || ($args['action'] === self::ACTION_CREATE && $this->resourceType === 'resources')
+        ) {
+            $this->rowsByBatch = 1;
         }
 
         // The main identifier property may be used as term or as id in some
@@ -175,6 +185,15 @@ class Import extends AbstractJob
                     }
                 }
                 $data[] = $entityJson;
+            }
+
+            if ($importResource) {
+                $data = $this->checkResources($data);
+                // Because the import of resources is done by row, the resource
+                // type is known and may be set.
+                if (isset($data[0])) {
+                    $this->resourceType = $data[0]['resource_type'];
+                }
             }
 
             switch ($args['action']) {
@@ -232,6 +251,10 @@ class Import extends AbstractJob
                 case self::ACTION_SKIP:
                     // No process.
                     break;
+            }
+
+            if ($importResource) {
+                $this->resourceType = 'resources';
             }
 
             // The next offset is not the previous offset + the batch size but
@@ -513,6 +536,33 @@ SQL;
             $media->setPosition($rank);
         }
         $entityManager->flush();
+    }
+
+    /**
+     * Check if resources have a resource type.
+     *
+     * To be used when importing resources.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function checkResources(array $data)
+    {
+        foreach ($data as $key => $entityJson) {
+            if (empty($entityJson['resource_type'])) {
+                // TODO Try to find the resource type according to other values.
+                // Warning: default values may be set.
+                unset($data[$key]);
+                $this->hasErr = true;
+                $this->logger->err(new Message('A resource type is required to import a resource.')); // @translate
+            }
+            // Avoid MediaSourceMapping issue when the resource type is unknown.
+            elseif ($entityJson['resource_type'] === 'media') {
+                $data[$key] += reset($data[$key]['o:media']);
+                unset($data[$key]['o:media']);
+            }
+        }
+        return $data;
     }
 
     /**
@@ -957,7 +1007,7 @@ SQL;
                 $this->logger->err(new Message('The action "%s" requires a resource identifier property.', // @translate
                     $args['action']));
             }
-            if ($args['action'] !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
+            if ($args['action'] !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media', 'resources'])) {
                 $this->hasErr = true;
                 $this->logger->err(new Message('The action "%s" is not available for resource type "%s" currently.', // @translate
                     $args['action'], $this->resourceType));
@@ -978,7 +1028,7 @@ SQL;
         $recordJson = [
             'o:job' => ['o:id' => $this->job->getId()],
             'entity_id' => $resourceReference->id(),
-            'resource_type' => $this->getArg('resource_type', 'items'),
+            'resource_type' => $this->resourceType,
         ];
         return $recordJson;
     }

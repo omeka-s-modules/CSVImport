@@ -63,6 +63,11 @@ return [
                 Mapping\PropertyMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],
+            'resources' => [
+                Mapping\ResourceMapping::class,
+                Mapping\PropertyMapping::class,
+                Mapping\MediaSourceMapping::class,
+            ],
             'users' => [
                 Mapping\UserMapping::class,
             ],
@@ -99,6 +104,8 @@ return [
                 'records' => 'resource',
                 'record id' => 'resource',
                 'record identifier' => 'resource {dcterms:identifier}',
+                'resource type' => 'resource_type',
+                'record type' => 'resource_type',
                 'resource template' => 'resource_template',
                 'item type' => 'resource_class',
                 'resource class' => 'resource_class',
