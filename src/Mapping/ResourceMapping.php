@@ -1,6 +1,8 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Omeka\Stdlib\Message;
+
 class ResourceMapping extends AbstractResourceMapping
 {
     protected $label = 'Resource data'; // @translate
@@ -50,7 +52,7 @@ class ResourceMapping extends AbstractResourceMapping
             if (isset($resourceTypes[$resourceType])) {
                 $data['resource_type'] = $resourceTypes[$resourceType];
             } else {
-                $this->logger->err(new Message('"%s" is not a valid resource type.', $reset($values))); // @translate
+                $this->logger->err(new Message('"%s" is not a valid resource type.', reset($values))); // @translate
                 $this->setHasErr(true);
             }
         }
