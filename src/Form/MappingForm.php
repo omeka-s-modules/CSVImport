@@ -164,7 +164,7 @@ class MappingForm extends Form
                 'type' => 'radio',
                 'options' => [
                     'label' => 'Visibility', // @translate
-                    'info' => 'The default visibility is private if the cell contains "0", "false", "off" or "private" (case insensitive), else it is public.', // @translate
+                    'info' => 'The default visibility is private if the cell contains "0", "false", "no", "off" or "private" (case insensitive), else it is public.', // @translate
                     'value_options' => [
                         '1' => 'Public', // @translate
                         '0' => 'Private', // @translate
