@@ -71,6 +71,11 @@ class Import extends AbstractJob
     /**
      * @var array
      */
+    protected $args;
+
+    /**
+     * @var array
+     */
     protected $identifiers;
 
     /**
@@ -90,7 +95,8 @@ class Import extends AbstractJob
         $config = $services->get('Config');
 
         $this->resourceType = $this->getArg('resource_type', 'items');
-        $args = $this->job->getArgs();
+        $this->args = $this->job->getArgs();
+        $args = &$this->args;
 
         $mappings = [];
         $mappingClasses = $config['csv_import']['mappings'][$this->resourceType];
@@ -125,19 +131,7 @@ class Import extends AbstractJob
         $response = $this->api->create('csvimport_imports', $csvImportJson);
         $this->importRecord = $response->getContent();
 
-        // Check options.
-        if (empty($this->resourceType)) {
-            $this->hasErr = true;
-            $this->logger->err('Resource type is empty.'); // @translate
-        }
-        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'users'])) {
-            $this->hasErr = true;
-            $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
-        }
-        $action = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
-        $identifierProperty = empty($args['identifier_property']) ? null : $args['identifier_property'];
-        $actionUnidentified = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
-        $this->checkOptions(compact('action', 'identifierProperty', 'actionUnidentified'));
+        $this->checkOptions();
         if ($this->hasErr) {
             return $this->endJob();
         }
@@ -148,16 +142,16 @@ class Import extends AbstractJob
 
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
-        if ($identifierProperty === 'internal_id') {
-            $identifierPropertyId = $identifierProperty;
-        } elseif (is_numeric($identifierProperty)) {
-            $identifierPropertyId = (int) $identifierProperty;
+        if ($args['identifier_property']=== 'internal_id') {
+            $identifierPropertyId = $args['identifier_property'];
+        } elseif (is_numeric($args['identifier_property'])) {
+            $identifierPropertyId = (int) $args['identifier_property'];
         } else {
             $result = $this->api
-                ->search('properties', ['term' => $identifierProperty])->getContent();
+                ->search('properties', ['term' => $args['identifier_property']])->getContent();
             $identifierPropertyId = $result ? $result[0]->id() : null;
         }
-        $this->identifierProperty = $identifierProperty;
+        $this->identifierProperty = $args['identifier_property'];
 
         // Skip the first (header) row, and blank ones (cf. CsvFile object).
         $emptyLines = 0;
@@ -183,7 +177,7 @@ class Import extends AbstractJob
                 $data[] = $entityJson;
             }
 
-            switch ($action) {
+            switch ($args['action']) {
                 case self::ACTION_CREATE:
                     $this->create($data);
                     break;
@@ -198,7 +192,7 @@ class Import extends AbstractJob
                     $idsRemaining = array_diff_key($ids, $idsToProcess);
                     $dataToProcess = array_intersect_key($data, $idsToProcess);
                     // The creation occurs before the update in all cases.
-                    switch ($actionUnidentified) {
+                    switch ($args['action_unidentified']) {
                         case self::ACTION_CREATE:
                             $dataToCreate = array_intersect_key($data, $idsRemaining);
                             $this->create($dataToCreate);
@@ -221,7 +215,7 @@ class Import extends AbstractJob
                     if ($this->resourceType === 'items') {
                         $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
                     }
-                    $this->update($dataToProcess, $idsToProcess, $action);
+                    $this->update($dataToProcess, $idsToProcess, $args['action']);
                     break;
                 case self::ACTION_DELETE:
                     $identifiers = $this->extractIdentifiers($data, $identifierPropertyId);
@@ -923,12 +917,24 @@ SQL;
      * Check options used to import.
      *
      * @todo Mix with check in Import and make it available for external query.
-     *
-     * @param array $options Associative array of options.
      */
-    protected function checkOptions(array $options)
+    protected function checkOptions()
     {
-        extract($options);
+        if (empty($this->resourceType)) {
+            $this->hasErr = true;
+            $this->logger->err('Resource type is empty.'); // @translate
+        }
+
+        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'resources', 'users'])) {
+            $this->hasErr = true;
+            $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
+        }
+
+        $args = &$this->args;
+
+        $args['action'] = empty($args['action']) ? self::ACTION_CREATE : $args['action'];
+        $args['identifier_property'] = empty($args['identifier_property']) ? null : $args['identifier_property'];
+        $args['action_unidentified'] = empty($args['action_unidentified']) ? self::ACTION_SKIP : $args['action_unidentified'];
 
         $allowedActions = [
             self::ACTION_CREATE,
@@ -939,29 +945,30 @@ SQL;
             self::ACTION_DELETE,
             self::ACTION_SKIP,
         ];
-        if (!in_array($action, $allowedActions)) {
+        if (!in_array($args['action'], $allowedActions)) {
             $this->hasErr = true;
-            $this->logger->err(new Message('Unknown action "%s".', $action)); // @translate
+            $this->logger->err(new Message('Unknown action "%s".', $args['action'])); // @translate
         }
 
         // Specific check when a identifier is required.
-        elseif (!in_array($action, [self::ACTION_CREATE, self::ACTION_SKIP])) {
-            if (empty($identifierProperty)) {
+        elseif (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_SKIP])) {
+            if (empty($args['identifier_property'])) {
                 $this->hasErr = true;
-                $this->logger->err(new Message('The action "%s" requires a resource identifier property.', $action)); // @translate
+                $this->logger->err(new Message('The action "%s" requires a resource identifier property.', // @translate
+                    $args['action']));
             }
-            if ($action !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
+            if ($args['action'] !== self::ACTION_DELETE && !in_array($this->resourceType, ['item_sets', 'items', 'media'])) {
                 $this->hasErr = true;
                 $this->logger->err(new Message('The action "%s" is not available for resource type "%s" currently.', // @translate
-                    $action, $this->resourceType));
+                    $args['action'], $this->resourceType));
             }
         }
 
-        if (!in_array($action, [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
-            if (!in_array($actionUnidentified, [self::ACTION_SKIP, self::ACTION_CREATE])) {
+        if (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])) {
+            if (!in_array($args['action_unidentified'], [self::ACTION_SKIP, self::ACTION_CREATE])) {
                 $this->hasErr = true;
                 $this->logger->err(new Message('The action "%s" for unidentified resources is not managed.', // @translate
-                    $actionUnidentified));
+                    $args['action_unidentified']));
             }
         }
     }
