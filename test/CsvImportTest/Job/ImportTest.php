@@ -92,6 +92,8 @@ SQL;
             ['test_media_order.csv', ['media' => 3], false, true],
             ['test_media_order_add.csv', ['media' => 4], false],
             ['test_media_order_add_no_item.csv', ['media' => 4]],
+            ['test_resources.csv', ['item_sets' => 1, 'items' => 3, 'media' => 3], false],
+            ['test_resources_update.csv', ['item_sets' => 1, 'items' => 3, 'media' => 4]],
         ];
     }
 
