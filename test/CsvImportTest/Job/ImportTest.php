@@ -87,13 +87,13 @@ SQL;
         return [
             ['test.csv', ['items' => 3, 'media' => 4]],
             ['test_empty_rows.csv', ['items' => 3]],
-            ['test_many_rows_html.csv', ['items' => 30]],
-            ['test_many_rows_url.csv', ['items' => 30]],
-            ['test_media_order.csv', ['media' => 3], false, true],
-            ['test_media_order_add.csv', ['media' => 4], false],
-            ['test_media_order_add_no_item.csv', ['media' => 4]],
-            ['test_resources.csv', ['item_sets' => 1, 'items' => 3, 'media' => 3], false],
-            ['test_resources_update.csv', ['item_sets' => 1, 'items' => 3, 'media' => 4]],
+            ['test_many_rows_html.tsv', ['items' => 30]],
+            ['test_many_rows_url.tsv', ['items' => 30]],
+            ['test_media_order.tsv', ['media' => 3], false, true],
+            ['test_media_order_add.tsv', ['media' => 4], false],
+            ['test_media_order_add_no_item.tsv', ['media' => 4]],
+            ['test_resources.tsv', ['item_sets' => 1, 'items' => 3, 'media' => 3], false],
+            ['test_resources_update.tsv', ['item_sets' => 1, 'items' => 3, 'media' => 4]],
         ];
     }
 
@@ -143,7 +143,7 @@ SQL;
         $filepath = 'test.csv';
         $filepath = $this->basepath . $filepath;
         $job = $this->performProcessForFile($filepath);
-        $filepath = 'test_update_g_replace.csv';
+        $filepath = 'test_update_g_replace.tsv';
         $filepath = $this->basepath . $filepath;
         $job = $this->performProcessForFile($filepath);
         $totals = ['item_sets' => 3, 'items' => 3, 'media' => 4];
@@ -163,20 +163,20 @@ SQL;
     public function sourceUpdateProvider()
     {
         return [
-            ['test_skip.csv', ['items', 1]],
-            ['test_update_a_append.csv', ['items', 1]],
-            ['test_update_b_revise.csv', ['items', 1]],
-            ['test_update_c_revise.csv', ['items', 1]],
-            ['test_update_d_update.csv', ['items', 1]],
-            ['test_update_e_replace.csv', ['items', 1]],
-            ['test_update_f_replace.csv', ['items', 1]],
-            ['test_update_g_replace.csv', ['item_sets', 1]],
-            ['test_update_h_replace.csv', ['items', 1]],
-            ['test_update_i_append.csv', ['items', 1]],
-            ['test_update_j_revise.csv', ['items', 1]],
-            ['test_update_k_revise.csv', ['items', 1]],
-            ['test_update_l_update.csv', ['items', 1]],
-            ['test_update_m_update.csv', ['items', 1]],
+            ['test_skip.tsv', ['items', 1]],
+            ['test_update_a_append.tsv', ['items', 1]],
+            ['test_update_b_revise.tsv', ['items', 1]],
+            ['test_update_c_revise.tsv', ['items', 1]],
+            ['test_update_d_update.tsv', ['items', 1]],
+            ['test_update_e_replace.tsv', ['items', 1]],
+            ['test_update_f_replace.tsv', ['items', 1]],
+            ['test_update_g_replace.tsv', ['item_sets', 1]],
+            ['test_update_h_replace.tsv', ['items', 1]],
+            ['test_update_i_append.tsv', ['items', 1]],
+            ['test_update_j_revise.tsv', ['items', 1]],
+            ['test_update_k_revise.tsv', ['items', 1]],
+            ['test_update_l_update.tsv', ['items', 1]],
+            ['test_update_m_update.tsv', ['items', 1]],
         ];
     }
 
@@ -215,8 +215,8 @@ SQL;
     public function sourceDeleteProvider()
     {
         return [
-            ['test_delete_items.csv', ['items', 2]],
-            ['test_delete_media.csv', ['media', 4]],
+            ['test_delete_items.tsv', ['items', 2]],
+            ['test_delete_media.tsv', ['media', 4]],
         ];
     }
 

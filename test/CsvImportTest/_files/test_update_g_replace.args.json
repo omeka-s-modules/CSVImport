@@ -1,8 +1,8 @@
 {
-    "filename": "test_update_g_replace.csv",
+    "filename": "test_update_g_replace.tsv",
     "filesize": "489",
     "filepath": "/tmp/omekaREgHoA",
-    "media_type": "text/csv",
+    "media_type": "text/tab-separated-values",
     "csrf": "06400f10441a08f44918f53c53044431-4b993316c229ce112b762238b56a56d7",
     "resource_type": "item_sets",
     "automap_check_names_alone": "0",
