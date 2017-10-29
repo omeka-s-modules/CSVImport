@@ -22,18 +22,18 @@
   },
   "o:media": [
     {
-      "@id": "https://localhost/api/media/142",
-      "o:id": 142
+      "@id": "https://localhost/api/media/12",
+      "o:id": 12
     },
     {
-      "@id": "https://localhost/api/media/144",
-      "o:id": 144
+      "@id": "https://localhost/api/media/14",
+      "o:id": 14
     }
   ],
   "o:item_set": [
     {
-      "@id": "https://localhost/api/item_sets/140",
-      "o:id": 140
+      "@id": "https://localhost/api/item_sets/10",
+      "o:id": 10
     }
   ],
   "dcterms:title": [

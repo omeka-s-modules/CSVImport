@@ -20,12 +20,12 @@
     },
     "o:media": [
         {
-            "@id": "https://localhost/api/media/134",
-            "o:id": 134
+            "@id": "https://localhost/api/media/4",
+            "o:id": 4
         },
         {
-            "@id": "https://localhost/api/media/135",
-            "o:id": 135
+            "@id": "https://localhost/api/media/5",
+            "o:id": 5
         }
     ],
     "o:item_set": [],

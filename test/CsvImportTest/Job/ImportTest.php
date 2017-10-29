@@ -60,15 +60,26 @@ class ImportTest extends OmekaControllerTestCase
         }
     }
 
-    protected function deleteAllResources()
+    /**
+     * Reset index of the all resource tables to simplify addition of tests.
+     */
+    protected function resetResources()
     {
-        $resourceTypes = ['item_sets', 'items'];
-        foreach ($resourceTypes as $resourceType) {
-            $result = $this->api()->search($resourceType)->getContent();
-            foreach ($result as $resource) {
-                $this->api()->delete($resourceType, $resource->id());
-            }
-        }
+        $conn = $this->getServiceLocator()->get('Omeka\Connection');
+        $sql = <<<'SQL'
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE item;
+TRUNCATE TABLE item_set;
+TRUNCATE TABLE item_item_set;
+TRUNCATE TABLE media;
+TRUNCATE TABLE resource;
+TRUNCATE TABLE value;
+TRUNCATE TABLE csvimport_entity;
+TRUNCATE TABLE csvimport_import;
+SET FOREIGN_KEY_CHECKS = 1;
+SQL;
+        $conn->exec($sql);
+        $this->entityManager->clear();
     }
 
     public function csvFileProvider()
@@ -89,13 +100,13 @@ class ImportTest extends OmekaControllerTestCase
         $filepath = $this->basepath . $filepath;
         $filebase = substr($filepath, 0, -4);
 
-        $this->performProcessForFile($filepath);
+        $job = $this->performProcessForFile($filepath);
 
         foreach ($totals as $resourceType => $total) {
             $result = $this->api->search($resourceType)->getContent();
             $this->assertEquals($total, count($result));
             foreach ($result as $key => $resource) {
-                $expectedFile = $filebase . '.' . $resourceType . '-' . ($key + 1) . '.' . 'api.json';
+                $expectedFile = $filebase . '.' . $resourceType . '-' . ($key + 1) . '.api.json';
                 if (!file_exists($expectedFile)) {
                     continue;
                 }
@@ -107,7 +118,7 @@ class ImportTest extends OmekaControllerTestCase
             }
         }
 
-        $this->deleteAllResources();
+        $this->resetResources();
     }
 
     /**
@@ -120,10 +131,10 @@ class ImportTest extends OmekaControllerTestCase
     {
         $filepath = 'test.csv';
         $filepath = $this->basepath . $filepath;
-        $this->performProcessForFile($filepath);
+        $job = $this->performProcessForFile($filepath);
         $filepath = 'test_update_g_replace.csv';
         $filepath = $this->basepath . $filepath;
-        $this->performProcessForFile($filepath);
+        $job = $this->performProcessForFile($filepath);
         $totals = ['item_sets' => 3, 'items' => 3, 'media' => 4];
 
         $this->assertTrue(true);
@@ -173,13 +184,13 @@ class ImportTest extends OmekaControllerTestCase
         $resource = $this->api->read($resourceType, $resourceId)->getContent();
         $this->assertNotEmpty($resource);
 
-        $this->performProcessForFile($filepath);
+        $job = $this->performProcessForFile($filepath);
 
         $resource = $this->api->search($resourceType, ['id' => $resourceId])->getContent();
         $this->assertNotEmpty($resource);
 
         $resource = reset($resource);
-        $expectedFile = $filebase . '.' . $resourceType . '-' . ($index) . '.' . 'api.json';
+        $expectedFile = $filebase . '.' . $resourceType . '-' . ($index) . '.api.json';
         if (!file_exists($expectedFile)) {
             return;
         }
@@ -216,7 +227,7 @@ class ImportTest extends OmekaControllerTestCase
         $resource = $this->api->read($resourceType, $resourceId)->getContent();
         $this->assertNotEmpty($resource);
 
-        $this->performProcessForFile($filepath);
+        $job = $this->performProcessForFile($filepath);
 
         $resource = $this->api->search($resourceType, ['id' => $resourceId])->getContent();
         $this->assertEmpty($resource);
@@ -234,6 +245,12 @@ class ImportTest extends OmekaControllerTestCase
         copy($filepath, $this->tempfile);
     }
 
+    /**
+     * Process the import of a file.
+     *
+     * @param string $filepath
+     * @return \Omeka\Entity\Job
+     */
     protected function performProcessForFile($filepath)
     {
         copy($filepath, $this->tempfile);
@@ -256,6 +273,8 @@ class ImportTest extends OmekaControllerTestCase
 
         $import = new Import($job, $this->getServiceLocator());
         $import->perform();
+
+        return $job;
     }
 
     protected function cleanApiResult(array $resource)

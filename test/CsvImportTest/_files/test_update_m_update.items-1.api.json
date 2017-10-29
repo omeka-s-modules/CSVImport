@@ -24,14 +24,14 @@
   },
   "o:media": [
     {
-      "@id": "https://localhost/api/media/144",
-      "o:id": 144
+      "@id": "https://localhost/api/media/14",
+      "o:id": 14
     }
   ],
   "o:item_set": [
     {
-      "@id": "https://localhost/api/item_sets/138",
-      "o:id": 138
+      "@id": "https://localhost/api/item_sets/8",
+      "o:id": 8
     }
   ],
   "dcterms:title": [
