@@ -89,16 +89,22 @@ SQL;
             ['test_empty_rows.csv', ['items' => 3]],
             ['test_many_rows_html.csv', ['items' => 30]],
             ['test_many_rows_url.csv', ['items' => 30]],
+            ['test_media_order.csv', ['media' => 3], false, true],
+            ['test_media_order_add.csv', ['media' => 4], false],
         ];
     }
 
     /**
      * @dataProvider csvFileProvider
      */
-    public function testPerformCreate($filepath, $totals)
+    public function testPerformCreate($filepath, $totals, $resetResources = true, $createItem = false)
     {
         $filepath = $this->basepath . $filepath;
         $filebase = substr($filepath, 0, -4);
+
+        if ($createItem) {
+            $item = $this->api->create('items')->getContent();
+        }
 
         $job = $this->performProcessForFile($filepath);
 
@@ -118,7 +124,9 @@ SQL;
             }
         }
 
-        $this->resetResources();
+        if ($resetResources) {
+            $this->resetResources();
+        }
     }
 
     /**
