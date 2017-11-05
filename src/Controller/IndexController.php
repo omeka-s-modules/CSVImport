@@ -275,6 +275,11 @@ class IndexController extends AbstractActionController
     {
         $args = $post;
 
+        // Set the default action if not set, for example for users.
+        $args['action'] = empty($args['action'])
+            ? \CSVImport\Job\Import::ACTION_CREATE
+            : $args['action'];
+
         // Set values as integer.
         foreach (['o:resource_template', 'o:resource_class', 'o:owner', 'o:item'] as $meta) {
             if (!empty($args[$meta]['o:id'])) {
@@ -284,6 +289,18 @@ class IndexController extends AbstractActionController
         foreach (['o:is_public', 'o:is_open', 'o:is_active'] as $meta) {
             if (isset($args[$meta]) && strlen($args[$meta])) {
                 $args[$meta] = (int) $args[$meta];
+            }
+        }
+
+        // Set arguments as integer.
+        if (!empty($args['rows_by_batch'])) {
+            $args['rows_by_batch'] = (int) $args['rows_by_batch'];
+        }
+
+        // Set arguments as boolean.
+        foreach (['automap_check_names_alone', 'automap_check_user_list'] as $meta) {
+            if (array_key_exists($meta, $args)) {
+                $args[$meta] = (bool) $args[$meta];
             }
         }
 
@@ -342,11 +359,6 @@ class IndexController extends AbstractActionController
             unset($args['multivalue_separator']);
             $args['multivalue_separator'] = $post['multivalue_separator'];
         }
-
-        if (!empty($post['rows_by_batch'])) {
-            $args['rows_by_batch'] = (int) $post['rows_by_batch'];
-        }
-
         // Convert the user text into an array.
         if (array_key_exists('automap_user_list', $args)) {
             $args['automap_user_list'] = $this->getForm(ImportForm::class)
