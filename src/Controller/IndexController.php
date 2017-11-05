@@ -315,6 +315,15 @@ class IndexController extends AbstractActionController
             $args['column-multivalue'] = [];
         }
 
+        // Set default multivalue separator if not set, for example for users.
+        if (!array_key_exists('multivalue_separator', $args)) {
+            $args['multivalue_separator'] = $this->userSettings()
+                ->get(
+                    'csv_import_multivalue_separator',
+                    $this->config['csv_import']['user_settings']['csv_import_multivalue_separator']
+                );
+        }
+
         // TODO Move to the source class.
         unset($args['delimiter']);
         unset($args['enclosure']);
