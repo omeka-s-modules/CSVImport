@@ -128,6 +128,7 @@ class IndexController extends AbstractActionController
         $post['media_type'] = $mediaType;
         $tempPath = $this->getTempPath();
         $this->moveToTemp($post['source']['tmp_name']);
+
         $args = $this->cleanArgs($post);
 
         $source->init($this->config);
@@ -147,15 +148,11 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('admin/csvimport');
         }
 
-        $automapCheckNamesAlone = (bool) $post['automap_check_names_alone'];
-        $automapCheckUserList = (bool) $post['automap_check_user_list'];
-        $automapUserList = $this->getForm(ImportForm::class)
-            ->convertUserListTextToArray($post['automap_user_list']);
         $automapOptions = [];
-        $automapOptions['check_names_alone'] = $automapCheckNamesAlone;
+        $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
         $automapOptions['format'] = 'form';
-        if ($automapCheckUserList) {
-            $automapOptions['automap_list'] = $automapUserList;
+        if (!empty($args['automap_check_user_list'])) {
+            $automapOptions['automap_list'] = $args['automap_user_list'];
         }
         $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
@@ -355,12 +352,12 @@ class IndexController extends AbstractActionController
                 break;
         }
 
-        if (array_key_exists('multivalue_separator', $post)) {
-            unset($args['multivalue_separator']);
-            $args['multivalue_separator'] = $post['multivalue_separator'];
+        // Reset the user list.
+        if (!empty($args['automap_check_user_list']) && empty($args['automap_user_list'])) {
+            $args['automap_user_list'] = $this->config['csv_import']['user_settings']['csv_import_automap_user_list'];
         }
         // Convert the user text into an array.
-        if (array_key_exists('automap_user_list', $args)) {
+        elseif (array_key_exists('automap_user_list', $args)) {
             $args['automap_user_list'] = $this->getForm(ImportForm::class)
                 ->convertUserListTextToArray($args['automap_user_list']);
         }

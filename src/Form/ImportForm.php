@@ -153,7 +153,7 @@ class ImportForm extends Form
             'type' => 'textarea',
             'options' => [
                 'label' => 'Automap user list', // @translate
-                'info' => 'List of user headers used to map the file automagically. Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme).', // @translate
+                'info' => 'List of user headers used to map the file automagically. Each line should contains a header (with or without case), a "=" and the property term or the mapping type (see readme). Empty it to reset it to the default list.', // @translate
             ],
             'attributes' => [
                 'id' => 'automap_user_list',
