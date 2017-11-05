@@ -146,6 +146,8 @@ return [
                 'oembed' => 'media_source {oembed}',
                 'youtube' => 'media_source {youtube}',
                 'user' => 'user_name',
+                'name' => 'user_name',
+                'display name' => 'user_name',
                 'username' => 'user_name',
                 'user name' => 'user_name',
                 'email' => 'user_email',
@@ -167,6 +169,12 @@ return [
                 'default latitude' => 'mapping_default_latitude',
                 'default longitude' => 'mapping_default_longitude',
                 'default zoom' => 'mapping_default_zoom',
+                // From module Folksonomy.
+                'tag' => 'tag',
+                'tags' => 'tag',
+                // From module Group.
+                'group' => 'group',
+                'groups' => 'group',
             ],
         ],
     ],
