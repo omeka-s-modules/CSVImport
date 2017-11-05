@@ -2,6 +2,7 @@
 namespace CSVImport\Job;
 
 use Omeka\Job\AbstractJob;
+use Omeka\Stdlib\Message;
 
 class Undo extends AbstractJob
 {
@@ -12,7 +13,15 @@ class Undo extends AbstractJob
         $response = $api->search('csvimport_entities', ['job_id' => $jobId]);
         $csvEntities = $response->getContent();
         if ($csvEntities) {
-            foreach ($csvEntities as $csvEntity) {
+            foreach ($csvEntities as $key => $csvEntity) {
+                if ($this->shouldStop()) {
+                    $this->logger = $services->get('Omeka\Logger');
+                    $this->logger->warn(new Message(
+                        'The job "Undo" was stopped: %d/%d resources processed.', // @translate
+                        $key, count($csvEntities)
+                    ));
+                    break;
+                }
                 try {
                     $csvResponse = $api->delete('csvimport_entities', $csvEntity->id());
                     $entityResponse = $api->delete($csvEntity->resourceType(), $csvEntity->entityId());

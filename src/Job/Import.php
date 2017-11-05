@@ -185,6 +185,13 @@ class Import extends AbstractJob
         // Skip the first (header) row, and blank ones.
         $offset = 1;
         while (($rows = $source->getRows($offset, $this->rowsByBatch)) !== null) {
+            if ($this->shouldStop()) {
+                $this->logger->warn(new Message(
+                    'The job "Import" was stopped: %d rows processed.', // @translate
+                    $offset - 1
+                ));
+                break;
+            }
             $data = $this->mapRows($rows);
             $this->processBatchData($data);
             $offset += $this->rowsByBatch;
