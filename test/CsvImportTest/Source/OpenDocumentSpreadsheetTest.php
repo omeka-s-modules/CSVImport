@@ -19,8 +19,10 @@ class OpenDocumentSpreadsheetTest extends AbstractSource
                 'Collection Identifier', 'Item Identifier', 'Media Url', 'Resource class', 'Title',
                 'Dublin Core : Creator', 'Date', 'Rights', 'Description', 'Dublin Core:Format',
                 'Dublin Core : Spatial Coverage', 'Tags', 'Latitude', 'Longitude', 'Default Zoom',]]],
-            ['test_column_missing.ods', [], [false, 4, ['Identifier', 'Title', 'Description']]],
+            ['test_column_missing.ods', [], [true, 4, ['Identifier', 'Title', 'Description']]],
             ['test_column_in_excess.ods', [], [false, 5, ['Identifier', 'Title', 'Description']]],
+            ['test_column_in_excess_bis.ods', [], [true, 5, ['Identifier', 'Title', 'Description']]],
+            ['test_column_in_excess_ter.ods', [], [true, 5, ['Identifier', 'Title', 'Description']]],
         ];
     }
 
