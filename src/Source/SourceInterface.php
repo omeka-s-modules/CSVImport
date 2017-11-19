@@ -46,7 +46,7 @@ interface SourceInterface
     public function isValid();
 
     /**
-     * Return the number of rows, headers included.
+     * Return the number of rows, headers and empty rows included.
      *
      * @return int
      */
@@ -54,6 +54,9 @@ interface SourceInterface
 
     /**
      * Get the first row of the spreadsheet.
+     *
+     * Note: last empty headers must not be returned, as they are not headers.
+     * So it is not the same than getRow(0).
      *
      * @return array|null
      */

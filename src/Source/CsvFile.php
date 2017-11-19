@@ -78,10 +78,12 @@ class CsvFile extends AbstractSource
         if (!parent::isValid()) {
             return false;
         }
+
         $result = $this->isUtf8();
         if (!$result) {
             $this->errorMessage = 'File is not UTF-8 encoded.'; // @translate
         }
+
         return $result;
     }
 
@@ -94,17 +96,20 @@ class CsvFile extends AbstractSource
     {
         $iterator = $this->getIterator();
         if (empty($iterator)) {
-            return;
+            return false;
         }
+
         $result = true;
         // TODO Use another check when mb is not installed.
         if (!function_exists('mb_detect_encoding')) {
             return true;
         }
+
         // Check all the file, because the headers are generally ascii.
         // Nevertheless, check the lines one by one as text to avoid a memory
         // overflow with a big csv file.
         $iterator->setFlags(0);
+
         $iterator->rewind();
         foreach (new LimitIterator($iterator) as $line) {
             if (mb_detect_encoding($line, 'UTF-8', true) !== 'UTF-8') {
@@ -112,8 +117,29 @@ class CsvFile extends AbstractSource
                 break;
             }
         }
-        $iterator->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
-            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+
+        $this->setIteratorParams();
+
+        return $result;
+    }
+
+    protected function checkNumberOfColumnsByRow()
+    {
+        $iterator = $this->getIterator();
+        if (empty($iterator)) {
+            return false;
+        }
+
+        $result = true;
+        $headers = $this->getHeaders();
+        $number = count($headers);
+        foreach (new LimitIterator($iterator) as $row) {
+            if ($row && count($row) !== $number) {
+                $result = false;
+                break;
+            }
+        }
+
         return $result;
     }
 
@@ -153,9 +179,16 @@ class CsvFile extends AbstractSource
     protected function prepareIterator()
     {
         $this->iterator = new SplFileObject($this->source);
-        $this->iterator->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
-            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
-        $this->iterator->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+        $this->setIteratorParams();
         return $this->iterator;
+    }
+
+    protected function setIteratorParams()
+    {
+        if ($this->iterator) {
+            $this->iterator->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+                | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+            $this->iterator->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+        }
     }
 }

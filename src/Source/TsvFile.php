@@ -72,12 +72,12 @@ class TsvFile extends CsvFile
         return;
     }
 
-    protected function prepareIterator()
+    protected function setIteratorParams()
     {
-        $this->iterator = new SplFileObject($this->source);
-        $this->iterator->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
-            | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
-        $this->iterator->setCsvControl($this->delimiter);
-        return $this->iterator;
+        if ($this->iterator) {
+            $this->iterator->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
+                | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+            $this->iterator->setCsvControl($this->delimiter);
+        }
     }
 }

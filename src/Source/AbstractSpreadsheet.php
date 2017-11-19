@@ -35,16 +35,37 @@ abstract class AbstractSpreadsheet extends AbstractSource
             return false;
         }
 
+        return parent::isValid();
+    }
+
+    protected function checkNumberOfColumnsByRow()
+    {
+        $this->reset();
         $iterator = $this->getIterator();
-        if (!$iterator) {
-            $this->errorMessage = 'No file to process.'; // @translate
+        if (empty($iterator)) {
             return false;
         }
 
-        $this->errorMessage = '';
-        return true;
+        $result = true;
+        $headers = $this->getHeaders();
+        $number = count($headers);
+        foreach ($iterator as $row) {
+            if ($row && count($row) !== $number) {
+                $result = false;
+                break;
+            }
+        }
+
+        $this->reset();
+        return $result;
     }
 
+    /**
+     * @todo Currently, empty rows are not counted in spreadsheets.
+     *
+     * {@inheritDoc}
+     * @see \CSVImport\Source\AbstractSource::countRows()
+     */
     public function countRows()
     {
         $this->reset();

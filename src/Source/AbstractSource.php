@@ -70,12 +70,35 @@ abstract class AbstractSource implements SourceInterface
 
     public function isValid()
     {
+        if (empty($this->source)) {
+            $this->errorMessage = 'The source is undefined.'; // @translate
+            return false;
+        }
+
+        if (!filesize($this->source)) {
+            $this->errorMessage = 'The source is empty.'; // @translate
+            return false;
+        }
+
         $iterator = $this->getIterator();
         if (!$iterator) {
             $this->errorMessage = 'No file to process.'; // @translate
             return false;
         }
+
+        // Check if all rows have the same number of columns.
+        $result = $this->checkNumberOfColumnsByRow();
+        if (!$result) {
+            $this->errorMessage = 'The rows are not all the same number of columns.'; // @translate
+            return false;
+        }
+
         $this->errorMessage = '';
+        return true;
+    }
+
+    protected function checkNumberOfColumnsByRow()
+    {
         return true;
     }
 
@@ -95,7 +118,22 @@ abstract class AbstractSource implements SourceInterface
 
     public function getHeaders()
     {
-        return $this->getRow(0);
+        $headers = $this->getRow(0);
+        if (!is_array($headers)) {
+            return;
+        }
+
+        // Remove last empty headers.
+        $headers = array_reverse($headers, true);
+        foreach ($headers as $key => $header) {
+            if (strlen(trim($header))) {
+                break;
+            }
+            unset($headers[$key]);
+        }
+        $headers = array_reverse($headers, true);
+
+        return $headers;
     }
 
     public function getRow($offset)
