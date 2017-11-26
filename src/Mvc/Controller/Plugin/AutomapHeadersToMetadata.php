@@ -275,8 +275,8 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     /**
      * Clean the automap list to format to remove old properties.
      *
-     * @param unknown $automapList
-     * @param unknown $propertyList
+     * @param array $automapList
+     * @param array $propertyList
      * @return array
      */
     protected function checkAutomapList($automapList, $propertyList)
