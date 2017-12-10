@@ -19,7 +19,7 @@ abstract class AbstractSource extends OmekaControllerTestCase
         $services = $this->getServiceLocator();
         $this->config = $services->get('Config');
 
-        $this->basepath = __DIR__ . '/../_files/';
+        $this->basepath = dirname(__DIR__) . '/_files/';
 
         $this->loginAsAdmin();
     }

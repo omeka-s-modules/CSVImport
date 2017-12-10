@@ -26,7 +26,7 @@ class ImportTest extends OmekaControllerTestCase
         $this->entityManager = $services->get('Omeka\EntityManager');
         $this->auth = $services->get('Omeka\AuthenticationService');
         $this->api = $services->get('Omeka\ApiManager');
-        $this->basepath = __DIR__ . '/../_files/';
+        $this->basepath = dirname(__DIR__) . '/_files/';
 
         $this->loginAsAdmin();
 
@@ -35,7 +35,7 @@ class ImportTest extends OmekaControllerTestCase
 
     protected function overrideConfig()
     {
-        require_once __DIR__ . '/../Mock/Media/Ingester/MockUrl.php';
+        require_once dirname(__DIR__) . '/Mock/Media/Ingester/MockUrl.php';
 
         $services = $this->getServiceLocator();
 

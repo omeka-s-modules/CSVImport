@@ -243,7 +243,7 @@ class IndexController extends AbstractActionController
         // the buttons of modules after the default ones. This is only needed in
         // the mapping form. The default order is set in this module config too,
         // before Zend merge.
-        $config = include __DIR__ . '/../../config/module.config.php';
+        $config = include dirname(dirname(__DIR__)) . '/config/module.config.php';
         $defaultOrder = $config['csv_import']['mappings'];
         $mappings = $this->config['csv_import']['mappings'];
         if (isset($defaultOrder[$resourceType])) {
