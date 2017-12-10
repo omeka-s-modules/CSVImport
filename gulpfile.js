@@ -159,6 +159,8 @@ gulp.task('deps:update', function () {
 
 gulp.task('init', gulp.series(/* 'dedist',  */'deps'));
 
+gulp.task('install', gulp.task('init'));
+
 gulp.task('clean', function (cb) {
     rimraf.sync(buildDir);
     rimraf.sync(__dirname + '/vendor');
