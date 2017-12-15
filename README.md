@@ -7,7 +7,7 @@ Furthermore, it’s possible to import directly files in formats [TSV] (tab sepa
 
 Most often, the import will create new Omeka S items. It is also possible to import item sets, media and users, and other modules can add other import types. It’s possible to import mixed resources in one file too.
 
-See the [Omeka S user manual](http://dev.omeka.org/docs/s/user-manual/modules/csvimport/) for user documentation.
+See the [Omeka S user manual](http://omeka.org/s/docs/user-manual/modules/csvimport/) for user documentation.
 
 Installation
 ------------
@@ -165,3 +165,4 @@ Copyright
 [module issues]: https://github.com/omeka-s-modules/CSVImport/issues
 [GNU/GPL v3]: https://www.gnu.org/licenses/gpl-3.0.html
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
+
