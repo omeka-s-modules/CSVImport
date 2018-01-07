@@ -7,9 +7,9 @@ class ImportRepresentation extends AbstractEntityRepresentation
 {
     public function getJsonLd()
     {
-        $undo_job = null;
-        if ($this->undoJob()) {
-            $undo_job = $this->undoJob()->getReference();
+        $undoJob = $this->undoJob();
+        if ($undoJob) {
+            $undoJob = $undoJob->getReference();
         }
 
         return [
@@ -18,7 +18,7 @@ class ImportRepresentation extends AbstractEntityRepresentation
             'has_err' => $this->hasErr(),
             'stats' => $this->stats(),
             'o:job' => $this->job()->getReference(),
-            'o:undo_job' => $undo_job,
+            'o:undo_job' => $undoJob,
         ];
     }
 
