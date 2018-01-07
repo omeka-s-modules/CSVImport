@@ -46,7 +46,10 @@ ALTER TABLE csvimport_import ADD CONSTRAINT FK_17B50881BE04EA9 FOREIGN KEY (job_
 ALTER TABLE csvimport_import ADD CONSTRAINT FK_17B508814C276F75 FOREIGN KEY (undo_job_id) REFERENCES job (id);
 ALTER TABLE csvimport_entity ADD CONSTRAINT FK_84D382F4BE04EA9 FOREIGN KEY (job_id) REFERENCES job (id);
 SQL;
-        $connection->exec($sql);
+        $sqls = array_filter(array_map('trim', explode(';', $sql)));
+        foreach ($sqls as $sql) {
+            $connection->exec($sql);
+        }
     }
 
     public function uninstall(ServiceLocatorInterface $serviceLocator)
@@ -56,10 +59,13 @@ SQL;
 ALTER TABLE csvimport_entity DROP FOREIGN KEY FK_84D382F4BE04EA9;
 ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B508814C276F75;
 ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B50881BE04EA9;
-DROP TABLE csvimport_entity;
-DROP TABLE csvimport_import;
+DROP TABLE IF EXISTS csvimport_entity;
+DROP TABLE IF EXISTS csvimport_import;
 SQL;
-        $connection->exec($sql);
+        $sqls = array_filter(array_map('trim', explode(';', $sql)));
+        foreach ($sqls as $sql) {
+            $connection->exec($sql);
+        }
         // User settings are not removed here: they belong to the user.
     }
 
@@ -72,7 +78,10 @@ ALTER TABLE csvimport_import ADD stats LONGTEXT NOT NULL COMMENT '(DC2Type:json_
 UPDATE csvimport_import SET stats = CONCAT('{"processed":{"', resource_type, '":', added_count, '}}');
 ALTER TABLE csvimport_import DROP added_count;
 SQL;
-            $connection->exec($sql);
+            $sqls = array_filter(array_map('trim', explode(';', $sql)));
+            foreach ($sqls as $sql) {
+                $connection->exec($sql);
+            }
         }
     }
 }
