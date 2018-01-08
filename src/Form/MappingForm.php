@@ -368,7 +368,7 @@ class MappingForm extends Form
                         'csv_import_rows_by_batch',
                         $default['csv_import_rows_by_batch']),
                     'class' => 'advanced-settings',
-                    'min'  => '1',
+                    'min' => '1',
                     'step' => '1',
                 ],
             ]);

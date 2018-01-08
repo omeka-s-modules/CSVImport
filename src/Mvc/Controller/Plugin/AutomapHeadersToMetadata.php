@@ -252,9 +252,9 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
                 $result['names'][$property->term()] = $property;
                 $name = $vocabulary->label() .  ':' . $property->label();
                 if (isset($result['labels'][$name])) {
-                    $result['labels'][$vocabulary->label() .  ':' . $property->label() . ' (#' . $property->id() . ')'] = $property;
+                    $result['labels'][$vocabulary->label() . ':' . $property->label() . ' (#' . $property->id() . ')'] = $property;
                 } else {
-                    $result['labels'][$vocabulary->label() .  ':' . $property->label()] = $property;
+                    $result['labels'][$vocabulary->label() . ':' . $property->label()] = $property;
                 }
             }
         }
@@ -333,13 +333,13 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
             ],
             'internal_id' => [
                 'name' => 'resource',
-                'value' =>  'internal_id',
+                'value' => 'internal_id',
                 'label' => $translator->translate('Internal id'),
                 'class' => 'resource-data',
             ],
             'resource' => [
                 'name' => 'resource',
-                'value' =>  'internal_id',
+                'value' => 'internal_id',
                 'label' => $translator->translate('Resource [%s]'),
                 'class' => 'resource-data',
             ],

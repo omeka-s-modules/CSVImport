@@ -1,15 +1,15 @@
 <?php
 namespace CSVImport\Source;
 
-/**
- * Note: Reader isn’t traversable and has no rewind, so some hacks are required.
- * Nevertheless, the library is quick and efficient and the module uses it only
- * as recommended (as stream ahead).
- */
 use Box\Spout\Reader\ReaderFactory;
 use Box\Spout\Reader\ReaderInterface;
 use Omeka\Stdlib\Message;
 
+/**
+ * Note: Box Spout Reader isn’t traversable and has no rewind, so some hacks are
+ * required. Nevertheless, the library is quick and efficient and the module
+ * uses it only as recommended (as stream ahead).
+ */
 abstract class AbstractSpreadsheet extends AbstractSource
 {
     /**
