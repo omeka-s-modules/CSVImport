@@ -1,14 +1,24 @@
 <?php
 namespace CSVImport\Mvc\Controller\Plugin;
 
+use Omeka\Api\Manager as ApiManager;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 
-class AutomapHeadersToMetadata extends AbstractPlugin
+class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAwareInterface
 {
+    use TranslatorAwareTrait;
+
     /**
      * @var array
      */
     protected $configCsvImport;
+
+    /**
+     * @var ApiManager
+     */
+    protected $api;
 
     /**
      * @var array
@@ -134,7 +144,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     protected function normalizeAutomapsForForm(array $automaps, $resourceType)
     {
         $result = [];
-        $controller = $this->getController();
         $automapping = empty($this->options['automap_list'])
             ? []
             : $this->prepareAutomapping();
@@ -144,7 +153,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $value = [];
                     $value['name'] = 'property';
                     $value['value'] = $automap->id();
-                    $value['label'] = $controller->translate($automap->label());
+                    $value['label'] = $this->getTranslator()->translate($automap->label());
                     $value['class'] = 'property';
                     $value['special'] = ' data-property-id="' . $automap->id(). '"';
                     $value['multiple'] = true;
@@ -191,7 +200,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     protected function normalizeAutomapsAsArguments(array $automaps, $resourceType)
     {
         $result = [];
-        $controller = $this->getController();
         $automapping = empty($this->options['automap_list'])
             ? []
             : $this->prepareAutomapping();
@@ -234,7 +242,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     protected function listTerms()
     {
         $result = [];
-        $vocabularies = $this->getController()->api()->search('vocabularies')->getContent();
+        $vocabularies = $this->api->search('vocabularies')->getContent();
         foreach ($vocabularies as $vocabulary) {
             $properties = $vocabulary->properties();
             if (empty($properties)) {
@@ -306,7 +314,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
      */
     protected function prepareAutomapping()
     {
-        $controller = $this->getController();
+        $translator = $this->getTranslator();
 
         $defaultAutomapping = [
             'name' => '',
@@ -320,88 +328,88 @@ class AutomapHeadersToMetadata extends AbstractPlugin
         $automapping = [
             'owner_email' => [
                 'name' => 'owner_email',
-                'label' => $controller->translate('Owner email address'),
+                'label' => $translator->translate('Owner email address'),
                 'class' => 'owner-email',
             ],
             'internal_id' => [
                 'name' => 'resource',
                 'value' =>  'internal_id',
-                'label' => $controller->translate('Internal id'),
+                'label' => $translator->translate('Internal id'),
                 'class' => 'resource-data',
             ],
             'resource' => [
                 'name' => 'resource',
                 'value' =>  'internal_id',
-                'label' => $controller->translate('Resource [%s]'),
+                'label' => $translator->translate('Resource [%s]'),
                 'class' => 'resource-data',
             ],
             'resource_type' => [
                 'name' => 'resource_type',
-                'label' => $controller->translate('Resource type'),
+                'label' => $translator->translate('Resource type'),
                 'class' => 'resource-data',
             ],
             'resource_template' => [
                 'name' => 'resource_template',
-                'label' => $controller->translate('Resource template name'),
+                'label' => $translator->translate('Resource template name'),
                 'class' => 'resource-data',
             ],
             'resource_class' => [
                 'name' => 'resource_class',
-                'label' => $controller->translate('Resource class term'),
+                'label' => $translator->translate('Resource class term'),
                 'class' => 'resource-data',
             ],
             'is_public' => [
                 'name' => 'is_public',
-                'label' => $controller->translate('Visibility public/private'),
+                'label' => $translator->translate('Visibility public/private'),
                 'class' => 'resource-data',
             ],
             'is_open' => [
                 'name' => 'is_open',
-                'label' => $controller->translate('Additions open/closed'),
+                'label' => $translator->translate('Additions open/closed'),
                 'class' => 'resource-data',
             ],
             'item_set' => [
                 'name' => 'item_set',
                 'value' => 'internal_id',
-                'label' => $controller->translate('Item set [%s]'),
+                'label' => $translator->translate('Item set [%s]'),
                 'class' => 'resource-data',
             ],
             'item' => [
                 'name' => 'item',
                 'value' => 'internal_id',
-                'label' => $controller->translate('Item [%s]'),
+                'label' => $translator->translate('Item [%s]'),
                 'class' => 'resource-data',
             ],
             'media' => [
                 'name' => 'media',
                 'value' => 'internal_id',
-                'label' => $controller->translate('Media [%s]'),
+                'label' => $translator->translate('Media [%s]'),
                 'class' => 'resource-data',
             ],
             'media_source' => [
                 'name' => 'media_source',
                 'value' => null,
-                'label' => $controller->translate('Media source (%s)'),
+                'label' => $translator->translate('Media source (%s)'),
                 'class' => 'media-source',
             ],
             'user_name' => [
                 'name' => 'user_name',
-                'label' => $controller->translate('Display name'),
+                'label' => $translator->translate('Display name'),
                 'class' => 'user-name',
             ],
             'user_email' => [
                 'name' => 'user_email',
-                'label' => $controller->translate('Email'),
+                'label' => $translator->translate('Email'),
                 'class' => 'user-email',
             ],
             'user_role' => [
                 'name' => 'user_role',
-                'label' => $controller->translate('Role'),
+                'label' => $translator->translate('Role'),
                 'class' => 'user-role',
             ],
             'user_is_active' => [
                 'name' => 'user-is-active',
-                'label' => $controller->translate('User is active'),
+                'label' => $translator->translate('User is active'),
                 'class' => 'user-is-active',
             ],
         ];
@@ -419,5 +427,10 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     public function setConfigCsvImport(array $configCsvImport)
     {
         $this->configCsvImport = $configCsvImport;
+    }
+
+    public function setApiManager(ApiManager $apiManager)
+    {
+        $this->api = $apiManager;
     }
 }
