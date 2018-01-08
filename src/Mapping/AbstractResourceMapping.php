@@ -258,7 +258,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
 
             if (empty($identifier)) {
                 // The parent identifier is needed only to create a media.
-                if ($action === Import::ACTION_CREATE) {
+                if ($action === \CSVImport\Job\Import::ACTION_CREATE) {
                     $this->logger->err(new Message('An item identifier is required to process action "%s".', // @translate
                         $action));
                     $this->setHasErr(true);

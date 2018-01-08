@@ -7,7 +7,6 @@ use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Omeka\Form\Element\ResourceClassSelect;
 use Zend\Form\Form;
-use Zend\Form\Element\Select;
 
 class MappingForm extends Form
 {
@@ -94,12 +93,6 @@ class MappingForm extends Form
             $this->add([
                 'name' => 'o:resource_template[o:id]',
                 'type' => ResourceSelect::class,
-                'attributes' => [
-                    'id' => 'resource-template-select',
-                    'class' => 'chosen-select',
-                    'data-placeholder' => 'Select a template', // @translate
-                    'data-api-base-url' => $urlHelper('api/default', ['resource' => 'resource_templates']),
-                ],
                 'options' => [
                     'label' => 'Resource template', // @translate
                     'info' => 'A pre-defined template for resource creation', // @translate
@@ -112,20 +105,26 @@ class MappingForm extends Form
                         },
                     ],
                 ],
+                'attributes' => [
+                    'id' => 'resource-template-select',
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a template', // @translate
+                    'data-api-base-url' => $urlHelper('api/default', ['resource' => 'resource_templates']),
+                ],
             ]);
 
             $this->add([
                 'name' => 'o:resource_class[o:id]',
                 'type' => ResourceClassSelect::class,
-                'attributes' => [
-                    'id' => 'resource-class-select',
-                    'class' => 'chosen-select',
-                    'data-placeholder' => 'Select a class', // @translate
-                ],
                 'options' => [
                     'label' => 'Class', // @translate
                     'info' => 'A type for the resource. Different types have different default properties attached to them.', // @translate
                     'empty_option' => 'Select a class', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'resource-class-select',
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a class', // @translate
                 ],
             ]);
 
@@ -138,13 +137,6 @@ class MappingForm extends Form
                 $this->add([
                     'name' => 'o:owner[o:id]',
                     'type' => ResourceSelect::class,
-                    'attributes' => [
-                        'id' => 'select-owner',
-                        'value' => '',
-                        'class' => 'chosen-select',
-                        'data-placeholder' => 'Select a template', // @translate
-                        'data-api-base-url' => $urlHelper('api/default', ['resource' => 'users']),
-                    ],
                     'options' => [
                         'label' => 'Owner', // @translate
                         'info' => 'If not set, the default owner will be the current user for a creation.', // @translate
@@ -152,10 +144,17 @@ class MappingForm extends Form
                             'resource' => 'users',
                             'query' => [],
                             'option_text_callback' => function ($user) {
-                                return $user->name();
+                                return sprintf('%s (%s)', $user->email(), $user->name());
                             },
                         ],
                         'empty_option' => 'Select a user', // @translate
+                    ],
+                    'attributes' => [
+                        'id' => 'select-owner',
+                        'value' => '',
+                        'class' => 'chosen-select',
+                        'data-placeholder' => 'Select a user', // @translate
+                        'data-api-base-url' => $urlHelper('api/default', ['resource' => 'users']),
                     ],
                 ]);
             }

@@ -14,7 +14,7 @@ Installation
 
 See general end user documentation for [Installing a module](http://dev.omeka.org/docs/s/user-manual/modules/#installing-modules)
 
-To install CSV Import from the source, go to the root of the module, and run either `gulp init` or `composer install` in order to get dependencies. The zip is created with this command: `gulp zip --no-dev`.
+To install CSV Import from the source, go to the root of the module, and run either `composer install` or `gulp init` in order to get dependencies. The zip is created with this command: `gulp zip --no-dev`.
 
 To be able to import `ods`, the php extensions `zip` and `xml` should be installed (default in most cases).
 
@@ -125,7 +125,7 @@ It’s always recommended to backup your files and your databases and to check y
 Troubleshooting
 ---------------
 
-See online issues on the the [Omeka forum] and the [module issues] page on GitHub.
+See online issues on the [Omeka forum] and the [module issues] page on GitHub.
 
 License
 -------
