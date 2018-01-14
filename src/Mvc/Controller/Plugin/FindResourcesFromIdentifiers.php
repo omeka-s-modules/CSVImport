@@ -36,9 +36,9 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 class FindResourcesFromIdentifiers extends AbstractPlugin
 {
     /**
-     * @var Connexion
+     * @var Connection
      */
-    protected $connexion;
+    protected $connection;
 
     /**
      * @var ApiManager
@@ -46,11 +46,11 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     protected $api;
 
     /**
-     * @param Connection $connexion
+     * @param Connection $connection
      */
-    public function __construct(Connection $connexion, ApiManager $apiManager)
+    public function __construct(Connection $connection, ApiManager $apiManager)
     {
-        $this->connexion = $connexion;
+        $this->connection = $connection;
         $this->api = $apiManager;
     }
 
@@ -150,7 +150,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     protected function findResourcesFromInternalIds($identifiers, $resourceType)
     {
         // The api manager doesn't manage this type of search.
-        $conn = $this->connexion;
+        $conn = $this->connection;
         $identifiers = array_map('intval', $identifiers);
         $quotedIdentifiers = implode(',', $identifiers);
         $qb = $conn->createQueryBuilder()
@@ -176,7 +176,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     protected function findResourcesFromPropertyIds($identifiers, $identifierPropertyId, $resourceType)
     {
         // The api manager doesn't manage this type of search.
-        $conn = $this->connexion;
+        $conn = $this->connection;
 
         // Search in multiple resource types in one time.
         $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
@@ -208,7 +208,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     protected function findResourcesFromMediaSource($identifiers, $ingesterName, $itemId = null)
     {
         // The api manager doesn't manage this type of search.
-        $conn = $this->connexion;
+        $conn = $this->connection;
 
         // Search in multiple resource types in one time.
         $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
