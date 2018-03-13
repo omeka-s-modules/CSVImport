@@ -83,7 +83,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 endif;
                 ?>
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
+                    <?php echo $this->hyperlink($this->translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
                 </span>
                 <?php if ($undoJob->log()): ?>
                 /
