@@ -48,7 +48,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 </span>
                 <br />
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
+                    <?php echo $this->hyperlink($this->translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
                 </span>
                 <?php if ($job->log()): ?>
                 /
