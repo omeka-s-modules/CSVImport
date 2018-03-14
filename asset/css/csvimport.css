@@ -81,8 +81,14 @@ li.option.delete {
     width: 100%
 }
 
+.sidebar-chooser {
+    padding: 0;
+    margin: 0;
+}
+
 .sidebar-chooser li {
     display: inline-block;
+    white-space: nowrap;
 }
 
 .sidebar-chooser a.button {
