@@ -14,10 +14,6 @@
     float: right;
 }
 
-#mapping-data td:first-of-type {
-    padding: 9px .5em;
-}
-
 #mapping-data td:nth-of-type(3) {
     padding: 0 .5em;
 }
@@ -47,6 +43,7 @@ ul.mappings.elements {
     list-style: none;
     margin: 0;
     padding: 0;
+    width: 100%;
 }
 
 .sidebar ul {
@@ -55,6 +52,8 @@ ul.mappings.elements {
 
 ul.options {
     padding: unset;
+    width: 100%;
+    margin-bottom: 0;
 }
 
 ul.options li {
@@ -119,10 +118,6 @@ li.option.delete {
 input.value-language[type="text"] {
     display: block;
     margin: 3px;
-}
-
-div.language.options {
-    padding-left: 12px;
 }
 
 li.column-multivalue {
@@ -194,4 +189,37 @@ li.column-multivalue {
 
 .toggle-view.active {
     display: block;
+}
+
+.mappable .tablesaw-cell-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#column-options .option {
+    margin-bottom: 24px;
+}
+
+#column-options.sidebar label {
+    padding: 0;
+    margin: 0;
+}
+
+#column-options.sidebar label:after {
+    content: none;
+}
+
+.multivalue.option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.multivalue label {
+    width: calc(100% - 1em);
+}
+
+.sidebar span.description {
+    width: 100%;
 }

@@ -38,32 +38,4 @@ $escape = $this->plugin('escapeHtml');
         </li>
         <?php endforeach; ?>
     </ul>
-    <div class="property-mapping options">
-        <h4><?php echo $this->translate('Options'); ?></h4>
-        <ul>
-            <li>
-                <ul>
-                    <li>
-                    <a href="#" class="button language"><span><?php echo $this->translate('Set language'); ?></span></a>
-                    <div class="language options">
-                        <p><?php echo $this->translate('This will override language settings in basic import settings.'); ?></p>
-                        <input id="value-language" class="value-language active" type="text">
-                    </div>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="button column-url"><span><?php echo $this->translate('Import as URL reference'); ?></span></a>
-            </li>
-            <li>
-                <a href="#" class="button column-reference"><span><?php echo $this->translate('Import as Omeka S resource ID'); ?></span></a>
-            </li>
-            <li>
-                <a href="#" class="button column-text"><span><?php echo $this->translate('Import as text (reset to default)'); ?></span></a>
-            </li>
-            <li>
-                <a href="#" class="button column-multivalue"><span><?php echo $this->translate('Use multivalue separator'); ?></span></a>
-            </li>
-        </ul>
-    </div>
 </div>

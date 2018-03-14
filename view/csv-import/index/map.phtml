@@ -51,7 +51,10 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         <?php foreach ($columns as $index=>$column): ?>
             <tr class="element mappable" data-element-id="<?php echo $index; ?>">
                 <td>
-                    <?php echo $escapeHtml($column); ?>
+                    <span class="column-header"><?php echo $escapeHtml($column); ?></span>
+                    <ul class="actions">
+                        <li><a href="#" class="o-icon-configure sidebar-content" aria-label="Configure" data-sidebar-selector="#column-options"></a></li>
+                    </ul>
                 </td>
                 <td class="mapping element">
                     <ul class="mappings elements">
@@ -61,44 +64,32 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                             <?php echo $this->translate($automaps[$index]['label']); ?>
                             <ul class="actions">
                                 <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
-                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
+                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo option')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
                             <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml(is_array($value) ? json_encode($value) : $value); ?>" type="hidden" />
                         </li>
                     <?php endif; ?>
                     </ul>
                     <ul class='options'>
-                        <li class='column-url option' style='display:none;'><?php echo $this->translate("Import as URL"); ?>
+                        <li class='column-import option' style='display:none;'><span class="option-label"></span>
                             <ul class="actions">
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove import as URL')); ?>" title="<?php echo $escapeHtml($this->translate('Remove import as URL')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove option')); ?>" title="<?php echo $escapeHtml($this->translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
                                 </li>
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove as URL')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Restore option')); ?>" title="<?php echo $escapeHtml($this->translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-url' name='column-url[<?php echo $index; ?>]'></input>
-                        </li>
-
-                        <li class='column-reference option' style='display:none;'><?php echo $this->translate("Import as Omeka S resource ID"); ?>
-                            <ul class="actions">
-                                <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove import as Omeka S Resource ID')); ?>" title="<?php echo $escapeHtml($this->translate('Remove import as Omeka S Resource ID')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
-                                </li>
-                                <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove import as Omeka S Resource ID')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove import as Omeka S Resource ID')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
-                                </li>
-                            </ul>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-reference' name='column-reference[<?php echo $index; ?>]'></input>
                         </li>
-
                         <li class='column-multivalue option' style='display:none;'><?php echo $this->translate("Multivalue"); ?>
                             <ul class="actions">
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove multivalue')); ?>" title="<?php echo $escapeHtml($this->translate('Remove multivalue')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove option')); ?>" title="<?php echo $escapeHtml($this->translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
                                 </li>
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove multivalue')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove multivalue')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Restore option')); ?>" title="<?php echo $escapeHtml($this->translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
@@ -108,10 +99,10 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                             <span class='column-language'></span>
                             <ul class="actions">
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove language')); ?>" title="<?php echo $escapeHtml($this->translate('Remove language')); ?>" class="o-icon-delete remove-option remove-column-language" href="#" style="display: inline;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Remove option')); ?>" title="<?php echo $escapeHtml($this->translate('Remove option')); ?>" class="o-icon-delete remove-option remove-column-language" href="#" style="display: inline;"></a>
                                 </li>
                                 <li>
-                                    <a aria-label="<?php echo $escapeHtml($this->translate('Undo remove language')); ?>" title="<?php echo $escapeHtml($this->translate('Undo remove language')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                    <a aria-label="<?php echo $escapeHtml($this->translate('Restore option')); ?>" title="<?php echo $escapeHtml($this->translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
                             <input type='hidden' disabled='disabled' value='' class='column-option column-language' name='column-language[<?php echo $index; ?>]'></input>
@@ -138,5 +129,6 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         echo $mapping->getSidebar($this);
     }
     ?>
+    <?php echo $this->partial('common/options-sidebar'); ?>
 </fieldset>
 <?php echo $this->form()->closeTag($form); ?>

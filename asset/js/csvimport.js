@@ -65,7 +65,7 @@
          * Sidebar chooser (buttons on each mappable element).
          */
 
-        $('.sidebar-chooser').on('click', 'a', function(e) {
+        $('.sidebar-chooser, .column-header + .actions').on('click', 'a', function(e) {
             e.preventDefault();
             $('.property-mapping input.value-language').val('');
             if (activeElement !== null) {
@@ -103,125 +103,14 @@
         });
 
         // Generic sidebar actions.
-        $('.sidebar.flags li').on('click', function(e){
-            // Hijack the multivalue option because it is handled separately below.
-            var targetLi = $(e.target).closest('li');
-            if (targetLi.hasClass('column-multivalue')) {
-                return;
-            }
-            // Hijack the resource identifier options, handled separately.
-            var flagData = targetLi.data('flag');
-            if (flagData === 'column-resource_property'
-                || flagData === 'column-item_set_property'
-                || flagData === 'column-item_property'
-                || flagData === 'column-media_property'
-            ) {
-                return;
-            }
-            // Check the resource identifiers.
-            if (flagData === 'column-resource') {
-                if (!checkResourceIdentifier()) return;
-            } else if (flagData === 'column-item_set') {
-                if (!checkItemSetIdentifier()) return;
-            } else if (flagData === 'column-item') {
-                if (!checkItemIdentifier()) return;
-            } else if (flagData === 'column-media') {
-                if (!checkMediaIdentifier()) return;
-            }
-
-            e.stopPropagation();
-            e.preventDefault();
-            // Looks like a stopPropagation on the selector-parent forces me to
-            // bind the event lower down the DOM, then work back up to the li.
-
-            if (activeElement == null) {
-                alert(Omeka.jsTranslate('Select an element at the left before choosing a property.'));
-                return;
-            }
-
-            var flagName = targetLi.find('span').text();
-            var flagType = targetLi.data('flag-type');
-            if (! flagType) {
-                flagType = flagData;
-            }
-            if (flagType == undefined) {
-                return;
-            }
-
-            // First, check if the flag is already added or if there is
-            // already a mapping.
-            var hasFlag = activeElement.find('ul.mappings li.' + flagType);
-
-            // If there is a similar flag that doesn't support multimapping,
-            // remove it.
-            if (hasFlag.length) {
-                var flagUnique = targetLi.data('flag-unique')
-                    || flagType === 'resource-data'
-                    || flagType === 'media-source'
-                    || flagType === 'user-data';
-                if (flagUnique){
-                    activeElement.find('ul.mappings .' + flagType).remove();
-                    hasFlag = activeElement.find('ul.mappings li.' + flagType);
-                }
-            }
-
-            if (hasFlag.length === 0) {
-                var elementId = activeElement.data('element-id');
-                // elementId, or index? @TODO: check the naming conventions
-                // much is copied from Omeka2Importer, and might need clarification
-
-                var index = elementId;
-                var name = flagData + "[" + index + "]";
-                var value = 1;
-                // Special handling for Media source, which can add flags
-                // for different media types.
-                if (flagType == 'media-source') {
-                    flagName = Omeka.jsTranslate('Media source') + ' (' + flagName + ')';
-                    value = targetLi.data('value');
-                } else if (flagData == 'column-resource') {
-                    var resourceType = 'resources';
-                    var resourceProperty = $('#column-resource_property');
-                    resourceProperty = resourceProperty.chosen().val();
-                    if (resourceProperty) {
-                        flagName = Omeka.jsTranslate('Resource') + ' [' + resourceProperty + ']';
-                        value = resourceProperty;
-                    } else {
-                        // Manage buttons (internal id)
-                        flagName = $(this).text();
-                        value = targetLi.data('value') || value;
-                    }
-                } else if (flagData == 'column-item_set') {
-                    var resourceType = 'item_sets';
-                    var resourceProperty = $('#column-item_set_property');
-                    resourceProperty = resourceProperty.chosen().val();
-                    flagName = Omeka.jsTranslate('Item set') + ' [' + resourceProperty + ']';
-                    value = resourceProperty;
-                } else if (flagData == 'column-item') {
-                    var resourceType = 'items';
-                    var resourceProperty = $('#column-item_property');
-                    resourceProperty = resourceProperty.chosen().val();
-                    flagName = Omeka.jsTranslate('Item') + ' [' + resourceProperty + ']';
-                    value = resourceProperty;
-                } else if (flagData == 'column-media') {
-                    var resourceType = 'items';
-                    var resourceProperty = $('#column-media_property');
-                    resourceProperty = resourceProperty.chosen().val();
-                    flagName = Omeka.jsTranslate('Media') + ' [' + resourceProperty + ']';
-                    value = resourceProperty;
-                }
-
-                var newInput = $('<input type="hidden" name="' + name +'" ></input>').val(value);
-                var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
-                newMappingLi.append(newInput);
-                // For ergonomy, group elements by type.
-                var existingMappingLi = activeElement.find('ul.mappings .' + flagType).filter(':last');
-                if (existingMappingLi.length) {
-                    existingMappingLi.after(newMappingLi);
-                } else {
-                    activeElement.find('ul.mappings').append(newMappingLi);
-                }
-                Omeka.closeSidebar($(this));
-            }
+        $('.toggle-nav button').on('click', function() {
+            $('.active.toggle.button').removeAttr('disabled');
+            $('.toggle-nav .active.button, .toggle-view.active').removeClass('active')
+            var button = $(this);
+            var target = $(button.data('toggle-selector'));
+            button.addClass('active').attr('disabled', true);
+            target.addClass('active');
+            target.find(':input').removeAttr('disabled');
         });
 
         $('.flags .confirm-panel button').on('click', function() {
@@ -280,14 +169,56 @@
             Omeka.closeSidebar(sidebar);
         });
 
-        $('.toggle-nav button').on('click', function() {
-            $('.active.toggle.button').removeAttr('disabled');
-            $('.toggle-nav .active.button, .toggle-view.active').removeClass('active')
-            var button = $(this);
-            var target = $(button.data('toggle-selector'));
-            button.addClass('active').attr('disabled', true);
-            target.addClass('active');
-            target.find(':input').removeAttr('disabled');
+        $('#column-options .confirm-panel button').on('click', function() {
+            var sidebar = $(this).parents('.sidebar');
+
+            var languageTextInput = $('#value-language');
+            if (languageTextInput.hasClass('touched')) {
+                var languageHiddenInput = activeElement.find('.column-language');
+                var languageValue = languageTextInput.val();
+                if (languageValue !== '') {
+                    setLanguage(languageValue, languageTextInput);
+                } else {
+                    activeElement.find('li.column-language').hide();
+                    languageHiddenInput.attr('disabled', true);
+                }
+            }
+
+            sidebar.find('input[type="checkbox"]').each(function() {
+                var checkboxInput = $(this);
+                if (checkboxInput.hasClass('touched')) {
+                    var optionClass = '.' + checkboxInput.data('column-option');
+                    var optionLi = activeElement.find(optionClass);
+                    if (checkboxInput.is(':checked')) {
+                        optionLi.show();
+                        optionLi.find('input[type="hidden"]').removeAttr('disabled');
+                    } else {
+                        optionLi.hide();
+                        optionLi.find('input[type="hidden"]').attr('disabled', true);
+                    }
+                }
+            });
+
+            sidebar.find('select').each(function() {
+                var selectInput = $(this);
+                if (selectInput.hasClass('touched')) {
+                    var selectedOption = selectInput.find(':selected');
+                    var selectedOptionValue = selectedOption.val();
+                    var optionClass = '.' + selectInput.data('column-option');
+                    var optionLi = activeElement.find(optionClass);
+                    if (selectedOptionValue !== 'default') {
+                        optionLi.show();
+                        optionLi.find('.option-label').text(selectedOption.text());
+                        optionLi.find('input[type="hidden"]').attr('disabled', true);
+                        optionLi.find('.' + selectedOptionValue).removeAttr('disabled');
+                    } else {
+                        optionLi.hide();
+                        optionLi.find('input[type="hidden"').attr('disabled', true);
+                    }
+                }
+            });
+
+            Omeka.closeSidebar(sidebar);
         });
 
         // Specific sidebar actions for property selector.
@@ -314,48 +245,6 @@
                 }
                 Omeka.closeSidebar($(this));
             }
-        });
-
-        $('.sidebar').on('click', '.button.language', function(e) {
-            setLanguage(e);
-        });
-
-        $('.sidebar').on('click', '.button.column-url', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            activeElement.find('input.column-url').prop('disabled', false);
-            activeElement.find('li.column-url').show();
-            activeElement.find('input.column-reference').prop('disabled', true);
-            activeElement.find('li.column-reference').hide();
-        });
-
-        $('.sidebar').on('click', '.button.column-reference', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            activeElement.find('input.column-reference').prop('disabled', false);
-            activeElement.find('li.column-reference').show();
-            activeElement.find('input.column-url').prop('disabled', true);
-            activeElement.find('li.column-url').hide();
-        });
-
-        $('.sidebar').on('click', '.button.column-text', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            activeElement.find('input.column-url').prop('disabled', true);
-            activeElement.find('input.column-reference').prop('disabled', true);
-            activeElement.find('li.column-url').hide();
-            activeElement.find('li.column-reference').hide();
-            activeElement.find('li.column-url').removeClass('delete');
-            activeElement.find('li.column-reference').removeClass('delete');
-            activeElement.find('li .remove-option').css({ display: 'inline' });
-            activeElement.find('li .restore-option').css({ display: 'none' });
-        });
-
-        $('.sidebar').on('click', '.button.column-multivalue', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            activeElement.find('input.column-multivalue').prop('disabled', false);
-            activeElement.find('li.column-multivalue').show();
         });
 
         // Set/unset multivalue separator for all columns.
@@ -452,19 +341,9 @@
                 this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'))
             }
         });
-        // Prevent accidental form submission when entering a language tag and
-        // and hitting enter by setting the language as if clicking the button.
-        $('input.value-language').on('keypress', function(e) {
-            if (e.keyCode == 13 ) {
-                setLanguage(e);
-            }
-        });
 
-        function setLanguage(e) {
-            e.stopPropagation();
-            e.preventDefault();
+        function setLanguage(lang) {
             var valueLanguageElement = document.getElementById('value-language');
-            var lang = $(valueLanguageElement).val();
             if (lang == '') {
                 valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag.'));
             }
