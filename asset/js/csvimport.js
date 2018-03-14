@@ -224,6 +224,72 @@
             }
         });
 
+        $('.flags button.apply').on('click', function() {
+            var sidebar = $(this).parents('.sidebar');
+            $('.flags select').each(function() {
+                var targetInput = $(this);
+                var flagType = targetInput.data('flag-type');
+                if (targetInput.hasClass('chosen-select')) {
+                    var targetOption = targetInput.chosen().val();
+                    if (targetOption !== '') {
+                        var flagName = targetInput.data('resource-type') + ' [' + targetOption + ']';
+                    } else {
+                        return;
+                    }
+                } else {
+                    var targetOption = targetInput.find(':selected');
+                    var flagName = targetOption.text();
+                }
+                applyMappings(targetInput, targetOption, flagType, flagName);
+            });
+
+            function applyMappings(targetInput, targetOption, flagType, flagName) {
+                sidebar.find('.toggle-view :input:hidden').attr('disabled', true);
+                if (targetInput.is(':disabled') && !targetInput.hasClass('chosen-select')) {
+                    return;
+                }
+                var hasFlag = activeElement.find('ul.mappings li.' + flagType);
+                if (hasFlag.length) {
+                    var flagUnique = targetInput.data('flag-unique')
+                        || flagType === 'resource-data'
+                        || flagType === 'media-source'
+                        || flagType === 'user-data';
+                    if (flagUnique){
+                        activeElement.find('ul.mappings .' + flagType).remove();
+                        hasFlag = activeElement.find('ul.mappings li.' + flagType);
+                    }
+                }
+    
+                if (hasFlag.length === 0) {
+                    var elementId = activeElement.data('element-id');
+                    var index = elementId;
+                    var name = flagType + "[" + index + "]";
+                    var value = 1;
+                    var newInput = $('<input type="hidden" name="' + name +'" ></input>').val(value);
+                    var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
+                    newMappingLi.append(newInput);
+                    var existingMappingLi = activeElement.find('ul.mappings .' + flagType).filter(':last');
+                    if (existingMappingLi.length) {
+                        existingMappingLi.after(newMappingLi);
+                    } else {
+                        activeElement.find('ul.mappings').append(newMappingLi);
+                    }
+                }
+            };
+
+            Omeka.closeSidebar(sidebar);
+        });
+
+        $('.toggle-nav button').on('click', function() {
+            $('.active.toggle.button').removeAttr('disabled');
+            $('.toggle-nav .active.button, .toggle-view.active').removeClass('active')
+            var button = $(this);
+            var target = $(button.data('toggle-selector'));
+            button.addClass('active').attr('disabled', true);
+            target.addClass('active');
+            target.find(':input').removeAttr('disabled');
+        });
+
         // Specific sidebar actions for property selector.
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
