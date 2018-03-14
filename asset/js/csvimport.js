@@ -224,22 +224,22 @@
             }
         });
 
-        $('.flags button.apply').on('click', function() {
+        $('.flags .confirm-panel button').on('click', function() {
             var sidebar = $(this).parents('.sidebar');
-            $('.flags select').each(function() {
+            sidebar.find('select').each(function() {
                 var targetInput = $(this);
                 var flagType = targetInput.data('flag-type');
+                var flagLabel = targetInput.data('flag-label');
                 if (targetInput.hasClass('chosen-select')) {
                     var targetOption = targetInput.chosen().val();
-                    if (targetOption !== '') {
-                        var flagName = targetInput.data('resource-type') + ' [' + targetOption + ']';
-                    } else {
+                    if (targetOption == '') {
                         return;
                     }
                 } else {
                     var targetOption = targetInput.find(':selected');
-                    var flagName = targetOption.text();
+                    var targetOption = targetOption.text();
                 }
+                var flagName = flagLabel + ': "' + targetOption + '"';
                 applyMappings(targetInput, targetOption, flagType, flagName);
             });
 

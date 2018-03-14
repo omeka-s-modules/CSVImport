@@ -46,7 +46,7 @@
                             'data-placeholder' => $this->translate('Select the identifier below'),
                             'data-flag' => 'column-item_set_property',
                             'data-flag-type' => 'resource-data',
-                            'data-resource-type' => $this->translate('Item set'),
+                            'data-flag-label' => $this->translate('Item set'),
                         ],
                     ]); ?>
                     </div>
@@ -82,7 +82,7 @@
                                     'data-placeholder' => $this->translate('Select the identifier below'),
                                     'data-flag' => 'column-item_property',
                                     'data-flag-type' => 'resource-data',
-                                    'data-resource-type' => $this->translate('Item'),
+                                    'data-flag-label' => $this->translate('Item'),
                                 ],
                             ]); ?>
                         </li>
@@ -91,7 +91,7 @@
                 </div>
                 <div id="generic-data" class="toggle-view">
                     <div class="mapping">
-                        <select name="resource-data" class="flags" data-flag-type="resource-data">
+                        <select name="resource-data" class="flags" data-flag-type="resource-data" data-flag-label="<?php echo $this->translate('Data'); ?>">
                             <option><?php echo $this->translate('Select below'); ?></option>
                             <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
                             <option value="column-resource_type"><?php echo $this->translate('Resource type'); ?></option>
@@ -122,6 +122,6 @@
         <?php endif; ?>
     </div>
     <div class="confirm-panel">
-        <button type="button" class="apply"><?php echo $this->translate('Apply changes'); ?></button>
+        <button type="button"><?php echo $this->translate('Apply changes'); ?></button>
     </div>
 </div>
