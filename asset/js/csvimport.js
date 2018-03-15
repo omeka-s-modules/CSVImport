@@ -113,51 +113,88 @@
             target.find(':input').removeAttr('disabled');
         });
 
+        $('.resource-type-select select').on('change', function() {
+            var selectInput = $(this);
+            var selectedOption = selectInput.find(':selected').val();
+            selectInput.parent('.resource-type-select').siblings('.mapping').removeClass('active');
+            if (selectedOption !== 'default') {
+                $('.mapping.' + selectedOption).addClass('active');
+            }
+        });
+
         $('.flags .confirm-panel button').on('click', function() {
             var sidebar = $(this).parents('.sidebar');
-            sidebar.find('select').each(function() {
-                var targetInput = $(this);
-                var flagType = targetInput.data('flag-type');
-                var flagLabel = targetInput.data('flag-label');
-                if (targetInput.hasClass('chosen-select')) {
-                    var targetOption = targetInput.chosen().val();
-                    if (targetOption == '') {
+
+            sidebar.find('[data-flag-class]').each(function() {
+                var flagInput = $(this);
+                var flagLiClass = flagInput.data('flag-class');
+
+                if (flagInput.is('select')) {
+                    var flagLabel = flagInput.data('flag-label');
+                    if (flagInput.hasClass('chosen-select')) {
+                        if (flagInput.next('.chosen-container').is(':hidden')) {
+                            return;
+                        }
+                        var flagValue = flagInput.chosen().val();
+                        if (flagValue == '') {
+                            return;
+                        }
+                        var flagName = flagInput.chosen().data('flag-name');
+
+                        // Show flag name instead of selected text for mapping using property selector.
+                        if (flagInput.parents('.mapping').hasClass('property')) {
+                            var flagLabel = flagLabel + ' [' + flagValue + ']';
+                        } else {
+                            var flagLabel = flagLabel + ' [' + flagInput.chosen().text() + ']';
+                        }
+                    }
+                    else {
+                        if (flagInput.is(':hidden')) {
+                            return;
+                        }
+                        var flagSelected = flagInput.find(':selected');
+                        var flagValue = flagSelected.val();
+                        var flagName = flagSelected.data('flag-name');
+                        var flagLabel = flagLabel + ' [' + flagSelected.text() + ']';
+                    }
+
+                    applyMappings(flagName, flagValue, flagLiClass, flagLabel);
+                }
+
+                if (flagInput.is('input[type="checkbox"]')) {
+                    var flagName = flagInput.data('flag-name');
+                    if (flagInput.is(':hidden')) {
                         return;
                     }
-                } else {
-                    var targetOption = targetInput.find(':selected');
-                    var targetOption = targetOption.text();
+                    var checkboxId = flagInput.attr('id');
+                    var flagName = $('label[for="' + checkboxId + '"]').text();
+                    var optionClass = '.' + flagInput.data('flag');
+                    if (flagInput.is(':checked')) {
+                        var flagValue = flagInput.val();
+                        applyMappings(flagName, flagValue, flagLiClass, flagName);
+                    }
                 }
-                var flagName = flagLabel + ': "' + targetOption + '"';
-                applyMappings(targetInput, targetOption, flagType, flagName);
             });
 
-            function applyMappings(targetInput, targetOption, flagType, flagName) {
-                sidebar.find('.toggle-view :input:hidden').attr('disabled', true);
-                if (targetInput.is(':disabled') && !targetInput.hasClass('chosen-select')) {
-                    return;
-                }
-                var hasFlag = activeElement.find('ul.mappings li.' + flagType);
+            function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
+                var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
                 if (hasFlag.length) {
-                    var flagUnique = targetInput.data('flag-unique')
-                        || flagType === 'resource-data'
-                        || flagType === 'media-source'
-                        || flagType === 'user-data';
+                    var flagUnique = (flagLiClass === 'resource-data')
+                        || (flagLiClass === 'media-source')
+                        || (flagLiClass === 'user-data');
                     if (flagUnique){
-                        activeElement.find('ul.mappings .' + flagType).remove();
-                        hasFlag = activeElement.find('ul.mappings li.' + flagType);
+                        activeElement.find('ul.mappings .' + flagLiClass).remove();
+                        hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
                     }
                 }
     
                 if (hasFlag.length === 0) {
-                    var elementId = activeElement.data('element-id');
-                    var index = elementId;
-                    var name = flagType + "[" + index + "]";
-                    var value = 1;
-                    var newInput = $('<input type="hidden" name="' + name +'" ></input>').val(value);
-                    var newMappingLi = $('<li class="mapping ' + flagType + '">' + flagName  + actionsHtml  + '</li>');
+                    var index = activeElement.data('element-id');
+                    flagName = flagName + "[" + index + "]";
+                    var newInput = $('<input type="hidden"></input>').attr('name', flagName).attr('value', flagValue);
+                    var newMappingLi = $('<li class="mapping ' + flagLiClass + '">' + flagLabel  + actionsHtml  + '</li>');
                     newMappingLi.append(newInput);
-                    var existingMappingLi = activeElement.find('ul.mappings .' + flagType).filter(':last');
+                    var existingMappingLi = activeElement.find('ul.mappings .' + flagLiClass).filter(':last');
                     if (existingMappingLi.length) {
                         existingMappingLi.after(newMappingLi);
                     } else {

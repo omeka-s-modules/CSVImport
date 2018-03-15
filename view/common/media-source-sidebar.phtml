@@ -2,10 +2,10 @@
     <div class="confirm-main">
     <a href="#" class="sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $this->translate('Close'); ?></span></a>
     <h3><?php echo $this->translate('Media source'); ?></h3>
-    <select name="media-source" data-flag-type="media-source" data-flag-label="<?php echo $this->translate('Media source'); ?>">
+    <select name="media-source" data-flag-class="media-source" data-flag-label="<?php echo $this->translate('Media source'); ?>">
         <option><?php echo $this->translate('Select below'); ?></option>
         <?php foreach($mediaForms as $type=>$mediaForm): ?>
-        <option value="<?php echo $type; ?>"><?php echo $mediaForm['label']; ?></option>
+        <option data-flag-name="media_source" value="<?php echo $type; ?>"><?php echo $mediaForm['label']; ?></option>
         <?php endforeach; ?>
     </select>
     </div>
