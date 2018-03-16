@@ -1,14 +1,11 @@
 <?php
 $escape = $this->plugin('escapeHtml');
 ?>
-<div id="property-selector" class='flags selector sidebar <?php echo $state; ?>'>
-    <div class="confirm-main">
-        <a href="#" class="sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $this->translate('Close'); ?></span></a>
-        <?php if ($propertySelectorText) :?>
-        <h3><?php echo $escape($propertySelectorText); ?></h3>
-        <?php else: ?>
-        <h3><?php echo $this->translate('Click on a property to add it to the edit panel.'); ?></h3>
-        <?php endif; ?>
+<div id="property-selector" class="mapping-group">
+    <a href="#" class="expand" aria-label="<?php echo $this->translate('Expand'); ?>">
+        <h4><?php echo $escape($propertySelectorText); ?></h4>
+    </a>
+    <div class="collapsible">
         <input type="text" class="selector-filter" placeholder="<?php echo $this->translate('Filter properties'); ?>">
         <ul class="selectable-list">
             <?php foreach ($vocabularies as $vocabulary): ?>
@@ -39,8 +36,5 @@ $escape = $this->plugin('escapeHtml');
             </li>
             <?php endforeach; ?>
         </ul>
-    </div>
-    <div class="confirm-panel">
-        <button type="button"><?php echo $this->translate('Apply changes'); ?></button>
     </div>
 </div>

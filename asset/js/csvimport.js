@@ -65,7 +65,7 @@
          * Sidebar chooser (buttons on each mappable element).
          */
 
-        $('.sidebar-chooser, .column-header + .actions').on('click', 'a', function(e) {
+        $('.add-mapping.button, .column-header + .actions a').on('click', function(e) {
             e.preventDefault();
             $('.property-mapping input.value-language').val('');
             if (activeElement !== null) {
@@ -77,10 +77,10 @@
             var actionElement = $(this);
             $('.sidebar-chooser li').removeClass('active');
             actionElement.parent().addClass('active');
-            var target = '#' + actionElement.data('sidebar');
+            var target = actionElement.data('sidebar-selector');
 
             var sidebar = $(target);
-            var columnName = actionElement.data('column');
+            var columnName = activeElement.data('column');
             if (sidebar.find('.column-name').length > 0) {
                 $('.column-name').text(columnName);
             } else {
@@ -202,6 +202,13 @@
 
             function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
                 var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
+                if (flagValue == 'default') {
+                    if (hasFlag.length) {
+                        hasFlag.remove();
+                    } else {
+                        return;
+                    }
+                }
                 if (hasFlag.length) {
                     var flagUnique = (flagLiClass === 'resource-data')
                         || (flagLiClass === 'media-source')

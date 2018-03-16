@@ -14,21 +14,16 @@
     float: right;
 }
 
-#mapping-data td:nth-of-type(3) {
-    padding: 0 .5em;
-}
-
 tr.active {
     background-color: rgba(0,0,0, .08);
 }
 
-tr.mappable td:first-child {
-    max-width: 20%;
+tr.mappable td {
+    vertical-align: top;
 }
 
-tr.mappable td:nth-of-type(3) label {
-    margin: 0 1em .375em 0;
-    display: inline-block;
+tr.mappable td:first-child {
+    max-width: 20%;
 }
 
 tr.mappable input[type="checkbox"] {
@@ -53,7 +48,7 @@ ul.mappings.elements {
 ul.options {
     padding: unset;
     width: 100%;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 ul.options li {
@@ -142,10 +137,6 @@ li.column-multivalue {
     padding-left: 0;
 }
 
-.mapping-group {
-    margin-top: 24px;
-}
-
 .toggle-nav {
     display: flex;
     margin-bottom: 12px;
@@ -197,8 +188,8 @@ li.column-multivalue {
     flex-wrap: wrap;
 }
 
-.flags .mapping,
-#column-options .option {
+.flags .mapping:not(:last-child),
+#column-options .option:not(:last-child) {
     margin-bottom: 24px;
 }
 
@@ -241,4 +232,40 @@ li.column-multivalue {
 
 .selector li.selected {
     background-color: #0000000a;
+}
+
+.flags .expand h4 {
+    font-weight: normal;
+}
+
+.flags .collapse h4 {
+    font-weight: bold;
+}
+
+.flags .expand,
+.flags .collapse {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flags .collapse {
+    border-bottom: 3px solid #dfdfdf;
+    padding-bottom: 3px;
+}
+
+.flags span.description {
+    margin: 0 0 12px 0;
+    display: block;
+}
+
+.flags .mapping-group:not(:last-child) .expand {
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 11px;
+    margin-bottom: 12px;
+}
+
+.flags .collapse + .collapsible {
+    overflow: visible;
+    padding: 12px 0 0 12px;
+    margin-bottom: 24px;
 }

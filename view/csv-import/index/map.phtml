@@ -44,16 +44,17 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
             <tr>
                 <th><?php echo $this->translate("Column headers"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
-                <th><?php echo $this->translate("Mapping options"); ?></th>
+                <th><?php echo $this->translate("Options"); ?></th>
             </tr>
         </thead>
         <tbody>
         <?php foreach ($columns as $index=>$column): ?>
-            <tr class="element mappable" data-element-id="<?php echo $index; ?>">
+            <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
                 <td>
                     <span class="column-header"><?php echo $escapeHtml($column); ?></span>
                     <ul class="actions">
-                        <li><a href="#" class="o-icon-configure sidebar-content" aria-label="Configure" data-sidebar-selector="#column-options"></a></li>
+                        <li><a href="#" class="o-icon-add sidebar-content" data-sidebar-selector="#add-mapping" aria-label="<?php echo $this->translate('Add mapping'); ?>" title="<?php echo $this->translate('Add mapping'); ?>"></a></li>
+                        <li><a href="#" class="o-icon-configure sidebar-content" aria-label="<?php echo $this->translate('Configure'); ?>" title="<?php echo $this->translate('Configure'); ?>" data-sidebar-selector="#column-options"></a></li>
                     </ul>
                 </td>
                 <td class="mapping element">
@@ -70,6 +71,8 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                         </li>
                     <?php endif; ?>
                     </ul>
+                </td>
+                <td>
                     <ul class='options'>
                         <li class='column-import option' style='display:none;'><span class="option-label"></span>
                             <ul class="actions">
@@ -109,26 +112,11 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                         </li>
                     </ul>
                 </td>
-                <td>
-                    <ul class='sidebar-chooser'>
-                        <?php foreach ($mappings as $mapping): ?>
-                        <li>
-                            <a href='#'
-                               class='button'
-                               data-sidebar='<?php echo $this->translate($mapping->getName()); ?>'
-                               data-column='<?php echo $escapeHtml($column); ?>'><?php echo $this->translate($mapping->getLabel()); ?></a>
-                        </li>
-                        <?php endforeach; ?>
-                    </ul>
-                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-    <?php foreach($mappings as $mapping) {
-        echo $mapping->getSidebar($this);
-    }
-    ?>
+    <?php echo $this->partial('common/mapping-sidebar'); ?>
     <?php echo $this->partial('common/options-sidebar'); ?>
 </fieldset>
 <?php echo $this->form()->closeTag($form); ?>

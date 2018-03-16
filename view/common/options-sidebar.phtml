@@ -1,13 +1,12 @@
 <div id="column-options" class="sidebar">
     <div class="confirm-main">
         <a href="#" class="sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $this->translate('Close'); ?></span></a>
-        <h3><?php echo $this->translate('Column options'); ?></h3>
+        <h3><?php echo $this->translate('Column options:'); ?></h3>
 
         <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
         <div class="multivalue option">
             <label for="multivalue"><?php echo $this->translate('Use multivalue separator'); ?></label>
             <input type="checkbox" data-column-option="column-multivalue" name="multivalue" id="multivalue">
-            <span class="description"><?php echo $this->translate('(Only applies to item set id)'); ?></span>
         </div>
         <?php endif; ?>
 
