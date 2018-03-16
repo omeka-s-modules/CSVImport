@@ -238,3 +238,7 @@ li.column-multivalue {
 .resource-type-select ~ .mapping:not(.active) {
     display: none;
 }
+
+.selector li.selected {
+    background-color: #0000000a;
+}

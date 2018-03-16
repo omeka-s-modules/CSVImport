@@ -176,6 +176,30 @@
                 }
             });
 
+            sidebar.find('.selector-child.selected').each(function () {
+                // Looks like a stopPropagation on the selector-parent forces me to
+                // bind the event lower down the DOM, then work back up to the li.
+                var targetLi = $(this);
+    
+                // First, check if the property is already added.
+                var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
+                if (hasMapping.length === 0) {
+                    var elementId = activeElement.data('element-id');
+                    var newInput = $('<input type="hidden" name="column-property[' + elementId + '][]" ></input>');
+                    newInput.val(targetLi.data('property-id'));
+                    var newMappingLi = $('<li class="mapping property" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
+                    newMappingLi.append(newInput);
+                    // For ergonomy, group elements by type.
+                    var existingMappingLi = activeElement.find('ul.mappings .property').filter(':last');
+                    if (existingMappingLi.length) {
+                        existingMappingLi.after(newMappingLi);
+                    } else {
+                        activeElement.find('ul.mappings').append(newMappingLi);
+                    }
+                }
+                targetLi.removeClass('selected');
+            });
+
             function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
                 var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
                 if (hasFlag.length) {
@@ -261,27 +285,7 @@
         // Specific sidebar actions for property selector.
         $('#property-selector li.selector-child').on('click', function(e){
             e.stopPropagation();
-            // Looks like a stopPropagation on the selector-parent forces me to
-            // bind the event lower down the DOM, then work back up to the li.
-            var targetLi = $(e.target).closest('li.selector-child');
-
-            // First, check if the property is already added.
-            var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
-            if (hasMapping.length === 0) {
-                var elementId = activeElement.data('element-id');
-                var newInput = $('<input type="hidden" name="column-property[' + elementId + '][]" ></input>');
-                newInput.val(targetLi.data('property-id'));
-                var newMappingLi = $('<li class="mapping property" data-property-id="' + targetLi.data('property-id') + '">' + targetLi.data('child-search') + actionsHtml  + '</li>');
-                newMappingLi.append(newInput);
-                // For ergonomy, group elements by type.
-                var existingMappingLi = activeElement.find('ul.mappings .property').filter(':last');
-                if (existingMappingLi.length) {
-                    existingMappingLi.after(newMappingLi);
-                } else {
-                    activeElement.find('ul.mappings').append(newMappingLi);
-                }
-                Omeka.closeSidebar($(this));
-            }
+            $(this).addClass('selected');
         });
 
         // Set/unset multivalue separator for all columns.
