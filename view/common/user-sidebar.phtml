@@ -1,14 +1,13 @@
-<div id="user-data" class="sidebar always-open flags">
-    <h3><?php echo $this->translate('Users info'); ?></h3>
-    <ul>
-        <li data-flag="column-user_email">
-            <a href="#" class="button"><span><?php echo $this->translate('Email'); ?></span></a>
-        </li>
-        <li data-flag="column-user_name">
-            <a href="#" class="button"><span><?php echo $this->translate('Display name'); ?></span></a>
-        </li>
-        <li data-flag="column-user_role">
-            <a href="#" class="button"><span><?php echo $this->translate('Role'); ?></span></a>
-        </li>
-    </ul>
+<div id="user-data" class="mapping-group">
+    <a href="#" class="expand" aria-label="Expand">
+        <h4><?php echo $this->translate('Users info'); ?></h4>
+    </a>
+    <div class="collapsible">
+        <select data-flag-class="user-data" data-flag-label="">
+            <option value="default"><?php echo $this->translate('Select below'); ?></option>
+            <option value="1" data-flag-name="column-user_email"><?php echo $this->translate('Email'); ?></option>
+            <option value="1" data-flag-name="column-user_name"><?php echo $this->translate('Display name'); ?></option>
+            <option value="1" data-flag-name="column-user_role"><?php echo $this->translate('Role'); ?></option>
+        </select>
+    </div>
 </div>
