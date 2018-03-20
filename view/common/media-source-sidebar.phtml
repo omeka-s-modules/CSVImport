@@ -6,7 +6,7 @@
         <select name="media-source" data-flag-class="media-source" data-flag-label="<?php echo $this->translate('Media source'); ?>">
             <option value="default"><?php echo $this->translate('Select below'); ?></option>
             <?php foreach($mediaForms as $type=>$mediaForm): ?>
-            <option data-flag-name="media_source" value="<?php echo $type; ?>"><?php echo $mediaForm['label']; ?></option>
+            <option data-flag-name="column-media_source" value="<?php echo $type; ?>"><?php echo $mediaForm['label']; ?></option>
             <?php endforeach; ?>
         </select>
     </div>
