@@ -91,6 +91,12 @@
                       timer = setTimeout(Omeka.filterSelector.bind(this), 400);
                   }
               })())
+
+              // Specific sidebar actions for property selector.
+              $('#property-selector li.selector-child').on('click', function(e){
+                  e.stopPropagation();
+                  $(this).addClass('selected');
+              });
          }
 
         /*
@@ -326,12 +332,6 @@
 
             Omeka.closeSidebar(sidebar);
             sidebar.html(defaultSidebarHtml);
-        });
-
-        // Specific sidebar actions for property selector.
-        $(document).on('click', '#property-selector li.selector-child', function(e){
-            e.stopPropagation();
-            $(this).addClass('selected');
         });
 
         // Set/unset multivalue separator for all columns.
