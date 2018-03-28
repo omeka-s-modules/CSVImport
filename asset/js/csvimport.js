@@ -169,7 +169,7 @@
                 if (flagInput.is('select')) {
                     var flagLabel = flagInput.data('flag-label');
                     if (flagInput.hasClass('chosen-select')) {
-                        if (flagInput.next('.chosen-container').is(':hidden')) {
+                        if (flagInput.next('.chosen-container').parents('.toggle-view:hidden').length > 0) {
                             return;
                         }
                         var flagValue = flagInput.chosen().val();
@@ -186,7 +186,7 @@
                         }
                     }
                     else {
-                        if (flagInput.is(':hidden')) {
+                        if (flagInput.parents('.toggle-view:hidden').length > 0) {
                             return;
                         }
                         var flagSelected = flagInput.find(':selected');
@@ -200,7 +200,7 @@
 
                 if (flagInput.is('input[type="checkbox"]')) {
                     var flagName = flagInput.data('flag-name');
-                    if (flagInput.is(':hidden')) {
+                    if (flagInput.parents('.toggle-view:hidden').length > 0) {
                         return;
                     }
                     var checkboxId = flagInput.attr('id');
