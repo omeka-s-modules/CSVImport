@@ -10,6 +10,8 @@
 
         var activeElement = null;
 
+        var defaultSidebarHtml = null;
+
         var actionsHtml = '<ul class="actions">'
             + '<li><a aria-label="' + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>'
             + '<li><a aria-label="' + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>'
@@ -58,8 +60,38 @@
         });
 
         /*
-         * Mapping form tab.
+         * Rebinding chosen selects and property selector after sidebar hydration.
          */
+
+         function rebindInputs(sidebar) {
+              // Remove old chosen html and rebind event.
+              sidebar.find('.chosen-container').remove();
+              sidebar.find('.chosen-select').chosen(chosenOptions);
+              
+              // Rebind property selector.
+              $('.selector li.selector-parent').on('click', function(e) {
+                  e.stopPropagation();
+                  if ($(this).children('li')) {
+                      $(this).toggleClass('show');
+                  }
+              });
+      
+              $('.selector-filter').on('keydown', function(e) {
+                  if (e.keyCode == 13) {
+                      e.stopPropagation();
+                      e.preventDefault();
+                  }
+              });
+      
+              // Property selector, filter properties.
+              $('.selector-filter').on('keyup', (function() {
+                  var timer = 0;
+                  return function() {
+                      clearTimeout(timer);
+                      timer = setTimeout(Omeka.filterSelector.bind(this), 400);
+                  }
+              })())
+         }
 
         /*
          * Sidebar chooser (buttons on each mappable element).
@@ -80,6 +112,9 @@
             var target = actionElement.data('sidebar-selector');
 
             var sidebar = $(target);
+            if (!sidebar.hasClass('active') ) {
+                defaultSidebarHtml = sidebar.html();
+            }
             var columnName = activeElement.data('column');
             if (sidebar.find('.column-name').length > 0) {
                 $('.column-name').text(columnName);
@@ -90,6 +125,8 @@
             var currentSidebar = $('.sidebar.active');
             if (currentSidebar.attr('id') != target) {
                 currentSidebar.removeClass('active');
+                sidebar.html(defaultSidebarHtml);
+                rebindInputs(sidebar);
             }
             Omeka.openSidebar(sidebar);
         });
@@ -103,7 +140,7 @@
         });
 
         // Generic sidebar actions.
-        $('.toggle-nav button').on('click', function() {
+        $(document).on('click', '.toggle-nav button', function() {
             $('.active.toggle.button').removeAttr('disabled');
             $('.toggle-nav .active.button, .toggle-view.active').removeClass('active')
             var button = $(this);
@@ -113,7 +150,7 @@
             target.find(':input').removeAttr('disabled');
         });
 
-        $('.resource-type-select select').on('change', function() {
+        $(document).on('change', '.resource-type-select select', function() {
             var selectInput = $(this);
             var selectedOption = selectInput.find(':selected').val();
             selectInput.parent('.resource-type-select').siblings('.mapping').removeClass('active');
@@ -122,7 +159,7 @@
             }
         });
 
-        $('.flags .confirm-panel button').on('click', function() {
+        $(document).on('click', '.flags .confirm-panel button', function() {
             var sidebar = $(this).parents('.sidebar');
 
             sidebar.find('[data-flag-class]').each(function() {
@@ -235,9 +272,10 @@
             };
 
             Omeka.closeSidebar(sidebar);
+            sidebar.html(defaultSidebarHtml);
         });
 
-        $('#column-options .confirm-panel button').on('click', function() {
+        $(document).on('click', '#column-options .confirm-panel button', function() {
             var sidebar = $(this).parents('.sidebar');
 
             var languageTextInput = $('#value-language');
@@ -287,16 +325,17 @@
             });
 
             Omeka.closeSidebar(sidebar);
+            sidebar.html(defaultSidebarHtml);
         });
 
         // Specific sidebar actions for property selector.
-        $('#property-selector li.selector-child').on('click', function(e){
+        $(document).on('click', '#property-selector li.selector-child', function(e){
             e.stopPropagation();
             $(this).addClass('selected');
         });
 
         // Set/unset multivalue separator for all columns.
-        $('#multivalue_by_default').on('change', function(e) {
+        $(document).on('change', '#multivalue_by_default', function(e) {
             setMultivalueSeparatorByDefault();
         });
 
