@@ -17,8 +17,8 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
     <table class="tablesaw" data-tablesaw-mode="stack">
         <thead>
             <tr>
+                <th><?php echo $escape($this->translate('Undo'));?></th>
                 <th>
-                    <span style="margin: 0 12px"></span>
                     <?php echo $this->sortLink($escape($this->translate('Date')), 'id');?>
                 </th>
                 <th><?php echo $escape($this->translate('Action'));?></th>
@@ -37,6 +37,9 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
         <tr class="<?php echo $undoJob ? 'undone' : ''; ?>" >
             <td>
                 <input type="checkbox" name="jobs[]" value="<?php echo $job->id(); ?>"<?php if (!$isCreate || $undoJob) echo ' disabled="disabled"'; ?>/>
+            </td>
+            <td>
+                
                 <?php echo $escape($this->i18n()->dateFormat($job->started())); ?>
             </td>
             <td>
@@ -45,7 +48,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 </span>
                 <br />
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
+                    <?php echo $this->hyperlink($this->translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
                 </span>
                 <?php if ($job->log()): ?>
                 /
@@ -80,7 +83,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 endif;
                 ?>
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Parameters'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
+                    <?php echo $this->hyperlink($this->translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
                 </span>
                 <?php if ($undoJob->log()): ?>
                 /
