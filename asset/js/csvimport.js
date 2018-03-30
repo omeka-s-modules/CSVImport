@@ -342,19 +342,14 @@
         function setMultivalueSeparatorByDefault() {
             var multivalueSwitch = $('#multivalue_by_default').prop('checked');
             var targetRows = $('.element.mappable li.column-multivalue');
+            console.log('test');
             targetRows.removeClass('delete');
             targetRows.find('.remove-option').css({ display: 'inline' });
             targetRows.find('.restore-option').css({ display: 'none' });
             if (multivalueSwitch) {
-                $('.sidebar .button.column-multivalue').each(function() {
-                    $('.element.mappable').find('input.column-multivalue').prop('disabled', false);
-                    $('.element.mappable').find('li.column-multivalue').show();
-                });
+                $('.element.mappable').find('li.column-multivalue').show();
             } else {
-                $('.sidebar .button.column-multivalue').each(function() {
-                    $('.element.mappable').find('input.column-multivalue').prop('disabled', true);
-                    $('.element.mappable').find('li.column-multivalue').hide();
-                });
+                $('.element.mappable').find('li.column-multivalue').hide();
             }
         }
 
