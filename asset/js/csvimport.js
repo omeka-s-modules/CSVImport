@@ -17,17 +17,6 @@
             + '<li><a aria-label="' + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>'
             + '</ul>';
 
-        $('#action').closest('.field').before(
-            '<div class="field">'
-            + '<div class="field-meta">'
-            + '<button type="button" name="advanced-settings" id="advanced-settings" value="show">'
-            + Omeka.jsTranslate('Advanced settings')
-            + '</button>'
-            + '</div>'
-            + '</div>'
-        );
-        $('.advanced-settings').closest('.field').hide();
-
         setMultivalueSeparatorByDefault();
 
         /*
