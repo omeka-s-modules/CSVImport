@@ -115,6 +115,7 @@ class ImportForm extends Form
                 ],
         ]);
 
+        /*
         $this->add([
             'name' => 'automap_check_names_alone',
             'type' => 'checkbox',
@@ -129,7 +130,7 @@ class ImportForm extends Form
                     $defaults['csv_import_automap_check_names_alone']),
             ],
         ]);
-
+*/
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'source',
@@ -183,11 +184,6 @@ class ImportForm extends Form
     public function setConfigCsvImport(array $configCsvImport)
     {
         $this->configCsvImport = $configCsvImport;
-    }
-
-    public function setUserSettings(UserSettings $userSettings)
-    {
-        $this->userSettings = $userSettings;
     }
 
     /**
