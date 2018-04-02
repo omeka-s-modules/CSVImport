@@ -352,15 +352,6 @@ class IndexController extends AbstractActionController
                 break;
         }
 
-        // Reset the user list.
-        if (!empty($args['automap_check_user_list']) && empty($args['automap_user_list'])) {
-            $args['automap_user_list'] = $this->config['csv_import']['user_settings']['csv_import_automap_user_list'];
-        }
-        // Convert the user text into an array.
-        elseif (array_key_exists('automap_user_list', $args)) {
-            $args['automap_user_list'] = $this->getForm(ImportForm::class)
-                ->convertUserListTextToArray($args['automap_user_list']);
-        }
 
         // Set a default owner for a creation.
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
