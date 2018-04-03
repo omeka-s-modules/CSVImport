@@ -140,6 +140,8 @@ class IndexController extends AbstractActionController
         $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
         $automapOptions['format'] = 'form';
 
+        $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
+
         $view->setVariable('form', $form);
         $view->setVariable('resourceType', $resourceType);
         $view->setVariable('filepath', $tempPath);
