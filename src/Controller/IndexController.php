@@ -8,7 +8,6 @@ use CSVImport\Job\Import;
 use finfo;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Service\Exception\ConfigException;
-use Omeka\Settings\UserSettings;
 use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -33,7 +32,6 @@ class IndexController extends AbstractActionController
     /**
      * @param array $config
      * @param Manager $mediaIngesterManager
-     * @param UserSettings $userSettings
      */
     public function __construct(array $config, Manager $mediaIngesterManager)
     {
@@ -73,7 +71,6 @@ class IndexController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
-                $this->saveUserSettings($args);
                 unset($args['multivalue_by_default']);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
@@ -318,11 +315,7 @@ class IndexController extends AbstractActionController
 
         // Set default multivalue separator if not set, for example for users.
         if (!array_key_exists('multivalue_separator', $args)) {
-            $args['multivalue_separator'] = $this->userSettings()
-                ->get(
-                    'csv_import_multivalue_separator',
-                    $this->config['csv_import']['user_settings']['csv_import_multivalue_separator']
-                );
+            $args['multivalue_separator'] = ',';
         }
 
         // TODO Move to the source class.

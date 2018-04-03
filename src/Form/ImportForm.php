@@ -1,7 +1,6 @@
 <?php
 namespace CSVImport\Form;
 
-use Omeka\Settings\UserSettings;
 use Zend\Form\Form;
 
 class ImportForm extends Form
@@ -40,11 +39,6 @@ class ImportForm extends Form
      */
     protected $configCsvImport;
 
-    /**
-     * @var UserSettings
-     */
-    protected $userSettings;
-
     public function init()
     {
         $this->setAttribute('action', 'csvimport/map');
@@ -66,8 +60,12 @@ class ImportForm extends Form
 
         // TODO Move the specific parameters into the source class.
 
+        // Commenting out code that uses UserSettings in case we want to replace or
+        // use them differently later
+
         $valueParameters = $this->getDelimiterList();
-        $value = $this->userSettings->get('csv_import_delimiter', $defaults['csv_import_delimiter']);
+        //$value = $this->userSettings->get('csv_import_delimiter', $defaults['csv_import_delimiter']);
+        $value = $defaults['csv_import_delimiter'];
         $this->add([
             'name' => 'delimiter',
             'type' => 'select',
@@ -82,7 +80,8 @@ class ImportForm extends Form
         ]);
 
         $valueParameters = $this->getEnclosureList();
-        $value = $this->userSettings->get('csv_import_enclosure', $defaults['csv_import_enclosure']);
+        //$value = $this->userSettings->get('csv_import_enclosure', $defaults['csv_import_enclosure']);
+        $value = $defaults['csv_import_enclosure'];
         $this->add([
             'name' => 'enclosure',
             'type' => 'select',
@@ -115,7 +114,7 @@ class ImportForm extends Form
                 ],
         ]);
 
-        /*
+        
         $this->add([
             'name' => 'automap_check_names_alone',
             'type' => 'checkbox',
@@ -125,12 +124,15 @@ class ImportForm extends Form
             ],
             'attributes' => [
                 'id' => 'automap_check_names_alone',
+                /*
                 'value' => (int) (bool) $this->userSettings->get(
                     'csv_import_automap_check_names_alone',
                     $defaults['csv_import_automap_check_names_alone']),
+                */
+                'value' => (int) (bool) $defaults['csv_import_automap_check_names_alone'],
             ],
         ]);
-*/
+
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'source',
