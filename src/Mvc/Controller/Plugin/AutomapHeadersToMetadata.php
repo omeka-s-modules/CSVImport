@@ -119,9 +119,13 @@ class AutomapHeadersToMetadata extends AbstractPlugin
         if (empty($options['format']) || !in_array($options['format'], ['form', 'arguments'])) {
             return $automaps;
         }
+        /*
         return $options['format'] === 'form'
             ? $this->normalizeAutomapsForForm($automaps, $resourceType)
             :  $this->normalizeAutomapsAsArguments($automaps, $resourceType);
+        */
+        
+        return $this->normalizeAutomapsForForm($automaps, $resourceType);
     }
 
     /**
@@ -188,6 +192,8 @@ class AutomapHeadersToMetadata extends AbstractPlugin
      * @param string $resourceType
      * @return array
      */
+    
+    /*
     protected function normalizeAutomapsAsArguments(array $automaps, $resourceType)
     {
         $result = [];
@@ -220,7 +226,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
         }
         return $result;
     }
-
+*/
     /**
      * Return the list of properties by names and labels.
      *
