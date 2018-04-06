@@ -269,3 +269,16 @@ li.column-multivalue {
     padding: 12px 0 0 12px;
     margin-bottom: 24px;
 }
+
+.csvimporter.jobs th:first-of-type {
+    width: 4em;
+}
+
+.csvimporter.jobs td {
+    vertical-align: top;
+}
+
+.csvimporter.jobs table ul,
+.csvimporter.jobs table p {
+    margin: 0;
+}
