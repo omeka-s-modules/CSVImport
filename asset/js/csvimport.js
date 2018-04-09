@@ -313,7 +313,6 @@
         function setMultivalueSeparatorByDefault() {
             var multivalueSwitch = $('#multivalue_by_default').prop('checked');
             var targetRows = $('.element.mappable li.column-multivalue');
-            console.log('test');
             targetRows.removeClass('delete');
             targetRows.find('.remove-option').css({ display: 'inline' });
             targetRows.find('.restore-option').css({ display: 'none' });
