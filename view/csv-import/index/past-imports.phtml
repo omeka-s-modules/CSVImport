@@ -94,7 +94,12 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
             endif;
             ?>
             </td>
-            <td><?php echo $this->hyperlink($job->owner()->name(), $this->url('admin/id', array('controller' => 'user', 'action' => 'show', 'id' => $job->owner()->id()))); ?></td>
+            <td><?php
+            $owner = $job->owner();
+            if ($owner):
+                echo $this->hyperlink($owner->name(), $this->url('admin/id', array('controller' => 'user', 'action' => 'show', 'id' => $owner->id())));
+            endif;
+            ?></td>
         </tr>
         <?php endforeach; ?>
         </tbody>
