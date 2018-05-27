@@ -8,7 +8,6 @@ use CSVImport\Job\Import;
 use finfo;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Service\Exception\ConfigException;
-use Omeka\Settings\UserSettings;
 use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -31,20 +30,13 @@ class IndexController extends AbstractActionController
     protected $mediaIngesterManager;
 
     /**
-     * @var UserSettings
-     */
-    protected $userSettings;
-
-    /**
      * @param array $config
      * @param Manager $mediaIngesterManager
-     * @param UserSettings $userSettings
      */
-    public function __construct(array $config, Manager $mediaIngesterManager, UserSettings $userSettings)
+    public function __construct(array $config, Manager $mediaIngesterManager)
     {
         $this->config = $config;
         $this->mediaIngesterManager = $mediaIngesterManager;
-        $this->userSettings = $userSettings;
     }
 
     public function indexAction()
@@ -79,11 +71,7 @@ class IndexController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
-                $this->saveUserSettings($args);
                 unset($args['multivalue_by_default']);
-                if (empty($args['automap_check_user_list'])) {
-                    unset($args['automap_user_list']);
-                }
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't
@@ -151,9 +139,7 @@ class IndexController extends AbstractActionController
         $automapOptions = [];
         $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
         $automapOptions['format'] = 'form';
-        if (!empty($args['automap_check_user_list'])) {
-            $automapOptions['automap_list'] = $args['automap_user_list'];
-        }
+
         $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
         $view->setVariable('form', $form);
@@ -331,11 +317,7 @@ class IndexController extends AbstractActionController
 
         // Set default multivalue separator if not set, for example for users.
         if (!array_key_exists('multivalue_separator', $args)) {
-            $args['multivalue_separator'] = $this->userSettings()
-                ->get(
-                    'csv_import_multivalue_separator',
-                    $this->config['csv_import']['user_settings']['csv_import_multivalue_separator']
-                );
+            $args['multivalue_separator'] = ',';
         }
 
         // TODO Move to the source class.
@@ -352,15 +334,6 @@ class IndexController extends AbstractActionController
                 break;
         }
 
-        // Reset the user list.
-        if (!empty($args['automap_check_user_list']) && empty($args['automap_user_list'])) {
-            $args['automap_user_list'] = $this->config['csv_import']['user_settings']['csv_import_automap_user_list'];
-        }
-        // Convert the user text into an array.
-        elseif (array_key_exists('automap_user_list', $args)) {
-            $args['automap_user_list'] = $this->getForm(ImportForm::class)
-                ->convertUserListTextToArray($args['automap_user_list']);
-        }
 
         // Set a default owner for a creation.
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
@@ -375,21 +348,6 @@ class IndexController extends AbstractActionController
         unset($args['column-media_property']);
 
         return $args;
-    }
-
-    /**
-     * Save user settings.
-     *
-     * @param array $settings
-     */
-    protected function saveUserSettings(array $settings)
-    {
-        foreach ($this->config['csv_import']['user_settings'] as $key => $value) {
-            $name = substr($key, strlen('csv_import_'));
-            if (isset($settings[$name])) {
-                $this->userSettings()->set($key, $settings[$name]);
-            }
-        }
     }
 
     protected function getMediaForms()

@@ -10,7 +10,7 @@ class PropertyMapping extends AbstractMapping
 
     public function getSidebar(PhpRenderer $view)
     {
-        return $view->csvPropertySelector($view->translate('Properties:'), false);
+        return $view->csvPropertySelector($view->translate('Properties'), false);
     }
 
     public function processRow(array $row)

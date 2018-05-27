@@ -262,7 +262,7 @@ class MappingForm extends Form
                 'name' => 'multivalue_by_default',
                 'type' => 'checkbox',
                 'options' => [
-                    'label' => 'Set/unset the multivalue separator for all columns', // @translate
+                    'label' => 'Use the multivalue separator for all columns', // @translate
                     'info' => 'When clicked, all columns will be set/unset multivalued by default in the next tab.', // @translate
                 ],
                 'attributes' => [
@@ -289,6 +289,16 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $this->add([
+                'type' => 'fieldset',
+                'name' => 'advanced-settings',
+                'options' => [
+                    'label' => 'Advanced Settings', // @translate
+                ],
+            ]);
+
+            $advancedSettingsFieldset = $this->get('advanced-settings');
+
             $valueOptions = [
                 Import::ACTION_CREATE => 'Create a new resource', // @translate
                 Import::ACTION_APPEND => 'Append data to the resource', // @translate
@@ -298,7 +308,8 @@ class MappingForm extends Form
                 Import::ACTION_DELETE => 'Delete the resource', // @translate
                 Import::ACTION_SKIP => 'Skip row', // @translate
             ];
-            $this->add([
+
+            $advancedSettingsFieldset->add([
                 'name' => 'action',
                 'type' => 'select',
                 'options' => [
@@ -316,7 +327,7 @@ class MappingForm extends Form
                 ],
             ]);
 
-            $this->add([
+            $advancedSettingsFieldset->add([
                 'name' => 'identifier_property',
                 'type' => PropertySelect::class,
                 'options' => [
@@ -338,7 +349,7 @@ class MappingForm extends Form
                 ],
             ]);
 
-            $this->add([
+            $advancedSettingsFieldset->add([
                 'name' => 'action_unidentified',
                 'type' => 'radio',
                 'options' => [
@@ -356,7 +367,7 @@ class MappingForm extends Form
                 ],
             ]);
 
-            $this->add([
+            $advancedSettingsFieldset->add([
                 'name' => 'rows_by_batch',
                 'type' => 'Number',
                 'options' => [
