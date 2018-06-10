@@ -163,7 +163,7 @@ class Import extends AbstractJob
             $this->identifierPropertyId = (int) $args['identifier_property'];
         } else {
             $result = $this->api
-            ->search('properties', ['term' => $args['identifier_property']])->getContent();
+                ->search('properties', ['term' => $args['identifier_property']])->getContent();
             $this->identifierPropertyId = $result ? $result[0]->id() : null;
         }
 
@@ -978,7 +978,7 @@ SQL;
     }
 
     /**
-     * Deduplicate data ids for collections of items set, items, media....
+     * Deduplicate data ids for collections of items set, items, media…
      *
      * @param array $data
      * @return array

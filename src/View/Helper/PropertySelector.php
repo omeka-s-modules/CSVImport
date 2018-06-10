@@ -23,6 +23,7 @@ class PropertySelector extends AbstractHelper
         }
 
         $vocabResponse = $this->getView()->api()->search('vocabularies');
+        // TODO Check limit = 0 and remove this selector.
         $propResponse = $this->getView()->api()->search('properties', ['limit' => 0]);
 
         return $this->getView()->partial(

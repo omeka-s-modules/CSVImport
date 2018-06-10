@@ -114,7 +114,6 @@ class ImportForm extends Form
                 ],
         ]);
 
-        
         $this->add([
             'name' => 'automap_check_names_alone',
             'type' => 'checkbox',

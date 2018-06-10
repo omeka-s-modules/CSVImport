@@ -47,6 +47,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
 
     /**
      * @param Connection $connection
+     * @param ApiManager $apiManager
      */
     public function __construct(Connection $connection, ApiManager $apiManager)
     {

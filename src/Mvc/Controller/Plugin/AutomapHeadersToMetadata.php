@@ -134,7 +134,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
             ? $this->normalizeAutomapsForForm($automaps, $resourceType)
             :  $this->normalizeAutomapsAsArguments($automaps, $resourceType);
         */
-        
+
         return $this->normalizeAutomapsForForm($automaps, $resourceType);
     }
 
@@ -201,7 +201,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
      * @param string $resourceType
      * @return array
      */
-    
+
     /*
     protected function normalizeAutomapsAsArguments(array $automaps, $resourceType)
     {
