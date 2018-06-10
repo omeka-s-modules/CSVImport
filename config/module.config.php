@@ -26,13 +26,13 @@ return [
     ],
     'form_elements' => [
         'factories' => [
-            'CSVImport\Form\ImportForm' => Service\Form\ImportFormFactory::class,
-            'CSVImport\Form\MappingForm' => Service\Form\MappingFormFactory::class,
+            Form\ImportForm::class => Service\Form\ImportFormFactory::class,
+            Form\MappingForm::class => Service\Form\MappingFormFactory::class,
         ],
     ],
     'controllers' => [
         'factories' => [
-            'CSVImport\Controller\Index' => Service\Controller\IndexControllerFactory::class,
+            Controller\IndexController::class => Service\Controller\IndexControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
@@ -55,35 +55,31 @@ return [
             'admin' => [
                 'child_routes' => [
                     'csvimport' => [
-                        'type' => 'Literal',
+                        'type' => \Zend\Router\Http\Literal::class,
                         'options' => [
                             'route' => '/csvimport',
                             'defaults' => [
                                 '__NAMESPACE__' => 'CSVImport\Controller',
-                                'controller' => 'Index',
+                                'controller' => Controller\IndexController::class,
                                 'action' => 'index',
                             ],
                         ],
                         'may_terminate' => true,
                         'child_routes' => [
                             'past-imports' => [
-                                'type' => 'Literal',
+                                'type' => \Zend\Router\Http\Literal::class,
                                 'options' => [
                                     'route' => '/past-imports',
                                     'defaults' => [
-                                        '__NAMESPACE__' => 'CSVImport\Controller',
-                                        'controller' => 'Index',
                                         'action' => 'past-imports',
                                     ],
                                 ],
                             ],
                             'map' => [
-                                'type' => 'Literal',
+                                'type' => \Zend\Router\Http\Literal::class,
                                 'options' => [
                                     'route' => '/map',
                                     'defaults' => [
-                                        '__NAMESPACE__' => 'CSVImport\Controller',
-                                        'controller' => 'Index',
                                         'action' => 'map',
                                     ],
                                 ],
@@ -99,25 +95,25 @@ return [
             [
                 'label' => 'CSV Import',
                 'route' => 'admin/csvimport',
-                'resource' => 'CSVImport\Controller\Index',
+                'resource' => Controller\IndexController::class,
                 'pages' => [
                     [
                         'label' => 'Import', // @translate
                         'route' => 'admin/csvimport',
-                        'resource' => 'CSVImport\Controller\Index',
+                        'resource' => Controller\IndexController::class,
                     ],
                     [
                         'label' => 'Import', // @translate
                         'route' => 'admin/csvimport/map',
-                        'resource' => 'CSVImport\Controller\Index',
+                        'resource' => Controller\IndexController::class,
                         'visible' => false,
                     ],
                     [
                         'label' => 'Past Imports', // @translate
                         'route' => 'admin/csvimport/past-imports',
-                        'controller' => 'Index',
+                        'controller' => Controller\IndexController::class,
                         'action' => 'past-imports',
-                        'resource' => 'CSVImport\Controller\Index',
+                        'resource' => Controller\IndexController::class,
                     ],
                 ],
             ],

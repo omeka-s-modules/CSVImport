@@ -1,6 +1,7 @@
 <?php
 namespace CSVImport\Form;
 
+use Zend\Form\Element;
 use Zend\Form\Form;
 
 class ImportForm extends Form
@@ -46,16 +47,16 @@ class ImportForm extends Form
         $defaults = $this->configCsvImport['user_settings'];
 
         $this->add([
-                'name' => 'source',
-                'type' => 'file',
-                'options' => [
-                    'label' => 'Spreadsheet (csv, tsv or ods)', // @translate
-                    'info' => 'The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
-                ],
-                'attributes' => [
-                    'id' => 'source',
-                    'required' => 'true',
-                ],
+            'name' => 'source',
+            'type' => Element\File::class,
+            'options' => [
+                'label' => 'Spreadsheet (csv, tsv or ods)', // @translate
+                'info' => 'The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
+            ],
+            'attributes' => [
+                'id' => 'source',
+                'required' => 'true',
+            ],
         ]);
 
         // TODO Move the specific parameters into the source class.
@@ -68,7 +69,7 @@ class ImportForm extends Form
         $value = $defaults['csv_import_delimiter'];
         $this->add([
             'name' => 'delimiter',
-            'type' => 'select',
+            'type' => Element\Select::class,
             'options' => [
                 'label' => 'CSV column delimiter', // @translate
                 'info' => 'A single character that will be used to separate columns in the csv file.', // @translate
@@ -84,7 +85,7 @@ class ImportForm extends Form
         $value = $defaults['csv_import_enclosure'];
         $this->add([
             'name' => 'enclosure',
-            'type' => 'select',
+            'type' => Element\Select::class,
             'options' => [
                 'label' => 'CSV column enclosure', // @translate
                 'info' => 'A single character that will be used to separate columns in the csv file. The enclosure can be omitted when the content does not contain the delimiter.', // @translate
@@ -102,16 +103,16 @@ class ImportForm extends Form
             $valueParameters[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
         }
         $this->add([
-                'name' => 'resource_type',
-                'type' => 'select',
-                'options' => [
-                    'label' => 'Import type', // @translate
-                    'info' => 'The type of data being imported', // @translate
-                    'value_options' => $valueParameters,
-                ],
-                'attributes' => [
-                    'value' => 'items',
-                ],
+            'name' => 'resource_type',
+            'type' => Element\Select::class,
+            'options' => [
+                'label' => 'Import type', // @translate
+                'info' => 'The type of data being imported', // @translate
+                'value_options' => $valueParameters,
+            ],
+            'attributes' => [
+                'value' => 'items',
+            ],
         ]);
 
         $this->add([
