@@ -8,15 +8,17 @@ class Undo extends AbstractJob
 {
     public function perform()
     {
+        $services = $this->getServiceLocator();
+        $logger = $services->get('Omeka\Logger');
+        $api = $services->get('Omeka\ApiManager');
+
         $jobId = $this->getArg('jobId');
-        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
         $response = $api->search('csvimport_entities', ['job_id' => $jobId]);
         $csvEntities = $response->getContent();
         if ($csvEntities) {
             foreach ($csvEntities as $key => $csvEntity) {
                 if ($this->shouldStop()) {
-                    $this->logger = $services->get('Omeka\Logger');
-                    $this->logger->warn(new Message(
+                    $logger->warn(new Message(
                         'The job "Undo" was stopped: %d/%d resources processed.', // @translate
                         $key, count($csvEntities)
                     ));
