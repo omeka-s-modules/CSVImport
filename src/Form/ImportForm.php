@@ -48,8 +48,6 @@ class ImportForm extends Form
     {
         $inputFilter = $this->getInputFilter();
 
-        $this->setAttribute('action', 'csvimport/map');
-
         $this->add([
             'name' => 'source',
             'type' => Element\File::class,
@@ -60,6 +58,27 @@ class ImportForm extends Form
             'attributes' => [
                 'id' => 'source',
                 'required' => 'true',
+            ],
+        ]);
+
+        $resourceTypes = array_keys($this->configCsvImport['mappings']);
+        $valueParameters = [];
+        foreach ($resourceTypes as $resourceType) {
+            // Currently, there is no resource label, so no translation.
+            $valueParameters[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
+        }
+        $this->add([
+            'name' => 'resource_type',
+            'type' => Element\Select::class,
+            'options' => [
+                'label' => 'Import type', // @translate
+                'info' => 'The type of data being imported', // @translate
+                'value_options' => $valueParameters,
+            ],
+            'attributes' => [
+                'id' => 'resource_type',
+                // Set a default value.
+                'value' => 'items',
             ],
         ]);
 
@@ -96,27 +115,12 @@ class ImportForm extends Form
             ],
         ]);
 
-        $resourceTypes = array_keys($this->configCsvImport['mappings']);
-        $valueParameters = [];
-        foreach ($resourceTypes as $resourceType) {
-            // Currently, there is no resource label, so no translation.
-            $valueParameters[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
-        }
-        $this->add([
-            'name' => 'resource_type',
-            'type' => Element\Select::class,
-            'options' => [
-                'label' => 'Import type', // @translate
-                'info' => 'The type of data being imported', // @translate
-                'value_options' => $valueParameters,
-            ],
-            'attributes' => [
-                'value' => 'items',
-            ],
-        ]);
-
         $inputFilter->add([
             'name' => 'source',
+            'required' => true,
+        ]);
+        $inputFilter->add([
+            'name' => 'resource_type',
             'required' => true,
         ]);
         $inputFilter->add([

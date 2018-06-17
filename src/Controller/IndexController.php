@@ -3,8 +3,8 @@ namespace CSVImport\Controller;
 
 use CSVImport\Form\ImportForm;
 use CSVImport\Form\MappingForm;
-use CSVImport\Source\SourceInterface;
 use CSVImport\Job\Import;
+use CSVImport\Source\SourceInterface;
 use finfo;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Service\Exception\ConfigException;
@@ -42,101 +42,65 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $view = new ViewModel;
+
         /** @var \CSVImport\Form\ImportForm $form */
         $form = $this->getForm(ImportForm::class);
+        $view->form = $form;
+
+        /** @var \Zend\Session\Storage\SessionArrayStorage $session */
+        $sessionManager = \Zend\Session\Container::getDefaultManager();
+        $session = $sessionManager->getStorage();
+        $session->clear('CSVImport');
 
         $user = $this->identity();
+        /** @var \Omeka\Settings\UserSettings $userSettings */
         $userSettings = $this->userSettings();
         $userSettings->setTargetId($user->getId());
-        $data = [];
-        $data['delimiter'] = $form->integrateParameter($userSettings->get('csvimport_delimiter',
-            $this->config['csv_import']['user_settings']['csvimport_delimiter']));
-        $data['enclosure'] = $form->integrateParameter($userSettings->get('csvimport_enclosure',
-            $this->config['csv_import']['user_settings']['csvimport_enclosure']));
 
-        $form->setData($data);
-        $view->form = $form;
-        return $view;
-    }
-
-    public function mapAction()
-    {
-        $view = new ViewModel;
         $request = $this->getRequest();
-
         if (!$request->isPost()) {
-            return $this->redirect()->toRoute('admin/csvimport');
+            $data = [];
+            $data['delimiter'] = $form->integrateParameter($userSettings->get('csvimport_delimiter',
+                $this->config['csv_import']['user_settings']['csvimport_delimiter']));
+            $data['enclosure'] = $form->integrateParameter($userSettings->get('csvimport_enclosure',
+                $this->config['csv_import']['user_settings']['csvimport_enclosure']));
+            $form->setData($data);
+            return $view;
         }
 
-        $files = $request->getFiles()->toArray();
-        $post = $this->params()->fromPost();
-        $mappingOptions = array_intersect_key($post, array_flip([
-            'resource_type',
-            'delimiter',
-            'enclosure',
-            'automap_check_user_list',
-            'automap_user_list',
-        ]));
-        $form = $this->getForm(MappingForm::class, $mappingOptions);
-        if (empty($files)) {
-            $form->setData($post);
-            if ($form->isValid()) {
-                $args = $this->cleanArgs($post);
-                // Remove useless default input fields.
-                unset($args['csrf']);
-                unset($args['multivalue_by_default']);
-                unset($args['automap_by_label']);
-                $dispatcher = $this->jobDispatcher();
-                $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
-                // The CsvImport record is created in the job, so it doesn't
-                // happen until the job is done.
-                $message = new Message(
-                    'Importing in background (%sjob #%d%s)', // @translate
-                    sprintf('<a href="%s">',
-                        htmlspecialchars($this->url()->fromRoute('admin/id', ['controller' => 'job', 'id' => $job->getId()]))
-                    ),
-                    $job->getId(),
-                   '</a>'
-                );
-                $message->setEscapeHtml(false);
-                $this->messenger()->addSuccess($message);
-                return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
-            }
-
-            // TODO Keep user variables when the form is invalid.
-            $this->messenger()->addError('Invalid settings.'); // @translate
-            return $this->redirect()->toRoute('admin/csvimport');
-        }
-
-        $importForm = $this->getForm(ImportForm::class);
         $post = array_merge_recursive(
             $request->getPost()->toArray(),
             $request->getFiles()->toArray()
         );
-        $importForm->setData($post);
-        if (!$importForm->isValid()) {
-            $this->messenger()->addFormErrors($importForm);
-            return $this->redirect()->toRoute('admin/csvimport');
+        $form->setData($post);
+        if (!$form->isValid()) {
+            $this->messenger()->addFormErrors($form);
+            return $view;
         }
+
+        // Advanced check of the form and the file.
 
         if (empty($post['source']['tmp_name'])) {
             $this->messenger()->addError('The file is not loaded.'); // @translate
-            return $this->redirect()->toRoute('admin/csvimport');
+            return $view;
         }
 
         $source = $this->getSource($post['source']);
         if (empty($source)) {
             $this->messenger()->addError('The format of the source cannot be detected.'); // @translate
-            return $this->redirect()->toRoute('admin/csvimport');
+            return $view;
         }
 
+        $args = $form->getData();
+
+        // TODO Why form remove resource_type?
         $resourceType = $post['resource_type'];
         $mediaType = $source->getMediaType();
-        $post['media_type'] = $mediaType;
-        $tempPath = $this->getTempPath();
-        $this->moveToTemp($post['source']['tmp_name']);
+        $args['media_type'] = $mediaType;
+        $args = $this->cleanArgsImport($args);
 
-        $args = $this->cleanArgs($post);
+        $tempPath = $this->getTempPath();
+        $this->moveToTemp($args['source']['tmp_name']);
 
         $source->init($this->config);
         $source->setSource($tempPath);
@@ -145,34 +109,141 @@ class IndexController extends AbstractActionController
         if (!$source->isValid()) {
             $message = $source->getErrorMessage() ?: 'The file is not valid.'; // @translate
             $this->messenger()->addError($message);
-            return $this->redirect()->toRoute('admin/csvimport');
+            return $view;
         }
 
         $columns = $source->getHeaders();
         if (empty($columns)) {
             $message = $source->getErrorMessage() ?: 'The file has no headers.'; // @translate
             $this->messenger()->addError($message);
+            return $view;
+        }
+
+        // Prepare second step via session.
+
+        $parameters = [];
+        $parameters['filename'] = $args['source']['name'];
+        $parameters['filesize'] = $args['source']['size'];
+        $parameters['filepath'] = $tempPath;
+        $parameters['media_type'] = $mediaType;
+        $parameters['resource_type'] = $resourceType;
+        if (isset($args['delimiter'])) {
+            $parameters['delimiter'] = $args['delimiter'];
+            $userSettings->set('csvimport_delimiter', $args['delimiter']);
+        }
+        if (isset($args['enclosure'])) {
+            $parameters['enclosure'] = $args['enclosure'];
+            $userSettings->set('csvimport_enclosure', $args['enclosure']);
+        }
+        if (isset($args['escape'])) {
+            $parameters['escape'] = $args['escape'];
+        }
+        $parameters['columns'] = $columns;
+
+        // TODO Set expiration hops.
+        $session->offsetSet('CSVImport', ['parameters' => $parameters]);
+        return $this->redirect()->toRoute(null, ['action' => 'map'], true);
+    }
+
+    public function mapAction()
+    {
+        /** @var \Zend\Session\Storage\SessionArrayStorage $session */
+        $sessionManager = \Zend\Session\Container::getDefaultManager();
+        $session = $sessionManager->getStorage();
+        $csvImportSession = $session->offsetGet('CSVImport');
+        if (empty($csvImportSession) || empty($csvImportSession['parameters'])) {
+            $session->clear('CSVImport');
+            $message = 'Fill the form below first.'; // @translate
+            $this->messenger()->addError($message);
             return $this->redirect()->toRoute('admin/csvimport');
         }
 
+        $parameters = $csvImportSession['parameters'];
+        $resourceType = $parameters['resource_type'];
         $automapOptions = [];
         $automapOptions['automap_by_label'] = true;
         $automapOptions['format'] = 'form';
-
         $automapOptions['mappings'] = $this->config['csv_import']['mappings'][$resourceType];
-        $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
+        $autoMaps = $this->automapHeadersToMetadata($parameters['columns'], $resourceType, $automapOptions);
 
+        $view = new ViewModel;
+
+        /** @var \CSVImport\Form\MappingForm $form */
+        $form = $this->getForm(MappingForm::class, ['resource_type' => $resourceType]);
         $view->setVariable('form', $form);
         $view->setVariable('resourceType', $resourceType);
-        $view->setVariable('filepath', $tempPath);
-        $view->setVariable('filename', $post['source']['name']);
-        $view->setVariable('filesize', $post['source']['size']);
-        $view->setVariable('mediaType', $mediaType);
-        $view->setVariable('columns', $columns);
+        $view->setVariable('columns', $parameters['columns']);
         $view->setVariable('automaps', $autoMaps);
         $view->setVariable('mappings', $this->getMappingsForResource($resourceType));
         $view->setVariable('mediaForms', $this->getMediaForms());
-        return $view;
+
+        $request = $this->getRequest();
+
+        $user = $this->identity();
+        /** @var \Omeka\Settings\UserSettings $userSettings */
+        $userSettings = $this->userSettings();
+        $userSettings->setTargetId($user->getId());
+
+        // If this is not a request, this is the first call to the second step,
+        // so fill the form with the user settings.
+        if (!$request->isPost()) {
+            $data = [];
+            $data['global_language'] = $userSettings->get('csvimport_global_language',
+                $this->config['csv_import']['user_settings']['csvimport_global_language']);
+            $data['advanced-settings']['identifier_property'] = $userSettings->get('csvimport_identifier_property',
+                $this->config['csv_import']['user_settings']['csvimport_identifier_property']);
+            $data['advanced-settings']['rows_by_batch'] = $userSettings->get('csvimport_rows_by_batch',
+                $this->config['csv_import']['user_settings']['csvimport_rows_by_batch']);
+            $data['multivalue_separator'] = $userSettings->get('csvimport_multivalue_separator',
+                $this->config['csv_import']['user_settings']['csvimport_multivalue_separator']);
+            $data['multivalue_by_default'] = $userSettings->get('csvimport_multivalue_by_default',
+                $this->config['csv_import']['user_settings']['csvimport_multivalue_by_default']);
+            $form->setData($data);
+            return $view;
+        }
+
+        $post = $this->params()->fromPost();
+        $form->setData($post);
+        if (!$form->isValid()) {
+            $this->messenger()->addError('Invalid settings.'); // @translate
+            $this->messenger()->addFormErrors($form);
+            return $view;
+        }
+
+        $session->clear('CSVImport');
+
+        // TODO Check why getData() doesn't return all values?
+        // $post = $form->getData();
+
+        unset($parameters['columns']);
+        $args = $parameters + $this->cleanArgs($post);
+
+        $userSettings->set('csvimport_global_language', $args['global_language']);
+        $userSettings->set('csvimport_rows_by_batch', $args['advanced-settings']['rows_by_batch']);
+        $userSettings->set('csvimport_identifier_property', $args['advanced-settings']['csvimport_identifier_property']);
+        $userSettings->set('csvimport_multivalue_separator', $args['multivalue_separator']);
+        $userSettings->set('csvimport_multivalue_by_default', $args['multivalue_by_default']);
+
+        $dispatcher = $this->jobDispatcher();
+        $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
+        // The CsvImport record is created in the job, so it doesn't
+        // happen until the job is done.
+        $message = new Message(
+            'Importing in background (%sjob #%d%s)', // @translate
+            sprintf('<a href="%s">',
+                htmlspecialchars($this->url()->fromRoute('admin/id', ['controller' => 'job', 'id' => $job->getId()]))
+            ),
+            $job->getId(),
+            '</a>'
+        );
+        $message->setEscapeHtml(false);
+        $this->messenger()->addSuccess($message);
+        return $this->redirect()->toRoute('admin/csvimport', ['action' => 'past-imports'], true);
+    }
+
+    public function browseAction()
+    {
+        $this->forward('past-imports');
     }
 
     public function pastImportsAction()
@@ -271,6 +342,33 @@ class IndexController extends AbstractActionController
     }
 
     /**
+     * Helper to clean posted args after import form.
+     *
+     * @todo Mix with check in Import and make it available for external query.
+     *
+     * @param array $post
+     * @return array
+     */
+    protected function cleanArgsImport(array $post)
+    {
+        $args = $post;
+        // TODO Move to the source class.
+        unset($args['delimiter']);
+        unset($args['enclosure']);
+        switch ($post['media_type']) {
+            case 'text/csv':
+                $args['delimiter'] = $this->getForm(ImportForm::class)->extractParameter($post['delimiter']);
+                $args['enclosure'] = $this->getForm(ImportForm::class)->extractParameter($post['enclosure']);
+                $args['escape'] = \CSVImport\Source\CsvFile::DEFAULT_ESCAPE;
+                break;
+            case 'text/tab-separated-values':
+                // Nothing to do.
+                break;
+        }
+        return $args;
+    }
+
+    /**
      * Helper to clean posted args to get more readable logs.
      *
      * @todo Mix with check in Import and make it available for external query.
@@ -349,26 +447,15 @@ class IndexController extends AbstractActionController
             $args['automap_by_label'] = false;
         }
 
-        // TODO Move to the source class.
-        unset($args['delimiter']);
-        unset($args['enclosure']);
-        switch ($post['media_type']) {
-            case 'text/csv':
-                $args['delimiter'] = $this->getForm(ImportForm::class)->extractParameter($post['delimiter']);
-                $args['enclosure'] = $this->getForm(ImportForm::class)->extractParameter($post['enclosure']);
-                $args['escape'] = \CSVImport\Source\CsvFile::DEFAULT_ESCAPE;
-                break;
-            case 'text/tab-separated-values':
-                // Nothing to do.
-                break;
-        }
-
         // Set a default owner for a creation.
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
 
         // Remove useless input fields from sidebars.
+        unset($args['csrf']);
+        unset($args['multivalue_by_default']);
+        unset($args['automap_by_label']);
         unset($args['value-language']);
         unset($args['column-resource_property']);
         unset($args['column-item_set_property']);

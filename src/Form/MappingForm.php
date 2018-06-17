@@ -6,26 +6,38 @@ use Omeka\Form\Element\ItemSetSelect;
 use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Omeka\Form\Element\ResourceClassSelect;
+use Omeka\Permissions\Acl;
 use Zend\EventManager\Event;
 use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Form\Element;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
+use Zend\View\Helper\Url;
 
 class MappingForm extends Form
 {
     use EventManagerAwareTrait;
 
     protected $inputFilter;
+
+    /**
+     * @var string
+     */
     protected $resourceType;
+
+    /**
+     * @var Url
+     */
     protected $urlHelper;
-    protected $serviceLocator;
+
+    /**
+     * @var Acl
+     */
+    protected $acl;
 
     public function init()
     {
-        $services = $this->getServiceLocator();
-        $acl = $services->get('Omeka\Acl');
-        $this->urlHelper = $services->get('ViewHelperManager')->get('url');
+        $acl = $this->getAcl();
 
         $this->inputFilter = $this->getInputFilter();
         $this->resourceType = $this->getOption('resource_type');
@@ -83,51 +95,6 @@ class MappingForm extends Form
     public function addCommonElements()
     {
         $this->add([
-            'name' => 'resource_type',
-            'type' => Element\Hidden::class,
-            'attributes' => [
-                'value' => $this->resourceType,
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
-            'name' => 'delimiter',
-            'type' => Element\Hidden::class,
-            'attributes' => [
-                'value' => $this->getOption('delimiter'),
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
-            'name' => 'enclosure',
-            'type' => Element\Hidden::class,
-            'attributes' => [
-                'value' => $this->getOption('enclosure'),
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
-            'name' => 'automap_check_user_list',
-            'type' => Element\Hidden::class,
-            'attributes' => [
-                'value' => $this->getOption('automap_check_user_list'),
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
-            'name' => 'automap_user_list',
-            'type' => Element\Hidden::class,
-            'attributes' => [
-                'value' => $this->getOption('automap_user_list'),
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
             'name' => 'comment',
             'type' => Element\Textarea::class,
             'options' => [
@@ -143,7 +110,7 @@ class MappingForm extends Form
 
     public function addResourceElements()
     {
-        $urlHelper = $this->urlHelper;
+        $urlHelper = $this->getUrlHelper();
 
         $this->add([
             'name' => 'o:resource_template[o:id]',
@@ -212,7 +179,7 @@ class MappingForm extends Form
 
     public function addOwnerElement()
     {
-        $urlHelper = $this->urlHelper;
+        $urlHelper = $this->getUrlHelper();
 
         $this->add([
             'name' => 'o:owner[o:id]',
@@ -340,11 +307,6 @@ class MappingForm extends Form
 
     public function addProcessElements()
     {
-        $services = $this->getServiceLocator();
-        $userSettings = $services->get('Omeka\Settings\User');
-        $config = $services->get('Config');
-        $default = $config['csv_import']['user_settings'];
-
         $this->add([
             'name' => 'multivalue_separator',
             'type' => Element\Text::class,
@@ -355,9 +317,6 @@ class MappingForm extends Form
             'attributes' => [
                 'id' => 'multivalue_separator',
                 'class' => 'input-body',
-                'value' => $userSettings->get(
-                    'csvimport_multivalue_separator',
-                    $default['csvimport_multivalue_separator']),
             ],
         ]);
 
@@ -370,9 +329,6 @@ class MappingForm extends Form
             ],
             'attributes' => [
                 'id' => 'multivalue_by_default',
-                'value' => (int) (bool) $userSettings->get(
-                    'csvimport_multivalue_by_default',
-                    $default['csvimport_multivalue_by_default']),
             ],
         ]);
 
@@ -386,25 +342,17 @@ class MappingForm extends Form
             'attributes' => [
                 'id' => 'global_language',
                 'class' => 'input-body value-language',
-                'value' => $userSettings->get(
-                    'csvimport_global_language',
-                    $default['csvimport_global_language']),
             ],
         ]);
     }
 
     public function addAdvancedElements()
     {
-        $services = $this->getServiceLocator();
-        $userSettings = $services->get('Omeka\Settings\User');
-        $config = $services->get('Config');
-        $default = $config['csv_import']['user_settings'];
-
         $this->add([
             'type' => Fieldset::class,
             'name' => 'advanced-settings',
             'options' => [
-                'label' => 'Advanced Settings', // @translate
+                // 'label' => 'Advanced Settings', // @translate
             ],
         ]);
 
@@ -445,16 +393,13 @@ class MappingForm extends Form
                 'label' => 'Resource identifier property', // @translate
                 'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them. One column of the file must map the selected property. In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
                 'empty_option' => 'Select below', // @translate
-                'term_as_value' => false,
                 'prepend_value_options' => [
                     'internal_id' => 'Internal id', // @translate
                 ],
                 'term_as_value' => true,
             ],
             'attributes' => [
-                'value' => $userSettings->get(
-                    'csvimport_identifier_property',
-                    $default['csvimport_identifier_property']),
+                'id' => 'identifier_property',
                 'class' => 'advanced-settings chosen-select',
                 'data-placeholder' => 'Select a property', // @translate
             ],
@@ -474,6 +419,7 @@ class MappingForm extends Form
             'attributes' => [
                 'id' => 'action_unidentified',
                 'class' => 'advanced-settings',
+                // This parameter is not saved in the user settings.
                 'value' => Import::ACTION_SKIP,
             ],
         ]);
@@ -486,9 +432,7 @@ class MappingForm extends Form
                 'info' => 'By default, rows are processed by 20. In some cases, to set a value of 1 may avoid issues.', // @translate
             ],
             'attributes' => [
-                'value' => $userSettings->get(
-                    'csvimport_rows_by_batch',
-                    $default['csvimport_rows_by_batch']),
+                'id' => 'rows_by_batch',
                 'class' => 'advanced-settings',
                 'min' => '1',
                 'step' => '1',
@@ -509,13 +453,23 @@ class MappingForm extends Form
         ]);
     }
 
-    public function setServiceLocator($serviceLocator)
+    public function setUrlHelper(Url $urlHelper)
     {
-        $this->serviceLocator = $serviceLocator;
+        $this->urlHelper = $urlHelper;
     }
 
-    public function getServiceLocator()
+    protected function getUrlHelper()
     {
-        return $this->serviceLocator;
+        return $this->urlHelper;
+    }
+
+    public function setAcl(Acl $acl)
+    {
+        $this->acl = $acl;
+    }
+
+    protected function getAcl()
+    {
+        return $this->acl;
     }
 }

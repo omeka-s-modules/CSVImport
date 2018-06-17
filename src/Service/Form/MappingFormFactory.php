@@ -10,8 +10,9 @@ class MappingFormFactory implements FactoryInterface
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
         $form = new MappingForm(null, $options);
-        $form->setServiceLocator($services);
         $form->setEventManager($services->get('EventManager'));
+        $form->setUrlHelper($services->get('ViewHelperManager')->get('url'));
+        $form->setAcl($services->get('Omeka\Acl'));
         return $form;
     }
 }

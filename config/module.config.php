@@ -55,34 +55,16 @@ return [
             'admin' => [
                 'child_routes' => [
                     'csvimport' => [
-                        'type' => \Zend\Router\Http\Literal::class,
+                        'type' => \Zend\Router\Http\Segment::class,
                         'options' => [
-                            'route' => '/csvimport',
+                            'route' => '/csvimport[/:action]',
+                            'constraints' => [
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'CSVImport\Controller',
                                 'controller' => Controller\IndexController::class,
                                 'action' => 'index',
-                            ],
-                        ],
-                        'may_terminate' => true,
-                        'child_routes' => [
-                            'past-imports' => [
-                                'type' => \Zend\Router\Http\Literal::class,
-                                'options' => [
-                                    'route' => '/past-imports',
-                                    'defaults' => [
-                                        'action' => 'past-imports',
-                                    ],
-                                ],
-                            ],
-                            'map' => [
-                                'type' => \Zend\Router\Http\Literal::class,
-                                'options' => [
-                                    'route' => '/map',
-                                    'defaults' => [
-                                        'action' => 'map',
-                                    ],
-                                ],
                             ],
                         ],
                     ],
@@ -95,25 +77,21 @@ return [
             [
                 'label' => 'CSV Import',
                 'route' => 'admin/csvimport',
-                'resource' => Controller\IndexController::class,
                 'pages' => [
                     [
                         'label' => 'Import', // @translate
                         'route' => 'admin/csvimport',
-                        'resource' => Controller\IndexController::class,
                     ],
                     [
                         'label' => 'Import', // @translate
-                        'route' => 'admin/csvimport/map',
-                        'resource' => Controller\IndexController::class,
+                        'route' => 'admin/csvimport',
+                        'action' => 'map',
                         'visible' => false,
                     ],
                     [
                         'label' => 'Past Imports', // @translate
-                        'route' => 'admin/csvimport/past-imports',
-                        'controller' => Controller\IndexController::class,
+                        'route' => 'admin/csvimport',
                         'action' => 'past-imports',
-                        'resource' => Controller\IndexController::class,
                     ],
                 ],
             ],

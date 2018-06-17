@@ -28,30 +28,29 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 </fieldset>
 <nav class="section-nav">
     <ul>
-        <li class="active"><a href="#csv-import-basics-fieldset"><?php echo $translate('Basic Import Settings'); ?></a></li>
+        <li class="active"><a href="#basics-fieldset"><?php echo $translate('Basic Import Settings'); ?></a></li>
+        <li><a href="#advanced-fieldset"><?php echo $translate('Advanced Settings'); ?></a></li>
         <li><a href="#mapping-data"><?php echo $translate('Map to Omeka S data'); ?></a></li>
     </ul>
 </nav>
-<input type="hidden" name="filename" value="<?php echo $filename; ?>" />
-<input type="hidden" name="filesize" value="<?php echo $filesize; ?>" />
-<input type="hidden" name="filepath" value="<?php echo $filepath; ?>" />
-<input type="hidden" name="media_type" value="<?php echo $mediaType; ?>" />
-<fieldset id="csv-import-basics-fieldset" class="section active">
+<fieldset id="basics-fieldset" class="section active">
     <?php
     // Render some form elements in a different tab.
-    $elementMultiValueByDefault = $form->get('multivalue_by_default');
+    $elementMultivalueByDefault = $form->get('multivalue_by_default');
     $form->remove('multivalue_by_default');
+    $elementMultivalueSeparator = $form->get('multivalue_separator');
+    $form->remove('multivalue_separator');
+    $fieldsetAdvanced = $form->get('advanced-settings');
+    $form->remove('advanced-settings');
     echo $this->formCollection($form);
     ?>
 </fieldset>
 
+<fieldset id="advanced-fieldset" class="section">
+    <?php echo $this->formCollection($fieldsetAdvanced); ?>
+</fieldset>
+
 <fieldset id="mapping-data" class="section">
-    <div class="field">
-    <?php
-        echo $this->formCheckbox($elementMultiValueByDefault);
-        echo $this->formLabel($elementMultiValueByDefault);
-    ?>
-    </div>
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
@@ -129,6 +128,22 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
             <?php endforeach; ?>
         </tbody>
     </table>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($elementMultivalueSeparator); ?>
+        </div>
+        <div class="inputs">
+            <?php echo $this->formText($elementMultivalueSeparator); ?>
+        </div>
+    </div>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($elementMultivalueByDefault); ?>
+        </div>
+        <div class="inputs">
+            <?php echo $this->formCheckbox($elementMultivalueByDefault); ?>
+        </div>
+    </div>
     <?php echo $this->partial('common/mapping-sidebar'); ?>
     <?php echo $this->partial('common/options-sidebar'); ?>
 </fieldset>
