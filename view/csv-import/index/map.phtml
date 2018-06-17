@@ -65,7 +65,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($columns as $index=>$column): ?>
+        <?php foreach ($columns as $index => $column): ?>
             <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
                 <td>
                     <span class="column-header"><?php echo $escapeHtml($column); ?></span>

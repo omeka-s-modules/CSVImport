@@ -20,7 +20,9 @@ $translate = $this->plugin('translate');
                 <button type="button" data-toggle-selector="#specific-data" class="toggle button active" disabled><?php echo $translate(sprintf('%s data', $resourceTypeLabels[$resourceType])); ?></button>
                 <button type="button" data-toggle-selector="#generic-data" class="toggle button"><?php echo $translate('Generic data'); ?></button>
             </div>
+
             <div id="specific-data" class="active toggle-view">
+
                 <?php if ($resourceType == 'resources'): ?>
                 <div class="resource-type-select">
                     <label for="data-resource-type-select"><?php echo $translate('Associated resource type'); ?></label>
@@ -32,6 +34,7 @@ $translate = $this->plugin('translate');
                     </select>
                 </div>
                 <?php endif; ?>
+
                 <?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
                 <div class="mapping additions item-sets">
                     <label for="additions"><?php echo $translate('Open to additions'); ?></label>
@@ -41,26 +44,26 @@ $translate = $this->plugin('translate');
 
                 <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
                 <div class="mapping property items">
-                <h4><?php echo $translate('Item set property'); ?></h4>
-                <?php echo $this->propertySelect([
-                    'name' => 'column-item_set_property',
-                    'options' => [
-                        'empty_option' => $translate('Select below'),
-                        'prepend_value_options' => [
-                            'internal_id' => $translate('Internal id'),
+                    <h4><?php echo $translate('Item set property'); ?></h4>
+                    <?php echo $this->propertySelect([
+                        'name' => 'column-item_set_property',
+                        'options' => [
+                            'empty_option' => $translate('Select below'),
+                            'prepend_value_options' => [
+                                'internal_id' => $translate('Internal id'),
+                            ],
+                            'term_as_value' => true,
                         ],
-                        'term_as_value' => true,
-                    ],
-                    'attributes' => [
-                        'id' => 'column-item_set_property',
-                        'value' => $this->userSetting('csvimport_identifier_property', 'internal_id'),
-                        'class' => 'chosen-select',
-                        'data-placeholder' => $translate('Select the identifier below'),
-                        'data-flag-name' => 'column-item_set',
-                        'data-flag-class' => 'resource-data',
-                        'data-flag-label' => $translate('Item set'),
-                    ],
-                ]); ?>
+                        'attributes' => [
+                            'id' => 'column-item_set_property',
+                            'value' => $this->userSetting('csvimport_identifier_property', 'internal_id'),
+                            'class' => 'chosen-select',
+                            'data-placeholder' => $translate('Select the identifier below'),
+                            'data-flag-name' => 'column-item_set',
+                            'data-flag-class' => 'resource-data',
+                            'data-flag-label' => $translate('Item set'),
+                        ],
+                    ]); ?>
                 </div>
                 <?php endif; ?>
 
