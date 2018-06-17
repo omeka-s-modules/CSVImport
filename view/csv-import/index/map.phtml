@@ -1,4 +1,5 @@
 <?php
+/** @var \CSVImport\Form\MappingForm $form */
 $form->prepare();
 $translate = $this->plugin('translate');
 $escapeHtml = $this->plugin('escapeHtml');
@@ -36,16 +37,27 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <input type="hidden" name="filepath" value="<?php echo $filepath; ?>" />
 <input type="hidden" name="media_type" value="<?php echo $mediaType; ?>" />
 <fieldset id="csv-import-basics-fieldset" class="section active">
-    <?php echo $this->formCollection($form); ?>
+    <?php
+    // Render some form elements in a different tab.
+    $elementMultiValueByDefault = $form->get('multivalue_by_default');
+    $form->remove('multivalue_by_default');
+    echo $this->formCollection($form);
+    ?>
 </fieldset>
 
 <fieldset id="mapping-data" class="section">
+    <div class="field">
+    <?php
+        echo $this->formCheckbox($elementMultiValueByDefault);
+        echo $this->formLabel($elementMultiValueByDefault);
+    ?>
+    </div>
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $translate("Column headers"); ?></th>
-                <th><?php echo $translate("Mappings"); ?></th>
-                <th><?php echo $translate("Options"); ?></th>
+                <th><?php echo $translate('Column headers'); ?></th>
+                <th><?php echo $translate('Mappings'); ?></th>
+                <th><?php echo $translate('Options'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -87,7 +99,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-url' name='column-url[<?php echo $index; ?>]'></input>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-reference' name='column-reference[<?php echo $index; ?>]'></input>
                         </li>
-                        <li class='column-multivalue option' style='display:none;'><?php echo $translate("Multivalue"); ?>
+                        <li class='column-multivalue option' style='display:none;'><?php echo $translate('Multivalue'); ?>
                             <ul class="actions">
                                 <li>
                                     <a aria-label="<?php echo $escapeHtml($translate('Remove option')); ?>" title="<?php echo $escapeHtml($translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
@@ -99,7 +111,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
                         </li>
 
-                        <li class='column-language option' style='display:none;'><?php echo $translate("Language:"); echo"&nbsp;"; ?>
+                        <li class='column-language option' style='display:none;'><?php echo $translate('Language:'); echo"&nbsp;"; ?>
                             <span class='column-language'></span>
                             <ul class="actions">
                                 <li>
