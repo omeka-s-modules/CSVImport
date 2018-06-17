@@ -45,6 +45,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
     $form->remove('language');
     $elementsMap['language_by_default'] = $form->get('language_by_default');
     $form->remove('language_by_default');
+    // Render fieldsets separetly.
     $fieldsetAdvanced = $form->get('advanced-settings');
     $form->remove('advanced-settings');
     echo $this->formCollection($form);

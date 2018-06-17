@@ -338,88 +338,88 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
         $automapping = [
             'owner_email' => [
                 'name' => 'owner_email',
-                'label' => $translator->translate('Owner email address'),
+                'label' => $translator->translate('Owner email address'), // @translate
                 'class' => 'owner-email',
             ],
             'internal_id' => [
                 'name' => 'resource',
                 'value' => 'internal_id',
-                'label' => $translator->translate('Internal id'),
+                'label' => $translator->translate('Internal id'), // @translate
                 'class' => 'resource-data',
             ],
             'resource' => [
                 'name' => 'resource',
                 'value' => 'internal_id',
-                'label' => $translator->translate('Resource [%s]'),
+                'label' => $translator->translate('Resource [%s]'), // @translate
                 'class' => 'resource-data',
             ],
             'resource_type' => [
                 'name' => 'resource_type',
-                'label' => $translator->translate('Resource type'),
+                'label' => $translator->translate('Resource type'), // @translate
                 'class' => 'resource-data',
             ],
             'resource_template' => [
                 'name' => 'resource_template',
-                'label' => $translator->translate('Resource template name'),
+                'label' => $translator->translate('Resource template name'), // @translate
                 'class' => 'resource-data',
             ],
             'resource_class' => [
                 'name' => 'resource_class',
-                'label' => $translator->translate('Resource class term'),
+                'label' => $translator->translate('Resource class term'), // @translate
                 'class' => 'resource-data',
             ],
             'is_public' => [
                 'name' => 'is_public',
-                'label' => $translator->translate('Visibility public/private'),
+                'label' => $translator->translate('Visibility public/private'), // @translate
                 'class' => 'resource-data',
             ],
             'is_open' => [
                 'name' => 'is_open',
-                'label' => $translator->translate('Additions open/closed'),
+                'label' => $translator->translate('Additions open/closed'), // @translate
                 'class' => 'resource-data item-sets',
             ],
             'item_set' => [
                 'name' => 'item_set',
                 'value' => 'internal_id',
-                'label' => $translator->translate('Item set [%s]'),
+                'label' => $translator->translate('Item set [%s]'), // @translate
                 'class' => 'resource-data item-sets',
             ],
             'item' => [
                 'name' => 'item',
                 'value' => 'internal_id',
-                'label' => $translator->translate('Item [%s]'),
+                'label' => $translator->translate('Item [%s]'), // @translate
                 'class' => 'resource-data items',
             ],
             'media' => [
                 'name' => 'media',
                 'value' => 'internal_id',
-                'label' => $translator->translate('Media [%s]'),
+                'label' => $translator->translate('Media [%s]'), // @translate
                 'class' => 'resource-data media',
             ],
             'media_source' => [
                 'name' => 'media_source',
                 'value' => null,
-                'label' => $translator->translate('Media source (%s)'),
+                'label' => $translator->translate('Media source [%s]'), // @translate
                 'class' => 'media-source',
             ],
             'user_name' => [
                 'name' => 'user_name',
-                'label' => $translator->translate('Display name'),
+                'label' => $translator->translate('Display name'), // @translate
                 'class' => 'user-name',
             ],
             'user_email' => [
                 'name' => 'user_email',
-                'label' => $translator->translate('Email'),
+                'label' => $translator->translate('Email'), // @translate
                 'class' => 'user-email',
             ],
             'user_role' => [
                 'name' => 'user_role',
-                'label' => $translator->translate('Role'),
+                'label' => $translator->translate('Role'), // @translate
                 'class' => 'user-role',
             ],
             'user_is_active' => [
                 'name' => 'user-is-active',
-                'label' => $translator->translate('User is active'),
+                'label' => $translator->translate('User is active'), // @translate
                 'class' => 'user-is-active',
             ],
         ];

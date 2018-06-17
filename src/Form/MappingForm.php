@@ -45,6 +45,16 @@ class MappingForm extends Form
         $this->addCommonElements();
 
         switch ($this->resourceType) {
+            case 'resources':
+                $this->addResourceElements();
+                // No rule for resources, so use item.
+                if ($acl->userIsAllowed(\Omeka\Entity\Item::class, 'change-owner')) {
+                    $this->addOwnerElement();
+                }
+                $this->addResourceGenericElements();
+                $this->addProcessElements();
+                $this->addAdvancedElements();
+                break;
             case 'item_sets':
                 $this->addResourceElements();
                 if ($acl->userIsAllowed(\Omeka\Entity\ItemSet::class, 'change-owner')) {
@@ -69,16 +79,6 @@ class MappingForm extends Form
                     $this->addOwnerElement();
                 }
                 $this->addMediaElements();
-                $this->addProcessElements();
-                $this->addAdvancedElements();
-                break;
-            case 'resources':
-                $this->addResourceElements();
-                // No rule for resources, so use item.
-                if ($acl->userIsAllowed(\Omeka\Entity\Item::class, 'change-owner')) {
-                    $this->addOwnerElement();
-                }
-                $this->addResourceGenericElements();
                 $this->addProcessElements();
                 $this->addAdvancedElements();
                 break;

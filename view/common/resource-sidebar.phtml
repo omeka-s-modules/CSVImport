@@ -8,110 +8,90 @@ $translate = $this->plugin('translate');
     <div class="collapsible">
         <span class="description"><?php echo $translate('Data from this column applies to the entire resource being imported. Settings here will override any corresponding settings in "Basic Settings".'); ?></span>
         <div class="resource-mapping mappings">
-            <?php
-            $resourceTypeLabels = [
-                'items' => $translate('Item'),
-                'item_sets' => $translate('Item set'),
-                'media' => $translate('Media'),
-                'resources' => $translate('Resources'),
-            ];
-            ?>
+            <?php $resourceTypeLabels = $form->getResourceTypeLabels(); ?>
             <div class="toggle-nav">
-                <button type="button" data-toggle-selector="#specific-data" class="toggle button active" disabled><?php echo $translate(sprintf('%s data', $resourceTypeLabels[$resourceType])); ?></button>
+                <button type="button" data-toggle-selector="#specific-data" class="toggle button active" disabled><?php echo $translate(sprintf('%s data', $translate($resourceTypeLabels[$resourceType]))); ?></button>
                 <button type="button" data-toggle-selector="#generic-data" class="toggle button"><?php echo $translate('Generic data'); ?></button>
             </div>
 
             <div id="specific-data" class="active toggle-view">
 
                 <?php if ($resourceType == 'resources'): ?>
+                <?php
+                $element = $form->get('data_resource_type_select');
+                $form->remove('data_resource_type_select');
+                ?>
                 <div class="resource-type-select">
-                    <label for="data-resource-type-select"><?php echo $translate('Resource type'); ?></label>
-                    <span class="description"><?php echo $translate('Set the resource type to get specific fields for it.'); ?></span>
-                    <select id="data-resource-type-select" name="data-resource-type-select">
-                        <option value="default"><?php echo $translate('Select below'); ?></option>
-                        <option value="items"><?php echo $translate('Item'); ?></option>
-                        <option value="item-sets"><?php echo $translate('Item set'); ?></option>
-                        <option value="media"><?php echo $translate('Media'); ?></option>
-                    </select>
+                    <?php echo $this->formLabel($element); ?>
+                    <span class="description"><?php echo $element->getOption('info'); ?></span>
+                    <?php echo $this->formElement($element); ?>
                 </div>
                 <?php endif; ?>
 
                 <?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
+                <?php
+                $element = $form->get('additions');
+                $form->remove('additions');
+                ?>
                 <div class="mapping additions item-sets">
-                    <label for="additions"><?php echo $translate('Open to additions'); ?></label>
-                    <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data item-sets" data-flag-name="column-is_open" data-flag-label="<?php echo $translate('Open to additions'); ?>" value="1">
+                    <?php echo $this->formLabel($element); ?>
+                    <?php echo $this->formElement($element); ?>
                 </div>
                 <?php endif; ?>
 
                 <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
+                <?php
+                $element = $form->get('column-item_set_property');
+                $form->remove('column-item_set_property');
+                ?>
                 <div class="mapping property items">
-                    <h4><?php echo $translate('Item set identifier'); ?></h4>
-                    <?php echo $this->propertySelect([
-                        'name' => 'column-item_set_property',
-                        'options' => [
-                            'empty_option' => $translate('Select below'),
-                            'prepend_value_options' => [
-                                'internal_id' => $translate('Internal id'),
-                            ],
-                            'term_as_value' => true,
-                        ],
-                        'attributes' => [
-                            'id' => 'column-item_set_property',
-                            'value' => $this->userSetting('csvimport_identifier_property', 'internal_id'),
-                            'class' => 'chosen-select',
-                            'data-placeholder' => $translate('Select the identifier below'),
-                            'data-flag-name' => 'column-item_set',
-                            'data-flag-class' => 'resource-data items',
-                            'data-flag-label' => $translate('Item set'),
-                        ],
-                    ]); ?>
+                    <?php echo $this->formLabel($element); ?>
+                    <?php echo $this->formElement($element); ?>
                 </div>
                 <?php endif; ?>
 
                 <?php if (empty($resourceType) || in_array($resourceType, ['media', 'resources'])): ?>
+                <?php
+                $element = $form->get('column-item_property');
+                $form->remove('column-item_property');
+                ?>
                 <div class="mapping property media">
-                    <h4><?php echo $translate('Item identifier'); ?></h4>
-                    <span class="description"><?php echo $translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
-                    <?php echo $this->propertySelect([
-                        'name' => 'column-item_property',
-                        'options' => [
-                            'empty_option' => $translate('Select below'),
-                            'prepend_value_options' => [
-                                'internal_id' => $translate('Internal id'),
-                            ],
-                            'term_as_value' => true,
-                        ],
-                        'attributes' => [
-                            'id' => 'column-item_property',
-                            'value' => $this->userSetting('csvimport_identifier_property', 'internal_id'),
-                            'class' => 'chosen-select',
-                            'data-placeholder' => $translate('Select the identifier below'),
-                            'data-flag-name' => 'column-item',
-                            'data-flag-class' => 'resource-data media',
-                            'data-flag-label' => $translate('Item'),
-                        ],
-                    ]); ?>
+                    <?php echo $this->formLabel($element); ?>
+                    <span class="description"><?php echo $element->getOption('info'); ?></span>
+                    <?php echo $this->formElement($element); ?>
                 </div>
                 <?php endif; ?>
             </div>
 
+            <?php
+            /** @var \Zend\Form\Element\Select $element */
+            $element = $form->get('resource_data');
+            $form->remove('resource_data');
+            ?>
             <div id="generic-data" class="toggle-view">
                 <div class="mapping">
-                    <select name="resource-data" class="flags" data-flag-class="resource-data" data-flag-label="<?php echo $translate('Data'); ?>">
-                        <option><?php echo $translate('Select below'); ?></option>
-                        <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
-                        <option value="1" data-flag-name="column-resource_type"><?php echo $translate('Resource type'); ?></option>
+                    <?php
+                    // A data "flag-name" should be added for each select option,
+                    // and the option value should be "1".
+                    // TODO Fix javascript to use a standard value without flag.
+                    // echo $this->formElement($element);
+                    ?>
+                    <select name="resource_data" class="flags" data-flag-class="resource-data" data-flag-label="<?php echo $translate('Data'); ?>">
+                    <?php foreach ($element->getValueOptions() as $key => $label): ?>
+                        <?php if (empty($key)): ?>
+                        <option><?php echo $label; ?></option>
+                        <?php else: ?>
+                        <option value="1" data-flag-name="<?php echo $key; ?>"><?php echo $label; ?></option>
                         <?php endif; ?>
-                        <option value="1" data-flag-name="column-resource"><?php echo $translate('Internal id'); ?></option>
-                        <option value="1" data-flag-name="column-resource_template"><?php echo $translate('Resource template name'); ?></option>
-                        <option value="1" data-flag-name="column-resource_class"><?php echo $translate('Resource class term'); ?></option>
-                        <?php if (in_array($userRole, ['global_admin', 'site_admin'])): ?>
-                        <option value="1" data-flag-name="column-owner_email"><?php echo $translate('Owner email address'); ?></option>
-                        <?php endif; ?>
-                        <option value="1" data-flag-name="column-is_public"><?php echo $translate('Visibility public/private'); ?></option>
+                    <?php endforeach; ?>
                     </select>
                 </div>
             </div>
+        </div>
+
+        <div>
+            <?php // Remaining elements (none by default). ?>
+            <?php echo $this->formCollection($form); ?>
         </div>
     </div>
 </div>

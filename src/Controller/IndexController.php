@@ -466,10 +466,10 @@ class IndexController extends AbstractActionController
         unset($args['language_by_default']);
         unset($args['value-language']);
         unset($args['multivalue']);
-        unset($args['resource-data']);
+        unset($args['resource_data']);
         unset($args['media-source']);
         unset($args['column-import']);
-        unset($args['data-resource-type-select']);
+        unset($args['data_resource_type_select']);
 
         return $args;
     }

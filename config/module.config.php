@@ -28,6 +28,7 @@ return [
         'factories' => [
             Form\ImportForm::class => Service\Form\ImportFormFactory::class,
             Form\MappingForm::class => Service\Form\MappingFormFactory::class,
+            Form\ResourceSidebarFieldset::class => Service\Form\ResourceSidebarFieldsetFactory::class,
         ],
     ],
     'controllers' => [
