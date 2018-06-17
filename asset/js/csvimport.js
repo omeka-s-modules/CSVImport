@@ -135,6 +135,20 @@
                 var flagInput = $(this);
                 var flagLiClass = flagInput.data('flag-class');
 
+                // If this is a specific resource data, process the inputs of
+                // the selected resource data inputs only, and remove the other
+                // inputs.
+                var isSpecificInput = flagInput.parents('#specific-data').length === 1;
+                var isSpecificInputForResourceType = false;
+                var specificResourceType;
+                if (isSpecificInput) {
+                    specificResourceType = $('#data-resource-type-select').val();
+                    isSpecificInputForResourceType = flagInput.closest('div').hasClass(specificResourceType);
+                }
+
+                // Note: the hidden data are not changed.
+                // TODO Good rebind of data when opened, so there will no issues with hidden data.
+
                 if (flagInput.is('select')) {
                     var flagLabel = flagInput.data('flag-label');
                     if (flagInput.hasClass('chosen-select')) {
@@ -149,9 +163,9 @@
 
                         // Show flag name instead of selected text for mapping using property selector.
                         if (flagInput.parents('.mapping').hasClass('property')) {
-                            var flagLabel = flagLabel + ' [' + flagValue + ']';
+                            flagLabel += ' [' + flagValue + ']';
                         } else {
-                            var flagLabel = flagLabel + ' [' + flagInput.chosen().text() + ']';
+                            flagLabel += ' [' + flagInput.chosen().text() + ']';
                         }
                     }
                     else {
@@ -161,24 +175,28 @@
                         var flagSelected = flagInput.find(':selected');
                         var flagValue = flagSelected.val();
                         var flagName = flagSelected.data('flag-name');
-                        var flagLabel = flagLabel + ' [' + flagSelected.text() + ']';
+                        flagLabel += ' [' + flagSelected.text() + ']';
                     }
 
+                    if (isSpecificInput && !isSpecificInputForResourceType) {
+                        flagValue = '';
+                    }
                     applyMappings(flagName, flagValue, flagLiClass, flagLabel);
                 }
 
                 if (flagInput.is('input[type=checkbox]')) {
-                    var flagName = flagInput.data('flag-name');
                     if (flagInput.parents('.toggle-view:hidden').length > 0) {
                         return;
                     }
                     var checkboxId = flagInput.attr('id');
-                    var flagName = $('label[for="' + checkboxId + '"]').text();
-                    var optionClass = '.' + flagInput.data('flag');
-                    if (flagInput.is(':checked')) {
-                        var flagValue = flagInput.val();
-                        applyMappings(flagName, flagValue, flagLiClass, flagName);
+                    var flagName = flagInput.data('flag-name');
+                    var flagLabel = $('label[for="' + checkboxId + '"]').text();
+                    if (isSpecificInput && !isSpecificInputForResourceType) {
+                        flagValue = '';
+                    } else {
+                        flagValue = flagInput.is(':checked') ? '1' : '';
                     }
+                    applyMappings(flagName, flagValue, flagLiClass, flagLabel);
                 }
             });
 
@@ -207,31 +225,34 @@
             });
 
             function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
-                var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
-                if (flagValue == 'default') {
+                // There may be multiple classes, so the search requires a "." between each class.
+                var flagLiClassFind = '.' + flagLiClass.replace(/ /g, '.');
+                var hasFlag = activeElement.find('ul.mappings li' + flagLiClassFind);
+                if (flagValue === 'default' || flagValue === '') {
                     if (hasFlag.length) {
                         hasFlag.remove();
-                    } else {
-                        return;
                     }
+                    return;
                 }
+
                 if (hasFlag.length) {
                     var flagUnique = (flagLiClass === 'resource-data')
+                        || (flagLiClass.indexOf('resource-data') >= 0)
                         || (flagLiClass === 'media-source')
                         || (flagLiClass === 'user-data');
                     if (flagUnique){
-                        activeElement.find('ul.mappings .' + flagLiClass).remove();
-                        hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
+                        activeElement.find('ul.mappings ' + flagLiClassFind).remove();
+                        hasFlag = activeElement.find('ul.mappings li' + flagLiClassFind);
                     }
                 }
 
-                if (hasFlag.length === 0) {
+                if (hasFlag.length === 0 && flagName) {
                     var index = activeElement.data('element-id');
                     flagName = flagName + "[" + index + "]";
                     var newInput = $('<input type="hidden"></input>').attr('name', flagName).attr('value', flagValue);
                     var newMappingLi = $('<li class="mapping ' + flagLiClass + '">' + flagLabel  + actionsHtml  + '</li>');
                     newMappingLi.append(newInput);
-                    var existingMappingLi = activeElement.find('ul.mappings .' + flagLiClass).filter(':last');
+                    var existingMappingLi = activeElement.find('ul.mappings ' + flagLiClassFind).filter(':last');
                     if (existingMappingLi.length) {
                         existingMappingLi.after(newMappingLi);
                     } else {

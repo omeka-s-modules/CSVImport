@@ -469,6 +469,7 @@ class IndexController extends AbstractActionController
         unset($args['resource-data']);
         unset($args['media-source']);
         unset($args['column-import']);
+        unset($args['data-resource-type-select']);
 
         return $args;
     }

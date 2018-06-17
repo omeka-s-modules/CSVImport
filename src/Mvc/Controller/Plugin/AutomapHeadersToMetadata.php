@@ -376,25 +376,25 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
             'is_open' => [
                 'name' => 'is_open',
                 'label' => $translator->translate('Additions open/closed'),
-                'class' => 'resource-data',
+                'class' => 'resource-data item-sets',
             ],
             'item_set' => [
                 'name' => 'item_set',
                 'value' => 'internal_id',
                 'label' => $translator->translate('Item set [%s]'),
-                'class' => 'resource-data',
+                'class' => 'resource-data item-sets',
             ],
             'item' => [
                 'name' => 'item',
                 'value' => 'internal_id',
                 'label' => $translator->translate('Item [%s]'),
-                'class' => 'resource-data',
+                'class' => 'resource-data items',
             ],
             'media' => [
                 'name' => 'media',
                 'value' => 'internal_id',
                 'label' => $translator->translate('Media [%s]'),
-                'class' => 'resource-data',
+                'class' => 'resource-data media',
             ],
             'media_source' => [
                 'name' => 'media_source',

@@ -25,7 +25,8 @@ $translate = $this->plugin('translate');
 
                 <?php if ($resourceType == 'resources'): ?>
                 <div class="resource-type-select">
-                    <label for="data-resource-type-select"><?php echo $translate('Associated resource type'); ?></label>
+                    <label for="data-resource-type-select"><?php echo $translate('Resource type'); ?></label>
+                    <span class="description"><?php echo $translate('Set the resource type to get specific fields for it.'); ?></span>
                     <select id="data-resource-type-select" name="data-resource-type-select">
                         <option value="default"><?php echo $translate('Select below'); ?></option>
                         <option value="items"><?php echo $translate('Item'); ?></option>
@@ -38,13 +39,13 @@ $translate = $this->plugin('translate');
                 <?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
                 <div class="mapping additions item-sets">
                     <label for="additions"><?php echo $translate('Open to additions'); ?></label>
-                    <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data" data-flag-name="column-is_open" data-flag-label="<?php echo $translate('Open to additions'); ?>" value="1">
+                    <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data item-sets" data-flag-name="column-is_open" data-flag-label="<?php echo $translate('Open to additions'); ?>" value="1">
                 </div>
                 <?php endif; ?>
 
                 <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
                 <div class="mapping property items">
-                    <h4><?php echo $translate('Item set property'); ?></h4>
+                    <h4><?php echo $translate('Item set identifier'); ?></h4>
                     <?php echo $this->propertySelect([
                         'name' => 'column-item_set_property',
                         'options' => [
@@ -60,7 +61,7 @@ $translate = $this->plugin('translate');
                             'class' => 'chosen-select',
                             'data-placeholder' => $translate('Select the identifier below'),
                             'data-flag-name' => 'column-item_set',
-                            'data-flag-class' => 'resource-data',
+                            'data-flag-class' => 'resource-data items',
                             'data-flag-label' => $translate('Item set'),
                         ],
                     ]); ?>
@@ -69,7 +70,7 @@ $translate = $this->plugin('translate');
 
                 <?php if (empty($resourceType) || in_array($resourceType, ['media', 'resources'])): ?>
                 <div class="mapping property media">
-                    <h4><?php echo $translate('Item property'); ?></h4>
+                    <h4><?php echo $translate('Item identifier'); ?></h4>
                     <span class="description"><?php echo $translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
                     <?php echo $this->propertySelect([
                         'name' => 'column-item_property',
@@ -86,7 +87,7 @@ $translate = $this->plugin('translate');
                             'class' => 'chosen-select',
                             'data-placeholder' => $translate('Select the identifier below'),
                             'data-flag-name' => 'column-item',
-                            'data-flag-class' => 'resource-data',
+                            'data-flag-class' => 'resource-data media',
                             'data-flag-label' => $translate('Item'),
                         ],
                     ]); ?>
