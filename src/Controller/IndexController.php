@@ -188,8 +188,6 @@ class IndexController extends AbstractActionController
         // so fill the form with the user settings.
         if (!$request->isPost()) {
             $data = [];
-            $data['global_language'] = $userSettings->get('csvimport_global_language',
-                $this->config['csv_import']['user_settings']['csvimport_global_language']);
             $data['advanced-settings']['identifier_property'] = $userSettings->get('csvimport_identifier_property',
                 $this->config['csv_import']['user_settings']['csvimport_identifier_property']);
             $data['advanced-settings']['rows_by_batch'] = $userSettings->get('csvimport_rows_by_batch',
@@ -198,6 +196,10 @@ class IndexController extends AbstractActionController
                 $this->config['csv_import']['user_settings']['csvimport_multivalue_separator']);
             $data['multivalue_by_default'] = $userSettings->get('csvimport_multivalue_by_default',
                 $this->config['csv_import']['user_settings']['csvimport_multivalue_by_default']);
+            $data['language'] = $userSettings->get('csvimport_language',
+                $this->config['csv_import']['user_settings']['csvimport_language']);
+            $data['language_by_default'] = $userSettings->get('csvimport_language_by_default',
+                $this->config['csv_import']['user_settings']['csvimport_language_by_default']);
             $form->setData($data);
             return $view;
         }
@@ -218,11 +220,12 @@ class IndexController extends AbstractActionController
         unset($parameters['columns']);
         $args = $parameters + $this->cleanArgs($post);
 
-        $userSettings->set('csvimport_global_language', $args['global_language']);
         $userSettings->set('csvimport_rows_by_batch', $args['advanced-settings']['rows_by_batch']);
-        $userSettings->set('csvimport_identifier_property', $args['advanced-settings']['csvimport_identifier_property']);
-        $userSettings->set('csvimport_multivalue_separator', $args['multivalue_separator']);
-        $userSettings->set('csvimport_multivalue_by_default', $args['multivalue_by_default']);
+        $userSettings->set('csvimport_identifier_property', $args['advanced-settings']['identifier_property']);
+        $userSettings->set('csvimport_multivalue_separator', $post['multivalue_separator']);
+        $userSettings->set('csvimport_multivalue_by_default', $post['multivalue_by_default']);
+        $userSettings->set('csvimport_language', $args['language']);
+        $userSettings->set('csvimport_language_by_default', $args['language_by_default']);
 
         $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);

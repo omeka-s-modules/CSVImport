@@ -36,10 +36,15 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <fieldset id="resource-fieldset" class="section active">
     <?php
     // Render some form elements in a different tab.
-    $elementMultivalueByDefault = $form->get('multivalue_by_default');
-    $form->remove('multivalue_by_default');
-    $elementMultivalueSeparator = $form->get('multivalue_separator');
+    $elementsMap = [];
+    $elementsMap['multivalue_separator'] = $form->get('multivalue_separator');
     $form->remove('multivalue_separator');
+    $elementsMap['multivalue_by_default'] = $form->get('multivalue_by_default');
+    $form->remove('multivalue_by_default');
+    $elementsMap['language'] = $form->get('language');
+    $form->remove('language');
+    $elementsMap['language_by_default'] = $form->get('language_by_default');
+    $form->remove('language_by_default');
     $fieldsetAdvanced = $form->get('advanced-settings');
     $form->remove('advanced-settings');
     echo $this->formCollection($form);
@@ -131,18 +136,34 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
     </table>
     <div class="field">
         <div class="field-meta">
-            <?php echo $this->formLabel($elementMultivalueSeparator); ?>
+            <?php echo $this->formLabel($elementsMap['multivalue_separator']); ?>
         </div>
         <div class="inputs">
-            <?php echo $this->formText($elementMultivalueSeparator); ?>
+            <?php echo $this->formText($elementsMap['multivalue_separator']); ?>
         </div>
     </div>
     <div class="field">
         <div class="field-meta">
-            <?php echo $this->formLabel($elementMultivalueByDefault); ?>
+            <?php echo $this->formLabel($elementsMap['multivalue_by_default']); ?>
         </div>
         <div class="inputs">
-            <?php echo $this->formCheckbox($elementMultivalueByDefault); ?>
+            <?php echo $this->formCheckbox($elementsMap['multivalue_by_default']); ?>
+        </div>
+    </div>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($elementsMap['language']); ?>
+        </div>
+        <div class="inputs">
+            <?php echo $this->formText($elementsMap['language']); ?>
+        </div>
+    </div>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($elementsMap['language_by_default']); ?>
+        </div>
+        <div class="inputs">
+            <?php echo $this->formCheckbox($elementsMap['language_by_default']); ?>
         </div>
     </div>
     <?php echo $this->partial('common/mapping-sidebar'); ?>

@@ -15,8 +15,7 @@ $translate = $this->plugin('translate');
 
         <div class="language option">
             <label for="value-language"><?php echo $translate('Language'); ?></label>
-            <span class="description"><?php echo $translate('This will override language settings in basic import settings.'); ?></span>
-            <input id="value-language" class="value-language active" type="text">
+            <input id="value-language" data-column-option="column-language" class="value-language active" type="text">
         </div>
 
         <div class="import option">

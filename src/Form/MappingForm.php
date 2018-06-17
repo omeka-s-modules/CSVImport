@@ -333,15 +333,27 @@ class MappingForm extends Form
         ]);
 
         $this->add([
-            'name' => 'global_language',
+            'name' => 'language',
             'type' => Element\Text::class,
             'options' => [
                 'label' => 'Language', // @translate
                 'info' => 'Language setting to apply to all imported literal data. Individual property mappings can override the setting here.', // @translate
             ],
             'attributes' => [
-                'id' => 'global_language',
+                'id' => 'language',
                 'class' => 'input-body value-language',
+            ],
+        ]);
+
+        $this->add([
+            'name' => 'language_by_default',
+            'type' => Element\Checkbox::class,
+            'options' => [
+                'label' => 'Use this language for all columns', // @translate
+                'info' => 'Allows to set or reset the default language for all columns.', // @translate
+            ],
+            'attributes' => [
+                'id' => 'language_by_default',
             ],
         ]);
     }

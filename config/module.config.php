@@ -163,9 +163,10 @@ return [
             'csvimport_enclosure' => '"',
             'csvimport_multivalue_separator' => ',',
             'csvimport_multivalue_by_default' => false,
-            'csvimport_rows_by_batch' => 20,
-            'csvimport_global_language' => '',
+            'csvimport_language' => '',
+            'csvimport_language_by_default' => false,
             'csvimport_identifier_property' => '',
+            'csvimport_rows_by_batch' => 20,
             'csvimport_automap_by_label' => false,
             'csvimport_automap_check_user_list' => false,
             'csvimport_automap_user_list' => [

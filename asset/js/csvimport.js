@@ -1,5 +1,7 @@
 /**
  * Initially based on Omeka S omeka2importer.js and resource-core.js.
+ *
+ * @todo Remove dead code (now, the options (wrench) are directly set).
  */
 (function ($) {
 
@@ -18,6 +20,7 @@
             + '</ul>';
 
         setMultivalueSeparatorByDefault();
+        setLanguageByDefault();
 
         /*
          * Basic import settings tab.
@@ -305,26 +308,6 @@
             sidebar.html(defaultSidebarHtml);
         });
 
-        // Set/unset multivalue separator for all columns.
-        $(document).on('change', '#multivalue_by_default', function(e) {
-            setMultivalueSeparatorByDefault();
-        });
-
-        function setMultivalueSeparatorByDefault() {
-            var multivalueSwitch = $('#multivalue_by_default').prop('checked');
-            var targetRows = $('.element.mappable li.column-multivalue');
-            targetRows.removeClass('delete');
-            targetRows.find('.remove-option').css({ display: 'inline' });
-            targetRows.find('.restore-option').css({ display: 'none' });
-            if (multivalueSwitch) {
-                $('.element.mappable').find('li.column-multivalue').show();
-                $('.element.mappable').find('input.column-multivalue').prop('disabled', false);
-            } else {
-                $('.element.mappable').find('li.column-multivalue').hide();
-                $('.element.mappable').find('input.column-multivalue').prop('disabled', true);
-            }
-        }
-
         /*
          * Actions on mapped columns.
          */
@@ -380,6 +363,135 @@
             optionToRestore.removeClass('delete');
             optionToRestore.find('.remove-option').show();
             optionToRestore.find('.restore-option').hide();
+        });
+
+        /**
+         * Manage options via a direct update of the mapping.
+         */
+
+        // Set/unset multivalue separator for all columns.
+        $(document).on('change', '#multivalue_by_default', function(e) {
+            setMultivalueSeparatorByDefault();
+        });
+
+        function setMultivalueSeparatorByDefault() {
+            var switcher = $('#multivalue_by_default').prop('checked');
+            var targetRows = $('.element.mappable li.column-multivalue');
+            targetRows.removeClass('delete');
+            targetRows.find('.remove-option').css({ display: 'inline' });
+            targetRows.find('.restore-option').css({ display: 'none' });
+            var element = $('.element.mappable');
+            if (switcher) {
+                element.find('li.column-multivalue').show();
+                element.find('input.column-multivalue').prop('disabled', false);
+            } else {
+                element.find('li.column-multivalue').hide();
+                element.find('input.column-multivalue').prop('disabled', true);
+            }
+        }
+
+        // Set/unset default language for all columns.
+        $(document).on('change', '#language_by_default', function(e) {
+            setLanguageByDefault();
+        });
+
+        function setLanguageByDefault() {
+            var switcher = $('#language_by_default').prop('checked');
+            var element = $('.element.mappable');
+            var lang = $('#language').val();
+            var targetRows = $('.element.mappable li.column-language');
+            targetRows.removeClass('delete');
+            targetRows.find('.remove-option').css({ display: 'inline' });
+            targetRows.find('.restore-option').css({ display: 'none' });
+            if (switcher && lang !== '' && Omeka.langIsValid(lang)) {
+                element.find('li.column-language').show();
+                element.find('.column-language span.column-language').text(lang);
+                element.find('input.column-language').prop('disabled', false);
+                element.find('input.column-language').val(lang);
+            } else {
+                element.find('li.column-language').hide();
+                element.find('.column-language span.column-language').text('');
+                element.find('input.column-language').prop('disabled', true);
+                element.find('input.column-language').val('');
+            }
+        }
+
+        $(document).on('click', '.o-icon-configure.sidebar-content', function(){
+            var multivalueCheck = false;
+            if ($('#content').find('.element.mappable.active').find('.column-multivalue.option').css('display') != 'none') {
+                multivalueCheck = true;
+            }
+            if (multivalueCheck) {
+                $("#multivalue").prop('checked', true);
+            } else {
+                $("#multivalue").prop('checked', false);
+            }
+
+            var lang = $('#content').find('.element.mappable.active').find('.column-language.option span.column-language').text();
+            $('#value-language').val(lang);
+
+            var importType = $('#content').find('.element.mappable.active').find('.column-import.option span.option-label').text();
+            if (importType == '') {
+                $('#column-import').val('default');
+            } else if (importType == Omeka.jsTranslate('Import as URL reference')) {
+                $('#column-import').val('column-url');
+            } else if (importType == Omeka.jsTranslate('Import as Omeka S resource ID')) {
+                $('#column-import').val('column-reference');
+            }
+        });
+
+        $(document).on('change', '#multivalue', function(){
+            var checked = $(this).prop('checked');
+            var element = $('#content').find('.element.mappable.active');
+            if (checked) {
+                element.find('li.column-multivalue').show();
+                element.find('input.column-multivalue').prop('disabled', false);
+            } else {
+                element.find('li.column-multivalue').hide();
+                element.find('input.column-multivalue').prop('disabled', true);
+            }
+        });
+
+        $(document).on('keyup', '#value-language', function(){
+            var lang = $(this).val();
+            var element = $('#content').find('.element.mappable.active');
+            if (lang !== '' && Omeka.langIsValid(lang)) {
+                this.setCustomValidity('');
+                element.find('li.column-language').show();
+                element.find('.column-language span.column-language').text(lang);
+                element.find('input.column-language').prop('disabled', false);
+                element.find('input.column-language').val(lang);
+            } else {
+                if (lang === '') {
+                    this.setCustomValidity('');
+                } else {
+                    this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
+                }
+                element.find('li.column-language').hide();
+                element.find('.column-language span.column-language').text('');
+                element.find('input.column-language').prop('disabled', true);
+                element.find('input.column-language').val('');
+            }
+        });
+
+        $(document).on('change', '#column-import', function(){
+            var importType = $(this).val();
+            var element = $('#content').find('.element.mappable.active');
+            if (importType === 'default') {
+                element.find('.column-import.option').hide();
+                element.find('.column-import.option .column-url').prop('disabled', true);
+                element.find('.column-import.option .column-reference').prop('disabled', true);
+            } else if (importType == 'column-url') {
+                element.find('.column-import.option').show();
+                element.find('.column-import.option .option-label').text(Omeka.jsTranslate('Import as URL reference'));
+                element.find('.column-import.option .column-url').prop('disabled', false);
+                element.find('.column-import.option .column-reference').prop('disabled', true);
+            } else if (importType == 'column-reference') {
+                element.find('.column-import.option').show();
+                element.find('.column-import.option .option-label').text(Omeka.jsTranslate('Import as Omeka S resource ID'));
+                element.find('.column-import.option .column-url').prop('disabled', true);
+                element.find('.column-import.option .column-reference').prop('disabled', false);
+            }
         });
 
         /*

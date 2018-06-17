@@ -46,7 +46,8 @@ class PropertyMapping extends AbstractMapping
         }
 
         // Get default option values.
-        $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
+        // Language is no more a default value, but used only for the form.
+        // $language = isset($this->args['language']) ? $this->args['language'] : '';
 
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
         $multivalueSeparator = $this->args['multivalue_separator'];
@@ -94,11 +95,13 @@ class PropertyMapping extends AbstractMapping
                                     'property_id' => $propertyId,
                                     'type' => $type,
                                 ];
-                                if ($globalLanguage !== '') {
-                                    $literalPropertyJson['@language'] = $globalLanguage;
+                                /*
+                                if ($language !== '') {
+                                    $literalPropertyJson['@language'] = $language;
                                 }
-                                if (isset($languageSettings[$index])) {
-                                    $literalPropertyJson['@language'] = $languageSettings[$index];
+                                */
+                                if (!empty($languageMap[$index])) {
+                                    $literalPropertyJson['@language'] = $languageMap[$index];
                                 }
                                 $data[$propertyTerm][] = $literalPropertyJson;
                                 break;

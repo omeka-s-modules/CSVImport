@@ -43,6 +43,9 @@ WHERE `id` LIKE 'csv_import_%';
 UPDATE `user_setting`
 SET `id` = 'csvimport_automap_by_label'
 WHERE `id` = 'csvimport_automap_check_names_alone';
+UPDATE `user_setting`
+SET `id` = 'csvimport_language'
+WHERE `id` = 'csvimport_global_language';
 SQL;
     $sqls = array_filter(array_map('trim', explode(';', $sql)));
     foreach ($sqls as $sql) {
