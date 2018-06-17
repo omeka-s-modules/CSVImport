@@ -365,8 +365,8 @@ class MappingForm extends Form
                 'id' => 'multivalue_separator',
                 'class' => 'input-body',
                 'value' => $userSettings->get(
-                    'csv_import_multivalue_separator',
-                    $default['csv_import_multivalue_separator']),
+                    'csvimport_multivalue_separator',
+                    $default['csvimport_multivalue_separator']),
             ],
         ]);
 
@@ -380,8 +380,8 @@ class MappingForm extends Form
             'attributes' => [
                 'id' => 'multivalue_by_default',
                 'value' => (int) (bool) $userSettings->get(
-                    'csv_import_multivalue_by_default',
-                    $default['csv_import_multivalue_by_default']),
+                    'csvimport_multivalue_by_default',
+                    $default['csvimport_multivalue_by_default']),
             ],
         ]);
 
@@ -396,8 +396,8 @@ class MappingForm extends Form
                 'id' => 'global_language',
                 'class' => 'input-body value-language',
                 'value' => $userSettings->get(
-                    'csv_import_global_language',
-                    $default['csv_import_global_language']),
+                    'csvimport_global_language',
+                    $default['csvimport_global_language']),
             ],
         ]);
     }
@@ -462,8 +462,8 @@ class MappingForm extends Form
             ],
             'attributes' => [
                 'value' => $userSettings->get(
-                    'csv_import_identifier_property',
-                    $default['csv_import_identifier_property']),
+                    'csvimport_identifier_property',
+                    $default['csvimport_identifier_property']),
                 'class' => 'advanced-settings chosen-select',
                 'data-placeholder' => 'Select a property', // @translate
             ],
@@ -496,8 +496,8 @@ class MappingForm extends Form
             ],
             'attributes' => [
                 'value' => $userSettings->get(
-                    'csv_import_rows_by_batch',
-                    $default['csv_import_rows_by_batch']),
+                    'csvimport_rows_by_batch',
+                    $default['csvimport_rows_by_batch']),
                 'class' => 'advanced-settings',
                 'min' => '1',
                 'step' => '1',

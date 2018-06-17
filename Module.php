@@ -70,17 +70,6 @@ SQL;
 
     public function upgrade($oldVersion, $newVersion, ServiceLocatorInterface $serviceLocator)
     {
-        if (version_compare($oldVersion, '1.1.1-rc.1', '<')) {
-            $connection = $serviceLocator->get('Omeka\Connection');
-            $sql = <<<'SQL'
-ALTER TABLE csvimport_import ADD stats LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)';
-UPDATE csvimport_import SET stats = CONCAT('{"processed":{"', resource_type, '":', added_count, '}}');
-ALTER TABLE csvimport_import DROP added_count;
-SQL;
-            $sqls = array_filter(array_map('trim', explode(';', $sql)));
-            foreach ($sqls as $sql) {
-                $connection->exec($sql);
-            }
-        }
+        require_once 'data/scripts/upgrade.php';
     }
 }

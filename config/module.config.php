@@ -180,16 +180,16 @@ return [
         'automapping' => [
         ],
         'user_settings' => [
-            'csv_import_delimiter' => ',',
-            'csv_import_enclosure' => '"',
-            'csv_import_multivalue_separator' => ',',
-            'csv_import_multivalue_by_default' => false,
-            'csv_import_rows_by_batch' => 20,
-            'csv_import_global_language' => '',
-            'csv_import_identifier_property' => '',
-            'csv_import_automap_check_names_alone' => false,
-            'csv_import_automap_check_user_list' => false,
-            'csv_import_automap_user_list' => [
+            'csvimport_delimiter' => ',',
+            'csvimport_enclosure' => '"',
+            'csvimport_multivalue_separator' => ',',
+            'csvimport_multivalue_by_default' => false,
+            'csvimport_rows_by_batch' => 20,
+            'csvimport_global_language' => '',
+            'csvimport_identifier_property' => '',
+            'csvimport_automap_check_names_alone' => false,
+            'csvimport_automap_check_user_list' => false,
+            'csvimport_automap_user_list' => [
                 'owner' => 'owner_email',
                 'owner email' => 'owner_email',
                 'id' => 'internal_id',

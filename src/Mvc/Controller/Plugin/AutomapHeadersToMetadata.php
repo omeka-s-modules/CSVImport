@@ -44,7 +44,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
 
         // Set the default automapping from the config if not set.
         if (!isset($options['automap_list'])) {
-            $options['automap_list'] = $this->configCsvImport['user_settings']['csv_import_automap_user_list'];
+            $options['automap_list'] = $this->configCsvImport['user_settings']['csvimport_automap_user_list'];
         }
 
         $this->options = $options;

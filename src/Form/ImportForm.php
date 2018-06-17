@@ -71,8 +71,8 @@ class ImportForm extends Form
         // use them differently later
 
         $valueParameters = $this->getDelimiterList();
-        //$value = $this->userSettings->get('csv_import_delimiter', $defaults['csv_import_delimiter']);
-        $value = $defaults['csv_import_delimiter'];
+        //$value = $this->userSettings->get('csvimport_delimiter', $defaults['csvimport_delimiter']);
+        $value = $defaults['csvimport_delimiter'];
         $this->add([
             'name' => 'delimiter',
             'type' => Element\Select::class,
@@ -87,8 +87,8 @@ class ImportForm extends Form
         ]);
 
         $valueParameters = $this->getEnclosureList();
-        //$value = $this->userSettings->get('csv_import_enclosure', $defaults['csv_import_enclosure']);
-        $value = $defaults['csv_import_enclosure'];
+        //$value = $this->userSettings->get('csvimport_enclosure', $defaults['csvimport_enclosure']);
+        $value = $defaults['csvimport_enclosure'];
         $this->add([
             'name' => 'enclosure',
             'type' => Element\Select::class,
@@ -132,10 +132,10 @@ class ImportForm extends Form
                 'id' => 'automap_check_names_alone',
                 /*
                 'value' => (int) (bool) $this->userSettings->get(
-                    'csv_import_automap_check_names_alone',
-                    $defaults['csv_import_automap_check_names_alone']),
+                    'csvimport_automap_check_names_alone',
+                    $defaults['csvimport_automap_check_names_alone']),
                 */
-                'value' => (int) (bool) $defaults['csv_import_automap_check_names_alone'],
+                'value' => (int) (bool) $defaults['csvimport_automap_check_names_alone'],
             ],
         ]);
 
