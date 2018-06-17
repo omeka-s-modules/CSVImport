@@ -237,6 +237,14 @@ abstract class AbstractResourceMapping extends AbstractMapping
             foreach ($values as $identifier) {
                 $resourceId = $findResourceFromIdentifier($identifier, $identifierProperty, $resourceType);
                 if ($resourceId) {
+                    // Check if the item is already linked to the item set to
+                    // avoid to assign the same item set two times and to
+                    // avoid a crash on old versions of Omeka (< 1.2).
+                    foreach ($data['o:item_set'] as $itemSet) {
+                        if ($itemSet['o:id'] == $resourceId) {
+                            continue 2;
+                        }
+                    }
                     $data['o:item_set'][] = ['o:id' => $resourceId];
                 } else {
                     $this->logger->err(new Message('"%s" (%s) is not a valid item set.', // @translate
