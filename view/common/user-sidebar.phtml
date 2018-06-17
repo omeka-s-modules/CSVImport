@@ -6,7 +6,7 @@ $translate = $this->plugin('translate');
         <h4><?php echo $translate('Users info'); ?></h4>
     </a>
     <div class="collapsible">
-        <select data-flag-class="user-data" data-flag-label="">
+        <select data-flag-class="user-data" data-flag-unique="1" data-flag-label="">
             <option value="default"><?php echo $translate('Select below'); ?></option>
             <option value="1" data-flag-name="column-user_email"><?php echo $translate('Email'); ?></option>
             <option value="1" data-flag-name="column-user_name"><?php echo $translate('Display name'); ?></option>

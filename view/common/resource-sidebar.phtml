@@ -76,7 +76,7 @@ $translate = $this->plugin('translate');
                     // TODO Fix javascript to use a standard value without flag.
                     // echo $this->formElement($element);
                     ?>
-                    <select name="resource_data" class="flags" data-flag-class="resource-data" data-flag-label="<?php echo $translate('Data'); ?>">
+                    <select name="resource_data" class="flags" data-flag-class="resource-data" data-flag-unique="1" data-flag-label="<?php echo $translate('Data'); ?>">
                     <?php foreach ($element->getValueOptions() as $key => $label): ?>
                         <?php if (empty($key)): ?>
                         <option><?php echo $label; ?></option>

@@ -121,6 +121,7 @@ class ResourceSidebarFieldset extends Fieldset
                 'id' => 'additions',
                 'value' => '0',
                 'data-flag-class' => 'resource-data item-sets',
+                'data-flag-unique' => '1',
                 'data-flag-name' => 'column-is_open',
                 'data-flag-label' => $translate('Open to additions'), // @translate
             ]
@@ -150,6 +151,7 @@ class ResourceSidebarFieldset extends Fieldset
                 'data-placeholder' => $translate('Select the identifier below'), // @translate
                 'data-flag-name' => 'column-item_set',
                 'data-flag-class' => 'resource-data items',
+                'data-flag-unique' => '1',
                 'data-flag-label' => $translate('Item set'), // @translate
             ],
         ]);
@@ -179,6 +181,7 @@ class ResourceSidebarFieldset extends Fieldset
                 'data-placeholder' => $translate('Select the identifier below'), // @translate
                 'data-flag-name' => 'column-item',
                 'data-flag-class' => 'resource-data media',
+                'data-flag-unique' => '1',
                 'data-flag-label' => $translate('Item'), // @translate
             ],
         ]);
@@ -214,6 +217,7 @@ class ResourceSidebarFieldset extends Fieldset
                 'id' => 'resource_data',
                 'class' => 'flags',
                 'data-flag-class' => 'resource-data',
+                'data-flag-unique' => '1',
                 'data-flag-label' => $translate('Data'), // @translate
             ],
         ]);

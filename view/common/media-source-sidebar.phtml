@@ -6,7 +6,7 @@ $translate = $this->plugin('translate');
         <h4><?php echo $translate('Media source'); ?></h4>
     </a>
     <div class="collapsible">
-        <select name="media-source" data-flag-class="media-source" data-flag-label="<?php echo $translate('Media source'); ?>">
+        <select name="media-source" data-flag-class="media-source" data-flag-unique="1" data-flag-label="<?php echo $translate('Media source'); ?>">
             <option value="default"><?php echo $translate('Select below'); ?></option>
             <?php foreach($mediaForms as $type=>$mediaForm): ?>
             <option data-flag-name="column-media_source" value="<?php echo $type; ?>"><?php echo $mediaForm['label']; ?></option>

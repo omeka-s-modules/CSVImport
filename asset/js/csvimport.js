@@ -22,9 +22,9 @@
         setMultivalueSeparatorByDefault();
         setLanguageByDefault();
 
-        /*
-         * Rebinding chosen selects and property selector after sidebar hydration.
-         */
+         /*
+          * Rebinding chosen selects and property selector after sidebar hydration.
+          */
 
          function rebindInputs(sidebar) {
               // Remove old chosen html and rebind event.
@@ -134,6 +134,7 @@
             sidebar.find('[data-flag-class]').each(function() {
                 var flagInput = $(this);
                 var flagLiClass = flagInput.data('flag-class');
+                var flagUnique = flagInput.data('flag-unique') == '1';
 
                 // If this is a specific resource data, process the inputs of
                 // the selected resource data inputs only, and remove the other
@@ -181,7 +182,7 @@
                     if (isSpecificInput && !isSpecificInputForResourceType) {
                         flagValue = '';
                     }
-                    applyMappings(flagName, flagValue, flagLiClass, flagLabel);
+                    applyMappings(flagName, flagValue, flagLiClass, flagLabel, flagUnique);
                 }
 
                 if (flagInput.is('input[type=checkbox]')) {
@@ -196,7 +197,7 @@
                     } else {
                         flagValue = flagInput.is(':checked') ? '1' : '';
                     }
-                    applyMappings(flagName, flagValue, flagLiClass, flagLabel);
+                    applyMappings(flagName, flagValue, flagLiClass, flagLabel, flagUnique);
                 }
             });
 
@@ -224,7 +225,7 @@
                 targetLi.removeClass('selected');
             });
 
-            function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
+            function applyMappings(flagName, flagValue, flagLiClass, flagLabel, flagUnique) {
                 // There may be multiple classes, so the search requires a "." between each class.
                 var flagLiClassFind = '.' + flagLiClass.replace(/ /g, '.');
                 var hasFlag = activeElement.find('ul.mappings li' + flagLiClassFind);
@@ -236,10 +237,6 @@
                 }
 
                 if (hasFlag.length) {
-                    var flagUnique = (flagLiClass === 'resource-data')
-                        || (flagLiClass.indexOf('resource-data') >= 0)
-                        || (flagLiClass === 'media-source')
-                        || (flagLiClass === 'user-data');
                     if (flagUnique){
                         activeElement.find('ul.mappings ' + flagLiClassFind).remove();
                         hasFlag = activeElement.find('ul.mappings li' + flagLiClassFind);
