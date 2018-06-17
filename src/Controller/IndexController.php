@@ -105,6 +105,11 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('admin/csvimport');
         }
 
+        if (empty($post['source']['tmp_name'])) {
+            $this->messenger()->addError('The file is not loaded.'); // @translate
+            return $this->redirect()->toRoute('admin/csvimport');
+        }
+
         $source = $this->getSource($post['source']);
         if (empty($source)) {
             $this->messenger()->addError('The format of the source cannot be detected.'); // @translate
@@ -192,6 +197,10 @@ class IndexController extends AbstractActionController
      */
     protected function getSource(array $fileData)
     {
+        if (empty($fileData['tmp_name'])) {
+            return;
+        }
+
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mediaType = $finfo->file($fileData['tmp_name']);
 
