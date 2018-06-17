@@ -50,8 +50,6 @@ class ImportForm extends Form
 
         $this->setAttribute('action', 'csvimport/map');
 
-        $defaults = $this->configCsvImport['user_settings'];
-
         $this->add([
             'name' => 'source',
             'type' => Element\File::class,
@@ -71,8 +69,6 @@ class ImportForm extends Form
         // use them differently later
 
         $valueParameters = $this->getDelimiterList();
-        //$value = $this->userSettings->get('csvimport_delimiter', $defaults['csvimport_delimiter']);
-        $value = $defaults['csvimport_delimiter'];
         $this->add([
             'name' => 'delimiter',
             'type' => Element\Select::class,
@@ -82,13 +78,11 @@ class ImportForm extends Form
                 'value_options' => $valueParameters,
             ],
             'attributes' => [
-                'value' => $this->integrateParameter($value),
+                'id' => 'delimiter',
             ],
         ]);
 
         $valueParameters = $this->getEnclosureList();
-        //$value = $this->userSettings->get('csvimport_enclosure', $defaults['csvimport_enclosure']);
-        $value = $defaults['csvimport_enclosure'];
         $this->add([
             'name' => 'enclosure',
             'type' => Element\Select::class,
@@ -98,7 +92,7 @@ class ImportForm extends Form
                 'value_options' => $valueParameters,
             ],
             'attributes' => [
-                'value' => $this->integrateParameter($value),
+                'id' => 'enclosure',
             ],
         ]);
 

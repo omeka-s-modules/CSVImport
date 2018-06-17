@@ -42,7 +42,19 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         $view = new ViewModel;
+        /** @var \CSVImport\Form\ImportForm $form */
         $form = $this->getForm(ImportForm::class);
+
+        $user = $this->identity();
+        $userSettings = $this->userSettings();
+        $userSettings->setTargetId($user->getId());
+        $data = [];
+        $data['delimiter'] = $form->integrateParameter($userSettings->get('csvimport_delimiter',
+            $this->config['csv_import']['user_settings']['csvimport_delimiter']));
+        $data['enclosure'] = $form->integrateParameter($userSettings->get('csvimport_enclosure',
+            $this->config['csv_import']['user_settings']['csvimport_enclosure']));
+
+        $form->setData($data);
         $view->form = $form;
         return $view;
     }
