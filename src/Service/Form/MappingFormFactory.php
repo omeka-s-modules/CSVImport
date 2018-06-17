@@ -11,6 +11,7 @@ class MappingFormFactory implements FactoryInterface
     {
         $form = new MappingForm(null, $options);
         $form->setServiceLocator($services);
+        $form->setEventManager($services->get('EventManager'));
         return $form;
     }
 }

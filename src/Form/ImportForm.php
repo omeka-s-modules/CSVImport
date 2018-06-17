@@ -1,11 +1,15 @@
 <?php
 namespace CSVImport\Form;
 
+use Zend\EventManager\Event;
+use Zend\EventManager\EventManagerAwareTrait;
 use Zend\Form\Element;
 use Zend\Form\Form;
 
 class ImportForm extends Form
 {
+    use EventManagerAwareTrait;
+
     /**
      * A list of standard delimiters.
      *
@@ -42,6 +46,8 @@ class ImportForm extends Form
 
     public function init()
     {
+        $inputFilter = $this->getInputFilter();
+
         $this->setAttribute('action', 'csvimport/map');
 
         $defaults = $this->configCsvImport['user_settings'];
@@ -133,7 +139,6 @@ class ImportForm extends Form
             ],
         ]);
 
-        $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'source',
             'required' => true,
@@ -146,6 +151,11 @@ class ImportForm extends Form
             'name' => 'enclosure',
             'required' => false,
         ]);
+
+        $addEvent = new Event('form.add_elements', $this);
+        $this->getEventManager()->triggerEvent($addEvent);
+        $event = new Event('form.add_input_filters', $this, ['inputFilter' => $inputFilter]);
+        $this->getEventManager()->triggerEvent($event);
     }
 
     /**
