@@ -621,8 +621,8 @@ SQL;
                 $this->logger->err(new Message('A resource type is required to import a resource.')); // @translate
             }
             // Avoid MediaSourceMapping issue when the resource type is unknown.
-            elseif (($entityJson['resource_type'] === 'media') && ($data[$key]['o:media'])) {
-                $data[$key] += $data[$key]['o:media'][0];
+            elseif (($entityJson['resource_type'] === 'media') && !empty($data[$key]['o:media'])) {
+                $data[$key] += reset($data[$key]['o:media']);
                 unset($data[$key]['o:media']);
             }
         }
