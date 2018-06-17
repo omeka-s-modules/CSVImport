@@ -117,7 +117,7 @@ class Import extends AbstractJob
         $this->importResource = $this->resourceType === 'resources';
 
         $this->mappings = [];
-        $mappingClasses = $config['csv_import']['mappings'][$this->resourceType]['mappings'];
+        $mappingClasses = $config['csvimport']['mappings'][$this->resourceType]['mappings'];
         foreach ($mappingClasses as $mappingClass) {
             $mapping = new $mappingClass();
             $mapping->init($args, $services);
@@ -1055,7 +1055,7 @@ SQL;
             }
         }
 
-        $sources = $this->getServiceLocator()->get('Config')['csv_import']['sources'];
+        $sources = $this->getServiceLocator()->get('Config')['csvimport']['sources'];
         if (!isset($sources[$mediaType])) {
             return;
         }
@@ -1077,7 +1077,7 @@ SQL;
         }
 
         $config = $this->getServiceLocator()->get('Config');
-        if (!isset($config['csv_import']['mappings'][$this->resourceType])) {
+        if (!isset($config['csvimport']['mappings'][$this->resourceType])) {
             $this->hasErr = true;
             $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
         }

@@ -11,7 +11,7 @@ class AutomapHeadersToMetadataFactory implements FactoryInterface
     {
         $config = $serviceLocator->get('Config');
         $plugin = new AutomapHeadersToMetadata();
-        $plugin->setConfigCsvImport($config['csv_import']);
+        $plugin->setConfigCsvImport($config['csvimport']);
         $plugin->setApiManager($serviceLocator->get('Omeka\ApiManager'));
         $plugin->setTranslator($serviceLocator->get('MvcTranslator'));
         return $plugin;

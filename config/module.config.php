@@ -119,7 +119,7 @@ return [
         'Advanced settings', // @translate
         'Identifier for', // @translate
     ],
-    'csv_import' => [
+    'csvimport' => [
         'sources' => [
             'application/vnd.oasis.opendocument.spreadsheet' => Source\OpenDocumentSpreadsheet::class,
             'text/csv' => Source\CsvFile::class,
@@ -241,6 +241,10 @@ return [
                 'user role' => 'user_role',
                 'active' => 'user_is_active',
                 'is active' => 'user_is_active',
+
+                // Automapping from external modules are added here, so the user
+                // gets them all the first time.
+
                 // From module File Sideload, in order to set them by default.
                 'file' => 'media_source {sideload}',
                 'files' => 'media_source {sideload}',
@@ -257,6 +261,9 @@ return [
                 // From module Folksonomy.
                 'tag' => 'tag',
                 'tags' => 'tag',
+                'tagger' => 'tagging {owner}',
+                'tag status' => 'tagging {status}',
+                'tag date' => 'tagging {created}',
                 // From module Group.
                 'group' => 'group',
                 'groups' => 'group',

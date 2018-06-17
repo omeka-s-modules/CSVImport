@@ -63,10 +63,7 @@ class ImportForm extends Form
 
         $valueOptions = [];
         foreach ($this->configCsvImport['mappings'] as $key => $mapping) {
-            $valueOptions[$key] = isset($mapping['label'])
-                ? $mapping['label']
-                // Avoid an issue with old modules without label (Mapping).
-                : str_replace('_', ' ', ucfirst($resourceType));
+            $valueOptions[$key] = $mapping['label'];
         }
         $this->add([
             'name' => 'resource_type',

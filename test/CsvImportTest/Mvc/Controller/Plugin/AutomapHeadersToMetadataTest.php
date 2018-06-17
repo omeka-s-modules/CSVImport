@@ -14,7 +14,7 @@ class AutomapHeadersToMetadataTest extends OmekaControllerTestCase
 
         $config = $serviceLocator->get('Config');
         $plugin = new AutomapHeadersToMetadata();
-        $plugin->setConfigCsvImport($config['csv_import']);
+        $plugin->setConfigCsvImport($config['csvimport']);
         $this->automapHeadersToMetadata = $plugin;
 
         $this->loginAsAdmin();

@@ -61,9 +61,9 @@ class IndexController extends AbstractActionController
         if (!$request->isPost()) {
             $data = [];
             $data['delimiter'] = $form->integrateParameter($userSettings->get('csvimport_delimiter',
-                $this->config['csv_import']['user_settings']['csvimport_delimiter']));
+                $this->config['csvimport']['user_settings']['csvimport_delimiter']));
             $data['enclosure'] = $form->integrateParameter($userSettings->get('csvimport_enclosure',
-                $this->config['csv_import']['user_settings']['csvimport_enclosure']));
+                $this->config['csvimport']['user_settings']['csvimport_enclosure']));
             $form->setData($data);
             return $view;
         }
@@ -163,7 +163,7 @@ class IndexController extends AbstractActionController
         $automapOptions = [];
         $automapOptions['automap_by_label'] = true;
         $automapOptions['format'] = 'form';
-        $automapOptions['mappings'] = $this->config['csv_import']['mappings'][$resourceType]['mappings'];
+        $automapOptions['mappings'] = $this->config['csvimport']['mappings'][$resourceType]['mappings'];
         $autoMaps = $this->automapHeadersToMetadata($parameters['columns'], $resourceType, $automapOptions);
 
         $view = new ViewModel;
@@ -189,17 +189,17 @@ class IndexController extends AbstractActionController
         if (!$request->isPost()) {
             $data = [];
             $data['advanced-settings']['identifier_property'] = $userSettings->get('csvimport_identifier_property',
-                $this->config['csv_import']['user_settings']['csvimport_identifier_property']);
+                $this->config['csvimport']['user_settings']['csvimport_identifier_property']);
             $data['advanced-settings']['rows_by_batch'] = $userSettings->get('csvimport_rows_by_batch',
-                $this->config['csv_import']['user_settings']['csvimport_rows_by_batch']);
+                $this->config['csvimport']['user_settings']['csvimport_rows_by_batch']);
             $data['multivalue_separator'] = $userSettings->get('csvimport_multivalue_separator',
-                $this->config['csv_import']['user_settings']['csvimport_multivalue_separator']);
+                $this->config['csvimport']['user_settings']['csvimport_multivalue_separator']);
             $data['multivalue_by_default'] = $userSettings->get('csvimport_multivalue_by_default',
-                $this->config['csv_import']['user_settings']['csvimport_multivalue_by_default']);
+                $this->config['csvimport']['user_settings']['csvimport_multivalue_by_default']);
             $data['language'] = $userSettings->get('csvimport_language',
-                $this->config['csv_import']['user_settings']['csvimport_language']);
+                $this->config['csvimport']['user_settings']['csvimport_language']);
             $data['language_by_default'] = $userSettings->get('csvimport_language_by_default',
-                $this->config['csv_import']['user_settings']['csvimport_language_by_default']);
+                $this->config['csvimport']['user_settings']['csvimport_language_by_default']);
             $form->setData($data);
             return $view;
         }
@@ -306,7 +306,7 @@ class IndexController extends AbstractActionController
             }
         }
 
-        $sources = $this->config['csv_import']['sources'];
+        $sources = $this->config['csvimport']['sources'];
         if (!isset($sources[$mediaType])) {
             return;
         }
@@ -328,8 +328,9 @@ class IndexController extends AbstractActionController
         // the mapping form. The default order is set in this module config too,
         // before Zend merge.
         $config = include dirname(dirname(__DIR__)) . '/config/module.config.php';
-        $defaultOrder = $config['csv_import']['mappings'];
-        $mappings = $this->config['csv_import']['mappings'];
+        $defaultOrder = $config['csvimport']['mappings'];
+        $mappings = $this->config['csvimport']['mappings'];
+
         if (isset($defaultOrder[$resourceType])) {
             $mappingClasses = array_values(array_unique(array_merge(
                 $defaultOrder[$resourceType]['mappings'], $mappings[$resourceType]['mappings']
@@ -337,9 +338,6 @@ class IndexController extends AbstractActionController
         } else {
             $mappingClasses = $mappings[$resourceType]['mappings'];
         }
-        // Avoid an issue with old modules without label (Mapping).
-        $oldMappingClasses = array_filter($mappings[$resourceType], 'is_int', ARRAY_FILTER_USE_KEY);
-        $mappingClasses = array_merge($mappings, $oldMappingClasses);
         $mappings = [];
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass();

@@ -11,7 +11,7 @@ class ImportFormFactory implements FactoryInterface
     {
         $form = new ImportForm(null, $options);
         $config = $services->get('Config');
-        $form->setConfigCsvImport($config['csv_import']);
+        $form->setConfigCsvImport($config['csvimport']);
         $form->setEventManager($services->get('EventManager'));
         return $form;
     }

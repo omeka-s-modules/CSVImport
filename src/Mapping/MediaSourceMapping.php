@@ -51,7 +51,7 @@ class MediaSourceMapping extends AbstractMapping
         }
 
         $config = $this->getServiceLocator()->get('Config');
-        $mediaAdapters = $config['csv_import']['media_ingester_adapter'];
+        $mediaAdapters = $config['csvimport']['media_ingester_adapter'];
         $action = $this->args['action'];
 
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
