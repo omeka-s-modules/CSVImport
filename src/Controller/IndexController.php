@@ -62,7 +62,6 @@ class IndexController extends AbstractActionController
             'resource_type',
             'delimiter',
             'enclosure',
-            'automap_check_names_alone',
             'automap_check_user_list',
             'automap_user_list',
         ]));
@@ -71,6 +70,10 @@ class IndexController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
+                // Remove useless default input fields.
+                unset($args['csrf']);
+                unset($args['multivalue_by_default']);
+                unset($args['automap_by_label']);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't
@@ -141,7 +144,7 @@ class IndexController extends AbstractActionController
         }
 
         $automapOptions = [];
-        $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
+        $automapOptions['automap_by_label'] = true;
         $automapOptions['format'] = 'form';
 
         $automapOptions['mappings'] = $this->config['csv_import']['mappings'][$resourceType];
@@ -290,7 +293,7 @@ class IndexController extends AbstractActionController
         }
 
         // Set arguments as boolean.
-        foreach (['automap_check_names_alone', 'automap_check_user_list'] as $meta) {
+        foreach (['automap_by_label', 'automap_check_user_list'] as $meta) {
             if (array_key_exists($meta, $args)) {
                 $args[$meta] = (bool) $args[$meta];
             }
@@ -329,6 +332,11 @@ class IndexController extends AbstractActionController
             $args['multivalue_separator'] = ',';
         }
 
+        // Set default automap by label if not set, for example for users.
+        if (!array_key_exists('automap_by_label', $args)) {
+            $args['automap_by_label'] = false;
+        }
+
         // TODO Move to the source class.
         unset($args['delimiter']);
         unset($args['enclosure']);
@@ -347,10 +355,6 @@ class IndexController extends AbstractActionController
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
-
-        // Remove useless default input fields.
-        unset($args['csrf']);
-        unset($args['multivalue_by_default']);
 
         // Remove useless input fields from sidebars.
         unset($args['value-language']);

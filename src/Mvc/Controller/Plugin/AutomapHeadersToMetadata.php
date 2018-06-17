@@ -31,7 +31,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
      * @param array $headers
      * @param string $resourceType
      * @param array $options Associative array of options:
-     * - check_names_alone (boolean)
+     * - automap_by_label (boolean)
      * - automap_list (array) An associative array containing specific mappings.
      * - format (string) The type of result: may be "form", "arguments", or raw.
      * - mappings (array) The list of mappings associated to the resource type.
@@ -82,8 +82,8 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
             array_keys($propertyLists['labels']));
         $lists['lower_labels'] = array_map('strtolower', $lists['labels']);
 
-        $checkNamesAlone = !empty($options['check_names_alone']);
-        if ($checkNamesAlone) {
+        $automapByLabel = !empty($options['automap_by_label']);
+        if ($automapByLabel) {
             $lists['local_names'] = array_map(function ($v) {
                 $w = explode(':', $v);
                 return end($w);

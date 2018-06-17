@@ -187,7 +187,7 @@ return [
             'csvimport_rows_by_batch' => 20,
             'csvimport_global_language' => '',
             'csvimport_identifier_property' => '',
-            'csvimport_automap_check_names_alone' => false,
+            'csvimport_automap_by_label' => false,
             'csvimport_automap_check_user_list' => false,
             'csvimport_automap_user_list' => [
                 'owner' => 'owner_email',

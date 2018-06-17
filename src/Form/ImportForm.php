@@ -121,24 +121,6 @@ class ImportForm extends Form
             ],
         ]);
 
-        $this->add([
-            'name' => 'automap_check_names_alone',
-            'type' => 'checkbox',
-            'options' => [
-                'label' => 'Automap with labels alone', // @translate
-                'info' => 'Headers are mapped automatically, case sensitively and not, with standard names ("dcterms:title") and labels ("Dublin Core : Title"). If checked, an automatic map will be done with names and labels only ("Title") too, Dublin Core first.', // @translate
-            ],
-            'attributes' => [
-                'id' => 'automap_check_names_alone',
-                /*
-                'value' => (int) (bool) $this->userSettings->get(
-                    'csvimport_automap_check_names_alone',
-                    $defaults['csvimport_automap_check_names_alone']),
-                */
-                'value' => (int) (bool) $defaults['csvimport_automap_check_names_alone'],
-            ],
-        ]);
-
         $inputFilter->add([
             'name' => 'source',
             'required' => true,

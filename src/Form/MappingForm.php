@@ -110,15 +110,6 @@ class MappingForm extends Form
         ]);
 
         $this->add([
-            'name' => 'automap_check_names_alone',
-            'type' => Element\Hidden::class,
-            'attributes' => [
-                'value' => $this->getOption('automap_check_names_alone'),
-                'required' => true,
-            ],
-        ]);
-
-        $this->add([
             'name' => 'automap_check_user_list',
             'type' => Element\Hidden::class,
             'attributes' => [

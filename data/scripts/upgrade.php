@@ -31,7 +31,7 @@ if (version_compare($oldVersion, '1.1.3', '<')) {
         'csv_import_rows_by_batch' => 'csvimport_rows_by_batch',
         'csv_import_global_language' => 'csvimport_global_language',
         'csv_import_identifier_property' => 'csvimport_identifier_property',
-        'csv_import_automap_check_names_alone' => 'csvimport_automap_check_names_alone',
+        'csv_import_automap_check_names_alone' => 'csvimport_automap_by_label',
         'csv_import_automap_check_user_list' => 'csvimport_automap_check_user_list',
         'csv_import_automap_user_list' => 'csvimport_automap_user_list',
     ];
@@ -40,6 +40,9 @@ if (version_compare($oldVersion, '1.1.3', '<')) {
 UPDATE `user_setting`
 SET `id` = CONCAT('csvimport_', SUBSTRING(id, 12))
 WHERE `id` LIKE 'csv_import_%';
+UPDATE `user_setting`
+SET `id` = 'csvimport_automap_by_label'
+WHERE `id` = 'csvimport_automap_check_names_alone';
 SQL;
     $sqls = array_filter(array_map('trim', explode(';', $sql)));
     foreach ($sqls as $sql) {
