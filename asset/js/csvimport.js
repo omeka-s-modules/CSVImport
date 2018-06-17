@@ -175,7 +175,7 @@
                     applyMappings(flagName, flagValue, flagLiClass, flagLabel);
                 }
 
-                if (flagInput.is('input[type="checkbox"]')) {
+                if (flagInput.is('input[type=checkbox]')) {
                     var flagName = flagInput.data('flag-name');
                     if (flagInput.parents('.toggle-view:hidden').length > 0) {
                         return;
@@ -267,17 +267,17 @@
                 }
             }
 
-            sidebar.find('input[type="checkbox"]').each(function() {
+            sidebar.find('input[type=checkbox]').each(function() {
                 var checkboxInput = $(this);
                 if (checkboxInput.hasClass('touched')) {
                     var optionClass = '.' + checkboxInput.data('column-option');
                     var optionLi = activeElement.find(optionClass);
                     if (checkboxInput.is(':checked')) {
                         optionLi.show();
-                        optionLi.find('input[type="hidden"]').removeAttr('disabled');
+                        optionLi.find('input[type=hidden]').removeAttr('disabled');
                     } else {
                         optionLi.hide();
-                        optionLi.find('input[type="hidden"]').attr('disabled', true);
+                        optionLi.find('input[type=hidden]').attr('disabled', true);
                     }
                 }
             });
@@ -292,11 +292,11 @@
                     if (selectedOptionValue !== 'default') {
                         optionLi.show();
                         optionLi.find('.option-label').text(selectedOption.text());
-                        optionLi.find('input[type="hidden"]').attr('disabled', true);
+                        optionLi.find('input[type=hidden]').attr('disabled', true);
                         optionLi.find('.' + selectedOptionValue).removeAttr('disabled');
                     } else {
                         optionLi.hide();
-                        optionLi.find('input[type="hidden"').attr('disabled', true);
+                        optionLi.find('input[type=hidden]').attr('disabled', true);
                     }
                 }
             });
@@ -383,9 +383,12 @@
         });
 
         /*
-         * Modified from resource-form.js in core
+         * Modified from resource-form.js in core, unavailable here.
          */
 
+        /*
+         * Check validity of a language.
+         */
         $('input.value-language').on('keyup', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -418,6 +421,10 @@
                 languageInput.prop('disabled', false);
             }
         }
+
+        /*
+         * Manage identifiers.
+         */
 
         function checkResourceIdentifier() {
             return checkIdentifier('column-resource_property');

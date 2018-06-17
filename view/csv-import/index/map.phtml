@@ -28,12 +28,12 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 </fieldset>
 <nav class="section-nav">
     <ul>
-        <li class="active"><a href="#basics-fieldset"><?php echo $translate('Basic Import Settings'); ?></a></li>
+        <li class="active"><a href="#resource-fieldset"><?php echo $translate('Basic Settings'); ?></a></li>
         <li><a href="#advanced-fieldset"><?php echo $translate('Advanced Settings'); ?></a></li>
         <li><a href="#mapping-data"><?php echo $translate('Map to Omeka S data'); ?></a></li>
     </ul>
 </nav>
-<fieldset id="basics-fieldset" class="section active">
+<fieldset id="resource-fieldset" class="section active">
     <?php
     // Render some form elements in a different tab.
     $elementMultivalueByDefault = $form->get('multivalue_by_default');
@@ -85,8 +85,8 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                     </ul>
                 </td>
                 <td>
-                    <ul class='options'>
-                        <li class='column-import option' style='display:none;'><span class="option-label"></span>
+                    <ul class="options">
+                        <li class="column-multivalue option" style="display:none;"><?php echo $translate('Multivalue'); ?>
                             <ul class="actions">
                                 <li>
                                     <a aria-label="<?php echo $escapeHtml($translate('Remove option')); ?>" title="<?php echo $escapeHtml($translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
@@ -95,23 +95,11 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                                     <a aria-label="<?php echo $escapeHtml($translate('Restore option')); ?>" title="<?php echo $escapeHtml($translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option column-url' name='column-url[<?php echo $index; ?>]'></input>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option column-reference' name='column-reference[<?php echo $index; ?>]'></input>
-                        </li>
-                        <li class='column-multivalue option' style='display:none;'><?php echo $translate('Multivalue'); ?>
-                            <ul class="actions">
-                                <li>
-                                    <a aria-label="<?php echo $escapeHtml($translate('Remove option')); ?>" title="<?php echo $escapeHtml($translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
-                                </li>
-                                <li>
-                                    <a aria-label="<?php echo $escapeHtml($translate('Restore option')); ?>" title="<?php echo $escapeHtml($translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
-                                </li>
-                            </ul>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
+                            <input type="hidden" disabled="disabled" value="1" class="column-option column-multivalue" name="column-multivalue[<?php echo $index; ?>]"></input>
                         </li>
 
-                        <li class='column-language option' style='display:none;'><?php echo $translate('Language:'); echo"&nbsp;"; ?>
-                            <span class='column-language'></span>
+                        <li class="column-language option" style="display:none;"><?php echo $translate('Language:'); echo "&nbsp;"; ?>
+                            <span class="column-language"></span>
                             <ul class="actions">
                                 <li>
                                     <a aria-label="<?php echo $escapeHtml($translate('Remove option')); ?>" title="<?php echo $escapeHtml($translate('Remove option')); ?>" class="o-icon-delete remove-option remove-column-language" href="#" style="display: inline;"></a>
@@ -120,7 +108,20 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                                     <a aria-label="<?php echo $escapeHtml($translate('Restore option')); ?>" title="<?php echo $escapeHtml($translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
-                            <input type='hidden' disabled='disabled' value='' class='column-option column-language' name='column-language[<?php echo $index; ?>]'></input>
+                            <input type="hidden" disabled="disabled" value="" class="column-option column-language" name='column-language[<?php echo $index; ?>]'></input>
+                        </li>
+
+                        <li class="column-import option" style="display:none;"><span class="option-label"></span>
+                            <ul class="actions">
+                                <li>
+                                    <a aria-label="<?php echo $escapeHtml($translate('Remove option')); ?>" title="<?php echo $escapeHtml($translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
+                                </li>
+                                <li>
+                                    <a aria-label="<?php echo $escapeHtml($translate('Restore option')); ?>" title="<?php echo $escapeHtml($translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
+                                </li>
+                            </ul>
+                            <input type="hidden" disabled="disabled" value="1" class="column-option column-url" name="column-url[<?php echo $index; ?>]"></input>
+                            <input type="hidden" disabled="disabled" value="1" class="column-option column-reference" name="column-reference[<?php echo $index; ?>]"></input>
                         </li>
                     </ul>
                 </td>

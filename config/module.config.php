@@ -81,6 +81,7 @@ return [
                     [
                         'label' => 'Import', // @translate
                         'route' => 'admin/csvimport',
+                        'action' => 'index',
                     ],
                     [
                         'label' => 'Import', // @translate

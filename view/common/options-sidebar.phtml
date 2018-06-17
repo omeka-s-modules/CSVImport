@@ -6,7 +6,7 @@ $translate = $this->plugin('translate');
         <a href="#" class="sidebar-close o-icon-close"><span class="screen-reader-text"><?php echo $translate('Close'); ?></span></a>
         <h3><?php echo $translate('Column options:'); ?></h3>
 
-        <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
+        <?php if (empty($resourceType) || !in_array($resourceType, ['users'])): ?>
         <div class="multivalue option">
             <label for="multivalue"><?php echo $translate('Use multivalue separator'); ?></label>
             <input type="checkbox" data-column-option="column-multivalue" name="multivalue" id="multivalue">
@@ -28,6 +28,7 @@ $translate = $this->plugin('translate');
             </select>
         </div>
     </div>
+
     <div class="confirm-panel">
         <button type="button"><?php echo $translate("Apply changes"); ?></button>
     </div>

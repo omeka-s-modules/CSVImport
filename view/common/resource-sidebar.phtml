@@ -6,7 +6,7 @@ $translate = $this->plugin('translate');
         <h4><?php echo $translate('Resource data'); ?></h4>
     </a>
     <div class="collapsible">
-        <span class="description"><?php echo $translate('Data from this column applies to the entire resource being imported. Settings here will override any corresponding settings in "Basic Import Settings".'); ?></span>
+        <span class="description"><?php echo $translate('Data from this column applies to the entire resource being imported. Settings here will override any corresponding settings in "Basic Settings".'); ?></span>
         <div class="resource-mapping mappings">
             <?php
             $resourceTypeLabels = [
@@ -46,7 +46,6 @@ $translate = $this->plugin('translate');
                     'name' => 'column-item_set_property',
                     'options' => [
                         'empty_option' => $translate('Select below'),
-                        'term_as_value' => false,
                         'prepend_value_options' => [
                             'internal_id' => $translate('Internal id'),
                         ],
@@ -73,7 +72,6 @@ $translate = $this->plugin('translate');
                         'name' => 'column-item_property',
                         'options' => [
                             'empty_option' => $translate('Select below'),
-                            'term_as_value' => false,
                             'prepend_value_options' => [
                                 'internal_id' => $translate('Internal id'),
                             ],
