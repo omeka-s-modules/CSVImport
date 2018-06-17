@@ -38,7 +38,7 @@
               // Remove old chosen html and rebind event.
               sidebar.find('.chosen-container').remove();
               sidebar.find('.chosen-select').chosen(chosenOptions);
-              
+
               // Rebind property selector.
               $('.selector li.selector-parent').on('click', function(e) {
                   e.stopPropagation();
@@ -46,14 +46,14 @@
                       $(this).toggleClass('show');
                   }
               });
-      
+
               $('.selector-filter').on('keydown', function(e) {
                   if (e.keyCode == 13) {
                       e.stopPropagation();
                       e.preventDefault();
                   }
               });
-      
+
               // Property selector, filter properties.
               $('.selector-filter').on('keyup', (function() {
                   var timer = 0;
@@ -194,7 +194,7 @@
                 // Looks like a stopPropagation on the selector-parent forces me to
                 // bind the event lower down the DOM, then work back up to the li.
                 var targetLi = $(this);
-    
+
                 // First, check if the property is already added.
                 var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
                 if (hasMapping.length === 0) {
@@ -232,7 +232,7 @@
                         hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
                     }
                 }
-    
+
                 if (hasFlag.length === 0) {
                     var index = activeElement.data('element-id');
                     flagName = flagName + "[" + index + "]";
@@ -318,8 +318,10 @@
             targetRows.find('.restore-option').css({ display: 'none' });
             if (multivalueSwitch) {
                 $('.element.mappable').find('li.column-multivalue').show();
+                $('.element.mappable').find('input.column-multivalue').prop('disabled', false);
             } else {
                 $('.element.mappable').find('li.column-multivalue').hide();
+                $('.element.mappable').find('input.column-multivalue').prop('disabled', true);
             }
         }
 

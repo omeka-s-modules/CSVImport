@@ -71,7 +71,6 @@ class IndexController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $args = $this->cleanArgs($post);
-                unset($args['multivalue_by_default']);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't
@@ -348,6 +347,10 @@ class IndexController extends AbstractActionController
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
         }
+
+        // Remove useless default input fields.
+        unset($args['csrf']);
+        unset($args['multivalue_by_default']);
 
         // Remove useless input fields from sidebars.
         unset($args['value-language']);
