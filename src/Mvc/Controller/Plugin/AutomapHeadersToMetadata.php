@@ -42,6 +42,11 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
     {
         $automaps = [];
 
+        // Set the default automapping from the config if not set.
+        if (!isset($options['automap_list'])) {
+            $options['automap_list'] = $this->configCsvImport['user_settings']['csv_import_automap_user_list'];
+        }
+
         $this->options = $options;
 
         $headers = $this->cleanSpaces($headers);
@@ -137,6 +142,8 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
     /**
      * Prepare automaps to be used in a form, and filter it with resource type.
      *
+     * @todo Automapping are not filtered by resource type currently.
+     *
      * @param array $automaps
      * @param string $resourceType
      * @return array
@@ -193,11 +200,12 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
     /**
      * Prepare automaps as import arguments, and filter it with resource type.
      *
+     * @todo Automapping are not filtered by resource type currently.
+     *
      * @param array $automaps
      * @param string $resourceType
      * @return array
      */
-
     /*
     protected function normalizeAutomapsAsArguments(array $automaps, $resourceType)
     {
