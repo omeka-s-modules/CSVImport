@@ -1,10 +1,11 @@
 <?php
-$this->htmlElement('body')->appendAttribute('class', 'csvimporter jobs undo');
+$translate = $this->plugin('translate');
 $escape = $this->plugin('escapeHtml');
+$this->htmlElement('body')->appendAttribute('class', 'csvimporter jobs undo');
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 ?>
 
-<?php echo $this->pageTitle($this->translate('Past Imports'), 1, $this->translate('CSV Import')); ?>
+<?php echo $this->pageTitle($translate('Past Imports'), 1, $translate('CSV Import')); ?>
 <?php if(empty($imports)): ?>
 
 <?php else: ?>
@@ -12,20 +13,20 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
 
 <form method='POST'>
     <fieldset id='page-actions'>
-        <input type="submit" value="<?php echo $escape($this->translate('Submit')); ?>" />
+        <input type="submit" value="<?php echo $escape($translate('Submit')); ?>" />
     </fieldset>
     <table class="tablesaw" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $escape($this->translate('Undo'));?></th>
+                <th><?php echo $escape($translate('Undo'));?></th>
                 <th>
-                    <?php echo $this->sortLink($escape($this->translate('Date')), 'id');?>
+                    <?php echo $this->sortLink($escape($translate('Date')), 'id');?>
                 </th>
-                <th><?php echo $escape($this->translate('Action'));?></th>
-                <th><?php echo $escape($this->translate('Comment'));?></th>
-                <th><?php echo $escape($this->translate('Result'));?></th>
-                <th><?php echo $escape($this->translate('Status'));?></th>
-                <th><?php echo $escape($this->translate('Owner'));?></th>
+                <th><?php echo $escape($translate('Action'));?></th>
+                <th><?php echo $escape($translate('Comment'));?></th>
+                <th><?php echo $escape($translate('Result'));?></th>
+                <th><?php echo $escape($translate('Status'));?></th>
+                <th><?php echo $escape($translate('Owner'));?></th>
             </tr>
         </thead>
         <tbody>
@@ -43,33 +44,33 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
             </td>
             <td>
                 <span class="csv-import-action">
-                    <?php echo $escape($this->translate(ucfirst(@$jobArgs['action'] ?: 'create'))); ?>
+                    <?php echo $escape($translate(ucfirst(@$jobArgs['action'] ?: 'create'))); ?>
                 </span>
                 <span class="csv-import-resource-type">
-                    <?php if (@$jobArgs['resource_type']) echo $escape($this->translate($jobArgs['resource_type'])); ?>
+                    <?php if (@$jobArgs['resource_type']) echo $escape($translate($jobArgs['resource_type'])); ?>
                 </span>
                 <br />
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
+                    <?php echo $this->hyperlink($translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $job->id()])); ?>
                 </span>
                 <?php if ($job->log()): ?>
                 /
                 <span class="csv-import-job-log">
-                    <?php echo $this->hyperlink($this->translate('Log'), $this->url('admin/id', ['controller' => 'job', 'action' => 'log', 'id' => $job->id()]), ['target' => '_blank']); ?>
+                    <?php echo $this->hyperlink($translate('Log'), $this->url('admin/id', ['controller' => 'job', 'action' => 'log', 'id' => $job->id()]), ['target' => '_blank']); ?>
                 </span>
                 <?php endif; ?>
             </td>
             <td class='comment'>
                 <?php echo $import->comment(); ?>
                 <?php if ($import->hasErr()): ?>
-                    <p><?php echo $escape($this->translate("Problems were detected with the import. Check the job's log for details.")); ?></p>
+                    <p><?php echo $escape($translate("Problems were detected with the import. Check the job's log for details.")); ?></p>
                 <?php endif; ?>
             </td>
             <td>
                 <ul>
                 <?php foreach ($import->stats() as $process => $stat): ?>
                 <?php foreach ($stat as $resourceType => $count): ?>
-                    <li><?php echo $escape(sprintf('%s: %d %s', $this->translate(ucfirst($process)), $count, $this->translate(str_replace('_', ' ', $resourceType)))); ?></li>
+                    <li><?php echo $escape(sprintf('%s: %d %s', $translate(ucfirst($process)), $count, $translate(str_replace('_', ' ', $resourceType)))); ?></li>
                 <?php endforeach; ?>
                 <?php endforeach; ?>
                 </ul>
@@ -77,35 +78,35 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
             <td>
             <?php if ($undoJob):
                 if ($undoJob->ended()):
-                    echo $escape(sprintf($this->translate('Undone %s'), $this->i18n()->dateFormat($undoJob->ended())));
+                    echo $escape(sprintf($translate('Undone %s'), $this->i18n()->dateFormat($undoJob->ended())));
                 ?>
                 <?php
                 else:
-                    echo $escape($this->translate('Undo in progress'));
+                    echo $escape($translate('Undo in progress'));
                 endif;
                 ?>
                 <span class="csv-import-job-param">
-                    <?php echo $this->hyperlink($this->translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
+                    <?php echo $this->hyperlink($translate('Job details'), $this->url('admin/id', ['controller' => 'job', 'action' => 'show', 'id' => $undoJob->id()])); ?>
                 </span>
                 <?php if ($undoJob->log()): ?>
                 /
                 <span class="csv-import-job-log">
-                    <?php echo $this->hyperlink($this->translate('Log'), $this->url('admin/id', ['controller' => 'job', 'action' => 'log', 'id' => $undoJob->id()]), ['target' => '_blank']); ?>
+                    <?php echo $this->hyperlink($translate('Log'), $this->url('admin/id', ['controller' => 'job', 'action' => 'log', 'id' => $undoJob->id()]), ['target' => '_blank']); ?>
                 </span>
                 <?php endif; ?>
                 <?php if (!$undoJob->ended()): ?>
                 /
                 <span class="csv-import-job-stop">
-                    <?php echo $this->hyperlink($this->translate('Attempt stop'), $this->url('admin/id', ['controller' => 'job', 'action' => 'stop', 'id' => $undoJob->id()]), ['target' => '_blank']); ?>
+                    <?php echo $this->hyperlink($translate('Attempt stop'), $this->url('admin/id', ['controller' => 'job', 'action' => 'stop', 'id' => $undoJob->id()]), ['target' => '_blank']); ?>
                 </span>
                 <?php endif; ?>
             <?php
             else:
-                echo $escape($this->translate($job->status()));
+                echo $escape($translate($job->status()));
                 if (!$job->ended()): ?>
                 /
                 <span class="csv-import-job-stop">
-                    <?php echo $this->hyperlink($this->translate('Attempt stop'), $this->url('admin/id', ['controller' => 'job', 'action' => 'stop', 'id' => $job->id()]), ['target' => '_blank']); ?>
+                    <?php echo $this->hyperlink($translate('Attempt stop'), $this->url('admin/id', ['controller' => 'job', 'action' => 'stop', 'id' => $job->id()]), ['target' => '_blank']); ?>
                 </span>
                 <?php endif;
             endif;

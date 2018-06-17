@@ -1,51 +1,54 @@
+<?php
+$translate = $this->plugin('translate');
+?>
 <div id="resource-data" class="mapping-group">
     <a href="#" class="expand" aria-label="Expand">
-        <h4><?php echo $this->translate('Resource data'); ?></h4>
+        <h4><?php echo $translate('Resource data'); ?></h4>
     </a>
     <div class="collapsible">
-        <span class="description"><?php echo $this->translate('Data from this column applies to the entire resource being imported. Settings here will override any corresponding settings in "Basic Import Settings".'); ?></span>
+        <span class="description"><?php echo $translate('Data from this column applies to the entire resource being imported. Settings here will override any corresponding settings in "Basic Import Settings".'); ?></span>
         <div class="resource-mapping mappings">
             <?php
             $resourceTypeLabels = [
-                'items' => $this->translate('Item'),
-                'item_sets' => $this->translate('Item set'),
-                'media' => $this->translate('Media'),
-                'resources' => $this->translate('Resources'),
+                'items' => $translate('Item'),
+                'item_sets' => $translate('Item set'),
+                'media' => $translate('Media'),
+                'resources' => $translate('Resources'),
             ];
             ?>
             <div class="toggle-nav">
-                <button type="button" data-toggle-selector="#specific-data" class="toggle button active" disabled><?php echo $this->translate(sprintf('%s data', $resourceTypeLabels[$resourceType])); ?></button>
-                <button type="button" data-toggle-selector="#generic-data" class="toggle button"><?php echo $this->translate('Generic data'); ?></button>
+                <button type="button" data-toggle-selector="#specific-data" class="toggle button active" disabled><?php echo $translate(sprintf('%s data', $resourceTypeLabels[$resourceType])); ?></button>
+                <button type="button" data-toggle-selector="#generic-data" class="toggle button"><?php echo $translate('Generic data'); ?></button>
             </div>
             <div id="specific-data" class="active toggle-view">
                 <?php if ($resourceType == 'resources'): ?>
                 <div class="resource-type-select">
-                    <label for="data-resource-type-select"><?php echo $this->translate('Associated resource type'); ?></label>
+                    <label for="data-resource-type-select"><?php echo $translate('Associated resource type'); ?></label>
                     <select id="data-resource-type-select" name="data-resource-type-select">
-                        <option value="default"><?php echo $this->translate('Select below'); ?></option>
-                        <option value="items"><?php echo $this->translate('Item'); ?></option>
-                        <option value="item-sets"><?php echo $this->translate('Item set'); ?></option>
-                        <option value="media"><?php echo $this->translate('Media'); ?></option>
+                        <option value="default"><?php echo $translate('Select below'); ?></option>
+                        <option value="items"><?php echo $translate('Item'); ?></option>
+                        <option value="item-sets"><?php echo $translate('Item set'); ?></option>
+                        <option value="media"><?php echo $translate('Media'); ?></option>
                     </select>
                 </div>
                 <?php endif; ?>
                 <?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
                 <div class="mapping additions item-sets">
-                    <label for="additions"><?php echo $this->translate('Open to additions'); ?></label>
-                    <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data" data-flag-name="column-is_open" data-flag-label="<?php echo $this->translate('Open to additions'); ?>" value="1">
+                    <label for="additions"><?php echo $translate('Open to additions'); ?></label>
+                    <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data" data-flag-name="column-is_open" data-flag-label="<?php echo $translate('Open to additions'); ?>" value="1">
                 </div>
                 <?php endif; ?>
-    
+
                 <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
                 <div class="mapping property items">
-                <h4><?php echo $this->translate('Item set property'); ?></h4>
+                <h4><?php echo $translate('Item set property'); ?></h4>
                 <?php echo $this->propertySelect([
                     'name' => 'column-item_set_property',
                     'options' => [
-                        'empty_option' => $this->translate('Select below'),
+                        'empty_option' => $translate('Select below'),
                         'term_as_value' => false,
                         'prepend_value_options' => [
-                            'internal_id' => $this->translate('Internal id'),
+                            'internal_id' => $translate('Internal id'),
                         ],
                         'term_as_value' => true,
                     ],
@@ -53,26 +56,26 @@
                         'id' => 'column-item_set_property',
                         'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
                         'class' => 'chosen-select',
-                        'data-placeholder' => $this->translate('Select the identifier below'),
+                        'data-placeholder' => $translate('Select the identifier below'),
                         'data-flag-name' => 'column-item_set',
                         'data-flag-class' => 'resource-data',
-                        'data-flag-label' => $this->translate('Item set'),
+                        'data-flag-label' => $translate('Item set'),
                     ],
                 ]); ?>
                 </div>
                 <?php endif; ?>
-    
+
                 <?php if (empty($resourceType) || in_array($resourceType, ['media', 'resources'])): ?>
                 <div class="mapping property media">
-                    <h4><?php echo $this->translate('Item property'); ?></h4>
-                    <span class="description"><?php echo $this->translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
+                    <h4><?php echo $translate('Item property'); ?></h4>
+                    <span class="description"><?php echo $translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
                     <?php echo $this->propertySelect([
                         'name' => 'column-item_property',
                         'options' => [
-                            'empty_option' => $this->translate('Select below'),
+                            'empty_option' => $translate('Select below'),
                             'term_as_value' => false,
                             'prepend_value_options' => [
-                                'internal_id' => $this->translate('Internal id'),
+                                'internal_id' => $translate('Internal id'),
                             ],
                             'term_as_value' => true,
                         ],
@@ -80,10 +83,10 @@
                             'id' => 'column-item_property',
                             'value' => $this->userSetting('csv_import_identifier_property', 'internal_id'),
                             'class' => 'chosen-select',
-                            'data-placeholder' => $this->translate('Select the identifier below'),
+                            'data-placeholder' => $translate('Select the identifier below'),
                             'data-flag-name' => 'column-item',
                             'data-flag-class' => 'resource-data',
-                            'data-flag-label' => $this->translate('Item'),
+                            'data-flag-label' => $translate('Item'),
                         ],
                     ]); ?>
                 </div>
@@ -92,18 +95,18 @@
 
             <div id="generic-data" class="toggle-view">
                 <div class="mapping">
-                    <select name="resource-data" class="flags" data-flag-class="resource-data" data-flag-label="<?php echo $this->translate('Data'); ?>">
-                        <option><?php echo $this->translate('Select below'); ?></option>
+                    <select name="resource-data" class="flags" data-flag-class="resource-data" data-flag-label="<?php echo $translate('Data'); ?>">
+                        <option><?php echo $translate('Select below'); ?></option>
                         <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
-                        <option value="1" data-flag-name="column-resource_type"><?php echo $this->translate('Resource type'); ?></option>
+                        <option value="1" data-flag-name="column-resource_type"><?php echo $translate('Resource type'); ?></option>
                         <?php endif; ?>
-                        <option value="1" data-flag-name="column-resource"><?php echo $this->translate('Internal id'); ?></option>
-                        <option value="1" data-flag-name="column-resource_template"><?php echo $this->translate('Resource template name'); ?></option>
-                        <option value="1" data-flag-name="column-resource_class"><?php echo $this->translate('Resource class term'); ?></option>
+                        <option value="1" data-flag-name="column-resource"><?php echo $translate('Internal id'); ?></option>
+                        <option value="1" data-flag-name="column-resource_template"><?php echo $translate('Resource template name'); ?></option>
+                        <option value="1" data-flag-name="column-resource_class"><?php echo $translate('Resource class term'); ?></option>
                         <?php if (in_array($userRole, ['global_admin', 'site_admin'])): ?>
-                        <option value="1" data-flag-name="column-owner_email"><?php echo $this->translate('Owner email address'); ?></option>
+                        <option value="1" data-flag-name="column-owner_email"><?php echo $translate('Owner email address'); ?></option>
                         <?php endif; ?>
-                        <option value="1" data-flag-name="column-is_public"><?php echo $this->translate('Visibility public/private'); ?></option>
+                        <option value="1" data-flag-name="column-is_public"><?php echo $translate('Visibility public/private'); ?></option>
                     </select>
                 </div>
             </div>

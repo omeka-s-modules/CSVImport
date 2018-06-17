@@ -1,10 +1,13 @@
+<?php
+$translate = $this->plugin('translate');
+?>
 <div id="media-source" class="mapping-group">
-    <a href="#" class="expand" aria-label="<?php echo $this->translate('Expand'); ?>">
-        <h4><?php echo $this->translate('Media source'); ?></h4>
+    <a href="#" class="expand" aria-label="<?php echo $translate('Expand'); ?>">
+        <h4><?php echo $translate('Media source'); ?></h4>
     </a>
     <div class="collapsible">
-        <select name="media-source" data-flag-class="media-source" data-flag-label="<?php echo $this->translate('Media source'); ?>">
-            <option value="default"><?php echo $this->translate('Select below'); ?></option>
+        <select name="media-source" data-flag-class="media-source" data-flag-label="<?php echo $translate('Media source'); ?>">
+            <option value="default"><?php echo $translate('Select below'); ?></option>
             <?php foreach($mediaForms as $type=>$mediaForm): ?>
             <option data-flag-name="column-media_source" value="<?php echo $type; ?>"><?php echo $mediaForm['label']; ?></option>
             <?php endforeach; ?>
