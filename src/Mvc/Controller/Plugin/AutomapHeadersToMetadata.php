@@ -34,6 +34,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
      * - check_names_alone (boolean)
      * - automap_list (array) An associative array containing specific mappings.
      * - format (string) The type of result: may be "form", "arguments", or raw.
+     * - mappings (array) The list of mappings associated to the resource type.
      * @return array Associative array of the index of the headers as key and
      * the matching metadata as value. Only mapped headers are set.
      */
@@ -90,6 +91,8 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
             $lists['lower_local_labels'] = array_map('strtolower', $lists['local_labels']);
         }
 
+        $mappings = isset($options['mappings']) ? $options['mappings'] : [];
+
         foreach ($headers as $index => $header) {
             $lowerHeader = strtolower($header);
             foreach ($automapLists as $listName => $list) {
@@ -101,28 +104,21 @@ class AutomapHeadersToMetadata extends AbstractPlugin implements TranslatorAware
                 }
             }
 
-            switch ($resourceType) {
-                case 'item_sets':
-                case 'items':
-                case 'media':
-                case 'resources':
-                    // Check strict term name, like "dcterms:title", sensitively
-                    // then insensitively, then term label like "Dublin Core : Title"
-                    // sensitively then insensitively too. Because all the lists
-                    // contains the same keys in the same order, the process can
-                    // be done in one step.
-                    foreach ($lists as $listName => $list) {
-                        $toSearch = strpos($listName, 'lower_') === 0 ? $lowerHeader : $header;
-                        $found = array_search($toSearch, $list, true);
-                        if ($found) {
-                            $property = $propertyLists['names'][$found];
-                            $automaps[$index] = $property;
-                            continue 3;
-                        }
+            // Check strict term name, like "dcterms:title", sensitively then
+            // insensitively, then term label like "Dublin Core : Title"
+            // sensitively then insensitively too. Because all the lists
+            // contains the same keys in the same order, the process can be done
+            // in one step.
+            if (in_array(\CSVImport\Mapping\PropertyMapping::class, $mappings)) {
+                foreach ($lists as $listName => $list) {
+                    $toSearch = strpos($listName, 'lower_') === 0 ? $lowerHeader : $header;
+                    $found = array_search($toSearch, $list, true);
+                    if ($found) {
+                        $property = $propertyLists['names'][$found];
+                        $automaps[$index] = $property;
+                        continue 2;
                     }
-                    break;
-                case 'users':
-                    break;
+                }
             }
         }
 

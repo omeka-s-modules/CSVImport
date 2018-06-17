@@ -1076,7 +1076,8 @@ SQL;
             $this->logger->err('Resource type is empty.'); // @translate
         }
 
-        if (!in_array($this->resourceType, ['items', 'item_sets', 'media', 'resources', 'users'])) {
+        $config = $this->getServiceLocator()->get('Config');
+        if (!isset($config['csv_import']['mappings'][$this->resourceType])) {
             $this->hasErr = true;
             $this->logger->err(new Message('Resource type "%s" is not managed.', $this->resourceType)); // @translate
         }
