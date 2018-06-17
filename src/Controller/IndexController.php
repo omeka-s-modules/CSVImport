@@ -220,8 +220,8 @@ class IndexController extends AbstractActionController
         unset($parameters['columns']);
         $args = $parameters + $this->cleanArgs($post);
 
-        $userSettings->set('csvimport_rows_by_batch', $args['advanced-settings']['rows_by_batch']);
-        $userSettings->set('csvimport_identifier_property', $args['advanced-settings']['identifier_property']);
+        $userSettings->set('csvimport_rows_by_batch', $args['rows_by_batch']);
+        $userSettings->set('csvimport_identifier_property', $args['identifier_property']);
         $userSettings->set('csvimport_multivalue_separator', $args['multivalue_separator']);
         $userSettings->set('csvimport_multivalue_by_default', (int) (bool) $post['multivalue_by_default']);
         $userSettings->set('csvimport_language', $args['language']);
@@ -382,7 +382,8 @@ class IndexController extends AbstractActionController
      */
     protected function cleanArgs(array $post)
     {
-        $args = $post;
+        $args = $post['advanced-settings'] + $post;
+        unset($args['advanced-settings']);
 
         // Set the default action if not set, for example for users.
         $args['action'] = empty($args['action'])
@@ -402,9 +403,7 @@ class IndexController extends AbstractActionController
         }
 
         // Set arguments as integer.
-        if (!empty($args['rows_by_batch'])) {
-            $args['rows_by_batch'] = (int) $args['rows_by_batch'];
-        }
+        $args['rows_by_batch'] = empty($args['rows_by_batch']) ? 0 : (int) $args['rows_by_batch'];
 
         // Set arguments as boolean.
         foreach (['automap_by_label', 'automap_check_user_list'] as $meta) {
