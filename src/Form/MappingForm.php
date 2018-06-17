@@ -324,7 +324,7 @@ class MappingForm extends Form
             'name' => 'multivalue_by_default',
             'type' => Element\Checkbox::class,
             'options' => [
-                'label' => 'Use the multivalue separator for all columns', // @translate
+                'label' => 'Use this multivalue separator for all columns', // @translate
                 'info' => 'Allows to set/unset all columns multivalued by default.', // @translate
             ],
             'attributes' => [

@@ -45,12 +45,8 @@ class PropertyMapping extends AbstractMapping
             $languageMap = $this->args['column-language'];
         }
 
-        // Get default option values.
-        // Language is no more a default value, but used only for the form.
-        // $language = isset($this->args['language']) ? $this->args['language'] : '';
-
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
-        $multivalueSeparator = $this->args['multivalue_separator'];
+
         foreach ($row as $index => $values) {
             if (isset($propertyMap[$index])) {
                 // Consider 'literal' as the default type.
@@ -62,13 +58,13 @@ class PropertyMapping extends AbstractMapping
                 }
 
                 foreach ($propertyMap[$index] as $propertyTerm => $propertyId) {
-                    if (empty($multivalueMap[$index])) {
-                        $values = [$values];
-                    } else {
-                        $values = explode($multivalueSeparator, $values);
+                    if (array_key_exists($index, $multivalueMap) && strlen($multivalueMap[$index])) {
+                        $values = explode($multivalueMap[$index], $values);
                         $values = array_map(function ($v) {
                             return trim($v, "\t\n\r   ");
                         }, $values);
+                    } else {
+                        $values = [$values];
                     }
                     $values = array_filter($values, 'strlen');
                     foreach ($values as $value) {
@@ -95,11 +91,6 @@ class PropertyMapping extends AbstractMapping
                                     'property_id' => $propertyId,
                                     'type' => $type,
                                 ];
-                                /*
-                                if ($language !== '') {
-                                    $literalPropertyJson['@language'] = $language;
-                                }
-                                */
                                 if (!empty($languageMap[$index])) {
                                     $literalPropertyJson['@language'] = $languageMap[$index];
                                 }

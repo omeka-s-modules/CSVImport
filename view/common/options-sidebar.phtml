@@ -8,8 +8,8 @@ $translate = $this->plugin('translate');
 
         <?php if (empty($resourceType) || !in_array($resourceType, ['users'])): ?>
         <div class="multivalue option">
-            <label for="multivalue"><?php echo $translate('Use multivalue separator'); ?></label>
-            <input type="checkbox" data-column-option="column-multivalue" name="multivalue" id="multivalue">
+            <label for="multivalue"><?php echo $translate('Multivalue separator'); ?></label>
+            <input id="multivalue" data-column-option="column-multivalue" name="multivalue" type="text">
         </div>
         <?php endif; ?>
 

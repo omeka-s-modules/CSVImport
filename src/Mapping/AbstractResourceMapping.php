@@ -50,15 +50,14 @@ abstract class AbstractResourceMapping extends AbstractMapping
         $this->processGlobalArgs();
 
         $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
-        $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
-            if (empty($multivalueMap[$index])) {
-                $values = [$values];
-            } else {
-                $values = explode($multivalueSeparator, $values);
+            if (array_key_exists($index, $multivalueMap) && strlen($multivalueMap[$index])) {
+                $values = explode($multivalueMap[$index], $values);
                 $values = array_map(function ($v) {
                     return trim($v, "\t\n\r   ");
                 }, $values);
+            } else {
+                $values = [$values];
             }
             $values = array_filter($values, 'strlen');
             if ($values) {

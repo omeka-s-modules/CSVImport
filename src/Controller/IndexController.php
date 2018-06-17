@@ -222,10 +222,10 @@ class IndexController extends AbstractActionController
 
         $userSettings->set('csvimport_rows_by_batch', $args['advanced-settings']['rows_by_batch']);
         $userSettings->set('csvimport_identifier_property', $args['advanced-settings']['identifier_property']);
-        $userSettings->set('csvimport_multivalue_separator', $post['multivalue_separator']);
-        $userSettings->set('csvimport_multivalue_by_default', $post['multivalue_by_default']);
+        $userSettings->set('csvimport_multivalue_separator', $args['multivalue_separator']);
+        $userSettings->set('csvimport_multivalue_by_default', (int) (bool) $post['multivalue_by_default']);
         $userSettings->set('csvimport_language', $args['language']);
-        $userSettings->set('csvimport_language_by_default', $args['language_by_default']);
+        $userSettings->set('csvimport_language_by_default', (int) (bool) $post['language_by_default']);
 
         $dispatcher = $this->jobDispatcher();
         $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
@@ -457,13 +457,18 @@ class IndexController extends AbstractActionController
 
         // Remove useless input fields from sidebars.
         unset($args['csrf']);
-        unset($args['multivalue_by_default']);
         unset($args['automap_by_label']);
-        unset($args['value-language']);
         unset($args['column-resource_property']);
         unset($args['column-item_set_property']);
         unset($args['column-item_property']);
         unset($args['column-media_property']);
+        unset($args['multivalue_by_default']);
+        unset($args['language_by_default']);
+        unset($args['value-language']);
+        unset($args['multivalue']);
+        unset($args['resource-data']);
+        unset($args['media-source']);
+        unset($args['column-import']);
 
         return $args;
     }

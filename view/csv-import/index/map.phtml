@@ -91,7 +91,8 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                 </td>
                 <td>
                     <ul class="options">
-                        <li class="column-multivalue option" style="display:none;"><?php echo $translate('Multivalue'); ?>
+                        <li class="column-multivalue option" style="display:none;"><?php echo $translate('Multivalue:'); echo "&nbsp;"; ?>
+                            <span class="column-multivalue"></span>
                             <ul class="actions">
                                 <li>
                                     <a aria-label="<?php echo $escapeHtml($translate('Remove option')); ?>" title="<?php echo $escapeHtml($translate('Remove option')); ?>" class="o-icon-delete remove-option" href="#" style="display: inline;"></a>
@@ -100,7 +101,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                                     <a aria-label="<?php echo $escapeHtml($translate('Restore option')); ?>" title="<?php echo $escapeHtml($translate('Undo option')); ?>" class="o-icon-undo restore-option" href="#" style="display: none;"></a>
                                 </li>
                             </ul>
-                            <input type="hidden" disabled="disabled" value="1" class="column-option column-multivalue" name="column-multivalue[<?php echo $index; ?>]"></input>
+                            <input type="hidden" disabled="disabled" value="" class="column-option column-multivalue" name="column-multivalue[<?php echo $index; ?>]"></input>
                         </li>
 
                         <li class="column-language option" style="display:none;"><?php echo $translate('Language:'); echo "&nbsp;"; ?>

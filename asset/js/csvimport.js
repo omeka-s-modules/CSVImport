@@ -376,17 +376,22 @@
 
         function setMultivalueSeparatorByDefault() {
             var switcher = $('#multivalue_by_default').prop('checked');
+            var element = $('.element.mappable');
+            var multivalueSeparator = $('#multivalue_separator').val();
             var targetRows = $('.element.mappable li.column-multivalue');
             targetRows.removeClass('delete');
             targetRows.find('.remove-option').css({ display: 'inline' });
             targetRows.find('.restore-option').css({ display: 'none' });
-            var element = $('.element.mappable');
-            if (switcher) {
+            if (switcher && multivalueSeparator !== '') {
                 element.find('li.column-multivalue').show();
+                element.find('.column-multivalue span.column-multivalue').text(multivalueSeparator);
                 element.find('input.column-multivalue').prop('disabled', false);
+                element.find('input.column-multivalue').val(multivalueSeparator);
             } else {
                 element.find('li.column-multivalue').hide();
+                element.find('.column-multivalue span.column-multivalue').text('');
                 element.find('input.column-multivalue').prop('disabled', true);
+                element.find('input.column-multivalue').val('');
             }
         }
 
@@ -417,15 +422,8 @@
         }
 
         $(document).on('click', '.o-icon-configure.sidebar-content', function(){
-            var multivalueCheck = false;
-            if ($('#content').find('.element.mappable.active').find('.column-multivalue.option').css('display') != 'none') {
-                multivalueCheck = true;
-            }
-            if (multivalueCheck) {
-                $("#multivalue").prop('checked', true);
-            } else {
-                $("#multivalue").prop('checked', false);
-            }
+            var multivalueSeparator = $('#content').find('.element.mappable.active').find('.column-multivalue.option span.column-multivalue').text();
+            $('#multivalue').val(multivalueSeparator);
 
             var lang = $('#content').find('.element.mappable.active').find('.column-language.option span.column-language').text();
             $('#value-language').val(lang);
@@ -440,15 +438,19 @@
             }
         });
 
-        $(document).on('change', '#multivalue', function(){
-            var checked = $(this).prop('checked');
+        $(document).on('keyup', '#multivalue', function(){
+            var multivalueSeparator = $(this).val();
             var element = $('#content').find('.element.mappable.active');
-            if (checked) {
+            if (multivalueSeparator !== '') {
                 element.find('li.column-multivalue').show();
+                element.find('.column-multivalue span.column-multivalue').text(multivalueSeparator);
                 element.find('input.column-multivalue').prop('disabled', false);
+                element.find('input.column-multivalue').val(multivalueSeparator);
             } else {
                 element.find('li.column-multivalue').hide();
+                element.find('.column-multivalue span.column-multivalue').text('');
                 element.find('input.column-multivalue').prop('disabled', true);
+                element.find('input.column-multivalue').val('');
             }
         });
 
