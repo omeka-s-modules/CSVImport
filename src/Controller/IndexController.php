@@ -163,7 +163,7 @@ class IndexController extends AbstractActionController
         $automapOptions = [];
         $automapOptions['automap_by_label'] = true;
         $automapOptions['format'] = 'form';
-        $automapOptions['mappings'] = $this->config['csv_import']['mappings'][$resourceType];
+        $automapOptions['mappings'] = $this->config['csv_import']['mappings'][$resourceType]['mappings'];
         $autoMaps = $this->automapHeadersToMetadata($parameters['columns'], $resourceType, $automapOptions);
 
         $view = new ViewModel;
@@ -332,11 +332,14 @@ class IndexController extends AbstractActionController
         $mappings = $this->config['csv_import']['mappings'];
         if (isset($defaultOrder[$resourceType])) {
             $mappingClasses = array_values(array_unique(array_merge(
-                $defaultOrder[$resourceType], $mappings[$resourceType]
+                $defaultOrder[$resourceType]['mappings'], $mappings[$resourceType]['mappings']
             )));
         } else {
-            $mappingClasses = $mappings[$resourceType];
+            $mappingClasses = $mappings[$resourceType]['mappings'];
         }
+        // Avoid an issue with old modules without label (Mapping).
+        $oldMappingClasses = array_filter($mappings[$resourceType], 'is_int', ARRAY_FILTER_USE_KEY);
+        $mappingClasses = array_merge($mappings, $oldMappingClasses);
         $mappings = [];
         foreach ($mappingClasses as $mappingClass) {
             $mappings[] = new $mappingClass();

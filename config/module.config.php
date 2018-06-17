@@ -127,26 +127,41 @@ return [
         ],
         'mappings' => [
             'item_sets' => [
-                Mapping\ItemSetMapping::class,
-                Mapping\PropertyMapping::class,
+                'label' => 'Item sets', // @translate
+                'mappings' => [
+                    Mapping\ItemSetMapping::class,
+                    Mapping\PropertyMapping::class,
+                ],
             ],
             'items' => [
-                Mapping\ItemMapping::class,
-                Mapping\PropertyMapping::class,
-                Mapping\MediaSourceMapping::class,
+                'label' => 'Items', // @translate
+                'mappings' => [
+                    Mapping\ItemMapping::class,
+                    Mapping\PropertyMapping::class,
+                    Mapping\MediaSourceMapping::class,
+                ],
             ],
             'media' => [
-                Mapping\MediaMapping::class,
-                Mapping\PropertyMapping::class,
-                Mapping\MediaSourceMapping::class,
+                'label' => 'Media', // @translate
+                'mappings' => [
+                    Mapping\MediaMapping::class,
+                    Mapping\PropertyMapping::class,
+                    Mapping\MediaSourceMapping::class,
+                ],
             ],
             'resources' => [
-                Mapping\ResourceMapping::class,
-                Mapping\PropertyMapping::class,
-                Mapping\MediaSourceMapping::class,
+                'label' => 'Multiple resources (items, item sets, media…)', // @translate
+                'mappings' => [
+                    Mapping\ResourceMapping::class,
+                    Mapping\PropertyMapping::class,
+                    Mapping\MediaSourceMapping::class,
+                ],
             ],
             'users' => [
-                Mapping\UserMapping::class,
+                'label' => 'Users', // @translate
+                'mappings' => [
+                    Mapping\UserMapping::class,
+                ],
             ],
         ],
         'media_ingester_adapter' => [

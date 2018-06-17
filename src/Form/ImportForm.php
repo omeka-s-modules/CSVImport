@@ -61,11 +61,12 @@ class ImportForm extends Form
             ],
         ]);
 
-        $resourceTypes = array_keys($this->configCsvImport['mappings']);
-        $valueParameters = [];
-        foreach ($resourceTypes as $resourceType) {
-            // Currently, there is no resource label, so no translation.
-            $valueParameters[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
+        $valueOptions = [];
+        foreach ($this->configCsvImport['mappings'] as $key => $mapping) {
+            $valueOptions[$key] = isset($mapping['label'])
+                ? $mapping['label']
+                // Avoid an issue with old modules without label (Mapping).
+                : str_replace('_', ' ', ucfirst($resourceType));
         }
         $this->add([
             'name' => 'resource_type',
@@ -73,7 +74,7 @@ class ImportForm extends Form
             'options' => [
                 'label' => 'Import type', // @translate
                 'info' => 'The type of data being imported', // @translate
-                'value_options' => $valueParameters,
+                'value_options' => $valueOptions,
             ],
             'attributes' => [
                 'id' => 'resource_type',
@@ -87,28 +88,28 @@ class ImportForm extends Form
         // Commenting out code that uses UserSettings in case we want to replace or
         // use them differently later
 
-        $valueParameters = $this->getDelimiterList();
+        $valueOptions = $this->getDelimiterList();
         $this->add([
             'name' => 'delimiter',
             'type' => Element\Select::class,
             'options' => [
                 'label' => 'CSV column delimiter', // @translate
                 'info' => 'A single character that will be used to separate columns in the csv file.', // @translate
-                'value_options' => $valueParameters,
+                'value_options' => $valueOptions,
             ],
             'attributes' => [
                 'id' => 'delimiter',
             ],
         ]);
 
-        $valueParameters = $this->getEnclosureList();
+        $valueOptions = $this->getEnclosureList();
         $this->add([
             'name' => 'enclosure',
             'type' => Element\Select::class,
             'options' => [
                 'label' => 'CSV column enclosure', // @translate
                 'info' => 'A single character that will be used to separate columns in the csv file. The enclosure can be omitted when the content does not contain the delimiter.', // @translate
-                'value_options' => $valueParameters,
+                'value_options' => $valueOptions,
             ],
             'attributes' => [
                 'id' => 'enclosure',
