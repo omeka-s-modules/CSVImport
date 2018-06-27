@@ -123,10 +123,6 @@ li.column-multivalue {
     display: block;
 }
 
-#automap_user_list {
-    max-height: inherit;
-}
-
 .csv-import-job-param,
 .csv-import-job-log {
     font-size: smaller;

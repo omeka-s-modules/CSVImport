@@ -63,8 +63,6 @@ class IndexController extends AbstractActionController
             'delimiter',
             'enclosure',
             'automap_check_names_alone',
-            'automap_check_user_list',
-            'automap_user_list',
         ]));
         $form = $this->getForm(MappingForm::class, $mappingOptions);
         if (empty($files)) {
@@ -281,10 +279,8 @@ class IndexController extends AbstractActionController
         }
 
         // Set arguments as boolean.
-        foreach (['automap_check_names_alone', 'automap_check_user_list'] as $meta) {
-            if (array_key_exists($meta, $args)) {
-                $args[$meta] = (bool) $args[$meta];
-            }
+        if (array_key_exists('automap_check_names_alone', $args)) {
+            $args['automap_check_names_alone'] = (bool) $args['automap_check_names_alone'];
         }
 
         // Name of properties must be known to merge data and to process update.

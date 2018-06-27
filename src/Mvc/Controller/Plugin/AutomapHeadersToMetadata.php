@@ -22,8 +22,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
      * @param string $resourceType
      * @param array $options Associative array of options:
      * - check_names_alone (boolean)
-     * - automap_list (array) An associative array containing specific mappings.
-     * - format (string) The type of result: may be "form", "arguments", or raw.
      * @return array Associative array of the index of the headers as key and
      * the matching metadata as value. Only mapped headers are set.
      */
@@ -41,19 +39,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
 
         // Prepare the list of names and labels one time to speed up process.
         $propertyLists = $this->listTerms();
-
-        // Check automapping first.
-        $automapList = empty($options['automap_list']) ? [] : $options['automap_list'];
-        if ($automapList) {
-            $automapList = $this->checkAutomapList($automapList, $propertyLists['names']);
-            $automapLists['base'] = array_combine(
-                array_keys($automapList),
-                array_keys($automapList));
-            $automapLists['lower_base'] = array_map('strtolower', $automapLists['base']);
-            if ($automapLists['base'] === $automapLists['lower_base']) {
-                unset($automapLists['base']);
-            }
-        }
 
         // Because some terms and labels are not standardized (foaf:givenName is
         // not foaf:givenname), the process must be done case sensitive first.
@@ -116,15 +101,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             }
         }
 
-        if (empty($options['format']) || !in_array($options['format'], ['form', 'arguments'])) {
-            return $automaps;
-        }
-        /*
-        return $options['format'] === 'form'
-            ? $this->normalizeAutomapsForForm($automaps, $resourceType)
-            :  $this->normalizeAutomapsAsArguments($automaps, $resourceType);
-        */
-        
         return $this->normalizeAutomapsForForm($automaps, $resourceType);
     }
 
@@ -139,9 +115,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
     {
         $result = [];
         $controller = $this->getController();
-        $automapping = empty($this->options['automap_list'])
-            ? []
-            : $this->prepareAutomapping();
         foreach ($automaps as $index => $automap) {
             if (is_object($automap)) {
                 if ($automap->getJsonLdType() === 'o:Property') {
@@ -154,79 +127,11 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $value['multiple'] = true;
                     $result[$index] = $value;
                 }
-            } elseif (is_string($automap)) {
-                // Get the options of the automap.
-                $check = preg_match('~^(.+?)\s*(\{.+\})$~', $automap, $matches);
-                if ($check) {
-                    if (isset($automapping[$matches[1]])) {
-                        $value = $automapping[$matches[1]];
-                        $multipleOptions = @json_decode($matches[2], true);
-                        $value['value'] = $multipleOptions
-                            ? $matches[2]
-                            : trim($matches[2], "\t\r\n {}");
-                        $value['label'] = $multipleOptions
-                            ? vsprintf($value['label'], $multipleOptions)
-                            : sprintf($value['label'], $value['value']);
-                        $result[$index] = $value;
-                    }
-                } elseif (isset($automapping[$automap])) {
-                    $value = $automapping[$automap];
-                    if ($value !== 1) {
-                        $value['label'] = is_array($value['value'])
-                            ? vsprintf($value['label'], $value['value'])
-                            : sprintf($value['label'], $value['value']);
-                        $result[$index] = $value;
-                    } else {
-                        $result[$index] = $value;
-                    }
-                }
             }
         }
         return $result;
     }
 
-    /**
-     * Prepare automaps as import arguments, and filter it with resource type.
-     *
-     * @param array $automaps
-     * @param string $resourceType
-     * @return array
-     */
-    
-    /*
-    protected function normalizeAutomapsAsArguments(array $automaps, $resourceType)
-    {
-        $result = [];
-        $controller = $this->getController();
-        $automapping = empty($this->options['automap_list'])
-            ? []
-            : $this->prepareAutomapping();
-        foreach ($automaps as $index => $automap) {
-            if (is_object($automap)) {
-                if ($automap->getJsonLdType() === 'o:Property') {
-                    $result['column-property'][$index][$automap->term()] = $automap->id();
-                }
-            } elseif (is_string($automap)) {
-                // Get the options of the automap.
-                $check = preg_match('~^(.+?)\s*(\{.+\})$~', $automap, $matches);
-                if ($check) {
-                    if (isset($automapping[$matches[1]])) {
-                        $name = $automapping[$matches[1]]['name'];
-                        $value = @json_decode($matches[2], true) ?: trim($matches[2], "\t\r\n {}");
-                    }
-                } elseif (isset($automapping[$automap])) {
-                    $name = $automapping[$automap]['name'];
-                    $value = $automapping[$automap]['value'];
-                } else {
-                    $name = null;
-                    continue;
-                }
-                $result['column-' . $name][$index] = $value;
-            }
-        }
-        return $result;
-    }
-*/
     /**
      * Return the list of properties by names and labels.
      *
@@ -276,150 +181,6 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                         [' ', ' '], ' ', $v
             ))));
         }, $list);
-    }
-
-    /**
-     * Clean the automap list to format to remove old properties.
-     *
-     * @param array $automapList
-     * @param array $propertyList
-     * @return array
-     */
-    protected function checkAutomapList($automapList, $propertyList)
-    {
-        $result = $automapList;
-        foreach ($automapList as $name => $value) {
-            if (empty($value)) {
-                unset($result[$name]);
-                continue;
-            }
-            $isProperty = preg_match('/^[a-z0-9_-]+:[a-z0-9_-]+$/i', $value);
-            if ($isProperty) {
-                if (empty($propertyList[$value])) {
-                    unset($result[$name]);
-                } else {
-                    $result[$name] = $propertyList[$value];
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * Define the list of common automapping and prepare it.
-     *
-     * @return array
-     */
-    protected function prepareAutomapping()
-    {
-        $controller = $this->getController();
-
-        $defaultAutomapping = [
-            'name' => '',
-            'value' => 1,
-            'label' => '' ,
-            'class' => '',
-            'special' => '',
-            'multiple' => false,
-        ];
-
-        $automapping = [
-            'owner_email' => [
-                'name' => 'owner_email',
-                'label' => $controller->translate('Owner email address'),
-                'class' => 'owner-email',
-            ],
-            'internal_id' => [
-                'name' => 'resource',
-                'value' =>  'internal_id',
-                'label' => $controller->translate('Internal id'),
-                'class' => 'resource-data',
-            ],
-            'resource' => [
-                'name' => 'resource',
-                'value' =>  'internal_id',
-                'label' => $controller->translate('Resource [%s]'),
-                'class' => 'resource-data',
-            ],
-            'resource_type' => [
-                'name' => 'resource_type',
-                'label' => $controller->translate('Resource type'),
-                'class' => 'resource-data',
-            ],
-            'resource_template' => [
-                'name' => 'resource_template',
-                'label' => $controller->translate('Resource template name'),
-                'class' => 'resource-data',
-            ],
-            'resource_class' => [
-                'name' => 'resource_class',
-                'label' => $controller->translate('Resource class term'),
-                'class' => 'resource-data',
-            ],
-            'is_public' => [
-                'name' => 'is_public',
-                'label' => $controller->translate('Visibility public/private'),
-                'class' => 'resource-data',
-            ],
-            'is_open' => [
-                'name' => 'is_open',
-                'label' => $controller->translate('Additions open/closed'),
-                'class' => 'resource-data',
-            ],
-            'item_set' => [
-                'name' => 'item_set',
-                'value' => 'internal_id',
-                'label' => $controller->translate('Item set [%s]'),
-                'class' => 'resource-data',
-            ],
-            'item' => [
-                'name' => 'item',
-                'value' => 'internal_id',
-                'label' => $controller->translate('Item [%s]'),
-                'class' => 'resource-data',
-            ],
-            'media' => [
-                'name' => 'media',
-                'value' => 'internal_id',
-                'label' => $controller->translate('Media [%s]'),
-                'class' => 'resource-data',
-            ],
-            'media_source' => [
-                'name' => 'media_source',
-                'value' => null,
-                'label' => $controller->translate('Media source (%s)'),
-                'class' => 'media-source',
-            ],
-            'user_name' => [
-                'name' => 'user_name',
-                'label' => $controller->translate('Display name'),
-                'class' => 'user-name',
-            ],
-            'user_email' => [
-                'name' => 'user_email',
-                'label' => $controller->translate('Email'),
-                'class' => 'user-email',
-            ],
-            'user_role' => [
-                'name' => 'user_role',
-                'label' => $controller->translate('Role'),
-                'class' => 'user-role',
-            ],
-            'user_is_active' => [
-                'name' => 'user-is-active',
-                'label' => $controller->translate('User is active'),
-                'class' => 'user-is-active',
-            ],
-        ];
-
-        $configAutomapping = $this->configCsvImport['automapping'];
-        $automapping = array_merge_recursive($automapping, $configAutomapping);
-
-        foreach ($automapping as &$value) {
-            $value += $defaultAutomapping;
-        }
-
-        return $automapping;
     }
 
     public function setConfigCsvImport(array $configCsvImport)

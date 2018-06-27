@@ -6,7 +6,6 @@
     "csrf": "db85ea2f5cc050086324a589f9b619c2-ec9f596f493926866d2ecd0dd85e79d1",
     "resource_type": "items",
     "automap_check_names_alone": "0",
-    "automap_check_user_list": "0",
     "comment": "",
     "o:resource_template": {
         "o:id": ""
