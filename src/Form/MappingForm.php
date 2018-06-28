@@ -58,6 +58,13 @@ class MappingForm extends Form
         ]);
 
         $this->add([
+            'type' => 'fieldset',
+            'name' => 'basic-settings',
+        ]);
+
+        $basicSettingsFieldset = $this->get('basic-settings');
+
+        $basicSettingsFieldset->add([
             'name' => 'comment',
             'type' => 'textarea',
             'options' => [
@@ -72,7 +79,7 @@ class MappingForm extends Form
 
         if (in_array($resourceType, ['item_sets', 'items', 'media', 'resources'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
-            $this->add([
+            $basicSettingsFieldset->add([
                 'name' => 'o:resource_template[o:id]',
                 'type' => ResourceSelect::class,
                 'options' => [
@@ -95,7 +102,7 @@ class MappingForm extends Form
                 ],
             ]);
 
-            $this->add([
+            $basicSettingsFieldset->add([
                 'name' => 'o:resource_class[o:id]',
                 'type' => ResourceClassSelect::class,
                 'options' => [
@@ -116,7 +123,7 @@ class MappingForm extends Form
                 // No rule for resources, so use item.
                 || ($resourceType === 'resources' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
             ) {
-                $this->add([
+                $basicSettingsFieldset->add([
                     'name' => 'o:owner[o:id]',
                     'type' => ResourceSelect::class,
                     'options' => [
@@ -141,7 +148,7 @@ class MappingForm extends Form
                 ]);
             }
 
-            $this->add([
+            $basicSettingsFieldset->add([
                 'name' => 'o:is_public',
                 'type' => 'radio',
                 'options' => [
@@ -156,7 +163,7 @@ class MappingForm extends Form
 
             switch ($resourceType) {
                 case 'item_sets':
-                    $this->add([
+                    $basicSettingsFieldset->add([
                         'name' => 'o:is_open',
                         'type' => 'radio',
                         'options' => [
@@ -171,7 +178,7 @@ class MappingForm extends Form
                     break;
 
                 case 'items':
-                    $this->add([
+                    $basicSettingsFieldset->add([
                         'name' => 'o:item_set',
                         'type' => ItemSetSelect::class,
                         'attributes' => [
@@ -191,7 +198,7 @@ class MappingForm extends Form
                     break;
 
                 case 'resources':
-                    $this->add([
+                    $basicSettingsFieldset->add([
                         'name' => 'o:is_open',
                         'type' => 'radio',
                         'options' => [
@@ -204,7 +211,7 @@ class MappingForm extends Form
                         ],
                     ]);
 
-                    $this->add([
+                    $basicSettingsFieldset->add([
                         'name' => 'o:item_set',
                         'type' => ItemSetSelect::class,
                         'attributes' => [
@@ -224,7 +231,7 @@ class MappingForm extends Form
                     break;
             }
 
-            $this->add([
+            $basicSettingsFieldset->add([
                 'name' => 'multivalue_separator',
                 'type' => 'text',
                 'options' => [
@@ -240,7 +247,7 @@ class MappingForm extends Form
                 ],
             ]);
 
-            $this->add([
+            $basicSettingsFieldset->add([
                 'name' => 'multivalue_by_default',
                 'type' => 'checkbox',
                 'options' => [
@@ -255,7 +262,7 @@ class MappingForm extends Form
                 ],
             ]);
 
-            $this->add([
+            $basicSettingsFieldset->add([
                 'name' => 'global_language',
                 'type' => 'text',
                 'options' => [
@@ -274,9 +281,6 @@ class MappingForm extends Form
             $this->add([
                 'type' => 'fieldset',
                 'name' => 'advanced-settings',
-                'options' => [
-                    'label' => 'Advanced Settings', // @translate
-                ],
             ]);
 
             $advancedSettingsFieldset = $this->get('advanced-settings');

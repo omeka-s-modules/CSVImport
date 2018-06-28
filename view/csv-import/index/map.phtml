@@ -26,19 +26,23 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 </fieldset>
 <nav class="section-nav">
     <ul>
-        <li class="active"><a href="#csv-import-basics-fieldset"><?php echo $this->translate('Basic Import Settings'); ?></a></li>
-        <li><a href="#mapping-data"><?php echo $this->translate('Map to Omeka S data'); ?></a></li>
+        <li class="active"><a href="#mapping-data"><?php echo $this->translate('Map to Omeka S data'); ?></a></li>
+        <li><a href="#csv-import-basics-fieldset"><?php echo $this->translate('Basic Settings'); ?></a></li>
+        <li><a href="#csv-import-advanced-fieldset"><?php echo $this->translate('Advanced Settings'); ?></a></li>
     </ul>
 </nav>
 <input type="hidden" name="filename" value="<?php echo $filename; ?>" />
 <input type="hidden" name="filesize" value="<?php echo $filesize; ?>" />
 <input type="hidden" name="filepath" value="<?php echo $filepath; ?>" />
 <input type="hidden" name="media_type" value="<?php echo $mediaType; ?>" />
-<fieldset id="csv-import-basics-fieldset" class="section active">
-    <?php echo $this->formCollection($form); ?>
+<fieldset id="csv-import-basics-fieldset" class="section">
+    <?php echo $this->formCollection($form->get('basic-settings')); ?>
+</fieldset>
+<fieldset id="csv-import-advanced-fieldset" class="section">
+    <?php echo $this->formCollection($form->get('advanced-settings')); ?>
 </fieldset>
 
-<fieldset id="mapping-data" class="section">
+<fieldset id="mapping-data" class="section active">
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
