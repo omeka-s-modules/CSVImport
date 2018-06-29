@@ -150,7 +150,7 @@ abstract class AbstractSource implements SourceInterface
         if (empty($iterator)) {
             return;
         }
-        if ($offset > iterator_count($this->iterator)) {
+        if ($offset >= iterator_count($this->iterator)) {
             return;
         }
 
