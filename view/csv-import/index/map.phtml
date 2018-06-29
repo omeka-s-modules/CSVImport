@@ -35,12 +35,8 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <input type="hidden" name="filesize" value="<?php echo $filesize; ?>" />
 <input type="hidden" name="filepath" value="<?php echo $filepath; ?>" />
 <input type="hidden" name="media_type" value="<?php echo $mediaType; ?>" />
-<fieldset id="csv-import-basics-fieldset" class="section">
-    <?php echo $this->formCollection($form->get('basic-settings')); ?>
-</fieldset>
-<fieldset id="csv-import-advanced-fieldset" class="section">
-    <?php echo $this->formCollection($form->get('advanced-settings')); ?>
-</fieldset>
+
+<?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">

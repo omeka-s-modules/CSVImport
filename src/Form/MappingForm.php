@@ -60,6 +60,10 @@ class MappingForm extends Form
         $this->add([
             'type' => 'fieldset',
             'name' => 'basic-settings',
+            'attributes' => [
+                'id' => 'csv-import-basics-fieldset',
+                'class' => 'section',
+            ]
         ]);
 
         $basicSettingsFieldset = $this->get('basic-settings');
@@ -281,6 +285,10 @@ class MappingForm extends Form
             $this->add([
                 'type' => 'fieldset',
                 'name' => 'advanced-settings',
+                'attributes' => [
+                    'id' => 'csv-import-advanced-fieldset',
+                    'class' => 'section',
+                ]
             ]);
 
             $advancedSettingsFieldset = $this->get('advanced-settings');
@@ -371,39 +379,42 @@ class MappingForm extends Form
             ]);
 
             $inputFilter = $this->getInputFilter();
-            $inputFilter->add([
+            $basicSettingsInputFilter = $inputFilter->get('basic-settings');
+            $basicSettingsInputFilter->add([
                 'name' => 'o:resource_template[o:id]',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $basicSettingsInputFilter->add([
                 'name' => 'o:resource_class[o:id]',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $basicSettingsInputFilter->add([
                 'name' => 'o:owner[o:id]',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $basicSettingsInputFilter->add([
                 'name' => 'o:is_public',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $basicSettingsInputFilter->add([
                 'name' => 'o:is_open',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $basicSettingsInputFilter->add([
                 'name' => 'o:item_set',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            
+            $advancedSettingsInputFilter = $inputFilter->get('advanced-settings');
+            $advancedSettingsInputFilter->add([
                 'name' => 'action',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $advancedSettingsInputFilter->add([
                 'name' => 'identifier_property',
                 'required' => false,
             ]);
-            $inputFilter->add([
+            $advancedSettingsInputFilter->add([
                 'name' => 'action_unidentified',
                 'required' => false,
             ]);

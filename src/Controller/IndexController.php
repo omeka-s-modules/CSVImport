@@ -89,6 +89,9 @@ class IndexController extends AbstractActionController
 
             // TODO Keep user variables when the form is invalid.
             $this->messenger()->addError('Invalid settings.'); // @translate
+            foreach ($form->getMessages() as $key => $value) {
+                $this->messenger()->addError("$key: $value");
+            }
             return $this->redirect()->toRoute('admin/csvimport');
         }
 
