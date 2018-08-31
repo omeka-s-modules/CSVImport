@@ -56,7 +56,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
                 $values = [$values];
             } else {
                 $values = explode($multivalueSeparator, $values);
-                $values = array_map(function ($v) { return trim($v, "\t\n\r   "); }, $values);
+                $values = array_map(function ($v) { return trim($v); }, $values);
             }
             $values = array_filter($values, 'strlen');
             if ($values) {
