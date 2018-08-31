@@ -197,7 +197,7 @@ class IndexController extends AbstractActionController
         $mediaType = $finfo->file($fileData['tmp_name']);
 
         // Manage an exception for a very common format, undetected by fileinfo.
-        if ($mediaType === 'text/plain') {
+        if ($mediaType === 'text/plain' || $mediaType === 'text/html') {
             $extensions = [
                 'csv' => 'text/csv',
                 'tab' => 'text/tab-separated-values',
