@@ -68,6 +68,10 @@ class IndexController extends AbstractActionController
         if (empty($files)) {
             $form->setData($post);
             if ($form->isValid()) {
+                // Flatten basic and advanced settings back into single level
+                $post = array_merge($post, $post['basic-settings'], $post['advanced-settings']);
+                unset($post['basic-settings'], $post['advanced-settings']);
+
                 $args = $this->cleanArgs($post);
                 unset($args['multivalue_by_default']);
                 $dispatcher = $this->jobDispatcher();
