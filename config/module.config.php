@@ -151,14 +151,14 @@ return [
             'text/tab-separated-values' => Source\TsvFile::class,
         ],
         'mappings' => [
-            'item_sets' => [
-                Mapping\ItemSetMapping::class,
-                Mapping\PropertyMapping::class,
-            ],
             'items' => [
                 Mapping\ItemMapping::class,
                 Mapping\PropertyMapping::class,
                 Mapping\MediaSourceMapping::class,
+            ],
+            'item_sets' => [
+                Mapping\ItemSetMapping::class,
+                Mapping\PropertyMapping::class,
             ],
             'media' => [
                 Mapping\MediaMapping::class,
