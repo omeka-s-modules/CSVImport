@@ -163,6 +163,9 @@ class MappingForm extends Form
                         '0' => 'Private', // @translate
                     ],
                 ],
+                'attributes' => [
+                    'value' => '1',
+                ],
             ]);
 
             switch ($resourceType) {
