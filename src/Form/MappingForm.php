@@ -84,7 +84,7 @@ class MappingForm extends Form
         if (in_array($resourceType, ['item_sets', 'items', 'media', 'resources'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');
             $basicSettingsFieldset->add([
-                'name' => 'o:resource_template[o:id]',
+                'name' => 'o:resource_template',
                 'type' => ResourceSelect::class,
                 'options' => [
                     'label' => 'Resource template', // @translate
@@ -107,7 +107,7 @@ class MappingForm extends Form
             ]);
 
             $basicSettingsFieldset->add([
-                'name' => 'o:resource_class[o:id]',
+                'name' => 'o:resource_class',
                 'type' => ResourceClassSelect::class,
                 'options' => [
                     'label' => 'Class', // @translate
@@ -128,7 +128,7 @@ class MappingForm extends Form
                 || ($resourceType === 'resources' && $acl->userIsAllowed('Omeka\Entity\Item', 'change-owner'))
             ) {
                 $basicSettingsFieldset->add([
-                    'name' => 'o:owner[o:id]',
+                    'name' => 'o:owner',
                     'type' => ResourceSelect::class,
                     'options' => [
                         'label' => 'Owner', // @translate
@@ -369,15 +369,15 @@ class MappingForm extends Form
             $inputFilter = $this->getInputFilter();
             $basicSettingsInputFilter = $inputFilter->get('basic-settings');
             $basicSettingsInputFilter->add([
-                'name' => 'o:resource_template[o:id]',
+                'name' => 'o:resource_template',
                 'required' => false,
             ]);
             $basicSettingsInputFilter->add([
-                'name' => 'o:resource_class[o:id]',
+                'name' => 'o:resource_class',
                 'required' => false,
             ]);
             $basicSettingsInputFilter->add([
-                'name' => 'o:owner[o:id]',
+                'name' => 'o:owner',
                 'required' => false,
             ]);
             $basicSettingsInputFilter->add([
