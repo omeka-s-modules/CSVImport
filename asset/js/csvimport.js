@@ -317,10 +317,10 @@
             targetRows.find('.restore-option').hide();
             if ($('#multivalue_by_default').hasClass('active')) {
                 mappableElement.find('li.column-multivalue').show();
-                mappableElement.find('input[type="hidden"]').attr('disabled', true);
+                mappableElement.find('input[type="hidden"]').attr('disabled', false);
             } else {
                 mappableElement.find('li.column-multivalue').hide();
-                mappableElement.find('input[type="hidden"]').attr('disabled', false);
+                mappableElement.find('input[type="hidden"]').attr('disabled', true);
             }
         }
 
