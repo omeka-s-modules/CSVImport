@@ -16,7 +16,6 @@
     "o:owner": {
         "o:id": 1
     },
-    "multivalue_by_default": "0",
     "global_language": "",
     "action": "create",
     "identifier_property": "",

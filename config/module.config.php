@@ -185,7 +185,6 @@ return [
             'csv_import_delimiter' => ',',
             'csv_import_enclosure' => '"',
             'csv_import_multivalue_separator' => ',',
-            'csv_import_multivalue_by_default' => false,
             'csv_import_rows_by_batch' => 20,
             'csv_import_global_language' => '',
             'csv_import_identifier_property' => '',
