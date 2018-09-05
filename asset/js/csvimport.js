@@ -312,17 +312,16 @@
         });
 
         function setMultivalueSeparatorByDefault() {
-            var multivalueSwitch = $('#multivalue_by_default').hasClass('active');
             var targetRows = $('.element.mappable li.column-multivalue');
             var mappableElement = $('.element.mappable');
             targetRows.removeClass('delete');
             targetRows.find('.remove-option').show();
             targetRows.find('.restore-option').hide();
-            if (multivalueSwitch) {
+            if ($('#multivalue_by_default').hasClass('active')) {
                 mappableElement.find('li.column-multivalue').show();
                 mappableElement.find('input[type="hidden"]').attr('disabled', true);
-                
             } else {
+                mappableElement.find('li.column-multivalue').hide();
                 mappableElement.find('input[type="hidden"]').attr('disabled', false);
             }
         }
