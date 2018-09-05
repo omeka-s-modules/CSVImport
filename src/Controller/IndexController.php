@@ -82,7 +82,6 @@ class IndexController extends AbstractActionController
 
                 $args = $this->cleanArgs($post);
                 $this->saveUserSettings($args);
-                unset($args['multivalue_by_default']);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't

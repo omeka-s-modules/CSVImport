@@ -17,8 +17,6 @@
             + '<li><a aria-label="' + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>'
             + '</ul>';
 
-        setMultivalueSeparatorByDefault();
-
         /*
          * Basic import settings tab.
          */
@@ -308,10 +306,10 @@
         // Set/unset multivalue separator for all columns.
         $(document).on('click', '#multivalue_by_default', function(e) {
             $(this).toggleClass('active');
-            setMultivalueSeparatorByDefault();
+            setMultivalueSeparatorColumns();
         });
 
-        function setMultivalueSeparatorByDefault() {
+        function setMultivalueSeparatorColumns() {
             var targetRows = $('.element.mappable li.column-multivalue');
             var mappableElement = $('.element.mappable');
             targetRows.removeClass('delete');
