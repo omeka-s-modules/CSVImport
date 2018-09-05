@@ -252,21 +252,6 @@ class MappingForm extends Form
             ]);
 
             $basicSettingsFieldset->add([
-                'name' => 'multivalue_by_default',
-                'type' => 'checkbox',
-                'options' => [
-                    'label' => 'Use the multivalue separator for all columns', // @translate
-                    'info' => 'When clicked, all columns will be set/unset multivalued by default in the next tab.', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'multivalue_by_default',
-                    'value' => (int) (bool) $userSettings->get(
-                        'csv_import_multivalue_by_default',
-                        $default['csv_import_multivalue_by_default']),
-                ],
-            ]);
-
-            $basicSettingsFieldset->add([
                 'name' => 'global_language',
                 'type' => 'text',
                 'options' => [

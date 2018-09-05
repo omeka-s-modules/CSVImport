@@ -271,7 +271,7 @@
                 var checkboxInput = $(this);
                 if (checkboxInput.hasClass('touched')) {
                     var optionClass = '.' + checkboxInput.data('column-option');
-                    var optionLi = activeElement.find(optionClass);
+                    var optionLi = activeElement.find($(optionClass));
                     if (checkboxInput.is(':checked')) {
                         optionLi.show();
                         optionLi.find('input[type="hidden"]').removeAttr('disabled');
@@ -296,7 +296,7 @@
                         optionLi.find('.' + selectedOptionValue).removeAttr('disabled');
                     } else {
                         optionLi.hide();
-                        optionLi.find('input[type="hidden"').attr('disabled', true);
+                        optionLi.find('input[type="hidden"]').attr('disabled', true);
                     }
                 }
             });
@@ -306,20 +306,24 @@
         });
 
         // Set/unset multivalue separator for all columns.
-        $(document).on('change', '#multivalue_by_default', function(e) {
+        $(document).on('click', '#multivalue_by_default', function(e) {
+            $(this).toggleClass('active');
             setMultivalueSeparatorByDefault();
         });
 
         function setMultivalueSeparatorByDefault() {
-            var multivalueSwitch = $('#multivalue_by_default').prop('checked');
+            var multivalueSwitch = $('#multivalue_by_default').hasClass('active');
             var targetRows = $('.element.mappable li.column-multivalue');
+            var mappableElement = $('.element.mappable');
             targetRows.removeClass('delete');
-            targetRows.find('.remove-option').css({ display: 'inline' });
-            targetRows.find('.restore-option').css({ display: 'none' });
+            targetRows.find('.remove-option').show();
+            targetRows.find('.restore-option').hide();
             if (multivalueSwitch) {
-                $('.element.mappable').find('li.column-multivalue').show();
+                mappableElement.find('li.column-multivalue').show();
+                mappableElement.find('input[type="hidden"]').attr('disabled', true);
+                
             } else {
-                $('.element.mappable').find('li.column-multivalue').hide();
+                mappableElement.find('input[type="hidden"]').attr('disabled', false);
             }
         }
 

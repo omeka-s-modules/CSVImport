@@ -39,6 +39,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
+    <button type="button" id="multivalue_by_default"><?php echo $this->translate('Toggle multivalue separator for all columns'); ?></button>
     <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
