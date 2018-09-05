@@ -8,6 +8,7 @@ use CSVImport\Job\Import;
 use finfo;
 use Omeka\Media\Ingester\Manager;
 use Omeka\Service\Exception\ConfigException;
+use Omeka\Settings\UserSettings;
 use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -30,13 +31,20 @@ class IndexController extends AbstractActionController
     protected $mediaIngesterManager;
 
     /**
+     * @var UserSettings
+     */
+    protected $userSettings;
+
+    /**
      * @param array $config
      * @param Manager $mediaIngesterManager
+     * @param UserSettings $userSettings
      */
-    public function __construct(array $config, Manager $mediaIngesterManager)
+    public function __construct(array $config, Manager $mediaIngesterManager, UserSettings $userSettings)
     {
         $this->config = $config;
         $this->mediaIngesterManager = $mediaIngesterManager;
+        $this->userSettings = $userSettings;
     }
 
     public function indexAction()
@@ -73,6 +81,7 @@ class IndexController extends AbstractActionController
                 unset($post['basic-settings'], $post['advanced-settings']);
 
                 $args = $this->cleanArgs($post);
+                $this->saveUserSettings($args);
                 unset($args['multivalue_by_default']);
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
@@ -412,5 +421,20 @@ class IndexController extends AbstractActionController
             ]
         );
         return $job;
+    }
+
+    /**
+     * Save user settings.
+     *
+     * @param array $settings
+     */
+    protected function saveUserSettings(array $settings)
+    {
+        foreach ($this->config['csv_import']['user_settings'] as $key => $value) {
+            $name = substr($key, strlen('csv_import_'));
+            if (isset($settings[$name])) {
+                $this->userSettings()->set($key, $settings[$name]);
+            }
+        }
     }
 }
