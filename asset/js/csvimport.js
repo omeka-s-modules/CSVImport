@@ -72,7 +72,7 @@
          * Sidebar chooser (buttons on each mappable element).
          */
 
-        $('.add-mapping.button, .column-header + .actions a').on('click', function(e) {
+        $('.column-header + .actions a').on('click', function(e) {
             e.preventDefault();
             $('.property-mapping input.value-language').val('');
             if (activeElement !== null) {
@@ -103,8 +103,35 @@
                 sidebar.html(defaultSidebarHtml);
                 rebindInputs(sidebar);
             }
+            
             Omeka.openSidebar(sidebar);
+            resetSidebar();
+            populateSidebar();
         });
+
+        function resetSidebar() {
+            $('.active.sidebar :input').val("");
+        }
+
+        function populateSidebar() {
+            $('.active.element .options :input:not(:disabled)').each(function() {
+                var optionInput = $(this);
+                var optionName = optionInput.parents('.option').attr('class');
+                optionName = optionName.replace(' option', '').replace('column-', '');
+                var sidebarOptionInput = $('#column-options .' + optionName + ' :input');
+                if (sidebarOptionInput.attr('type') == "checkbox") {
+                    sidebarOptionInput.attr('checked', 'checked');
+                }
+                if (sidebarOptionInput.attr('type') == "text") {
+                    sidebarOptionInput.val(optionInput.val());
+                }
+                if (sidebarOptionInput.prop('type') == "select-one") {
+                    var indexString = /(\[)(\d*)(\])/;
+                    var selectOptionName = this.name.replace(indexString, '');
+                    sidebarOptionInput.val(selectOptionName);
+                }
+            });
+        }
 
         /*
          * Sidebar actions (data mapping and options on the active element).
