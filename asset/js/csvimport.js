@@ -120,7 +120,7 @@
                 optionName = optionName.replace(' option', '').replace('column-', '');
                 var sidebarOptionInput = $('#column-options .' + optionName + ' :input');
                 if (sidebarOptionInput.attr('type') == "checkbox") {
-                    sidebarOptionInput.attr('checked', 'checked');
+                    sidebarOptionInput.prop('checked', true);
                 }
                 if (sidebarOptionInput.attr('type') == "text") {
                     sidebarOptionInput.val(optionInput.val());
@@ -143,13 +143,13 @@
 
         // Generic sidebar actions.
         $(document).on('click', '.toggle-nav button', function() {
-            $('.active.toggle.button').removeAttr('disabled');
+            $('.active.toggle.button').prop('disabled', false);
             $('.toggle-nav .active.button, .toggle-view.active').removeClass('active')
             var button = $(this);
             var target = $(button.data('toggle-selector'));
-            button.addClass('active').attr('disabled', true);
+            button.addClass('active').prop('disabled', true);
             target.addClass('active');
-            target.find(':input').removeAttr('disabled');
+            target.find(':input').prop('disabled', false);
         });
 
         $(document).on('change', '.resource-type-select select', function() {
@@ -288,7 +288,7 @@
                     setLanguage(languageValue, languageTextInput);
                 } else {
                     activeElement.find('li.column-language').hide();
-                    languageHiddenInput.attr('disabled', true);
+                    languageHiddenInput.prop('disabled', true);
                 }
             }
 
@@ -299,10 +299,10 @@
                     var optionLi = activeElement.find($(optionClass));
                     if (checkboxInput.is(':checked')) {
                         optionLi.show();
-                        optionLi.find('input[type="hidden"]').removeAttr('disabled');
+                        optionLi.find('input[type="hidden"]').prop('disabled', false);
                     } else {
                         optionLi.hide();
-                        optionLi.find('input[type="hidden"]').attr('disabled', true);
+                        optionLi.find('input[type="hidden"]').prop('disabled', true);
                     }
                 }
             });
@@ -314,14 +314,13 @@
                     var selectedOptionValue = selectedOption.val();
                     var optionClass = '.' + selectInput.data('column-option');
                     var optionLi = activeElement.find(optionClass);
+                    optionLi.find('input[type="hidden"]').prop('disabled', true);
                     if (selectedOptionValue !== 'default') {
                         optionLi.show();
                         optionLi.find('.option-label').text(selectedOption.text());
-                        optionLi.find('input[type="hidden"]').attr('disabled', true);
-                        optionLi.find('.' + selectedOptionValue).removeAttr('disabled');
+                        optionLi.find('.' + selectedOptionValue).prop('disabled', false)
                     } else {
                         optionLi.hide();
-                        optionLi.find('input[type="hidden"]').attr('disabled', true);
                     }
                 }
             });
@@ -344,10 +343,10 @@
             targetRows.find('.restore-option').hide();
             if ($('#multivalue_by_default').hasClass('active')) {
                 mappableElement.find('li.column-multivalue').show();
-                mappableElement.find('input[type="hidden"]').attr('disabled', false);
+                mappableElement.find('input[type="hidden"]').prop('disabled', false);
             } else {
                 mappableElement.find('li.column-multivalue').hide();
-                mappableElement.find('input[type="hidden"]').attr('disabled', true);
+                mappableElement.find('input[type="hidden"]').prop('disabled', true);
             }
         }
 
