@@ -105,13 +105,8 @@
             }
             
             Omeka.openSidebar(sidebar);
-            resetSidebar();
             populateSidebar();
         });
-
-        function resetSidebar() {
-            $('.active.sidebar :input').val("");
-        }
 
         function populateSidebar() {
             $('.active.element .options :input:not(:disabled)').each(function() {
