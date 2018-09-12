@@ -244,9 +244,7 @@
                     }
                 }
                 if (hasFlag.length) {
-                    var flagUnique = (flagLiClass === 'resource-data')
-                        || (flagLiClass === 'media-source')
-                        || (flagLiClass === 'user-data');
+                    var flagUnique = (flagLiClass !== 'property');
                     if (flagUnique){
                         activeElement.find('ul.mappings .' + flagLiClass).remove();
                         hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
