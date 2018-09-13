@@ -183,7 +183,7 @@
                         }
                     }
                     else {
-                        if (flagInput.parents('.toggle-view:hidden').length > 0) {
+                        if (!flagInput.hasClass('touched')) {
                             return;
                         }
                         var flagSelected = flagInput.find(':selected');
