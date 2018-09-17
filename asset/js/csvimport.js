@@ -137,14 +137,15 @@
         });
 
         // Generic sidebar actions.
-        $(document).on('click', '.toggle-nav button', function() {
-            $('.active.toggle.button').prop('disabled', false);
-            $('.toggle-nav .active.button, .toggle-view.active').removeClass('active')
-            var button = $(this);
-            var target = $(button.data('toggle-selector'));
-            button.addClass('active').prop('disabled', true);
-            target.addClass('active');
-            target.find(':input').prop('disabled', false);
+        $(document).on('o:expanded', '#add-mapping a', function() {
+            var mappingGroup = $(this).parents('.mapping-group');
+            var mappingGroupID = mappingGroup.attr('id');
+            $('#add-mapping .mapping-group:not(#' + mappingGroupID + ') a.collapse').each(function() {
+                var openMappingGroup = $(this);
+                openMappingGroup.removeClass('collapse').addClass('expand');
+                openMappingGroup.attr('aria-label', Omeka.jsTranslate('Expand')).attr('title', Omeka.jsTranslate('Expand'));
+                openMappingGroup.trigger('o:collapsed');
+            });
         });
 
         $(document).on('change', '.resource-type-select select', function() {
