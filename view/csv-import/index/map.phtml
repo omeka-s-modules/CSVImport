@@ -39,11 +39,13 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
-    <button type="button" id="multivalue_by_default"><?php echo $this->translate('Toggle multivalue separator for all columns'); ?></button>
-    <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+    <div class="batch-inputs">
+        <a class="inactive button sidebar-content" data-sidebar-selector="" id="batch-edit-options"><?php echo $this->translate('Batch edit options'); ?></a>
+    </div>
+    <table class="batch-edit tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $this->translate("Column headers"); ?></th>
+                <th><input type="checkbox" class="select-all" aria-label="<?php echo $this->translate('Select all'); ?>"><?php echo $this->translate("Column headers"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
                 <th><?php echo $this->translate("Options"); ?></th>
             </tr>
@@ -52,6 +54,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         <?php foreach ($columns as $index=>$column): ?>
             <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
                 <td>
+                    <input type="checkbox" name="column[<?php echo $index; ?>]" class="column-select" value="<?php echo $this->escapeHtml($column); ?>" aria-label="<?php echo $this->translate('Select column'); ?>">
                     <span class="column-header"><?php echo $escapeHtml($column); ?></span>
                     <ul class="actions">
                         <li><a href="#" class="o-icon-add sidebar-content" data-sidebar-selector="#add-mapping" aria-label="<?php echo $this->translate('Add mapping'); ?>" title="<?php echo $this->translate('Add mapping'); ?>"></a></li>

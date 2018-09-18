@@ -14,6 +14,39 @@
     float: right;
 }
 
+#mapping-data {
+    margin-top: -24px;
+}
+
+#mapping-data .batch-inputs {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    background-color: rgba(0,0,0,0.04);
+    border: 1px solid #dfdfdf;
+    border-bottom: 0;
+    border-radius: 3px 3px 0 0;
+}
+
+#batch-edit-options {
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 24px;
+    min-height: 0;
+    padding: 0 6px;
+}
+
+#batch-edit-options.inactive {
+    background-color: rgba(0,0,0,0.04);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.15) inset;
+    color: #a7a7a7;
+    cursor: default;
+}
+
+#mapping-data .batch-inputs ~ table {
+    border-radius: 0 0 3px 3px;
+}
+
 tr.active {
     background-color: rgba(0,0,0, .08);
 }
@@ -26,6 +59,7 @@ tr.mappable td:first-child {
     max-width: 20%;
 }
 
+#mapping-data .select-all, 
 tr.mappable input[type="checkbox"] {
     margin-right: .5em;
 }
@@ -182,6 +216,15 @@ li.column-multivalue {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+}
+
+#column-options .batch-edit-heading,
+#column-options .batch-edit-heading.active + .single-column-heading {
+    display: none;
+}
+
+#column-options .batch-edit-heading.active {
+    display: block;
 }
 
 .flags .mapping:not(:last-child),

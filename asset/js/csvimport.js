@@ -9,6 +9,7 @@
          */
 
         var activeElement = null;
+        var activeElements = null;
 
         var defaultSidebarHtml = null;
 
@@ -16,6 +17,8 @@
             + '<li><a aria-label="' + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>'
             + '<li><a aria-label="' + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>'
             + '</ul>';
+
+        var batchEditCheckboxes = $('.column-select, .select-all');
 
         /*
          * Basic import settings tab.
@@ -78,6 +81,9 @@
             if (activeElement !== null) {
                 activeElement.removeClass('active');
             }
+            if ($('.column-select:checked').length > 0) {
+                resetActiveColumns();
+            }
             activeElement = $(e.target).closest('tr.mappable');
             activeElement.addClass('active');
 
@@ -129,11 +135,32 @@
         }
 
         /*
+         * Batch edit options.
+         */
+
+        $('.batch-edit input[type="checkbox"], .batch-edit .select-all').change(function() {
+            if ($('.column-select:checked').length > 0) {
+                $('#batch-edit-options').removeClass('inactive').addClass('active').attr('data-sidebar-selector', '#column-options');
+            } else {
+                $('#batch-edit-options').addClass('inactive').removeClass('active').attr('data-sidebar-selector', '');;
+            }
+        });
+
+        $(document).on('click', '#batch-edit-options.active', function() {
+            defaultSidebarHtml = $('#column-options').html();
+            activeElements = $('.column-select:checked').parents('.mappable.element');
+            activeElements.addClass('active');
+            $(this).removeClass('active').addClass('inactive');
+            batchEditCheckboxes.prop('disabled', true);
+            $('.batch-edit-heading').addClass('active');
+        });
+
+        /*
          * Sidebar actions (data mapping and options on the active element).
          */
 
-        $('.sidebar-close').on('click', function() {
-            $('tr.mappable.active').removeClass('active');
+        $(document).on('click', '.sidebar-close', function() {
+            resetActiveColumns();
         });
 
         // Generic sidebar actions.
@@ -266,59 +293,69 @@
                     }
                 }
             };
-
             Omeka.closeSidebar(sidebar);
             sidebar.html(defaultSidebarHtml);
         });
 
+        $(document).on('change', '.sidebar input, .sidebar select, .sidebar textarea', function() {
+            $(this).addClass('touched');
+        });
+
         $(document).on('click', '#column-options .confirm-panel button', function() {
             var sidebar = $(this).parents('.sidebar');
-
             var languageTextInput = $('#value-language');
-            if (languageTextInput.hasClass('touched')) {
-                var languageHiddenInput = activeElement.find('.column-language');
-                var languageValue = languageTextInput.val();
-                if (languageValue !== '') {
-                    setLanguage(languageValue, languageTextInput);
-                } else {
-                    activeElement.find('li.column-language').hide();
-                    languageHiddenInput.prop('disabled', true);
-                }
+            var languageValue = languageTextInput.val();
+            if (activeElements == null) {
+                activeElements = activeElement;
             }
 
-            sidebar.find('input[type="checkbox"]').each(function() {
-                var checkboxInput = $(this);
-                if (checkboxInput.hasClass('touched')) {
-                    var optionClass = '.' + checkboxInput.data('column-option');
-                    var optionLi = activeElement.find($(optionClass));
-                    if (checkboxInput.is(':checked')) {
-                        optionLi.show();
-                        optionLi.find('input[type="hidden"]').prop('disabled', false);
+            activeElements.each(function() {
+                activeElement = $(this);
+                if (languageTextInput.hasClass('touched')) {
+                    var languageHiddenInput = activeElement.find('.column-language');
+                    if (languageValue !== '') {
+                        setLanguage(languageValue, languageTextInput);
                     } else {
-                        optionLi.hide();
+                        activeElement.find('li.column-language').hide();
+                        languageHiddenInput.prop('disabled', true);
+                    }
+                }
+    
+                sidebar.find('input[type="checkbox"]').each(function() {
+                    var checkboxInput = $(this);
+                    if (checkboxInput.hasClass('touched')) {
+                        var optionClass = '.' + checkboxInput.data('column-option');
+                        var optionLi = activeElement.find($(optionClass));
+                        if (checkboxInput.is(':checked')) {
+                            optionLi.show();
+                            optionLi.find('input[type="hidden"]').prop('disabled', false);
+                        } else {
+                            optionLi.hide();
+                            optionLi.find('input[type="hidden"]').prop('disabled', true);
+                        }
+                    }
+                });
+    
+                sidebar.find('select').each(function() {
+                    var selectInput = $(this);
+                    if (selectInput.hasClass('touched')) {
+                        var selectedOption = selectInput.find(':selected');
+                        var selectedOptionValue = selectedOption.val();
+                        var optionClass = '.' + selectInput.data('column-option');
+                        var optionLi = activeElement.find(optionClass);
                         optionLi.find('input[type="hidden"]').prop('disabled', true);
+                        if (selectedOptionValue !== 'default') {
+                            optionLi.show();
+                            optionLi.find('.option-label').text(selectedOption.text());
+                            optionLi.find('.' + selectedOptionValue).prop('disabled', false)
+                        } else {
+                            optionLi.hide();
+                        }
                     }
-                }
+                });
+                $('.batch-edit-heading.active').removeClass('active');
+                resetActiveColumns();
             });
-
-            sidebar.find('select').each(function() {
-                var selectInput = $(this);
-                if (selectInput.hasClass('touched')) {
-                    var selectedOption = selectInput.find(':selected');
-                    var selectedOptionValue = selectedOption.val();
-                    var optionClass = '.' + selectInput.data('column-option');
-                    var optionLi = activeElement.find(optionClass);
-                    optionLi.find('input[type="hidden"]').prop('disabled', true);
-                    if (selectedOptionValue !== 'default') {
-                        optionLi.show();
-                        optionLi.find('.option-label').text(selectedOption.text());
-                        optionLi.find('.' + selectedOptionValue).prop('disabled', false)
-                    } else {
-                        optionLi.hide();
-                    }
-                }
-            });
-
             Omeka.closeSidebar(sidebar);
             sidebar.html(defaultSidebarHtml);
         });
@@ -342,6 +379,13 @@
                 mappableElement.find('li.column-multivalue').hide();
                 mappableElement.find('input[type="hidden"]').prop('disabled', true);
             }
+        }
+
+        function resetActiveColumns() {
+            activeElements = null;
+            $('tr.mappable.active').removeClass('active');
+            batchEditCheckboxes.prop('checked', false).prop('disabled', false);
+            $('#batch-edit-options').removeClass('active').addClass('inactive');
         }
 
         /*
