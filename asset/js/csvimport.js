@@ -19,6 +19,7 @@
             + '</ul>';
 
         var batchEditCheckboxes = $('.column-select, .select-all');
+        var batchEditButton = $('#batch-edit-options');
 
         /*
          * Basic import settings tab.
@@ -140,9 +141,9 @@
 
         $('.batch-edit input[type="checkbox"], .batch-edit .select-all').change(function() {
             if ($('.column-select:checked').length > 0) {
-                $('#batch-edit-options').removeClass('inactive').addClass('active').attr('data-sidebar-selector', '#column-options');
+                batchEditButton.removeClass('inactive').addClass('active sidebar-content');
             } else {
-                $('#batch-edit-options').addClass('inactive').removeClass('active').attr('data-sidebar-selector', '');;
+                batchEditButton.addClass('inactive').removeClass('active sidebar-content');
             }
         });
 
@@ -150,7 +151,7 @@
             defaultSidebarHtml = $('#column-options').html();
             activeElements = $('.column-select:checked').parents('.mappable.element');
             activeElements.addClass('active');
-            $(this).removeClass('active').addClass('inactive');
+            $(this).removeClass('active sidebar-content').addClass('inactive');
             batchEditCheckboxes.prop('disabled', true);
             $('.batch-edit-heading').addClass('active');
         });
@@ -385,7 +386,7 @@
             activeElements = null;
             $('tr.mappable.active').removeClass('active');
             batchEditCheckboxes.prop('checked', false).prop('disabled', false);
-            $('#batch-edit-options').removeClass('active').addClass('inactive');
+            batchEditButton.removeClass('active sidebar-content').addClass('inactive');
         }
 
         /*
