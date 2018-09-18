@@ -214,8 +214,12 @@ li.column-multivalue {
 
 .mappable .tablesaw-cell-content {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    align-items: center;
+}
+
+.column-header {
+    max-width: calc(100% - 72px);
 }
 
 #column-options .batch-edit-heading,
@@ -320,4 +324,15 @@ li.column-multivalue {
 .csvimporter.jobs table ul,
 .csvimporter.jobs table p {
     margin: 0;
+}
+
+@media screen and (max-width: 640px) {
+    tr.mappable td:first-child {
+        max-width: 100%;
+    }
+
+    .tablesaw-stack tbody td.mapping.element,
+    .tablesaw-stack tbody td.element-options {
+        display: flex;
+    }
 }
