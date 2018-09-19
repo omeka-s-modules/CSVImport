@@ -231,7 +231,7 @@ li.column-multivalue {
 
 #column-options.batch-edit .batch-edit-heading,
 #column-options.batch-edit .batch-edit-description,
-#column-options.batch-edit .reset-link {
+#column-options.batch-edit .batch-edit-touched .reset-link {
     display: block;
 }
 
