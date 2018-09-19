@@ -153,7 +153,7 @@
             activeElements.addClass('active');
             $(this).removeClass('active sidebar-content').addClass('inactive');
             batchEditCheckboxes.prop('disabled', true);
-            $('.batch-edit-heading').addClass('active');
+            $('#column-options').addClass('batch-edit');
         });
 
         /*
@@ -299,7 +299,18 @@
         });
 
         $(document).on('change', '.sidebar input, .sidebar select, .sidebar textarea', function() {
-            $(this).addClass('touched');
+            var sidebarInput = $(this);
+            sidebarInput.addClass('touched');
+            if ($('#column-options').hasClass('batch-edit')) {
+                sidebarInput.parents('.option').addClass('batch-edit-touched');
+            }
+        });
+        
+        $(document).on('click', '.reset-link', function(e) {
+            e.preventDefault();
+            var columnOption = $(this).parents('.option');
+            columnOption.removeClass('batch-edit-touched');
+            columnOption.find('.touched').removeClass('touched');
         });
 
         $(document).on('click', '#column-options .confirm-panel button', function() {
@@ -354,7 +365,7 @@
                         }
                     }
                 });
-                $('.batch-edit-heading.active').removeClass('active');
+                $('#column-options').removeClass('batch-edit');
                 resetActiveColumns();
             });
             Omeka.closeSidebar(sidebar);

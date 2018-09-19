@@ -223,12 +223,31 @@ li.column-multivalue {
 }
 
 #column-options .batch-edit-heading,
-#column-options .batch-edit-heading.active + .single-column-heading {
+#column-options.batch-edit .single-column-heading,
+#column-options .batch-edit-description,
+#column-options .reset-link {
     display: none;
 }
 
-#column-options .batch-edit-heading.active {
+#column-options.batch-edit .batch-edit-heading,
+#column-options.batch-edit .batch-edit-description,
+#column-options.batch-edit .reset-link {
     display: block;
+}
+
+#column-options .option {
+    padding: 6px;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+}
+
+#column-options .batch-edit-touched.option {
+    background-color: #fff;
+    border-left-width: 5px;
+}
+
+#column-options .reset-link {
+    font-size: 14px;
 }
 
 .flags .mapping:not(:last-child),
