@@ -154,6 +154,11 @@
             $(this).removeClass('active sidebar-content').addClass('inactive');
             batchEditCheckboxes.prop('disabled', true);
             $('#column-options').addClass('batch-edit');
+            $('.reset-link').each(function() {
+                var reset = $(this);
+                var optionInputsHtml = reset.siblings('.option-inputs').html();
+                reset.attr('data-option-inputs', optionInputsHtml);
+            });
         });
 
         /*
@@ -308,9 +313,11 @@
         
         $(document).on('click', '.reset-link', function(e) {
             e.preventDefault();
-            var columnOption = $(this).parents('.option');
+            var reset = $(this);
+            var columnOption = reset.parents('.option');
+            var columnOptionInputsHtml = reset.data('option-inputs');
             columnOption.removeClass('batch-edit-touched');
-            columnOption.find('.touched').removeClass('touched');
+            columnOption.find('.option-inputs').html(columnOptionInputsHtml);
         });
 
         $(document).on('click', '#column-options .confirm-panel button', function() {

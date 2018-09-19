@@ -9,7 +9,9 @@
         <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
         <div class="multivalue option">
             <label for="multivalue"><?php echo $this->translate('Use multivalue separator'); ?></label>
-            <input type="checkbox" data-column-option="column-multivalue" name="multivalue" id="multivalue">
+            <div class="option-inputs">
+                <input type="checkbox" data-column-option="column-multivalue" name="multivalue" id="multivalue">
+            </div>
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>
         </div>
         <?php endif; ?>
@@ -17,17 +19,21 @@
         <div class="language option">
             <label for="value-language"><?php echo $this->translate('Language'); ?></label>
             <span class="description"><?php echo $this->translate('This will override language settings in basic import settings.'); ?></span>
-            <input id="value-language" class="value-language active" type="text">
+            <div class="option-inputs">
+                <input id="value-language" class="value-language active" type="text">
+            </div>
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>
         </div>
 
         <div class="import option">
             <label for="column-import"><?php echo $this->translate('Data type'); ?></label>
-            <select name="column-import" id="column-import" data-column-option="column-import">
-                <option class="button column-text" value="default"><?php echo $this->translate('Import as text (default)'); ?></option>
-                <option class="button column-url" value="column-url"><?php echo $this->translate('Import as URL reference'); ?></option>
-                <option class="button column-reference" value="column-reference"><?php echo $this->translate('Import as Omeka S resource ID'); ?></option>
-            </select>
+            <div class="option-inputs">
+                <select name="column-import" id="column-import" data-column-option="column-import">
+                    <option class="button column-text" value="default"><?php echo $this->translate('Import as text (default)'); ?></option>
+                    <option class="button column-url" value="column-url"><?php echo $this->translate('Import as URL reference'); ?></option>
+                    <option class="button column-reference" value="column-reference"><?php echo $this->translate('Import as Omeka S resource ID'); ?></option>
+                </select>
+            </div>
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>
         </div>
     </div>
