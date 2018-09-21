@@ -379,25 +379,12 @@
             sidebar.html(defaultSidebarHtml);
         });
 
-        // Set/unset multivalue separator for all columns.
-        $(document).on('click', '#multivalue_by_default', function(e) {
-            $(this).toggleClass('active');
-            setMultivalueSeparatorColumns();
-        });
-
         function setMultivalueSeparatorColumns() {
             var targetRows = $('.element.mappable li.column-multivalue');
             var mappableElement = $('.element.mappable');
             targetRows.removeClass('delete');
             targetRows.find('.remove-option').show();
             targetRows.find('.restore-option').hide();
-            if ($('#multivalue_by_default').hasClass('active')) {
-                mappableElement.find('li.column-multivalue').show();
-                mappableElement.find('input[type="hidden"]').prop('disabled', false);
-            } else {
-                mappableElement.find('li.column-multivalue').hide();
-                mappableElement.find('input[type="hidden"]').prop('disabled', true);
-            }
         }
 
         function resetActiveColumns() {
