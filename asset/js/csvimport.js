@@ -390,14 +390,6 @@
          * Actions on mapped columns.
          */
 
-        // Clear default mappings.
-        $('body').on('click', '.clear-defaults', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var fieldset = $(this).parents('fieldset');
-            fieldset.find('li.mapping.default').remove();
-        });
-
         // Remove mapping.
         $('.section').on('click', 'a.remove-mapping', function(e) {
             e.preventDefault();
