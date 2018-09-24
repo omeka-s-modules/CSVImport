@@ -288,7 +288,6 @@ class MappingForm extends Form
                 Import::ACTION_UPDATE => 'Update data of the resource', // @translate
                 Import::ACTION_REPLACE => 'Replace all data of the resource', // @translate
                 Import::ACTION_DELETE => 'Delete the resource', // @translate
-                Import::ACTION_SKIP => 'Skip row', // @translate
             ];
 
             $advancedSettingsFieldset->add([
