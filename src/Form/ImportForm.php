@@ -99,19 +99,19 @@ class ImportForm extends Form
             ],
         ]);
 
-        $resourceTypes = array_keys($this->configCsvImport['mappings']);
-        $valueParameters = [];
-        foreach ($resourceTypes as $resourceType) {
-            // Currently, there is no resource label, so no translation.
-            $valueParameters[$resourceType] = str_replace('_', ' ', ucfirst($resourceType));
-        }
         $this->add([
                 'name' => 'resource_type',
                 'type' => 'select',
                 'options' => [
                     'label' => 'Import type', // @translate
                     'info' => 'The type of data being imported', // @translate
-                    'value_options' => $valueParameters,
+                    'value_options' => [
+                        'items' => 'Items', // @translate
+                        'item_sets' => 'Item sets', // @translate
+                        'media' => 'Media', // @translate
+                        'resources' => 'Mixed resources', // @translate
+                        'users' => 'Users', // @translate
+                    ],
                 ],
                 'attributes' => [
                     'value' => 'items',
