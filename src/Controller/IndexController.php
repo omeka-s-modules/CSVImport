@@ -277,7 +277,7 @@ class IndexController extends AbstractActionController
             : $args['action'];
 
         // Set values as integer.
-        foreach (['o:resource_template', 'o:resource_class', 'o:owner', 'o:item'] as $meta) {
+        foreach (['o:resource_template', 'o:resource_class', 'o:owner'] as $meta) {
             if (!empty($args[$meta])) {
                 $args[$meta] = ['o:id' => (int) $args[$meta]];
             }

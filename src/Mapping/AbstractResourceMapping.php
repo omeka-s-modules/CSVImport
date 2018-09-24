@@ -152,11 +152,6 @@ abstract class AbstractResourceMapping extends AbstractMapping
             $this->map['item'] = $this->args['column-item'];
             $data['o:item'] = null;
         }
-
-        // Set default values.
-        if (!empty($this->args['o:item']['o:id'])) {
-            $data['o:item'] = ['o:id' => (int) $this->args['o:item']['o:id']];
-        }
     }
 
     /**
