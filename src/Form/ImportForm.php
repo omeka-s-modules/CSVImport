@@ -30,7 +30,7 @@ class ImportForm extends Form
      */
     protected $enclosureList = [
         '"' => 'double quote', // @translate
-        "'" => 'quote', // @translate
+        "'" => 'single quote', // @translate
         '#' => 'hash', // @translate
         // '' => 'empty', // @translate
     ];
