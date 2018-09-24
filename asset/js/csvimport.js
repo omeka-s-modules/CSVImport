@@ -9,6 +9,7 @@
          */
 
         var activeElement = null;
+        var activeElements = null;
 
         var defaultSidebarHtml = null;
 
@@ -16,6 +17,9 @@
             + '<li><a aria-label="' + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>'
             + '<li><a aria-label="' + Omeka.jsTranslate('Undo remove mapping') + '" title="' + Omeka.jsTranslate('Undo remove mapping') + '" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>'
             + '</ul>';
+
+        var batchEditCheckboxes = $('.column-select, .select-all');
+        var batchEditButton = $('#batch-edit-options');
 
         /*
          * Basic import settings tab.
@@ -78,6 +82,9 @@
             if (activeElement !== null) {
                 activeElement.removeClass('active');
             }
+            if ($('.column-select:checked').length > 0) {
+                resetActiveColumns();
+            }
             activeElement = $(e.target).closest('tr.mappable');
             activeElement.addClass('active');
 
@@ -129,11 +136,38 @@
         }
 
         /*
+         * Batch edit options.
+         */
+
+        $('.batch-edit input[type="checkbox"], .batch-edit .select-all').change(function() {
+            if ($('.column-select:checked').length > 0) {
+                batchEditButton.removeClass('inactive').addClass('active sidebar-content');
+            } else {
+                batchEditButton.addClass('inactive').removeClass('active sidebar-content');
+            }
+        });
+
+        $(document).on('click', '#batch-edit-options.active', function() {
+            defaultSidebarHtml = $('#column-options').html();
+            activeElements = $('.column-select:checked').parents('.mappable.element');
+            activeElements.addClass('active');
+            $(this).removeClass('active sidebar-content').addClass('inactive');
+            batchEditCheckboxes.prop('disabled', true);
+            $('#column-options').addClass('batch-edit');
+            $('.reset-link').each(function() {
+                var reset = $(this);
+                var optionInputsHtml = reset.siblings('.option-inputs').html();
+                reset.attr('data-option-inputs', optionInputsHtml);
+            });
+        });
+
+        /*
          * Sidebar actions (data mapping and options on the active element).
          */
 
-        $('.sidebar-close').on('click', function() {
-            $('tr.mappable.active').removeClass('active');
+        $(document).on('click', '.sidebar-close', function() {
+            resetActiveColumns();
+            $('#column-options').removeClass('batch-edit');
         });
 
         // Generic sidebar actions.
@@ -266,139 +300,102 @@
                     }
                 }
             };
-
             Omeka.closeSidebar(sidebar);
             sidebar.html(defaultSidebarHtml);
+        });
+
+        $(document).on('change', '.sidebar input, .sidebar select, .sidebar textarea', function() {
+            var sidebarInput = $(this);
+            sidebarInput.addClass('touched');
+            if ($('#column-options').hasClass('batch-edit')) {
+                sidebarInput.parents('.option').addClass('batch-edit-touched');
+            }
+        });
+        
+        $(document).on('click', '.reset-link', function(e) {
+            e.preventDefault();
+            var reset = $(this);
+            var columnOption = reset.parents('.option');
+            var columnOptionInputsHtml = reset.data('option-inputs');
+            columnOption.removeClass('batch-edit-touched');
+            columnOption.find('.option-inputs').html(columnOptionInputsHtml);
         });
 
         $(document).on('click', '#column-options .confirm-panel button', function() {
             var sidebar = $(this).parents('.sidebar');
-
             var languageTextInput = $('#value-language');
-            if (languageTextInput.hasClass('touched')) {
-                var languageHiddenInput = activeElement.find('.column-language');
-                var languageValue = languageTextInput.val();
-                if (languageValue !== '') {
-                    setLanguage(languageValue, languageTextInput);
-                } else {
-                    activeElement.find('li.column-language').hide();
-                    languageHiddenInput.prop('disabled', true);
-                }
+            var languageValue = languageTextInput.val();
+            if (activeElements == null) {
+                activeElements = activeElement;
             }
 
-            sidebar.find('input[type="checkbox"]').each(function() {
-                var checkboxInput = $(this);
-                if (checkboxInput.hasClass('touched')) {
-                    var optionClass = '.' + checkboxInput.data('column-option');
-                    var optionLi = activeElement.find($(optionClass));
-                    if (checkboxInput.is(':checked')) {
-                        optionLi.show();
-                        optionLi.find('input[type="hidden"]').prop('disabled', false);
+            activeElements.each(function() {
+                activeElement = $(this);
+                if (languageTextInput.hasClass('touched')) {
+                    var languageHiddenInput = activeElement.find('.column-language');
+                    if (languageValue !== '') {
+                        setLanguage(languageValue, languageTextInput);
                     } else {
-                        optionLi.hide();
+                        activeElement.find('li.column-language').hide();
+                        languageHiddenInput.prop('disabled', true);
+                    }
+                }
+    
+                sidebar.find('input[type="checkbox"]').each(function() {
+                    var checkboxInput = $(this);
+                    if (checkboxInput.hasClass('touched')) {
+                        var optionClass = '.' + checkboxInput.data('column-option');
+                        var optionLi = activeElement.find($(optionClass));
+                        if (checkboxInput.is(':checked')) {
+                            optionLi.show();
+                            optionLi.find('input[type="hidden"]').prop('disabled', false);
+                        } else {
+                            optionLi.hide();
+                            optionLi.find('input[type="hidden"]').prop('disabled', true);
+                        }
+                    }
+                });
+    
+                sidebar.find('select').each(function() {
+                    var selectInput = $(this);
+                    if (selectInput.hasClass('touched')) {
+                        var selectedOption = selectInput.find(':selected');
+                        var selectedOptionValue = selectedOption.val();
+                        var optionClass = '.' + selectInput.data('column-option');
+                        var optionLi = activeElement.find(optionClass);
                         optionLi.find('input[type="hidden"]').prop('disabled', true);
+                        if (selectedOptionValue !== 'default') {
+                            optionLi.show();
+                            optionLi.find('.option-label').text(selectedOption.text());
+                            optionLi.find('.' + selectedOptionValue).prop('disabled', false)
+                        } else {
+                            optionLi.hide();
+                        }
                     }
-                }
+                });
+                resetActiveColumns();
             });
-
-            sidebar.find('select').each(function() {
-                var selectInput = $(this);
-                if (selectInput.hasClass('touched')) {
-                    var selectedOption = selectInput.find(':selected');
-                    var selectedOptionValue = selectedOption.val();
-                    var optionClass = '.' + selectInput.data('column-option');
-                    var optionLi = activeElement.find(optionClass);
-                    optionLi.find('input[type="hidden"]').prop('disabled', true);
-                    if (selectedOptionValue !== 'default') {
-                        optionLi.show();
-                        optionLi.find('.option-label').text(selectedOption.text());
-                        optionLi.find('.' + selectedOptionValue).prop('disabled', false)
-                    } else {
-                        optionLi.hide();
-                    }
-                }
-            });
-
             Omeka.closeSidebar(sidebar);
+            $('#column-options').removeClass('batch-edit');
             sidebar.html(defaultSidebarHtml);
         });
 
-        // Set/unset multivalue separator for all columns.
-        $(document).on('click', '#multivalue_by_default', function(e) {
-            $(this).toggleClass('active');
-            setMultivalueSeparatorColumns();
-        });
-
-        function setMultivalueSeparatorColumns() {
-            var targetRows = $('.element.mappable li.column-multivalue');
-            var mappableElement = $('.element.mappable');
-            targetRows.removeClass('delete');
-            targetRows.find('.remove-option').show();
-            targetRows.find('.restore-option').hide();
-            if ($('#multivalue_by_default').hasClass('active')) {
-                mappableElement.find('li.column-multivalue').show();
-                mappableElement.find('input[type="hidden"]').prop('disabled', false);
-            } else {
-                mappableElement.find('li.column-multivalue').hide();
-                mappableElement.find('input[type="hidden"]').prop('disabled', true);
-            }
+        function resetActiveColumns() {
+            activeElements = null;
+            $('tr.mappable.active').removeClass('active');
+            batchEditCheckboxes.prop('checked', false).prop('disabled', false);
+            batchEditButton.removeClass('active sidebar-content').addClass('inactive');
         }
 
         /*
          * Actions on mapped columns.
          */
 
-        // Clear default mappings.
-        $('body').on('click', '.clear-defaults', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            var fieldset = $(this).parents('fieldset');
-            fieldset.find('li.mapping.default').remove();
-        });
-
         // Remove mapping.
         $('.section').on('click', 'a.remove-mapping', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            var mappingToRemove = $(this).parents('li.mapping');
-            mappingToRemove.find('input').prop('disabled', true);
-            mappingToRemove.addClass('delete');
-            mappingToRemove.find('.restore-mapping').show();
-            $(this).hide();
-        });
-
-        // Restore a removed mapping.
-        $('.section').on('click', 'a.restore-mapping', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var mappingToRemove = $(this).parents('li.mapping');
-            mappingToRemove.find('.remove-mapping').show();
-            mappingToRemove.find('span.restore-mapping').hide();
-            mappingToRemove.find('input').prop('disabled', false);
-            mappingToRemove.removeClass('delete');
-            $(this).hide();
-        });
-
-        // Remove option.
-        $('ul.options').on('click', 'a.remove-option', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var optionToRemove = $(this).parents('li.option');
-            optionToRemove.find('input.column-option').prop('disabled', true);
-            optionToRemove.addClass('delete');
-            optionToRemove.find('.restore-option').show();
-            optionToRemove.find('.remove-option').hide();
-        });
-
-        // Restore option.
-        $('ul.options').on('click', 'a.restore-option', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var optionToRestore = $(this).parents('li.option');
-            optionToRestore.find('input.column-option').prop('disabled', false);
-            optionToRestore.removeClass('delete');
-            optionToRestore.find('.remove-option').show();
-            optionToRestore.find('.restore-option').hide();
+            $(this).parents('li.mapping').remove();
         });
 
         /*

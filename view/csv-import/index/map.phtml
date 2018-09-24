@@ -39,11 +39,13 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
-    <button type="button" id="multivalue_by_default"><?php echo $this->translate('Toggle multivalue separator for all columns'); ?></button>
-    <table class="tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+    <div class="batch-inputs">
+        <a class="inactive button" data-sidebar-selector="#column-options" id="batch-edit-options"><?php echo $this->translate('Batch edit options'); ?></a>
+    </div>
+    <table class="batch-edit tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><?php echo $this->translate("Column headers"); ?></th>
+                <th><input type="checkbox" class="select-all" aria-label="<?php echo $this->translate('Select all'); ?>"><?php echo $this->translate("Column headers"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
                 <th><?php echo $this->translate("Options"); ?></th>
             </tr>
@@ -52,6 +54,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         <?php foreach ($columns as $index=>$column): ?>
             <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
                 <td>
+                    <input type="checkbox" name="column[<?php echo $index; ?>]" class="column-select" value="<?php echo $this->escapeHtml($column); ?>" aria-label="<?php echo $this->translate('Select column'); ?>">
                     <span class="column-header"><?php echo $escapeHtml($column); ?></span>
                     <ul class="actions">
                         <li><a href="#" class="o-icon-add sidebar-content" data-sidebar-selector="#add-mapping" aria-label="<?php echo $this->translate('Add mapping'); ?>" title="<?php echo $this->translate('Add mapping'); ?>"></a></li>
@@ -66,14 +69,13 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                             <?php echo $this->translate($automaps[$index]['label']); ?>
                             <ul class="actions">
                                 <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
-                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Undo remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Undo option')); ?>" class="o-icon-undo restore-mapping" href="#" style="display: none;"></a></li>
                             </ul>
                             <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml(is_array($value) ? json_encode($value) : $value); ?>" type="hidden" />
                         </li>
                     <?php endif; ?>
                     </ul>
                 </td>
-                <td>
+                <td class="element-options">
                     <ul class='options'>
                         <li class='column-import option' style='display:none;'><span class="option-label"></span>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-url' name='column-url[<?php echo $index; ?>]'></input>
