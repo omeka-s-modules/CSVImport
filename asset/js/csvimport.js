@@ -397,28 +397,6 @@
             $(this).parents('li.mapping').remove();
         });
 
-        // Remove option.
-        $('ul.options').on('click', 'a.remove-option', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var optionToRemove = $(this).parents('li.option');
-            optionToRemove.find('input.column-option').prop('disabled', true);
-            optionToRemove.addClass('delete');
-            optionToRemove.find('.restore-option').show();
-            optionToRemove.find('.remove-option').hide();
-        });
-
-        // Restore option.
-        $('ul.options').on('click', 'a.restore-option', function(e){
-            e.stopPropagation();
-            e.preventDefault();
-            var optionToRestore = $(this).parents('li.option');
-            optionToRestore.find('input.column-option').prop('disabled', false);
-            optionToRestore.removeClass('delete');
-            optionToRestore.find('.remove-option').show();
-            optionToRestore.find('.restore-option').hide();
-        });
-
         /*
          * Modified from resource-form.js in core
          */
