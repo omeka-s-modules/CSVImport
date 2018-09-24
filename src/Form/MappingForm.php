@@ -318,7 +318,7 @@ class MappingForm extends Form
                     'empty_option' => 'Select below', // @translate
                     'term_as_value' => false,
                     'prepend_value_options' => [
-                        'internal_id' => 'Internal id', // @translate
+                        'internal_id' => 'Internal ID', // @translate
                     ],
                     'term_as_value' => true,
                 ],
