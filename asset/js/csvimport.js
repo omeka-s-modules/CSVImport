@@ -167,6 +167,7 @@
 
         $(document).on('click', '.sidebar-close', function() {
             resetActiveColumns();
+            $('#column-options').removeClass('batch-edit');
         });
 
         // Generic sidebar actions.
@@ -372,10 +373,10 @@
                         }
                     }
                 });
-                $('#column-options').removeClass('batch-edit');
                 resetActiveColumns();
             });
             Omeka.closeSidebar(sidebar);
+            $('#column-options').removeClass('batch-edit');
             sidebar.html(defaultSidebarHtml);
         });
 

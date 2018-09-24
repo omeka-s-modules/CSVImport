@@ -235,7 +235,7 @@ li.column-multivalue {
     display: block;
 }
 
-#column-options .option {
+#column-options.batch-edit .option {
     padding: 6px;
     border: 1px solid #dfdfdf;
     border-radius: 3px;
