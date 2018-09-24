@@ -379,14 +379,6 @@
             sidebar.html(defaultSidebarHtml);
         });
 
-        function setMultivalueSeparatorColumns() {
-            var targetRows = $('.element.mappable li.column-multivalue');
-            var mappableElement = $('.element.mappable');
-            targetRows.removeClass('delete');
-            targetRows.find('.remove-option').show();
-            targetRows.find('.restore-option').hide();
-        }
-
         function resetActiveColumns() {
             activeElements = null;
             $('tr.mappable.active').removeClass('active');
