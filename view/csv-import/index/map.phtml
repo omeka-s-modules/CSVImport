@@ -39,13 +39,28 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
+    <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
+    <div class="field required">
+        <div class="field-meta">
+            <label for="resource-type-column"><?php echo $this->translate('Resource type column'); ?></label>
+        </div>
+        <div class="inputs">
+            <select name="resource-type-column" id="resource-type-column" data-flag-name="column-resource" data-flag-label="<?php echo $this->translate('Resource type'); ?>" data-flag-class="resource-type">
+                <option value="default"><?php echo $this->translate('Select below'); ?></option>
+                <?php foreach ($columns as $index => $column): ?>
+                <option value="column[<?php echo $index; ?>]"><?php echo $escapeHtml($column); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+    <?php endif; ?>
     <div class="batch-inputs">
         <a class="inactive button" data-sidebar-selector="#column-options" id="batch-edit-options"><?php echo $this->translate('Batch edit options'); ?></a>
     </div>
     <table class="batch-edit tablesaw tablesaw-stack" data-tablesaw-mode="stack">
         <thead>
             <tr>
-                <th><input type="checkbox" class="select-all" aria-label="<?php echo $this->translate('Select all'); ?>"><?php echo $this->translate("Column headers"); ?></th>
+                <th><input type="checkbox" class="select-all" aria-label="<?php echo $this->translate('Select all'); ?>"><?php echo $this->translate("Column"); ?></th>
                 <th><?php echo $this->translate("Mappings"); ?></th>
                 <th><?php echo $this->translate("Options"); ?></th>
             </tr>

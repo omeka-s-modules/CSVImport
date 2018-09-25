@@ -165,6 +165,24 @@
          * Sidebar actions (data mapping and options on the active element).
          */
 
+        $('#resource-type-column').change(function() {
+            $('.mapping.resource-type').remove();
+            var resourceTypeSelect = $(this);
+            var flagName = resourceTypeSelect.data('flag-name');
+            var flagValue = 1;
+            var flagLabel = resourceTypeSelect.data('flag-label');
+            var flagLiClass = resourceTypeSelect.data('flag-class');
+            var selectedColumnName = resourceTypeSelect.val();
+
+            if (selectedColumnName == "default") {
+                return;
+            }
+            activeElement = $('[name="' + selectedColumnName + '"]').parents('.mappable.element');
+            applyMappings(flagName, flagValue, flagLiClass, flagLabel);
+            activeElement.find('.resource-type .actions').remove();
+            activeElement = null;
+        });
+
         $(document).on('click', '.sidebar-close', function() {
             resetActiveColumns();
             $('#column-options').removeClass('batch-edit');
@@ -269,37 +287,6 @@
                 targetLi.removeClass('selected');
             });
 
-            function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
-                var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
-                if (flagValue == 'default') {
-                    if (hasFlag.length) {
-                        hasFlag.remove();
-                    } else {
-                        return;
-                    }
-                }
-                if (hasFlag.length) {
-                    var flagUnique = (flagLiClass !== 'property');
-                    if (flagUnique){
-                        activeElement.find('ul.mappings .' + flagLiClass).remove();
-                        hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
-                    }
-                }
-    
-                if (hasFlag.length === 0) {
-                    var index = activeElement.data('element-id');
-                    flagName = flagName + "[" + index + "]";
-                    var newInput = $('<input type="hidden"></input>').attr('name', flagName).attr('value', flagValue);
-                    var newMappingLi = $('<li class="mapping ' + flagLiClass + '">' + flagLabel  + actionsHtml  + '</li>');
-                    newMappingLi.append(newInput);
-                    var existingMappingLi = activeElement.find('ul.mappings .' + flagLiClass).filter(':last');
-                    if (existingMappingLi.length) {
-                        existingMappingLi.after(newMappingLi);
-                    } else {
-                        activeElement.find('ul.mappings').append(newMappingLi);
-                    }
-                }
-            };
             Omeka.closeSidebar(sidebar);
             sidebar.html(defaultSidebarHtml);
         });
@@ -411,6 +398,39 @@
                 this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'))
             }
         });
+
+        function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
+            var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
+            if (flagValue == 'default') {
+                if (hasFlag.length) {
+                    hasFlag.remove();
+                } else {
+                    return;
+                }
+            }
+            if (hasFlag.length) {
+                var flagUnique = (flagLiClass !== 'property');
+                if (flagUnique){
+                    activeElement.find('ul.mappings .' + flagLiClass).remove();
+                    hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
+                }
+            }
+  
+            if (hasFlag.length === 0) {
+                var index = activeElement.data('element-id');
+                flagName = flagName + "[" + index + "]";
+                var newInput = $('<input type="hidden"></input>').attr('name', flagName).attr('value', flagValue);
+                var newMappingLi = $('<li class="mapping ' + flagLiClass + '">' + flagLabel  + actionsHtml  + '</li>');
+                newMappingLi.append(newInput);
+                var existingMappingLi = activeElement.find('ul.mappings .' + flagLiClass).filter(':last');
+                if (existingMappingLi.length) {
+                    existingMappingLi.after(newMappingLi);
+                } else {
+                    activeElement.find('ul.mappings').append(newMappingLi);
+                }
+            }
+        };
+
 
         function setLanguage(lang) {
             var valueLanguageElement = document.getElementById('value-language');
