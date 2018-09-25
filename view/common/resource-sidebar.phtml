@@ -98,7 +98,7 @@
                 <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
                 <option value="1" data-flag-name="column-resource_type"><?php echo $this->translate('Resource type'); ?></option>
                 <?php endif; ?>
-                <option value="1" data-flag-name="column-resource"><?php echo $this->translate('Internal ID'); ?></option>
+                <option value="1" data-flag-name="column-resource"><?php echo $this->translate('Resource identifier'); ?></option>
                 <option value="1" data-flag-name="column-resource_template"><?php echo $this->translate('Resource template name'); ?></option>
                 <option value="1" data-flag-name="column-resource_class"><?php echo $this->translate('Resource class term'); ?></option>
                 <?php if (in_array($userRole, ['global_admin', 'site_admin'])): ?>
