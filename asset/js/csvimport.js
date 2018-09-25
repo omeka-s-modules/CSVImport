@@ -236,11 +236,11 @@
                         return;
                     }
                     var checkboxId = flagInput.attr('id');
-                    var flagName = $('label[for="' + checkboxId + '"]').text();
+                    var flagLabel = $('label[for="' + checkboxId + '"]').text();
                     var optionClass = '.' + flagInput.data('flag');
                     if (flagInput.is(':checked')) {
                         var flagValue = flagInput.val();
-                        applyMappings(flagName, flagValue, flagLiClass, flagName);
+                        applyMappings(flagName, flagValue, flagLiClass, flagLabel);
                     }
                 }
             });
