@@ -443,35 +443,5 @@
                 languageInput.prop('disabled', false);
             }
         }
-
-        function checkResourceIdentifier() {
-            return checkIdentifier('column-resource_property');
-        }
-
-        function checkItemSetIdentifier() {
-            return checkIdentifier('column-item_set_property');
-        }
-
-        function checkItemIdentifier() {
-            return checkIdentifier('column-item_property');
-        }
-
-        function checkMediaIdentifier() {
-            return checkIdentifier('column-media_property');
-        }
-
-        function checkIdentifier(elementProperty) {
-            var valid = true;
-            var elementResourceProperty = document.getElementById(elementProperty);
-            var valueResourceProperty = $('#' + elementProperty).chosen().val();
-            if (valueResourceProperty === '') {
-                elementResourceProperty.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource identifier property'));
-                elementResourceProperty.reportValidity();
-                valid = false;
-                alert(Omeka.jsTranslate('Please enter a valid resource property for the identifier'));
-            }
-            return valid;
-        }
-
     });
 })(jQuery);
