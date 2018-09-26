@@ -378,13 +378,13 @@
          * Modified from resource-form.js in core
          */
 
-        $('input.value-language').on('keyup', function(e) {
+        $(document).on('keyup', 'input.value-language', function(e) {
             e.preventDefault();
             e.stopPropagation();
             if ('' === this.value || Omeka.langIsValid(this.value)) {
                 this.setCustomValidity('');
             } else {
-                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'))
+                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag.'));
             }
         });
 
