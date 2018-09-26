@@ -216,10 +216,6 @@ msgstr ""
 msgid "Remove mapping"
 msgstr ""
 
-#: view/csv-import/index/map.phtml:61
-msgid "Undo remove mapping"
-msgstr ""
-
 #: view/csv-import/index/map.phtml:68
 msgid "Import as URL"
 msgstr ""
@@ -708,30 +704,10 @@ msgstr ""
 msgid "Skip the row"
 msgstr ""
 
-#: config/module.config.php:236
-msgid "Select an item type at the left before choosing a resource class."
-msgstr ""
-
-#: config/module.config.php:237
-msgid "Select an element at the left before choosing a property."
-msgstr ""
-
 #: config/module.config.php:238
 msgid "Please enter a valid language tag."
 msgstr ""
 
-#: config/module.config.php:239
-msgid "Set multivalue separator for all columns"
-msgstr ""
-
-#: config/module.config.php:240
-msgid "Unset multivalue separator for all columns"
-msgstr ""
-
 #: config/module.config.php:241
 msgid "Advanced settings"
-msgstr ""
-
-#: config/module.config.php:242
-msgid "Identifier for"
 msgstr ""

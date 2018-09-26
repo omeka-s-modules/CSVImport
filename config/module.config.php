@@ -135,14 +135,6 @@ return [
     ],
     'js_translate_strings' => [
         'Remove mapping', // @translate
-        'Undo remove mapping', // @translate
-        'Select an item type at the left before choosing a resource class.', // @translate
-        'Select an element at the left before choosing a property.', // @translate
-        'Please enter a valid language tag.', // @translate
-        'Set multivalue separator for all columns', // @translate
-        'Unset multivalue separator for all columns', // @translate
-        'Advanced settings', // @translate
-        'Identifier for', // @translate
     ],
     'csv_import' => [
         'sources' => [
