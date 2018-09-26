@@ -384,7 +384,7 @@
             if ('' === this.value || Omeka.langIsValid(this.value)) {
                 this.setCustomValidity('');
             } else {
-                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag.'));
+                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
             }
         });
 
@@ -424,14 +424,14 @@
         function setLanguage(lang) {
             var valueLanguageElement = document.getElementById('value-language');
             if (lang == '') {
-                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag.'));
+                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
             }
             if (typeof valueLanguageElement.reportValidity === 'function') {
                 var valid = valueLanguageElement.reportValidity();
             } else {
                 var valid = valueLanguageElement.checkValidity();
                 if (! valid) {
-                    alert(Omeka.jsTranslate('Please enter a valid language tag.'));
+                    alert(Omeka.jsTranslate('Please enter a valid language tag'));
                 }
             }
 
@@ -465,10 +465,10 @@
             var elementResourceProperty = document.getElementById(elementProperty);
             var valueResourceProperty = $('#' + elementProperty).chosen().val();
             if (valueResourceProperty === '') {
-                elementResourceProperty.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource identifier property.'));
+                elementResourceProperty.setCustomValidity(Omeka.jsTranslate('Please enter a valid resource identifier property'));
                 elementResourceProperty.reportValidity();
                 valid = false;
-                alert(Omeka.jsTranslate('Please enter a valid resource property for the identifier.'));
+                alert(Omeka.jsTranslate('Please enter a valid resource property for the identifier'));
             }
             return valid;
         }
