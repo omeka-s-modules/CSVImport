@@ -174,7 +174,7 @@
             var flagLiClass = resourceTypeSelect.data('flag-class');
             var selectedColumnName = resourceTypeSelect.val();
 
-            if (selectedColumnName == "default") {
+            if (selectedColumnName == "") {
                 return;
             }
             activeElement = $('[name="' + selectedColumnName + '"]').parents('.mappable.element');
