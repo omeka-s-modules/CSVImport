@@ -22,17 +22,6 @@
         var batchEditButton = $('#batch-edit-options');
 
         /*
-         * Basic import settings tab.
-         */
-
-        // Manage advanced settings.
-        $('#advanced-settings').on('click', function(e) {
-            e.preventDefault();
-            $('.advanced-settings').closest('.field').show();
-            $(this).closest('.field').remove();
-        });
-
-        /*
          * Rebinding chosen selects and property selector after sidebar hydration.
          */
 
