@@ -44,7 +44,7 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
             <label for="resource-type-column"><?php echo $this->translate('Resource type column'); ?></label>
         </div>
         <div class="inputs">
-            <select name="resource-type-column" id="resource-type-column" data-flag-name="column-resource" data-flag-label="<?php echo $this->translate('Resource type'); ?>" data-flag-class="resource-type" required>
+            <select name="resource-type-column" id="resource-type-column" data-flag-name="column-resource_type" data-flag-label="<?php echo $this->translate('Resource type'); ?>" data-flag-class="resource-type" required>
                 <option value=""><?php echo $this->translate('Select below'); ?></option>
                 <?php foreach ($columns as $index => $column): ?>
                 <option value="column[<?php echo $index; ?>]"><?php echo $escapeHtml($column); ?></option>
