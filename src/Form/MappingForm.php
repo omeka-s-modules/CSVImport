@@ -49,6 +49,14 @@ class MappingForm extends Form
         ]);
 
         $this->add([
+            'name' => 'comment',
+            'type' => 'hidden',
+            'attributes' => [
+                'value' => $this->getOption('comment'),
+            ]
+        ]);
+
+        $this->add([
             'name' => 'automap_check_names_alone',
             'type' => 'hidden',
             'attributes' => [
@@ -67,19 +75,6 @@ class MappingForm extends Form
         ]);
 
         $basicSettingsFieldset = $this->get('basic-settings');
-
-        $basicSettingsFieldset->add([
-            'name' => 'comment',
-            'type' => 'textarea',
-            'options' => [
-                'label' => 'Comment', // @translate
-                'info' => 'A note about the purpose or source of this import', // @translate
-            ],
-            'attributes' => [
-                'id' => 'comment',
-                'class' => 'input-body',
-            ],
-        ]);
 
         if (in_array($resourceType, ['item_sets', 'items', 'media', 'resources'])) {
             $urlHelper = $serviceLocator->get('ViewHelperManager')->get('url');

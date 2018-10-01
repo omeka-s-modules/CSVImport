@@ -71,6 +71,7 @@ class IndexController extends AbstractActionController
             'delimiter',
             'enclosure',
             'automap_check_names_alone',
+            'comment',
         ]));
         $form = $this->getForm(MappingForm::class, $mappingOptions);
         if (empty($files)) {

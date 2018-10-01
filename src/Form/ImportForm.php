@@ -134,6 +134,19 @@ class ImportForm extends Form
             ],
         ]);
 
+        $this->add([
+            'name' => 'comment',
+            'type' => 'textarea',
+            'options' => [
+                'label' => 'Comment', // @translate
+                'info' => 'A note about the purpose or source of this import', // @translate
+            ],
+            'attributes' => [
+                'id' => 'comment',
+                'class' => 'input-body',
+            ],
+        ]);
+
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'source',
