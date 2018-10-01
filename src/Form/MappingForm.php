@@ -88,7 +88,7 @@ class MappingForm extends Form
                 'type' => ResourceSelect::class,
                 'options' => [
                     'label' => 'Resource template', // @translate
-                    'info' => 'A pre-defined template for resource creation', // @translate
+                    'info' => 'Assign a resource template to all imported resources. Specific mappings can override this setting.', // @translate
                     'empty_option' => 'Select a template', // @translate
                     'resource_value_options' => [
                         'resource' => 'resource_templates',
@@ -111,7 +111,7 @@ class MappingForm extends Form
                 'type' => ResourceClassSelect::class,
                 'options' => [
                     'label' => 'Class', // @translate
-                    'info' => 'A type for the resource. Different types have different default properties attached to them.', // @translate
+                    'info' => 'Assign a resource class to all imported resources. Specific mappings can override this setting.', // @translate
                     'empty_option' => 'Select a class', // @translate
                 ],
                 'attributes' => [
@@ -132,7 +132,7 @@ class MappingForm extends Form
                     'type' => ResourceSelect::class,
                     'options' => [
                         'label' => 'Owner', // @translate
-                        'info' => 'If not set, the default owner will be the current user for a creation.', // @translate
+                        'info' => 'If not set, the default owner for new resources will be the current user.', // @translate
                         'resource_value_options' => [
                             'resource' => 'users',
                             'query' => [],
@@ -157,7 +157,7 @@ class MappingForm extends Form
                 'type' => 'radio',
                 'options' => [
                     'label' => 'Visibility', // @translate
-                    'info' => 'The default visibility is private if the cell contains "0", "false", "no", "off" or "private" (case insensitive), else it is public.', // @translate
+                    'info' => 'Set visibility for all imported resources. Specific mappings can override this setting.', // @translate
                     'value_options' => [
                         '1' => 'Public', // @translate
                         '0' => 'Private', // @translate
@@ -175,7 +175,7 @@ class MappingForm extends Form
                         'type' => 'radio',
                         'options' => [
                             'label' => 'Open/closed to additions', // @translate
-                            'info' => 'The default openess is closed if the cell contains "0", "false", "off", or "closed" (case insensitive), else it is open.', // @translate
+                            'info' => 'Set whether imported item sets are open to additions. Specific mappings can override this setting.', // @translate
                             'value_options' => [
                                 '1' => 'Open', // @translate
                                 '0' => 'Closed', // @translate
@@ -210,7 +210,7 @@ class MappingForm extends Form
                         'type' => 'radio',
                         'options' => [
                             'label' => 'Item sets open/closed to additions', // @translate
-                            'info' => 'The default openess is closed if the cell contains "0", "false", "off", or "closed" (case insensitive), else it is open.', // @translate
+                            'info' => 'Set whether imported item sets are open to additions. Specific mappings can override this setting.', // @translate
                             'value_options' => [
                                 '1' => 'Open', // @translate
                                 '0' => 'Closed', // @translate
@@ -295,11 +295,7 @@ class MappingForm extends Form
                 'type' => 'select',
                 'options' => [
                     'label' => 'Action', // @translate
-                    'info' => 'In addition to the default "Create" and to the common "Delete", to manage most of the common cases, four modes of update are provided:
-- append: add new data to complete the resource;
-- revise: replace existing data to the resource by the ones set in each cell, except if empty (don’t modify data that are not provided, except for default values);
-- update: replace existing data to the resource by the ones set in each cell, even empty (don’t modify data that are not provided, except for default values);
-- replace: remove all properties of the resource, and fill new ones from the data.', // @translate
+                    'info' => 'By default, an import creates new resources. Select from this dropdown to choose an alternate action for the import. For more information on each action, see the documentation.', // @translate
                     'value_options' => $valueOptions,
                 ],
                 'attributes' => [

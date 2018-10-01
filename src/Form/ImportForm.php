@@ -123,8 +123,8 @@ class ImportForm extends Form
             'name' => 'automap_check_names_alone',
             'type' => 'checkbox',
             'options' => [
-                'label' => 'Automap with labels alone', // @translate
-                'info' => 'Headers are mapped automatically, case sensitively and not, with standard names ("dcterms:title") and labels ("Dublin Core : Title"). If checked, an automatic map will be done with names and labels only ("Title") too, Dublin Core first.', // @translate
+                'label' => 'Automap with simple labels', // @translate
+                'info' => 'If checked, column headings that match property labels will be mapped automatically (for example, "Title" to dcterms:title).', // @translate
             ],
             'attributes' => [
                 'id' => 'automap_check_names_alone',
