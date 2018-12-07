@@ -300,8 +300,9 @@ class Import extends AbstractJob
                 $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
                 $idsToProcess = array_filter($ids);
                 $idsRemaining = array_diff_key($ids, $idsToProcess);
+
                 if ($idsRemaining) {
-                    $identifiersRemaining = array_intersect_key($identifiers, $idsRemaining);
+                    $identifiersRemaining = array_keys($idsRemaining);
                     $this->stats(self::ACTION_SKIP, $identifiersRemaining);
                     $this->logger->info(new Message('The following identifiers are not associated with a resource and were skipped: "%s".', // @translate
                         implode('", "', $identifiersRemaining)));
