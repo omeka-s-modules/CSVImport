@@ -299,6 +299,27 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $columns = $this->getOption('columns');
+            if ($columns) {
+                $advancedSettingsFieldset->add([
+                    'name' => 'identifier_column',
+                    'type' => 'Select',
+                    'options' => [
+                        'label' => 'Resource identifier column', // @translate
+                        'value_options' => $this->getOption('columns'),
+                    ],
+                    'attributes' => [
+                        'id' => 'identifier_column',
+                        'class' => 'advanced-settings',
+                    ]
+                ]);
+            } else {
+                $advancedSettingsFieldset->add([
+                    'name' => 'identifier_column',
+                    'type' => 'Number'
+                ]);
+            }
+
             $advancedSettingsFieldset->add([
                 'name' => 'identifier_property',
                 'type' => PropertySelect::class,
@@ -386,6 +407,10 @@ class MappingForm extends Form
             $advancedSettingsInputFilter = $inputFilter->get('advanced-settings');
             $advancedSettingsInputFilter->add([
                 'name' => 'action',
+                'required' => false,
+            ]);
+            $advancedSettingsInputFilter->add([
+                'name' => 'identifier_column',
                 'required' => false,
             ]);
             $advancedSettingsInputFilter->add([

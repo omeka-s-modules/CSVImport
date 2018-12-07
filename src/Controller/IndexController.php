@@ -73,8 +73,72 @@ class IndexController extends AbstractActionController
             'automap_check_names_alone',
             'comment',
         ]));
-        $form = $this->getForm(MappingForm::class, $mappingOptions);
-        if (empty($files)) {
+
+        if (!empty($files)) {
+            $importForm = $this->getForm(ImportForm::class);
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+            $importForm->setData($post);
+            if (!$importForm->isValid()) {
+                $this->messenger()->addFormErrors($importForm);
+                return $this->redirect()->toRoute('admin/csvimport');
+            }
+
+            $source = $this->getSource($post['source']);
+            if (empty($source)) {
+                $this->messenger()->addError('The format of the source cannot be detected.'); // @translate
+                return $this->redirect()->toRoute('admin/csvimport');
+            }
+
+            $resourceType = $post['resource_type'];
+            $mediaType = $source->getMediaType();
+            $post['media_type'] = $mediaType;
+            $tempPath = $this->getTempPath();
+            $this->moveToTemp($post['source']['tmp_name']);
+
+            $args = $this->cleanArgs($post);
+
+            $source->init($this->config);
+            $source->setSource($tempPath);
+            $source->setParameters($args);
+
+            if (!$source->isValid()) {
+                $message = $source->getErrorMessage() ?: 'The file is not valid.'; // @translate
+                $this->messenger()->addError($message);
+                return $this->redirect()->toRoute('admin/csvimport');
+            }
+
+            $columns = $source->getHeaders();
+            if (empty($columns)) {
+                $message = $source->getErrorMessage() ?: 'The file has no headers.'; // @translate
+                $this->messenger()->addError($message);
+                return $this->redirect()->toRoute('admin/csvimport');
+            }
+
+            $mappingOptions['columns'] = $columns;
+            $form = $this->getForm(MappingForm::class, $mappingOptions);
+
+            $automapOptions = [];
+            $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
+            $automapOptions['format'] = 'form';
+
+            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
+
+            $view->setVariable('form', $form);
+            $view->setVariable('resourceType', $resourceType);
+            $view->setVariable('filepath', $tempPath);
+            $view->setVariable('filename', $post['source']['name']);
+            $view->setVariable('filesize', $post['source']['size']);
+            $view->setVariable('mediaType', $mediaType);
+            $view->setVariable('columns', $columns);
+            $view->setVariable('automaps', $autoMaps);
+            $view->setVariable('mappings', $this->getMappingsForResource($resourceType));
+            $view->setVariable('mediaForms', $this->getMediaForms());
+            return $view;
+        } else {
+            $form = $this->getForm(MappingForm::class, $mappingOptions);
             $form->setData($post);
             if ($form->isValid()) {
                 // Flatten basic and advanced settings back into single level
@@ -107,66 +171,6 @@ class IndexController extends AbstractActionController
             }
             return $this->redirect()->toRoute('admin/csvimport');
         }
-
-        $importForm = $this->getForm(ImportForm::class);
-        $post = array_merge_recursive(
-            $request->getPost()->toArray(),
-            $request->getFiles()->toArray()
-        );
-        $importForm->setData($post);
-        if (!$importForm->isValid()) {
-            $this->messenger()->addFormErrors($importForm);
-            return $this->redirect()->toRoute('admin/csvimport');
-        }
-
-        $source = $this->getSource($post['source']);
-        if (empty($source)) {
-            $this->messenger()->addError('The format of the source cannot be detected.'); // @translate
-            return $this->redirect()->toRoute('admin/csvimport');
-        }
-
-        $resourceType = $post['resource_type'];
-        $mediaType = $source->getMediaType();
-        $post['media_type'] = $mediaType;
-        $tempPath = $this->getTempPath();
-        $this->moveToTemp($post['source']['tmp_name']);
-
-        $args = $this->cleanArgs($post);
-
-        $source->init($this->config);
-        $source->setSource($tempPath);
-        $source->setParameters($args);
-
-        if (!$source->isValid()) {
-            $message = $source->getErrorMessage() ?: 'The file is not valid.'; // @translate
-            $this->messenger()->addError($message);
-            return $this->redirect()->toRoute('admin/csvimport');
-        }
-
-        $columns = $source->getHeaders();
-        if (empty($columns)) {
-            $message = $source->getErrorMessage() ?: 'The file has no headers.'; // @translate
-            $this->messenger()->addError($message);
-            return $this->redirect()->toRoute('admin/csvimport');
-        }
-
-        $automapOptions = [];
-        $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
-        $automapOptions['format'] = 'form';
-
-        $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
-
-        $view->setVariable('form', $form);
-        $view->setVariable('resourceType', $resourceType);
-        $view->setVariable('filepath', $tempPath);
-        $view->setVariable('filename', $post['source']['name']);
-        $view->setVariable('filesize', $post['source']['size']);
-        $view->setVariable('mediaType', $mediaType);
-        $view->setVariable('columns', $columns);
-        $view->setVariable('automaps', $autoMaps);
-        $view->setVariable('mappings', $this->getMappingsForResource($resourceType));
-        $view->setVariable('mediaForms', $this->getMediaForms());
-        return $view;
     }
 
     public function pastImportsAction()
@@ -283,7 +287,7 @@ class IndexController extends AbstractActionController
                 $args[$meta] = ['o:id' => (int) $args[$meta]];
             }
         }
-        foreach (['o:is_public', 'o:is_open', 'o:is_active'] as $meta) {
+        foreach (['o:is_public', 'o:is_open', 'o:is_active', 'identifier_column'] as $meta) {
             if (isset($args[$meta]) && strlen($args[$meta])) {
                 $args[$meta] = (int) $args[$meta];
             }

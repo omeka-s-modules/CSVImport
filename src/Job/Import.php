@@ -643,35 +643,8 @@ SQL;
 
         foreach ($data as $key => $entityJson) {
             $identifier = null;
-            switch ($this->identifierPropertyId) {
-                case 'internal_id':
-                    if (!empty($entityJson['o:id'])) {
-                        $identifier = $entityJson['o:id'];
-                    }
-                    break;
-
-                default:
-                    switch ($this->resourceType) {
-                        case 'item_sets':
-                        case 'items':
-                        case 'media':
-                            foreach ($entityJson as $index => $value) {
-                                if (is_array($value) && !empty($value)) {
-                                    $value = reset($value);
-                                    if (isset($value['property_id'])
-                                        && $value['property_id'] == $this->identifierPropertyId
-                                        && isset($value['@value'])
-                                        && strlen($value['@value'])
-                                    ) {
-                                        $identifier = $value['@value'];
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-                        case 'users':
-                            break;
-                    }
+            if (isset($entityJson['o-module-csv-import:resource-identifier'])) {
+                $identifier = $entityJson['o-module-csv-import:resource-identifier'];
             }
             $identifiers[$key] = $identifier;
         }

@@ -72,10 +72,6 @@ abstract class AbstractResourceMapping extends AbstractMapping
         $data = &$this->data;
 
         // Set columns.
-        if (isset($this->args['column-resource'])) {
-            $this->map['resource'] = $this->args['column-resource'];
-            $data['o:id'] = null;
-        }
         if (isset($this->args['column-resource_template'])) {
             $this->map['resourceTemplate'] = $this->args['column-resource_template'];
             $data['o:resource_template'] = null;
@@ -165,13 +161,8 @@ abstract class AbstractResourceMapping extends AbstractMapping
     {
         $data = &$this->data;
 
-        if (isset($this->map['resource'][$index])) {
-            $identifier = reset($values);
-            $identifierProperty = $this->map['resource'][$index] ?: 'internal_id';
-            $resourceId = $this->findResource($identifier, $identifierProperty);
-            if ($resourceId) {
-                $data['o:id'] = $resourceId;
-            }
+        if ($index === $this->args['identifier_column']) {
+            $data['o-module-csv-import:resource-identifier'] = reset($values);
         }
 
         if (isset($this->map['resourceTemplate'][$index])) {
