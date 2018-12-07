@@ -442,5 +442,19 @@
                 languageInput.prop('disabled', false);
             }
         }
+
+
+        function toggleActionOptions() {
+            var action = $('#action').val();
+            if (action === 'create') {
+                $('.action-option')
+                    .closest('.field').hide();
+            } else {
+                $('.action-option')
+                    .closest('.field').show();
+            }
+        }
+        toggleActionOptions();
+        $('#action').change(toggleActionOptions);
     });
 })(jQuery);

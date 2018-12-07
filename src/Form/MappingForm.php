@@ -295,7 +295,6 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'action',
-                    'class' => 'advanced-settings',
                 ],
             ]);
 
@@ -310,7 +309,7 @@ class MappingForm extends Form
                     ],
                     'attributes' => [
                         'id' => 'identifier_column',
-                        'class' => 'advanced-settings',
+                        'class' => 'action-option',
                     ]
                 ]);
             } else {
@@ -337,7 +336,7 @@ class MappingForm extends Form
                     'value' => $userSettings->get(
                         'csv_import_identifier_property',
                         $default['csv_import_identifier_property']),
-                    'class' => 'advanced-settings chosen-select',
+                    'class' => 'action-option chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],
             ]);
@@ -355,7 +354,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'action_unidentified',
-                    'class' => 'advanced-settings',
+                    'class' => 'action-option',
                     'value' => Import::ACTION_SKIP,
                 ],
             ]);
@@ -371,7 +370,6 @@ class MappingForm extends Form
                     'value' => $userSettings->get(
                         'csv_import_rows_by_batch',
                         $default['csv_import_rows_by_batch']),
-                    'class' => 'advanced-settings',
                     'min'  => '1',
                     'step' => '1',
                 ],
