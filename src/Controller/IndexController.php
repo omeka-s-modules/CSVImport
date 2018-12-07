@@ -276,6 +276,8 @@ class IndexController extends AbstractActionController
     {
         $args = $post;
 
+        unset($args['csrf']);
+
         // Set the default action if not set, for example for users.
         $args['action'] = empty($args['action'])
             ? \CSVImport\Job\Import::ACTION_CREATE
