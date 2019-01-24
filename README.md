@@ -12,108 +12,13 @@ See the [Omeka S user manual](http://omeka.org/s/docs/user-manual/modules/csvimp
 Installation
 ------------
 
-See general end user documentation for [Installing a module](http://dev.omeka.org/docs/s/user-manual/modules/#installing-modules)
+See general end user documentation for [Installing a module](http://omeka.org/s/docs/user-manual/modules/#installing-modules).
 
-To install CSV Import from the source, go to the root of the module, and run either `composer install` or `gulp init` in order to get dependencies. The zip is created with this command: `gulp zip --no-dev`.
+To install CSV Import from the source, go to the root of the module, and run `composer install`. Users
+using the pre-packaged downloads from the Releases page or the omeka.org module directory don't need
+to worry about this step.
 
 To be able to import `ods`, the php extensions `zip` and `xml` should be installed (default in most cases).
-
-Quick test
-----------
-
-- Download the [example file]
-- Go to the admin board > CSV Import.
-- Upload the example file.
-- Select the import type `Resource`
-- Check the options `Automap with labels alone` and `Automap with user list` (the list should be the original one).
-- Click `Next` in the upper right.
-- Click `Import` with all default values.
-- Wait some seconds, and your item sets, items and medias are imported!
-
-Preparing your CSV file
------------------------
-
-### Format of the file
-
-CSV files for import must be encoded in UTF-8.
-
-The delimiter and the enclosure can be specified. The delimiter is generally the "`,`", but it can be "`;`" or a tabulation. A file saved with tabulation as delimiter allows to avoid most of the issues during import, because it is very hard to add them in a spreadsheet. The enclosure is generally the double-quote "`"`".
-
-### Auto-mapping
-
-Column headers that conform to property values as seen in the Properties list under Vocabularies will be auto-mapped. For example, a CSV file with a column header `dcterms:title` will be automapped to the Dublin Core Title property when setting the mappings. It is possible to use long format too (`Dublin Core : Title`) and even with  the label only (`Title`).
-
-An option allows to set a personal list of headers to map the file automagically. This is useful when the user uses a csv file that cannot be changed. In the text field, each line should contains a header (with or without case), a "`=`" and the property term or the mapping type. In that way, any header can be mapped to any property and metadata. To reset to the default, remove all the values and they will be reinitialized for the next import.
-
-Importing entities
-------------------
-
-### Resources (Items, Item Sets, Media)
-
-Resources import will take data from each row of your CSV file and create a new Item from that data.
-
-#### Global settings
-
-The Global Settings allow you to set default data for each Item imported. You can specify
-
-* Item Set(s) by their IDs or any other unique identifier (generally `dcterms:identifier`)
-* Owner by email address
-* Resource Template by name
-* Class by term (e.g., dctype:Text -- consult the Classes lists under Vocabularies for allowed values)
-
-####  Media mapping
-
-Media for items can be mapped to data in the columns via the button `Media source`. The options conform to the regular media options when adding an Item, with the exception that `Upload` is not an option for CSV files. Nevertheless, the module [FileSideload] can be used to replace this feature and to upload files with local paths on the server.
-
-#### Metadata for Media
-
-To import metadata for a media, the item should be imported first and it should have a id or a unique identifier in order to attach the media to it. This identifier must be available in one of the columns of the csv file.
-
-### Item Data mapping
-
-Data in the CSV file can be mapped to override / augment the Gobal Settings set in the main tab. Clicking on the `Item Data` button will open mapping options that will override the Global Settings.
-
-### External modules
-
-The data for content managed by external modules can be imported too, for example:
-
-- [Mapping]
-- [Folksonomy]
-
-### Users
-
-Importing Users from a CSV file must specify the following:
-
-* Email address
-* Role
-
-Optionally, a Display Name should be specified. For simplicity, the email address can also be mapped to the Display Name, though this is not recommended. New users will not be active until they confirm their registration via an email that will be sent to them.
-
-Updating and deleting entities
-------------------------------
-
-In the main tab, an advanced option allows to update entities.
-
-The update and the delete processes require that the resources to be identified with a unique identifier, like the id or a specific `dcterms:identifier`.
-
-In case of a duplicate, only the first will be processed. The processed resources are logged.
-
-**It is not possible to undo an update or a deletion.**
-
-### Updating entities
-
-Four modes of update are provided:
-
-- append: add new data to complete the resource;
-- revise: replace existing data to the resource by the ones set in each cell, except if empty (don’t modify data that are not provided, except default values);
-- update: replace existing data to the resource by the ones set in each cell, even empty (don’t modify data that are not provided, except default values);
-- replace: remove all properties of the resource, and fill new ones from the data.
-
-### Deleting entities
-
-The use of this option is dangerous.
-
-**It is recommended to backup your base and your files before updating and deleting resources (see the warning and the license below).**
 
 Warning
 -------
@@ -149,18 +54,14 @@ Current maintainers:
 Copyright
 ---------
 
-* Copyright  Roy Rosenzweig Center for History and New Media, 2015-2017
-* Copyright Daniel Berthereau, 2017
+* Copyright Roy Rosenzweig Center for History and New Media, 2015-2019
+* Copyright Daniel Berthereau, 2017-2019
 
 [CSV Import]: https://github.com/Omeka-s-modules/CSVImport
 [Omeka S]: https://omeka.org/s
 [TSV]: https://en.wikipedia.org/wiki/Tab-separated_values
 [ODS]: http://opendocumentformat.org/aboutODF
 [LibreOffice]: https://www.libreoffice.org
-[example file]: https://github.com/Daniel-KM/Omeka-S-module-CSVImport/blob/master/test/CsvImportTest/_files/test_resources_heritage.ods
-[FileSideload]: https://github.com/Omeka-s-modules/FileSideload
-[Mapping]: https://github.com/Omeka-s-modules/Mapping
-[Folksonomy]: https://github.com/Daniel-KM/Folksonomy
 [Omeka forum]: https://forum.omeka.org/c/omeka-s/modules
 [module issues]: https://github.com/omeka-s-modules/CSVImport/issues
 [GNU/GPL v3]: https://www.gnu.org/licenses/gpl-3.0.html
