@@ -136,6 +136,7 @@ class IndexController extends AbstractActionController
             $view->setVariable('automaps', $autoMaps);
             $view->setVariable('mappings', $this->getMappingsForResource($resourceType));
             $view->setVariable('mediaForms', $this->getMediaForms());
+            $view->setVariable('dataTypes', $this->getDataTypes());
             return $view;
         } else {
             $form = $this->getForm(MappingForm::class, $mappingOptions);
@@ -380,6 +381,16 @@ class IndexController extends AbstractActionController
         }
         ksort($forms);
         return $forms;
+    }
+
+    protected function getDataTypes()
+    {
+        $dataTypes = [];
+        $configDataTypes = $this->config['csv_import']['data_types'];
+        foreach ($configDataTypes as $id => $configEntry) {
+            $dataTypes[$id] = $configEntry['label'];
+        }
+        return $dataTypes;
     }
 
     /**

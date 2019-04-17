@@ -166,6 +166,20 @@ return [
                 Mapping\UserMapping::class,
             ],
         ],
+        'data_types' => [
+            'literal' => [
+                'label' => 'Text', // @translate
+                'adapter' => 'literal',
+            ],
+            'uri' => [
+                'label' => 'URI', // @translate
+                'adapter' => 'uri',
+            ],
+            'resource' => [
+                'label' => 'Omeka resource (by ID)', // @translate
+                'adapter' => 'resource',
+            ],
+        ],
         'media_ingester_adapter' => [
             'url' => MediaIngesterAdapter\UrlMediaIngesterAdapter::class,
             'html' => MediaIngesterAdapter\HtmlMediaIngesterAdapter::class,

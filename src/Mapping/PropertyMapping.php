@@ -35,15 +35,14 @@ class PropertyMapping extends AbstractMapping
         }
 
         // Get mappings for options.
-        if (isset($this->args['column-url'])) {
-            $urlMap = $this->args['column-url'];
-        }
-        if (isset($this->args['column-reference'])) {
-            $referenceMap = $this->args['column-reference'];
+        if (isset($this->args['column-data-type'])) {
+            $dataTypeMap = $this->args['column-data-type'];
         }
         if (isset($this->args['column-language'])) {
             $languageMap = $this->args['column-language'];
         }
+
+        $dataTypeAdapters = $this->getDataTypeAdapters();
 
         // Get default option values.
         $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
@@ -54,10 +53,12 @@ class PropertyMapping extends AbstractMapping
             if (isset($propertyMap[$index])) {
                 // Consider 'literal' as the default type.
                 $type = 'literal';
-                if (isset($urlMap[$index])) {
-                    $type = 'uri';
-                } elseif (isset($referenceMap[$index])) {
-                    $type = 'resource';
+                if (isset($dataTypeMap[$index])) {
+                    $type = $dataTypeMap[$index];
+                }
+                $typeAdapter = 'literal';
+                if (isset($dataTypeAdapters[$type])) {
+                    $typeAdapter = $dataTypeAdapters[$type];
                 }
 
                 foreach ($propertyMap[$index] as $propertyTerm => $propertyId) {
@@ -70,7 +71,7 @@ class PropertyMapping extends AbstractMapping
                     }
                     $values = array_filter($values, 'strlen');
                     foreach ($values as $value) {
-                        switch ($type) {
+                        switch ($typeAdapter) {
                             case 'uri':
                                 $data[$propertyTerm][] = [
                                     '@id' => $value,
@@ -108,5 +109,17 @@ class PropertyMapping extends AbstractMapping
         }
 
         return $data;
+    }
+
+    protected function getDataTypeAdapters()
+    {
+        $dataTypeAdapters = [];
+
+        $config = $this->getServiceLocator()->get('Config');
+        $dataTypeConfig = $config['csv_import']['data_types'];
+        foreach ($dataTypeConfig as $id => $configEntry) {
+            $dataTypeAdapters[$id] = $configEntry['adapter'];
+        }
+        return $dataTypeAdapters;
     }
 }

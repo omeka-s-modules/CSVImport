@@ -91,9 +91,8 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                 </td>
                 <td class="element-options">
                     <ul class='options'>
-                        <li class='column-import option' style='display:none;'><span class="option-label"></span>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option column-url' name='column-url[<?php echo $index; ?>]'></input>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option column-reference' name='column-reference[<?php echo $index; ?>]'></input>
+                        <li class='column-data-type option' style='display:none;'><span class="option-label"></span>
+                            <input type="hidden" name="column-data-type[<?php echo $index; ?>]" class="column-option column-data-type" value="literal">
                         </li>
                         <li class='column-multivalue option' style='display:none;'><?php echo $this->translate("Multivalue"); ?>
                             <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
@@ -110,6 +109,6 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         </tbody>
     </table>
     <?php echo $this->partial('common/mapping-sidebar'); ?>
-    <?php echo $this->partial('common/options-sidebar'); ?>
+    <?php echo $this->partial('common/options-sidebar', ['dataTypes' => $dataTypes]); ?>
 </fieldset>
 <?php echo $this->form()->closeTag($form); ?>
