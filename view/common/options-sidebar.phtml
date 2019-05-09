@@ -6,7 +6,7 @@
 
         <p class="batch-edit-description"><?php echo $this->translate('Highlighted options will apply to selected column headers. Reset an option to cancel changes.'); ?></p>
 
-        <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
+        <?php if (empty($resourceType) || in_array($resourceType, ['items', 'item_sets', 'media', 'resources'])): ?>
         <div class="multivalue option">
             <label for="multivalue"><?php echo $this->translate('Use multivalue separator'); ?></label>
             <div class="option-inputs">
