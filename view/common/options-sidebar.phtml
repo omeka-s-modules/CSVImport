@@ -25,13 +25,13 @@
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>
         </div>
 
-        <div class="import option">
-            <label for="column-import"><?php echo $this->translate('Data type'); ?></label>
+        <div class="data-type option">
+            <label for="column-data-type"><?php echo $this->translate('Data type'); ?></label>
             <div class="option-inputs">
-                <select name="column-import" id="column-import" data-column-option="column-import">
-                    <option class="button column-text" value="default"><?php echo $this->translate('Import as text (default)'); ?></option>
-                    <option class="button column-url" value="column-url"><?php echo $this->translate('Import as URL reference'); ?></option>
-                    <option class="button column-reference" value="column-reference"><?php echo $this->translate('Import as Omeka S resource ID'); ?></option>
+                <select id="column-data-type" data-column-option="column-data-type">
+                <?php foreach ($dataTypes as $id => $label): ?>
+                    <option value="<?php echo $this->escapeHtml($id); ?>"><?php echo $this->translate($label); ?></option>
+                <?php endforeach; ?>
                 </select>
             </div>
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>

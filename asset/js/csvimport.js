@@ -116,9 +116,7 @@
                     sidebarOptionInput.val(optionInput.val());
                 }
                 if (sidebarOptionInput.prop('type') == "select-one") {
-                    var indexString = /(\[)(\d*)(\])/;
-                    var selectOptionName = this.name.replace(indexString, '');
-                    sidebarOptionInput.val(selectOptionName);
+                    sidebarOptionInput.val(optionInput.val());
                 }
             });
         }
@@ -338,11 +336,10 @@
                         var selectedOptionValue = selectedOption.val();
                         var optionClass = '.' + selectInput.data('column-option');
                         var optionLi = activeElement.find(optionClass);
-                        optionLi.find('input[type="hidden"]').prop('disabled', true);
-                        if (selectedOptionValue !== 'default') {
+                        optionLi.find('input[type="hidden"]').val(selectedOptionValue);
+                        if (selectedOptionValue !== 'literal') {
                             optionLi.show();
                             optionLi.find('.option-label').text(selectedOption.text());
-                            optionLi.find('.' + selectedOptionValue).prop('disabled', false)
                         } else {
                             optionLi.hide();
                         }
