@@ -63,7 +63,7 @@ class PropertyMapping extends AbstractMapping
 
                 foreach ($propertyMap[$index] as $propertyTerm => $propertyId) {
                     if (empty($multivalueMap[$index])) {
-                        $values = [$values];
+                        $values = [trim($values)];
                     } else {
 
                         $values = explode($multivalueSeparator, $values);
@@ -73,10 +73,20 @@ class PropertyMapping extends AbstractMapping
                     foreach ($values as $value) {
                         switch ($typeAdapter) {
                             case 'uri':
+                                // Check if a label is provided after the url.
+                                // Note: A url has no space, but a uri may have.
+                                if (strpos($value, ' ')) {
+                                    list($valueId, $valueLabel) = explode(' ', $value, 2);
+                                    $valueLabel = trim($valueLabel);
+                                } else {
+                                    $valueId = $value;
+                                    $valueLabel = null;
+                                }
                                 $data[$propertyTerm][] = [
-                                    '@id' => $value,
+                                    '@id' => $valueId,
                                     'property_id' => $propertyId,
                                     'type' => $type,
+                                    'o:label' => $valueLabel,
                                 ];
                                 break;
 
