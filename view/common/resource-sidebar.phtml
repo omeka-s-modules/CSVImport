@@ -1,38 +1,10 @@
-<div id="resource-data" class="mapping-group">
+<?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
+<div id="item-resource-data" class="mapping-group">
     <a href="#" class="expand" aria-label="Expand">
-        <h4><?php echo $this->translate('Resource data'); ?></h4>
+        <h4><?php echo $this->translate('Item-specific data'); ?></h4>
     </a>
     <div class="collapsible">
-        <div class="resource-mapping mappings">
-            <?php
-            $resourceTypeLabels = [
-                'items' => $this->translate('Item'),
-                'item_sets' => $this->translate('Item set'),
-                'media' => $this->translate('Media'),
-                'resources' => $this->translate('Resources'),
-            ];
-            ?>
-            
-            <?php if ($resourceType == 'resources'): ?>
-            <div class="resource-type-select">
-                <label for="data-resource-type-select"><?php echo $this->translate('Associated resource type'); ?></label>
-                <select id="data-resource-type-select" name="data-resource-type-select">
-                    <option value="default"><?php echo $this->translate('Select below'); ?></option>
-                    <option value="items"><?php echo $this->translate('Item'); ?></option>
-                    <option value="item-sets"><?php echo $this->translate('Item set'); ?></option>
-                    <option value="media"><?php echo $this->translate('Media'); ?></option>
-                </select>
-            </div>
-            <?php endif; ?>
-            <?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
-            <div class="mapping additions item-sets">
-                <label for="additions"><?php echo $this->translate('Open to additions'); ?></label>
-                <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data" data-flag-name="column-is_open" data-flag-label="<?php echo $this->translate('Open to additions'); ?>" value="1">
-            </div>
-            <?php endif; ?>
-  
-            <?php if (empty($resourceType) || in_array($resourceType, ['items', 'resources'])): ?>
-            <div class="mapping property items">
+        <div class="mapping property items">
             <h4><?php echo $this->translate('Item set (by selected property)'); ?></h4>
             <?php echo $this->propertySelect([
                 'name' => 'column-item_set_property',
@@ -52,36 +24,54 @@
                     'data-flag-label' => $this->translate('Item set'),
                 ],
             ]); ?>
-            </div>
-            <?php endif; ?>
-  
-            <?php if (empty($resourceType) || in_array($resourceType, ['media', 'resources'])): ?>
-            <div class="mapping property media">
-                <h4><?php echo $this->translate('Item (by selected property)'); ?></h4>
-                <span class="description"><?php echo $this->translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
-                <?php echo $this->propertySelect([
-                    'name' => 'column-item_property',
-                    'options' => [
-                        'empty_option' => $this->translate('Select below'),
-                        'prepend_value_options' => [
-                            'internal_id' => $this->translate('Internal ID'),
-                        ],
-                        'term_as_value' => true,
-                    ],
-                    'attributes' => [
-                        'id' => 'column-item_property',
-                        'class' => 'chosen-select',
-                        'data-flag-name' => 'column-item',
-                        'data-flag-class' => 'resource-data',
-                        'data-flag-label' => $this->translate('Item'),
-                    ],
-                ]); ?>
-            </div>
-            <?php endif; ?>
-            
         </div>
     </div>
 </div>
+<?php endif; ?>
+<?php if (empty($resourceType) || in_array($resourceType, ['item_sets', 'resources'])): ?>
+<div id="item-set-resource-data" class="mapping-group">
+    <a href="#" class="expand" aria-label="Expand">
+        <h4><?php echo $this->translate('Item set-specific data'); ?></h4>
+    </a>
+    <div class="collapsible">
+        <div class="mapping additions item-sets">
+            <label for="additions"><?php echo $this->translate('Open to additions'); ?></label>
+            <input name="additions" id="additions" type="checkbox" data-flag-class="resource-data" data-flag-name="column-is_open" data-flag-label="<?php echo $this->translate('Open to additions'); ?>" value="1">
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+<?php if (empty($resourceType) || in_array($resourceType, ['media', 'resources'])): ?>
+<div id="media-resource-data" class="mapping-group">
+    <a href="#" class="expand" aria-label="Expand">
+        <h4><?php echo $this->translate('Media-specific data'); ?></h4>
+    </a>
+    <div class="collapsible">
+        <div class="mapping property media">
+            <h4><?php echo $this->translate('Item (by selected property)'); ?></h4>
+            <span class="description"><?php echo $this->translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
+            <?php echo $this->propertySelect([
+                'name' => 'column-item_property',
+                'options' => [
+                    'empty_option' => $this->translate('Select below'),
+                    'prepend_value_options' => [
+                        'internal_id' => $this->translate('Internal ID'),
+                    ],
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'column-item_property',
+                    'class' => 'chosen-select',
+                    'data-flag-name' => 'column-item',
+                    'data-flag-class' => 'resource-data',
+                    'data-flag-label' => $this->translate('Item'),
+                ],
+            ]); ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <div id="generic-data" class="mapping-group">
     <a href="#" class="expand" aria-label="Expand">
         <h4><?php echo $this->translate('Generic data'); ?></h4>
