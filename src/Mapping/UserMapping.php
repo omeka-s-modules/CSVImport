@@ -10,7 +10,7 @@ class UserMapping extends AbstractMapping
 
     public function getSidebar(PhpRenderer $view)
     {
-        return $view->partial('common/user-sidebar');
+        return $view->partial('csv-import/mapping-sidebar/user');
     }
 
     /**

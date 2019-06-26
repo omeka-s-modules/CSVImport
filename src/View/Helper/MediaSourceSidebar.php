@@ -31,7 +31,7 @@ class MediaSourceSidebar extends AbstractHelper
         ksort($mediaForms);
 
         return $this->getView()->partial(
-            'common/media-source-sidebar',
+            'csv-import/mapping-sidebar/media-source',
             [
                 'mediaForms' => $mediaForms,
             ]
