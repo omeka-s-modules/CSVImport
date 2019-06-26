@@ -1,10 +1,18 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Zend\View\Renderer\PhpRenderer;
+
 class MediaMapping extends AbstractResourceMapping
 {
     protected $label = 'Media data'; // @translate
     protected $resourceType = 'media';
+
+    public function getSidebar(PhpRenderer $view)
+    {
+        return $view->partial('csv-import/mapping-sidebar/media')
+            . parent::getSidebar($view);
+    }
 
     protected function processGlobalArgs()
     {

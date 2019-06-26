@@ -29,7 +29,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
 
     public function getSidebar(PhpRenderer $view)
     {
-        return $view->resourceSidebar($this->resourceType);
+        return $view->partial('csv-import/mapping-sidebar/resource');
     }
 
     public function init(array $args, ServiceLocatorInterface $serviceLocator)

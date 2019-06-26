@@ -1,10 +1,18 @@
 <?php
 namespace CSVImport\Mapping;
 
+use Zend\View\Renderer\PhpRenderer;
+
 class ItemSetMapping extends AbstractResourceMapping
 {
     protected $label = 'Item set data'; // @translate
     protected $resourceType = 'item_sets';
+
+    public function getSidebar(PhpRenderer $view)
+    {
+        return $view->partial('csv-import/mapping-sidebar/item-set')
+            . parent::getSidebar($view);
+    }
 
     protected function processGlobalArgs()
     {

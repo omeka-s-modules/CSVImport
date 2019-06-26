@@ -1,0 +1,28 @@
+<div id="media-resource-data" class="mapping-group">
+    <a href="#" class="expand" aria-label="Expand">
+        <h4><?php echo $this->translate('Media-specific data'); ?></h4>
+    </a>
+    <div class="collapsible">
+        <div class="mapping property media">
+            <h4><?php echo $this->translate('Item (by selected property)'); ?></h4>
+            <span class="description"><?php echo $this->translate('There must be an item identifier to create a media. This is generally "dcterms:identifier", but it may be an internal id.')?></span>
+            <?php echo $this->propertySelect([
+                'name' => 'column-item_property',
+                'options' => [
+                    'empty_option' => $this->translate('Select below'),
+                    'prepend_value_options' => [
+                        'internal_id' => $this->translate('Internal ID'),
+                    ],
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'column-item_property',
+                    'class' => 'chosen-select',
+                    'data-flag-name' => 'column-item',
+                    'data-flag-class' => 'resource-data',
+                    'data-flag-label' => $this->translate('Item'),
+                ],
+            ]); ?>
+        </div>
+    </div>
+</div>

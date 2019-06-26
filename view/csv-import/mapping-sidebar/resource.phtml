@@ -1,0 +1,18 @@
+<div id="generic-data" class="mapping-group">
+    <a href="#" class="expand" aria-label="Expand">
+        <h4><?php echo $this->translate('Generic data'); ?></h4>
+    </a>
+    <div class="collapsible">
+        <div class="mapping">
+            <select name="generic-data" class="flags" data-flag-class="generic-data" data-flag-label="<?php echo $this->translate('Generic data'); ?>">
+                <option value="default"><?php echo $this->translate('Select below'); ?></option>
+                <option value="1" data-flag-name="column-resource_template"><?php echo $this->translate('Resource template (by label)'); ?></option>
+                <option value="1" data-flag-name="column-resource_class"><?php echo $this->translate('Resource class (by term)'); ?></option>
+                <?php if ($this->userIsAllowed('Omeka\Entity\Item', 'change-owner')): ?>
+                <option value="1" data-flag-name="column-owner_email"><?php echo $this->translate('Owner (by email address)'); ?></option>
+                <?php endif; ?>
+                <option value="1" data-flag-name="column-is_public"><?php echo $this->translate('Visibility public/private'); ?></option>
+            </select>
+        </div>
+    </div>
+</div>

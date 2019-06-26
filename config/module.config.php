@@ -21,7 +21,6 @@ return [
         ],
         'factories' => [
             'mediaSourceSidebar' => Service\ViewHelper\MediaSourceSidebarFactory::class,
-            'resourceSidebar' => Service\ViewHelper\ResourceSidebarFactory::class,
         ],
     ],
     'form_elements' => [
@@ -144,22 +143,22 @@ return [
         ],
         'mappings' => [
             'items' => [
-                Mapping\ItemMapping::class,
                 Mapping\PropertyMapping::class,
+                Mapping\ItemMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],
             'item_sets' => [
-                Mapping\ItemSetMapping::class,
                 Mapping\PropertyMapping::class,
+                Mapping\ItemSetMapping::class,
             ],
             'media' => [
-                Mapping\MediaMapping::class,
                 Mapping\PropertyMapping::class,
+                Mapping\MediaMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],
             'resources' => [
-                Mapping\ResourceMapping::class,
                 Mapping\PropertyMapping::class,
+                Mapping\ResourceMapping::class,
                 Mapping\MediaSourceMapping::class,
             ],
             'users' => [

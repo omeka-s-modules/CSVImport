@@ -2,11 +2,20 @@
 namespace CSVImport\Mapping;
 
 use Omeka\Stdlib\Message;
+use Zend\View\Renderer\PhpRenderer;
 
 class ResourceMapping extends AbstractResourceMapping
 {
     protected $label = 'Resource data'; // @translate
     protected $resourceType = 'resources';
+
+    public function getSidebar(PhpRenderer $view)
+    {
+        return $view->partial('csv-import/mapping-sidebar/item')
+            . $view->partial('csv-import/mapping-sidebar/item-set')
+            . $view->partial('csv-import/mapping-sidebar/media')
+            . parent::getSidebar($view);
+    }
 
     protected function processGlobalArgs()
     {

@@ -1,0 +1,28 @@
+<div id="item-resource-data" class="mapping-group">
+    <a href="#" class="expand" aria-label="Expand">
+        <h4><?php echo $this->translate('Item-specific data'); ?></h4>
+    </a>
+    <div class="collapsible">
+        <div class="mapping property items">
+            <h4><?php echo $this->translate('Item set (by selected property)'); ?></h4>
+            <?php echo $this->propertySelect([
+                'name' => 'column-item_set_property',
+                'options' => [
+                    'empty_option' => $this->translate('Select below'),
+                    'term_as_value' => false,
+                    'prepend_value_options' => [
+                        'internal_id' => $this->translate('Internal ID'),
+                    ],
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'column-item_set_property',
+                    'class' => 'chosen-select',
+                    'data-flag-name' => 'column-item_set',
+                    'data-flag-class' => 'resource-data',
+                    'data-flag-label' => $this->translate('Item set'),
+                ],
+            ]); ?>
+        </div>
+    </div>
+</div>
