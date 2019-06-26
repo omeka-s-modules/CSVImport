@@ -186,15 +186,6 @@
             });
         });
 
-        $(document).on('change', '.resource-type-select select', function() {
-            var selectInput = $(this);
-            var selectedOption = selectInput.find(':selected').val();
-            selectInput.parent('.resource-type-select').siblings('.mapping').removeClass('active');
-            if (selectedOption !== 'default') {
-                $('.mapping.' + selectedOption).addClass('active');
-            }
-        });
-
         $(document).on('click', '.flags .confirm-panel button', function() {
             var sidebar = $(this).parents('.sidebar');
 
