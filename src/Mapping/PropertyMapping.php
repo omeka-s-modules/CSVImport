@@ -41,6 +41,9 @@ class PropertyMapping extends AbstractMapping
         if (isset($this->args['column-language'])) {
             $languageMap = $this->args['column-language'];
         }
+        if (isset($this->args['column-private-values'])) {
+            $privateValuesMap = $this->args['column-private-values'];
+        }
 
         $dataTypeAdapters = $this->getDataTypeAdapters();
 
@@ -61,6 +64,8 @@ class PropertyMapping extends AbstractMapping
                     $typeAdapter = $dataTypeAdapters[$type];
                 }
 
+                $privateValues = !empty($privateValuesMap[$index]);
+
                 foreach ($propertyMap[$index] as $propertyTerm => $propertyId) {
                     if (empty($multivalueMap[$index])) {
                         $values = [trim($values)];
@@ -71,6 +76,7 @@ class PropertyMapping extends AbstractMapping
                     }
                     $values = array_filter($values, 'strlen');
                     foreach ($values as $value) {
+                        $valueData = [];
                         switch ($typeAdapter) {
                             case 'uri':
                                 // Check if a label is provided after the url.
@@ -82,7 +88,7 @@ class PropertyMapping extends AbstractMapping
                                     $valueId = $value;
                                     $valueLabel = null;
                                 }
-                                $data[$propertyTerm][] = [
+                                $valueData = [
                                     '@id' => $valueId,
                                     'property_id' => $propertyId,
                                     'type' => $type,
@@ -91,7 +97,7 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'resource':
-                                $data[$propertyTerm][] = [
+                                $valueData = [
                                     'value_resource_id' => $value,
                                     'property_id' => $propertyId,
                                     'type' => $type,
@@ -110,9 +116,18 @@ class PropertyMapping extends AbstractMapping
                                 if (isset($languageSettings[$index])) {
                                     $literalPropertyJson['@language'] = $languageSettings[$index];
                                 }
-                                $data[$propertyTerm][] = $literalPropertyJson;
+                                $valueData = $literalPropertyJson;
                                 break;
                         }
+
+                        if (!$valueData) {
+                            continue;
+                        }
+
+                        if ($privateValues) {
+                            $valueData['is_public'] = false;
+                        }
+                        $data[$propertyTerm][] = $valueData;
                     }
                 }
             }

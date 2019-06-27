@@ -102,6 +102,9 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                             <span class='column-language'></span>
                             <input type='hidden' disabled='disabled' value='' class='column-option column-language' name='column-language[<?php echo $index; ?>]'></input>
                         </li>
+                        <li class="column-private-values option" style="display:none;"><?php echo $this->translate("Private values"); ?>
+                            <input type="hidden" value="1" class="column-option column-private-values" name="column-private-values[<?php echo $index; ?>]" disabled>
+                        </li>
                     </ul>
                 </td>
             </tr>
