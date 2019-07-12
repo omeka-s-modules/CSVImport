@@ -55,10 +55,6 @@ tr.mappable td {
     vertical-align: top;
 }
 
-tr.mappable td:first-child {
-    max-width: 20%;
-}
-
 #mapping-data .select-all, 
 tr.mappable input[type="checkbox"] {
     margin-right: .5em;
@@ -220,6 +216,7 @@ li.column-multivalue {
 
 .column-header {
     max-width: calc(100% - 72px);
+    word-wrap: break-word;
 }
 
 #column-options .batch-edit-heading,
