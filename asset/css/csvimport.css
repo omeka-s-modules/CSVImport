@@ -266,15 +266,13 @@ li.column-multivalue {
     content: none;
 }
 
-.multivalue.option,
-.additions.mapping {
+.one-line {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
 }
 
-.multivalue label,
-.additions label {
+.one-line label {
     width: calc(100% - 1em);
 }
 

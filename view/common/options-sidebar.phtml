@@ -7,7 +7,7 @@
         <p class="batch-edit-description"><?php echo $this->translate('Highlighted options will apply to selected column headers. Reset an option to cancel changes.'); ?></p>
 
         <?php if (empty($resourceType) || in_array($resourceType, ['items', 'item_sets', 'media', 'resources'])): ?>
-        <div class="multivalue option">
+        <div class="multivalue option one-line">
             <label for="multivalue"><?php echo $this->translate('Use multivalue separator'); ?></label>
             <div class="option-inputs">
                 <input type="checkbox" data-column-option="column-multivalue" name="multivalue" id="multivalue">
@@ -36,7 +36,7 @@
             </div>
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>
         </div>
-        <div class="private-values option">
+        <div class="private-values option one-line">
             <label for="private-values"><?php echo $this->translate('Import values as private'); ?></label>
             <div class="option-inputs">
                 <input type="checkbox" data-column-option="column-private-values" id="private-values">
