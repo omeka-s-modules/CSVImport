@@ -58,14 +58,14 @@ class ImportAdapter extends AbstractEntityAdapter
     {
         if (isset($query['job_id'])) {
             $qb->andWhere($qb->expr()->eq(
-                $this->getEntityClass() . '.job',
+                'omeka_root.job',
                 $this->createNamedParameter($qb, $query['job_id']))
             );
         }
 
         if (isset($query['resource_type'])) {
             $qb->andWhere($qb->expr()->eq(
-                $this->getEntityClass() . '.resource_type',
+                'omeka_root.resource_type',
                 $this->createNamedParameter($qb, $query['resource_type']))
             );
         }
