@@ -113,8 +113,8 @@ class PropertyMapping extends AbstractMapping
                                 if ($globalLanguage !== '') {
                                     $literalPropertyJson['@language'] = $globalLanguage;
                                 }
-                                if (isset($languageSettings[$index])) {
-                                    $literalPropertyJson['@language'] = $languageSettings[$index];
+                                if (isset($languageMap[$index])) {
+                                    $literalPropertyJson['@language'] = $languageMap[$index];
                                 }
                                 $valueData = $literalPropertyJson;
                                 break;
