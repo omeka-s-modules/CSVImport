@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-24 13:04-0500\n"
+"POT-Creation-Date: 2019-08-08 11:15-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,18 +19,6 @@ msgstr ""
 
 #: view/common/mapping-sidebar.phtml:4
 msgid "Add mapping: "
-msgstr ""
-
-#: view/common/media-source-sidebar.phtml:3
-#: view/common/media-source-sidebar.phtml:6
-msgid "Media source"
-msgstr ""
-
-#: view/common/media-source-sidebar.phtml:7
-#: view/common/resource-sidebar.phtml:20 view/common/resource-sidebar.phtml:40
-#: view/common/resource-sidebar.phtml:65 view/common/resource-sidebar.phtml:92
-#: view/common/user-sidebar.phtml:7 view/csv-import/index/map.phtml:48
-msgid "Select below"
 msgstr ""
 
 #: view/common/options-sidebar.phtml:4
@@ -55,66 +43,8 @@ msgstr ""
 msgid "This will override language settings in basic import settings."
 msgstr ""
 
-#: view/common/options-sidebar.phtml:32
-msgid "Import as text (default)"
-msgstr ""
-
-#: view/common/options-sidebar.phtml:33
-msgid "Import as URL reference"
-msgstr ""
-
-#: view/common/options-sidebar.phtml:34
-msgid "Import as Omeka S resource ID"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:3
-msgid "Resource data"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:18
-msgid "Associated resource type"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:36
-msgid "Item set (by selected property)"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:43 view/common/resource-sidebar.phtml:67
-msgid "Internal ID"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:60
-msgid "Item (by selected property)"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:61
-msgid ""
-"There must be an item identifier to create a media. This is generally "
-"\"dcterms:identifier\", but it may be an internal id."
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:87 view/common/resource-sidebar.phtml:91
-msgid "Generic data"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:93
-msgid "Resource template (by label)"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:94
-msgid "Resource class (by term)"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:96
-msgid "Owner (by email address)"
-msgstr ""
-
-#: view/common/resource-sidebar.phtml:98
-msgid "Visibility public/private"
-msgstr ""
-
-#: view/common/user-sidebar.phtml:3
-msgid "Users info"
+#: view/common/options-sidebar.phtml:40
+msgid "Import values as private"
 msgstr ""
 
 #: view/csv-import/index/index.phtml:8
@@ -159,6 +89,15 @@ msgstr ""
 msgid "Resource type column"
 msgstr ""
 
+#: view/csv-import/index/map.phtml:48
+#: view/csv-import/mapping-sidebar/item.phtml:11
+#: view/csv-import/mapping-sidebar/media-source.phtml:7
+#: view/csv-import/mapping-sidebar/media.phtml:12
+#: view/csv-import/mapping-sidebar/resource.phtml:8
+#: view/csv-import/mapping-sidebar/user.phtml:7
+msgid "Select below"
+msgstr ""
+
 #: view/csv-import/index/map.phtml:57
 msgid "Batch edit options"
 msgstr ""
@@ -183,12 +122,16 @@ msgstr ""
 msgid "Remove mapping"
 msgstr ""
 
-#: view/csv-import/index/map.phtml:98
+#: view/csv-import/index/map.phtml:97
 msgid "Multivalue"
 msgstr ""
 
-#: view/csv-import/index/map.phtml:102
+#: view/csv-import/index/map.phtml:101
 msgid "Language:"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:105
+msgid "Private values"
 msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
@@ -224,6 +167,67 @@ msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:82
 msgid "Undo in progress"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item-set.phtml:3
+msgid "Item set-specific data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item.phtml:3
+msgid "Item-specific data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item.phtml:7
+msgid "Item set (by selected property)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item.phtml:14
+#: view/csv-import/mapping-sidebar/media.phtml:14
+msgid "Internal ID"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media-source.phtml:3
+#: view/csv-import/mapping-sidebar/media-source.phtml:6
+msgid "Media source"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media.phtml:3
+msgid "Media-specific data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media.phtml:7
+msgid "Item (by selected property)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media.phtml:8
+msgid ""
+"There must be an item identifier to create a media. This is generally "
+"\"dcterms:identifier\", but it may be an internal id."
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/resource.phtml:3
+#: view/csv-import/mapping-sidebar/resource.phtml:7
+msgid "Generic data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/resource.phtml:9
+msgid "Resource template (by label)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/resource.phtml:10
+msgid "Resource class (by term)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/resource.phtml:12
+msgid "Owner (by email address)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/resource.phtml:14
+msgid "Visibility public/private"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/user.phtml:3
+msgid "Users info"
 msgstr ""
 
 #: src/Form/ImportForm.php:15
@@ -584,16 +588,16 @@ msgstr ""
 msgid "The file has no headers."
 msgstr ""
 
-#: src/Controller/IndexController.php:155
+#: src/Controller/IndexController.php:156
 #, php-format
 msgid "Importing in background (%sjob #%d%s)"
 msgstr ""
 
-#: src/Controller/IndexController.php:168
+#: src/Controller/IndexController.php:169
 msgid "Invalid settings."
 msgstr ""
 
-#: src/Controller/IndexController.php:186
+#: src/Controller/IndexController.php:187
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr ""
@@ -625,7 +629,11 @@ msgid ""
 "required."
 msgstr ""
 
-#: src/Mapping/ResourceMapping.php:55
+#: src/Mapping/ResourceMapping.php:9
+msgid "Resource data"
+msgstr ""
+
+#: src/Mapping/ResourceMapping.php:64
 #, php-format
 msgid "\"%s\" is not a valid resource type."
 msgstr ""
@@ -634,11 +642,11 @@ msgstr ""
 msgid "User info"
 msgstr ""
 
-#: src/Mapping/MediaMapping.php:6
+#: src/Mapping/MediaMapping.php:8
 msgid "Media data"
 msgstr ""
 
-#: src/Mapping/ItemSetMapping.php:6
+#: src/Mapping/ItemSetMapping.php:8
 msgid "Item set data"
 msgstr ""
 
@@ -682,6 +690,10 @@ msgstr ""
 msgid "\"%s\" is not a valid user email address."
 msgstr ""
 
-#: src/Mapping/ItemMapping.php:6
+#: src/Mapping/ItemMapping.php:8
 msgid "Item data"
+msgstr ""
+
+#: config/module.config.php:178
+msgid "Omeka resource (by ID)"
 msgstr ""
