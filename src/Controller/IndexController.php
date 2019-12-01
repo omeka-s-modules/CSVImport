@@ -353,7 +353,6 @@ class IndexController extends AbstractActionController
                 break;
         }
 
-
         // Set a default owner for a creation.
         if (empty($args['o:owner']['o:id']) && (empty($args['action']) || $args['action'] === Import::ACTION_CREATE)) {
             $args['o:owner'] = ['o:id' => $this->identity()->getId()];
