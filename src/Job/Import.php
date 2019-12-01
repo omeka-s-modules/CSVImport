@@ -983,7 +983,7 @@ SQL;
         $base = [];
         $base['literal'] = ['property_id' => 0, 'type' => 'literal', '@language' => '', '@value' => ''];
         $base['resource'] = ['property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
-        $base['url'] = ['property_id' => 0, 'type' => 'url', '@id' => 0, 'o:label' => ''];
+        $base['uri'] = ['property_id' => 0, 'type' => 'uri', '@id' => 0, 'o:label' => ''];
         foreach ($values as $key => $value) {
             $values[$key] = array_values(
                 // Deduplicate values.
