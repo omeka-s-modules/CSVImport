@@ -94,53 +94,86 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             return $isSingle ? null : [];
         }
 
+        $args = $this->normalizeArgs($identifierName, $resourceType);
+        if (empty($args)) {
+            return $isSingle ? null : [];
+        }
+        list($identifierType, $identifierName, $resourceType, $itemId) = $args;
+
+        $result = $this->findResources($identifierType, $identifiers, $identifierName, $resourceType, $itemId);
+        return $isSingle ? ($result ? reset($result) : null) : $result;
+    }
+
+    protected function findResources($identifierType, array $identifiers, $identifierName, $resourceType, $itemId)
+    {
+        switch ($identifierType) {
+            case 'o:id':
+                return $this->findResourcesFromInternalIds($identifiers, $resourceType);
+            case 'property':
+                return $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
+            case 'media_source':
+                return $this->findResourcesFromMediaSource($identifiers, $identifierName, $itemId);
+        }
+    }
+
+    protected function normalizeArgs($identifierName, $resourceType)
+    {
         $identifierType = null;
-        // Process identifierName as an array.
+        $identifierTypeName = null;
+        $itemId = null;
+
+        // Process identifier metadata names as an array.
         if (is_array($identifierName)) {
             if (isset($identifierName['o:ingester'])) {
                 // TODO Currently, the media source cannot be html.
                 if ($identifierName['o:ingester'] === 'html') {
-                    return $isSingle ? null : [];
+                    return null;
                 }
                 $identifierType = 'media_source';
+                $identifierTypeName = $identifierName['o:ingester'];
                 $resourceType = 'media';
                 $itemId = empty($identifierName['o:item']['o:id']) ? null : $identifierName['o:item']['o:id'];
-                $identifierName = $identifierName['o:ingester'];
             }
         }
-        // Here, identifierName is a string or an integer.
-        elseif (in_array($identifierName, ['internal_id'])) {
-            $identifierType = 'internal_id';
+        // Next, identifierName is a string or an integer.
+        elseif (in_array($identifierName, ['internal_id', 'o:id'])) {
+            $identifierType = 'o:id';
+            $identifierTypeName = 'o:id';
         } elseif (is_numeric($identifierName)) {
             $identifierType = 'property';
-            $identifierName = (int) $identifierName;
+            // No check of the property id for quicker process.
+            $identifierTypeName = (int) $identifierName;
+        } elseif (in_array($identifierName, ['url', 'file'])) {
+            $identifierType = 'media_source';
+            $identifierTypeName = $identifierName;
+            $resourceType = 'media';
+            $itemId = null;
         } else {
-            $result = $this->api
+            $properties = $this->api
                 ->search('properties', ['term' => $identifierName])->getContent();
-            $identifierType = 'property';
-            $identifierName = $result ? $result[0]->id() : null;
+            if ($properties) {
+                $identifierType = 'property';
+                $identifierTypeName = $properties[0]->id();
+            }
+        }
+
+        if (empty($identifierTypeName)) {
+            return null;
         }
 
         if ($resourceType) {
             $resourceType = $this->normalizeResourceType($resourceType);
             if (is_null($resourceType)) {
-                return $isSingle ? null : [];
+                return null;
             }
         }
 
-        switch ($identifierType) {
-            case 'internal_id':
-                $result = $this->findResourcesFromInternalIds($identifiers, $resourceType);
-                break;
-            case 'property':
-                $result = $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
-                break;
-            case 'media_source':
-                $result = $this->findResourcesFromMediaSource($identifiers, $identifierName, $itemId);
-                break;
-        }
-
-        return $isSingle ? ($result ? reset($result) : null) : $result;
+        return [
+            $identifierType,
+            $identifierTypeName,
+            $resourceType,
+            $itemId,
+        ];
     }
 
     protected function normalizeResourceType($resourceType)
