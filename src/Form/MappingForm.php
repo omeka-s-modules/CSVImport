@@ -326,7 +326,6 @@ class MappingForm extends Form
                     'label' => 'Resource identifier property', // @translate
                     'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them. One column of the file must map the selected property. In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
                     'empty_option' => 'Select below', // @translate
-                    'term_as_value' => false,
                     'prepend_value_options' => [
                         'internal_id' => 'Internal ID', // @translate
                     ],

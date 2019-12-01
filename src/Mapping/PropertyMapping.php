@@ -24,7 +24,7 @@ class PropertyMapping extends AbstractMapping
         // Set columns.
         if (isset($this->args['column-property'])) {
             $propertyMap = $this->args['column-property'];
-            foreach ($propertyMap as $column => $property) {
+            foreach ($propertyMap as $property) {
                 $data[key($property)] = [];
             }
         }

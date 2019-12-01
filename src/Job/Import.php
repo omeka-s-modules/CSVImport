@@ -6,7 +6,6 @@ use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use CSVImport\Source\SourceInterface;
 use finfo;
 use Omeka\Api\Manager;
-use Omeka\Api\Response;
 use Omeka\Job\AbstractJob;
 use Omeka\Stdlib\Message;
 use Zend\Log\Logger;
@@ -163,7 +162,7 @@ class Import extends AbstractJob
             $this->identifierPropertyId = (int) $args['identifier_property'];
         } else {
             $result = $this->api
-            ->search('properties', ['term' => $args['identifier_property']])->getContent();
+                ->search('properties', ['term' => $args['identifier_property']])->getContent();
             $this->identifierPropertyId = $result ? $result[0]->id() : null;
         }
 
@@ -741,7 +740,7 @@ SQL;
      * @param string $resourceType
      * @param int $id
      * @param array $data
-     * @return Response
+     * @return \Omeka\Api\Response
      */
     protected function append($resourceType, $id, $data)
     {
@@ -771,7 +770,7 @@ SQL;
      * @param int $id
      * @param array $data
      * @param string $action
-     * @return Response
+     * @return \Omeka\Api\Response
      */
     protected function updateRevise($resourceType, $id, $data, $action)
     {
@@ -959,18 +958,16 @@ SQL;
     protected function deduplicateIds($data)
     {
         $dataBase = $data;
-        // Base to normalize data in order to deduplicate them in one pass.
-        $base = [];
-        $base['id'] = ['o:id' => 0];
         // Deduplicate data.
-        $data = array_map('unserialize', array_unique(array_map('serialize',
+        $data = array_map('unserialize', array_unique(array_map(
+            'serialize',
             // Normalize data.
-            array_map(function ($v) use ($base) {
+            array_map(function ($v) {
                 return isset($v['o:id']) ? ['o:id' => $v['o:id']] : $v;
-        }, $data))));
-        // Keep first original data.
-        $data = array_intersect_key($dataBase, $data);
-        return $data;
+            }, $data)
+        )));
+        // Keep original data first.
+        return array_intersect_key($dataBase, $data);
     }
 
     /**
