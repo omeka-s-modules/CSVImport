@@ -175,11 +175,7 @@ return [
                 'adapter' => 'uri',
             ],
             'resource' => [
-                'label' => 'Omeka resource (by ID)', // @translate
-                'adapter' => 'resource',
-            ],
-            'resource_by_property' => [
-                'label' => 'Omeka resource (by property)', // @translate
+                'label' => 'Omeka resource', // @translate
                 'adapter' => 'resource',
             ],
         ],

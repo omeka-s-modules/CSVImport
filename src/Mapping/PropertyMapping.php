@@ -2,6 +2,7 @@
 namespace CSVImport\Mapping;
 
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
+use Omeka\Stdlib\Message;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
@@ -16,7 +17,7 @@ class PropertyMapping extends AbstractMapping
     protected $findResourceFromIdentifier;
 
     /**
-     * @var int
+     * @var int|string
      */
     protected $propertyIdentifier;
 
@@ -33,14 +34,14 @@ class PropertyMapping extends AbstractMapping
 
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
-        $propertyIdentifier = $this->args['property_identifier'];
-        if (is_numeric($propertyIdentifier)) {
-            $this->propertyIdentifier = (int) $propertyIdentifier;
+        if (empty($args['property_identifier']) || $args['property_identifier'] === 'o:id') {
+            $this->propertyIdentifier = 'o:id';
+        } elseif (is_numeric($args['property_identifier'])) {
+            $this->propertyIdentifier = (int) $args['property_identifier'];
         } else {
-            $property = $this->api->searchOne('properties', ['term' => $propertyIdentifier])->getContent();
-            $this->propertyIdentifier = $property
-                ? $property->id()
-                : null;
+            $result = $this->api
+                ->searchOne('properties', ['term' => $args['property_identifier']])->getContent();
+            $this->propertyIdentifier = $result ? $result->id() : 'o:id';
         }
     }
 
@@ -130,17 +131,11 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'resource':
-                                if ($type === 'resource_by_property' && $this->propertyIdentifier) {
-                                    $linkedResource = $findResourceFromIdentifier($value, $this->propertyIdentifier);
-                                    if (!$linkedResource) {
-                                        break;
-                                    }
-                                    $value = $linkedResource;
-                                }
+                                $identifier = $this->findResource($value, $this->propertyIdentifier);
                                 $valueData = [
-                                    'value_resource_id' => $value,
+                                    'value_resource_id' => $identifier,
                                     'property_id' => $propertyId,
-                                    'type' => $typeAdapter,
+                                    'type' => $type,
                                 ];
                                 break;
 
@@ -186,5 +181,17 @@ class PropertyMapping extends AbstractMapping
             $dataTypeAdapters[$id] = $configEntry['adapter'];
         }
         return $dataTypeAdapters;
+    }
+
+    protected function findResource($identifier, $propertyIdentifier = 'o:id')
+    {
+        $resourceType = $this->args['resource_type'];
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
+        $resourceId = $findResourceFromIdentifier($identifier, $propertyIdentifier, $resourceType);
+        if (empty($resourceId)) {
+            $this->setHasErr(true);
+            return false;
+        }
+        return $resourceId;
     }
 }
