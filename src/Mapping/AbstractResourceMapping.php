@@ -239,7 +239,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
             // Check params to avoid useless search and improve speed.
             $action = $this->args['action'];
             $identifier = reset($values);
-            $identifierProperty = $this->map['item'][$index] ?: 'internal_id';
+            $identifierProperty = $this->map['item'][$index] ?: 'o:id';
             $resourceType = 'items';
 
             if (empty($identifier)) {
@@ -266,7 +266,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
         }
     }
 
-    protected function findResource($identifier, $identifierProperty = 'internal_id')
+    protected function findResource($identifier, $identifierProperty = 'o:id')
     {
         $resourceType = $this->args['resource_type'];
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
