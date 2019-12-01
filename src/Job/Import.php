@@ -170,12 +170,8 @@ class Import extends AbstractJob
             $this->rowsByBatch = (int) $args['rows_by_batch'];
         }
 
-        // The core allows batch processes only for creation and deletion.
-        if (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_DELETE, self::ACTION_SKIP])
-            // It allows to identify resources too, so to use a new resource
-            // from a previous row.
-            || ($args['action'] === self::ACTION_CREATE && $this->resourceType === 'resources')
-        ) {
+        // The core allows batch processes only for deletion.
+        if (!in_array($args['action'], [self::ACTION_DELETE, self::ACTION_SKIP])) {
             $this->rowsByBatch = 1;
         }
 

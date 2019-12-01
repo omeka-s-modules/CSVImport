@@ -57,7 +57,7 @@ abstract class AbstractMapping implements MappingInterface
         $this->args = $args;
         $this->serviceLocator = $serviceLocator;
         $this->logger = $serviceLocator->get('Omeka\Logger');
-        $this->api = $serviceLocator->get('Omeka\ApiManager');
+        $this->api = $serviceLocator->get('ControllerPluginManager')->get('api');
     }
 
     public function getServiceLocator()

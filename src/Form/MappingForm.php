@@ -265,6 +265,24 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $basicSettingsFieldset->add([
+                'name' => 'property_identifier',
+                'type' => PropertySelect::class,
+                'options' => [
+                    'label' => 'Property used as identifier of linked resources', // @translate
+                    'info' => 'Allows to create a link to the resources identified by the values in a cell.', // @translate
+                    'empty_option' => 'Select below', // @translate
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'value' => $userSettings->get(
+                        'csv_import_property_identifier',
+                        $default['csv_import_property_identifier']),
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property', // @translate
+                ],
+            ]);
+
             $this->add([
                 'type' => 'fieldset',
                 'name' => 'advanced-settings',

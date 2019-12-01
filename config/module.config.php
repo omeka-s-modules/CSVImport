@@ -178,6 +178,10 @@ return [
                 'label' => 'Omeka resource (by ID)', // @translate
                 'adapter' => 'resource',
             ],
+            'resource_by_property' => [
+                'label' => 'Omeka resource (by property)', // @translate
+                'adapter' => 'resource',
+            ],
         ],
         'media_ingester_adapter' => [
             'url' => MediaIngesterAdapter\UrlMediaIngesterAdapter::class,
@@ -192,6 +196,7 @@ return [
             'csv_import_multivalue_separator' => ',',
             'csv_import_rows_by_batch' => 20,
             'csv_import_global_language' => '',
+            'csv_import_property_identifier' => 'dcterms:identifier',
             'csv_import_identifier_property' => '',
             'csv_import_automap_check_names_alone' => false,
         ],

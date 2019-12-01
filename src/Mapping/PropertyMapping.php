@@ -1,6 +1,8 @@
 <?php
 namespace CSVImport\Mapping;
 
+use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
 class PropertyMapping extends AbstractMapping
@@ -8,9 +10,38 @@ class PropertyMapping extends AbstractMapping
     protected $label = 'Properties'; // @translate
     protected $name = 'property-selector';
 
+    /**
+     * @var FindResourcesFromIdentifiers
+     */
+    protected $findResourceFromIdentifier;
+
+    /**
+     * @var int
+     */
+    protected $propertyIdentifier;
+
     public function getSidebar(PhpRenderer $view)
     {
         return $view->csvPropertySelector($view->translate('Properties'), false);
+    }
+
+    public function init(array $args, ServiceLocatorInterface $serviceLocator)
+    {
+        parent::init($args, $serviceLocator);
+        $this->findResourceFromIdentifier = $serviceLocator->get('ControllerPluginManager')
+            ->get('findResourceFromIdentifier');
+
+        // The main identifier property may be used as term or as id in some
+        // places, so prepare it one time only.
+        $propertyIdentifier = $this->args['property_identifier'];
+        if (is_numeric($propertyIdentifier)) {
+            $this->propertyIdentifier = (int) $propertyIdentifier;
+        } else {
+            $property = $this->api->searchOne('properties', ['term' => $propertyIdentifier])->getContent();
+            $this->propertyIdentifier = $property
+                ? $property->id()
+                : null;
+        }
     }
 
     public function processRow(array $row)
@@ -46,6 +77,7 @@ class PropertyMapping extends AbstractMapping
         }
 
         $dataTypeAdapters = $this->getDataTypeAdapters();
+        $findResourceFromIdentifier = $this->findResourceFromIdentifier;
 
         // Get default option values.
         $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
@@ -98,10 +130,17 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'resource':
+                                if ($type === 'resource_by_property' && $this->propertyIdentifier) {
+                                    $linkedResource = $findResourceFromIdentifier($value, $this->propertyIdentifier);
+                                    if (!$linkedResource) {
+                                        break;
+                                    }
+                                    $value = $linkedResource;
+                                }
                                 $valueData = [
                                     'value_resource_id' => $value,
                                     'property_id' => $propertyId,
-                                    'type' => $type,
+                                    'type' => $typeAdapter,
                                 ];
                                 break;
 
