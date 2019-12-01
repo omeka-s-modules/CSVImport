@@ -121,22 +121,11 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             $identifierName = $result ? $result[0]->id() : null;
         }
 
-        if (!empty($resourceType)) {
-            $resourceTypes = [
-                'item_sets' => \Omeka\Entity\ItemSet::class,
-                'items' => \Omeka\Entity\Item::class,
-                'media' => \Omeka\Entity\Media::class,
-                'resources' => '',
-                // Avoid a check and make the plugin more flexible.
-                'Omeka\Entity\ItemSet' => \Omeka\Entity\ItemSet::class,
-                'Omeka\Entity\Item' => \Omeka\Entity\Item::class,
-                'Omeka\Entity\Media' => \Omeka\Entity\Media::class,
-                'Omeka\Entity\Resource' => '',
-            ];
-            if (!isset($resourceTypes[$resourceType])) {
+        if ($resourceType) {
+            $resourceType = $this->normalizeResourceType($resourceType);
+            if (is_null($resourceType)) {
                 return $isSingle ? null : [];
             }
-            $resourceType = $resourceTypes[$resourceType];
         }
 
         switch ($identifierType) {
@@ -152,6 +141,38 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         }
 
         return $isSingle ? ($result ? reset($result) : null) : $result;
+    }
+
+    protected function normalizeResourceType($resourceType)
+    {
+        $resourceTypes = [
+            'items' => \Omeka\Entity\Item::class,
+            'item_sets' => \Omeka\Entity\ItemSet::class,
+            'media' => \Omeka\Entity\Media::class,
+            'resources' => '',
+            'resource' => '',
+            'resource:item' => \Omeka\Entity\Item::class,
+            'resource:itemset' => \Omeka\Entity\ItemSet::class,
+            'resource:media' => \Omeka\Entity\Media::class,
+            // Avoid a check and make the plugin more flexible.
+            \Omeka\Entity\Item::class => \Omeka\Entity\Item::class,
+            \Omeka\Entity\ItemSet::class => \Omeka\Entity\ItemSet::class,
+            \Omeka\Entity\Media::class => \Omeka\Entity\Media::class,
+            \Omeka\Entity\Resource::class => '',
+            'o:item' => \Omeka\Entity\Item::class,
+            'o:item_set' => \Omeka\Entity\ItemSet::class,
+            'o:media' => \Omeka\Entity\Media::class,
+            // Other resource types.
+            'item' => \Omeka\Entity\Item::class,
+            'item_set' => \Omeka\Entity\ItemSet::class,
+            'item-set' => \Omeka\Entity\ItemSet::class,
+            'itemset' => \Omeka\Entity\ItemSet::class,
+            'resource:item_set' => \Omeka\Entity\ItemSet::class,
+            'resource:item-set' => \Omeka\Entity\ItemSet::class,
+        ];
+        return isset($resourceTypes[$resourceType])
+            ? $resourceTypes[$resourceType]
+            : null;
     }
 
     protected function findResourcesFromInternalIds($identifiers, $resourceType)
@@ -180,7 +201,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         return array_replace(array_fill_keys($identifiers, null), array_combine($result, $result));
     }
 
-    protected function findResourcesFromPropertyIds($identifiers, $identifierPropertyId, $resourceType)
+    protected function findResourcesFromPropertyIds(array $identifiers, $identifierPropertyId, $resourceType)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
