@@ -189,6 +189,8 @@ class PropertyMapping extends AbstractMapping
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
         $resourceId = $findResourceFromIdentifier($identifier, $propertyIdentifier, $resourceType);
         if (empty($resourceId)) {
+            $this->logger->err(new Message('"%s" (%s) is not a valid resource identifier.', // @translate
+                $identifier, $propertyIdentifier));
             $this->setHasErr(true);
             return false;
         }
