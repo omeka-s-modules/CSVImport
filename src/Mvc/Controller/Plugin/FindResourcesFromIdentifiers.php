@@ -56,25 +56,34 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     }
 
     /**
-     * Find a list of resource ids from a list of identifiers.
+     * Find a list of resource ids from a list of identifiers (or one id).
      *
      * When there are true duplicates and case insensitive duplicates, the first
      * case sensitive is returned, else the first case insensitive resource.
+     *
+     * All identifiers are returned, even without id.
      *
      * @todo Manage Media source html.
      *
      * @param array|string $identifiers Identifiers should be unique. If a
      * string is sent, the result will be the resource.
      * @param string|int|array $identifierName Property as integer or term,
-     * media ingester or "internal_id", or an array with multiple conditions.
+     * "internal_id", a media ingester (url or file), or an associative array with
+     * multiple conditions (for media source).
      * @param string $resourceType The resource type if any.
-     * @return array|int|null Associative array with the identifiers as key and the ids
-     * or null as value. Order is kept, but duplicate identifiers are removed.
-     * If $identifiers is a string, return directly the resource id, or null.
+     * @return array|int|null|Object Associative array with the identifiers as key
+     * and the ids or null as value. Order is kept, but duplicate identifiers
+     * are removed. If $identifiers is a string, return directly the resource
+     * id, or null.
      */
     public function __invoke($identifiers, $identifierName, $resourceType = null)
     {
-        $isSingle = is_string($identifiers);
+        $isSingle = !is_array($identifiers);
+
+        if (empty($identifierName)) {
+            return $isSingle ? null : [];
+        }
+
         if ($isSingle) {
             $identifiers = [$identifiers];
         }
@@ -110,9 +119,6 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 ->search('properties', ['term' => $identifierName])->getContent();
             $identifierType = 'property';
             $identifierName = $result ? $result[0]->id() : null;
-        }
-        if (empty($identifierName)) {
-            return $isSingle ? null : [];
         }
 
         if (!empty($resourceType)) {
@@ -238,9 +244,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
 
     /**
      * Reorder the result according to the input (simpler in php and there is no
-     * duplicated identifiers). When there are true duplicates, it returns the
-     * first. When there are case insensitive duplicates, it returns the first
-     * too.
+     * duplicated identifiers).
      *
      * @param array $identifiers
      * @param array $result
