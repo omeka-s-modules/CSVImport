@@ -208,30 +208,57 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             : null;
     }
 
-    protected function findResourcesFromInternalIds($identifiers, $resourceType)
+    protected function findResourcesFromInternalIds(array $ids, $resourceType)
     {
+        $ids = array_filter(array_map('intval', $ids));
+        if (empty($ids)) {
+            return [];
+        }
+
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
-        $identifiers = array_map('intval', $identifiers);
-        $quotedIdentifiers = implode(',', $identifiers);
-        $qb = $conn->createQueryBuilder()
+
+        $qb = $conn->createQueryBuilder();
+        $expr = $qb->expr();
+        $qb
             ->select('resource.id')
             ->from('resource', 'resource')
-            // ->andWhere('resource.id in (:ids)')
-            // ->setParameter(':ids', $identifiers)
-            ->andWhere("resource.id in ($quotedIdentifiers)")
             ->addOrderBy('resource.id', 'ASC');
+
+        $parameters = [];
+        if (count($ids) === 1) {
+            $qb
+                ->andWhere($expr->eq('resource.id', ':id'));
+            $parameters['id'] = reset($ids);
+        } else {
+            // Warning: there is a difference between qb / dbal and qb / orm for
+            // "in" in qb, when a placeholder is used, there should be one
+            // placeholder for each value for expr->in().
+            $placeholders = [];
+            foreach (array_values($ids) as $key => $value) {
+                $placeholder = 'id_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('resource.id', $placeholders));
+        }
+
         if ($resourceType) {
             $qb
-                ->andWhere('resource.resource_type = :resource_type')
-                ->setParameter(':resource_type', $resourceType);
+                ->andWhere($expr->eq('resource.resource_type', ':resource_type'));
+            $parameters['resource_type'] = $resourceType;
         }
+
+        $qb
+            ->setParameters($parameters);
+
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
         $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
 
         // Reorder the result according to the input (simpler in php and there
         // is no duplicated identifiers).
-        return array_replace(array_fill_keys($identifiers, null), array_combine($result, $result));
+        return array_replace(array_fill_keys($ids, null), array_combine($result, $result));
     }
 
     protected function findResourcesFromPropertyIds(array $identifiers, $identifierPropertyId, $resourceType)
