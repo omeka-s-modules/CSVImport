@@ -401,7 +401,7 @@ class MappingForm extends Form
                 'name' => 'o:item_set',
                 'required' => false,
             ]);
-            
+
             $advancedSettingsInputFilter = $inputFilter->get('advanced-settings');
             $advancedSettingsInputFilter->add([
                 'name' => 'action',

@@ -28,7 +28,7 @@
               // Remove old chosen html and rebind event.
               sidebar.find('.chosen-container').remove();
               sidebar.find('.chosen-select').chosen(chosenOptions);
-              
+
               // Rebind property selector.
               $('.selector li.selector-parent').on('click', function(e) {
                   e.stopPropagation();
@@ -36,14 +36,14 @@
                       $(this).toggleClass('show');
                   }
               });
-      
+
               $('.selector-filter').on('keydown', function(e) {
                   if (e.keyCode == 13) {
                       e.stopPropagation();
                       e.preventDefault();
                   }
               });
-      
+
               // Property selector, filter properties.
               $('.selector-filter').on('keyup', (function() {
                   var timer = 0;
@@ -98,7 +98,7 @@
                 sidebar.html(defaultSidebarHtml);
                 rebindInputs(sidebar);
             }
-            
+
             Omeka.openSidebar(sidebar);
             populateSidebar();
         });
@@ -244,7 +244,7 @@
                 // Looks like a stopPropagation on the selector-parent forces me to
                 // bind the event lower down the DOM, then work back up to the li.
                 var targetLi = $(this);
-    
+
                 // First, check if the property is already added.
                 var hasMapping = activeElement.find('ul.mappings li[data-property-id="' + targetLi.data('property-id') + '"]');
                 if (hasMapping.length === 0) {
@@ -275,7 +275,7 @@
                 sidebarInput.parents('.option').addClass('batch-edit-touched');
             }
         });
-        
+
         $(document).on('click', '.reset-link', function(e) {
             e.preventDefault();
             var reset = $(this);
@@ -304,7 +304,7 @@
                         languageHiddenInput.prop('disabled', true);
                     }
                 }
-    
+
                 sidebar.find('input[type="checkbox"]').each(function() {
                     var checkboxInput = $(this);
                     if (checkboxInput.hasClass('touched')) {
@@ -319,7 +319,7 @@
                         }
                     }
                 });
-    
+
                 sidebar.find('select').each(function() {
                     var selectInput = $(this);
                     if (selectInput.hasClass('touched')) {
@@ -391,7 +391,7 @@
                     hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);
                 }
             }
-  
+
             if (hasFlag.length === 0) {
                 var index = activeElement.data('element-id');
                 flagName = flagName + "[" + index + "]";
@@ -431,7 +431,6 @@
             }
         }
 
-
         function toggleActionOptions() {
             var action = $('#action').val();
             if (action === 'create') {
@@ -445,4 +444,5 @@
         toggleActionOptions();
         $('#action').change(toggleActionOptions);
     });
+
 })(jQuery);
