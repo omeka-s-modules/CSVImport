@@ -317,28 +317,50 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         return $this->cleanResult($identifiers, $result);
     }
 
-    protected function findResourcesFromMediaSource($identifiers, $ingesterName, $itemId = null)
+    protected function findResourcesFromMediaSource(array $identifiers, $ingesterName, $itemId = null)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
 
-        // Search in multiple resource types in one time.
-        $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
-        $quotedIdentifiers = implode(',', $quotedIdentifiers);
-        $qb = $conn->createQueryBuilder()
-            ->select('media.source as identifier', 'media.id as id')
+        $qb = $conn->createQueryBuilder();
+        $expr = $qb->expr();
+        $qb
+            ->select('media.source AS identifier', 'media.id AS id')
             ->from('media', 'media')
-            ->andwhere('media.ingester = :ingester')
-            ->setParameter(':ingester', $ingesterName)
-            // ->andWhere('media.source in (:sources)')
-            // ->setParameter(':sources', $identifiers)
-            ->andwhere("media.source in ($quotedIdentifiers)")
+            ->andWhere('media.ingester = :ingester')
+            // ->andWhere('media.source IN (' . implode(',', array_map([$conn, 'quote'], $identifiers)) . ')')
             ->addOrderBy('media.id', 'ASC');
+
+        $parameters = [];
+        $parameters['ingester'] = $ingesterName;
+
+        if (count($identifiers) === 1) {
+            $qb
+                ->andWhere($expr->eq('media.source', ':identifier'));
+            $parameters['identifier'] = reset($identifiers);
+        } else {
+            // Warning: there is a difference between qb / dbal and qb / orm for
+            // "in" in qb, when a placeholder is used, there should be one
+            // placeholder for each value for expr->in().
+            $placeholders = [];
+            foreach (array_values($identifiers) as $key => $value) {
+                $placeholder = 'value_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('media.source', $placeholders));
+        }
+
         if ($itemId) {
             $qb
-                ->andWhere('media.item_id = :item_id')
-                ->setParameter(':item_id', $itemId);
+                ->andWhere($expr->eq('media.item_id', ':item_id'));
+            $parameters['item_id'] = $itemId;
         }
+
+        $qb
+            ->setParameters($parameters);
+
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
         // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
         // replaces the first id by later ids in case of true duplicates.
