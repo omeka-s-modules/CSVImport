@@ -30,7 +30,7 @@
 namespace CSVImport\Mvc\Controller\Plugin;
 
 use Doctrine\DBAL\Connection;
-use Omeka\Api\Manager as ApiManager;
+use Omeka\Mvc\Controller\Plugin\Api;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class FindResourcesFromIdentifiers extends AbstractPlugin
@@ -41,18 +41,18 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     protected $connection;
 
     /**
-     * @var ApiManager
+     * @var Api
      */
     protected $api;
 
     /**
      * @param Connection $connection
-     * @param ApiManager $apiManager
+     * @param Api $api
      */
-    public function __construct(Connection $connection, ApiManager $apiManager)
+    public function __construct(Connection $connection, Api $api)
     {
         $this->connection = $connection;
-        $this->api = $apiManager;
+        $this->api = $api;
     }
 
     /**
