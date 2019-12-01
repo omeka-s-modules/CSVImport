@@ -157,7 +157,7 @@ class Import extends AbstractJob
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
         if (empty($args['identifier_property']) || $args['identifier_property'] === 'internal_id') {
-            $this->identifierPropertyId = $args['identifier_property'];
+            $this->identifierPropertyId = 'internal_id';
         } elseif (is_numeric($args['identifier_property'])) {
             $this->identifierPropertyId = (int) $args['identifier_property'];
         } else {

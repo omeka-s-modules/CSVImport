@@ -34,14 +34,14 @@ class PropertyMapping extends AbstractMapping
 
         // The main identifier property may be used as term or as id in some
         // places, so prepare it one time only.
-        if (empty($args['property_identifier']) || $args['property_identifier'] === 'o:id') {
-            $this->propertyIdentifier = 'o:id';
-        } elseif (is_numeric($args['property_identifier'])) {
-            $this->propertyIdentifier = (int) $args['property_identifier'];
+        if (empty($args['identifier_property']) || $args['identifier_property'] === 'internal_id') {
+            $this->propertyIdentifier = 'internal_id';
+        } elseif (is_numeric($args['identifier_property'])) {
+            $this->propertyIdentifier = (int) $args['identifier_property'];
         } else {
             $result = $this->api
-                ->searchOne('properties', ['term' => $args['property_identifier']])->getContent();
-            $this->propertyIdentifier = $result ? $result->id() : 'o:id';
+                ->searchOne('properties', ['term' => $args['identifier_property']])->getContent();
+            $this->propertyIdentifier = $result ? $result->id() : 'internal_id';
         }
     }
 

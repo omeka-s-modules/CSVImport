@@ -266,18 +266,21 @@ class MappingForm extends Form
             ]);
 
             $basicSettingsFieldset->add([
-                'name' => 'property_identifier',
+                'name' => 'identifier_property',
                 'type' => PropertySelect::class,
                 'options' => [
-                    'label' => 'Property used as identifier of linked resources', // @translate
-                    'info' => 'Allows to create a link to the resources identified by the values in a cell.', // @translate
+                    'label' => 'Resource identifier property', // @translate
+                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources to link or to get. In all cases, it is strongly recommended to add one or more unique identifiers to all your resources.', // @translate
                     'empty_option' => 'Select below', // @translate
+                    'prepend_value_options' => [
+                        'internal_id' => 'Internal ID', // @translate
+                    ],
                     'term_as_value' => true,
                 ],
                 'attributes' => [
                     'value' => $userSettings->get(
-                        'csv_import_property_identifier',
-                        $default['csv_import_property_identifier']),
+                        'csv_import_identifier_property',
+                        $default['csv_import_identifier_property']),
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],
@@ -336,27 +339,6 @@ class MappingForm extends Form
                     'type' => 'Number',
                 ]);
             }
-
-            $advancedSettingsFieldset->add([
-                'name' => 'identifier_property',
-                'type' => PropertySelect::class,
-                'options' => [
-                    'label' => 'Resource identifier property', // @translate
-                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them. One column of the file must map the selected property. In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
-                    'empty_option' => 'Select below', // @translate
-                    'prepend_value_options' => [
-                        'internal_id' => 'Internal ID', // @translate
-                    ],
-                    'term_as_value' => true,
-                ],
-                'attributes' => [
-                    'value' => $userSettings->get(
-                        'csv_import_identifier_property',
-                        $default['csv_import_identifier_property']),
-                    'class' => 'action-option chosen-select',
-                    'data-placeholder' => 'Select a property', // @translate
-                ],
-            ]);
 
             $advancedSettingsFieldset->add([
                 'name' => 'action_unidentified',
