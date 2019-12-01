@@ -69,7 +69,9 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
      * string is sent, the result will be the resource.
      * @param string|int|array $identifierName Property as integer or term,
      * "o:id", a media ingester (url or file), or an associative array with
-     * multiple conditions (for media source).
+     * multiple conditions (for media source). May be a list of identifier
+     * metadata names, in which case the identifiers are searched in a list of
+     * properties and/or in internal ids.
      * @param string $resourceType The resource type if any.
      * @return array|int|null|Object Associative array with the identifiers as key
      * and the ids or null as value. Order is kept, but duplicate identifiers
@@ -98,10 +100,16 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         if (empty($args)) {
             return $isSingle ? null : [];
         }
-        list($identifierType, $identifierName, $resourceType, $itemId) = $args;
+        list($identifierTypeNames, $resourceType, $itemId) = $args;
 
-        $result = $this->findResources($identifierType, $identifiers, $identifierName, $resourceType, $itemId);
-        return $isSingle ? ($result ? reset($result) : null) : $result;
+        foreach ($identifierTypeNames as $identifierType => $identifierName) {
+            $result = $this->findResources($identifierType, $identifiers, $identifierName, $resourceType, $itemId);
+            if (empty($result)) {
+                continue;
+            }
+            return $isSingle ? reset($result) : $result;
+        }
+        return $isSingle ? null : [];
     }
 
     protected function findResources($identifierType, array $identifiers, $identifierName, $resourceType, $itemId)
@@ -110,8 +118,14 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             case 'o:id':
                 return $this->findResourcesFromInternalIds($identifiers, $resourceType);
             case 'property':
+                if (!is_array($identifierName)) {
+                    $identifierName = [$identifierName];
+                }
                 return $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
             case 'media_source':
+                if (is_array($identifierName)) {
+                    $identifierName = reset($identifierName);
+                }
                 return $this->findResourcesFromMediaSource($identifiers, $identifierName, $itemId);
         }
     }
@@ -133,10 +147,12 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 $identifierTypeName = $identifierName['o:ingester'];
                 $resourceType = 'media';
                 $itemId = empty($identifierName['o:item']['o:id']) ? null : $identifierName['o:item']['o:id'];
+            } else {
+                return $this->normalizeMultipleIdentifierMetadata($identifierName, $resourceType);
             }
         }
         // Next, identifierName is a string or an integer.
-        elseif (in_array($identifierName, ['internal_id', 'o:id'])) {
+        elseif ($identifierName === 'o:id') {
             $identifierType = 'o:id';
             $identifierTypeName = 'o:id';
         } elseif (is_numeric($identifierName)) {
@@ -169,10 +185,47 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         }
 
         return [
-            $identifierType,
-            $identifierTypeName,
+            [$identifierType => $identifierTypeName],
             $resourceType,
             $itemId,
+        ];
+    }
+
+    protected function normalizeMultipleIdentifierMetadata($identifierNames, $resourceType)
+    {
+        $identifierTypeNames = [];
+        foreach ($identifierNames as $identifierName) {
+            $args = $this->normalizeArgs($identifierName, $resourceType);
+            if ($args) {
+                list($identifierTypeName) = $args;
+                $identifierName = reset($identifierTypeName);
+                $identifierType = key($identifierTypeName);
+                switch ($identifierType) {
+                    case 'o:id':
+                    case 'media_source':
+                        $identifierTypeNames[$identifierType] = $identifierName;
+                        break;
+                    default:
+                        $identifierTypeNames[$identifierType][] = $identifierName;
+                        break;
+                }
+            }
+        }
+        if (!$identifierTypeNames) {
+            return null;
+        }
+
+        if ($resourceType) {
+            $resourceType = $this->normalizeResourceType($resourceType);
+            if (is_null($resourceType)) {
+                return null;
+            }
+        }
+
+        return [
+            $identifierTypeNames,
+            $resourceType,
+            null,
         ];
     }
 
@@ -261,7 +314,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         return array_replace(array_fill_keys($ids, null), array_combine($result, $result));
     }
 
-    protected function findResourcesFromPropertyIds(array $identifiers, $identifierPropertyId, $resourceType)
+    protected function findResourcesFromPropertyIds(array $identifiers, array $propertyIds, $resourceType)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
@@ -296,9 +349,20 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 ->andWhere($expr->in('value.value', $placeholders));
         }
 
-        $qb
-            ->andWhere($expr->eq('value.property_id', ':property_id'));
-        $parameters['property_id'] = $identifierPropertyId;
+        if (count($propertyIds) === 1) {
+            $qb
+                ->andWhere($expr->eq('value.property_id', ':property_id'));
+            $parameters['property_id'] = reset($propertyIds);
+        } else {
+            $placeholders = [];
+            foreach (array_values($propertyIds) as $key => $value) {
+                $placeholder = 'property_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('value.property_id', $placeholders));
+        }
 
         if ($resourceType) {
             $qb
@@ -396,9 +460,9 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             }
             // Look for the first case insensitive result.
             $lowerKey = strtolower($key);
-            foreach ($lowerResult as $resultValue) {
-                if ($resultValue['identifier'] == $lowerKey) {
-                    $cleanedResult[$key] = $resultValue['id'];
+            foreach ($lowerResult as $lowerResultValue) {
+                if ($lowerResultValue['identifier'] == $lowerKey) {
+                    $cleanedResult[$key] = $lowerResultValue['id'];
                     continue 2;
                 }
             }

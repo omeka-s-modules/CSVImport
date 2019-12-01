@@ -17,9 +17,9 @@ class PropertyMapping extends AbstractMapping
     protected $findResourceFromIdentifier;
 
     /**
-     * @var int|string
+     * @var array
      */
-    protected $propertyIdentifier;
+    protected $identifierProperties;
 
     public function getSidebar(PhpRenderer $view)
     {
@@ -32,16 +32,24 @@ class PropertyMapping extends AbstractMapping
         $this->findResourceFromIdentifier = $serviceLocator->get('ControllerPluginManager')
             ->get('findResourceFromIdentifier');
 
-        // The main identifier property may be used as term or as id in some
-        // places, so prepare it one time only.
-        if (empty($args['identifier_property']) || $args['identifier_property'] === 'internal_id') {
-            $this->propertyIdentifier = 'internal_id';
-        } elseif (is_numeric($args['identifier_property'])) {
-            $this->propertyIdentifier = (int) $args['identifier_property'];
-        } else {
-            $result = $this->api
-                ->searchOne('properties', ['term' => $args['identifier_property']])->getContent();
-            $this->propertyIdentifier = $result ? $result->id() : 'internal_id';
+        // The main identifier properties may be used as term or as id in some
+        // places, so prepare them one time only.
+        $this->identifierProperties = [];
+        foreach ($args['identifier_properties'] as $identifierProperty) {
+            if ($identifierProperty === 'o:id') {
+                $this->identifierProperties[] = 'o:id';
+            } elseif (is_numeric($identifierProperty)) {
+                $this->identifierProperties[] = (int) $identifierProperty;
+            } else {
+                $result = $this->api
+                    ->searchOne('properties', ['term' => $identifierProperty])->getContent();
+                if ($result) {
+                    $this->identifierProperties[] = $result->id();
+                }
+            }
+        }
+        if (!$this->identifierProperties) {
+            $this->identifierProperties = ['o:id'];
         }
     }
 
@@ -131,7 +139,7 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'resource':
-                                $identifier = $this->findResource($value, $this->propertyIdentifier);
+                                $identifier = $this->findResource($value, $this->identifierProperties);
                                 $valueData = [
                                     'value_resource_id' => $identifier,
                                     'property_id' => $propertyId,
@@ -183,14 +191,14 @@ class PropertyMapping extends AbstractMapping
         return $dataTypeAdapters;
     }
 
-    protected function findResource($identifier, $propertyIdentifier = 'o:id')
+    protected function findResource($identifier, $identifierProperties = ['o:id'])
     {
         $resourceType = $this->args['resource_type'];
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
-        $resourceId = $findResourceFromIdentifier($identifier, $propertyIdentifier, $resourceType);
+        $resourceId = $findResourceFromIdentifier($identifier, $identifierProperties, $resourceType);
         if (empty($resourceId)) {
             $this->logger->err(new Message('"%s" (%s) is not a valid resource identifier.', // @translate
-                $identifier, $propertyIdentifier));
+                $identifier, implode('", "', $identifierProperties)));
             $this->setHasErr(true);
             return false;
         }

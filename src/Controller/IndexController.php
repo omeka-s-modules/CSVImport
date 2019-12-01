@@ -321,15 +321,18 @@ class IndexController extends AbstractActionController
             }
         }
 
-        // Check the identifier property.
-        if (array_key_exists('identifier_property', $args)) {
-            $identifierProperty = $args['identifier_property'];
-            if (empty($identifierProperty) && $identifierProperty !== 'o:id') {
-                $properties = $api->search('properties', ['term' => $identifierProperty])->getContent();
-                if (empty($properties)) {
-                    $args['identifier_property'] = null;
+        // Check the identifier properties.
+        if (array_key_exists('identifier_properties', $args)) {
+            $identifierProperties = $args['identifier_properties'] ? $args['identifier_properties'] : [];
+            foreach ($identifierProperties as $key => $identifierProperty) {
+                if ($identifierProperty !== 'o:id') {
+                    $property = $api->searchOne('properties', ['term' => $identifierProperty])->getContent();
+                    if (empty($property)) {
+                        unset($args['identifier_properties'][$key]);
+                    }
                 }
             }
+            $args['identifier_properties'] = array_values($args['identifier_properties']);
         }
 
         if (!array_key_exists('column-multivalue', $post)) {

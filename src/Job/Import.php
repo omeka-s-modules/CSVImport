@@ -5,7 +5,7 @@ use CSVImport\Entity\CSVImportImport;
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use CSVImport\Source\SourceInterface;
 use finfo;
-use Omeka\Api\Manager;
+use Omeka\Mvc\Controller\Plugin\Api;
 use Omeka\Job\AbstractJob;
 use Omeka\Stdlib\Message;
 use Zend\Log\Logger;
@@ -28,7 +28,7 @@ class Import extends AbstractJob
     protected $rowsByBatch = 20;
 
     /**
-     * @var Manager
+     * @var Api
      */
     protected $api;
 
@@ -83,9 +83,9 @@ class Import extends AbstractJob
     protected $identifiers;
 
     /**
-     * @var string|int
+     * @var array
      */
-    protected $identifierPropertyId;
+    protected $identifierProperties;
 
     /**
      * @var bool
@@ -101,7 +101,7 @@ class Import extends AbstractJob
     {
         ini_set('auto_detect_line_endings', true);
         $services = $this->getServiceLocator();
-        $this->api = $services->get('Omeka\ApiManager');
+        $this->api = $services->get('ControllerPluginManager')->get('api');
         $this->logger = $services->get('Omeka\Logger');
         $this->findResourcesFromIdentifiers = $services->get('ControllerPluginManager')
             ->get('findResourcesFromIdentifiers');
@@ -154,16 +154,24 @@ class Import extends AbstractJob
             return $this->endJob();
         }
 
-        // The main identifier property may be used as term or as id in some
-        // places, so prepare it one time only.
-        if (empty($args['identifier_property']) || $args['identifier_property'] === 'o:id') {
-            $this->identifierPropertyId = 'o:id';
-        } elseif (is_numeric($args['identifier_property'])) {
-            $this->identifierPropertyId = (int) $args['identifier_property'];
-        } else {
-            $result = $this->api
-                ->search('properties', ['term' => $args['identifier_property']])->getContent();
-            $this->identifierPropertyId = $result ? $result[0]->id() : null;
+        // The main identifier properties may be used as term or as id in some
+        // places, so prepare them one time only.
+        $this->identifierProperties = [];
+        foreach ($args['identifier_properties'] as $identifierProperty) {
+            if ($identifierProperty === 'o:id') {
+                $this->identifierProperties[] = 'o:id';
+            } elseif (is_numeric($identifierProperty)) {
+                $this->identifierProperties[] = (int) $identifierProperty;
+            } else {
+                $result = $this->api
+                    ->searchOne('properties', ['term' => $identifierProperty])->getContent();
+                if ($result) {
+                    $this->identifierProperties[] = $result->id();
+                }
+            }
+        }
+        if (!$this->identifierProperties) {
+            $this->identifierProperties = ['o:id'];
         }
 
         if (!empty($args['rows_by_batch'])) {
@@ -258,7 +266,7 @@ class Import extends AbstractJob
             case self::ACTION_REPLACE:
                 $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
                 $identifiers = $this->extractIdentifiers($data);
-                $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
+                $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierProperties, $this->resourceType);
                 $ids = $this->assocIdentifierKeysAndIds($identifiers, $ids);
                 $idsToProcess = array_filter($ids);
                 $idsRemaining = array_diff_key($ids, $idsToProcess);
@@ -294,7 +302,7 @@ class Import extends AbstractJob
             case self::ACTION_DELETE:
                 $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
                 $identifiers = $this->extractIdentifiers($data);
-                $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
+                $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierProperties, $this->resourceType);
                 $idsToProcess = array_filter($ids);
                 $idsRemaining = array_diff_key($ids, $idsToProcess);
 
@@ -521,11 +529,11 @@ class Import extends AbstractJob
                 if (empty($media['o:source']) || empty($media['o:ingester'])) {
                     continue;
                 }
-                $identifierProperties = [];
-                $identifierProperties['o:ingester'] = $media['o:ingester'];
-                $identifierProperties['o:item']['o:id'] = $ids[$key];
+                $identifier = [];
+                $identifier['o:ingester'] = $media['o:ingester'];
+                $identifier['o:item']['o:id'] = $ids[$key];
                 $resourceId = $findResourceFromIdentifier(
-                    $media['o:source'], $identifierProperties, 'media');
+                    $media['o:source'], [$identifier], 'media');
                 if ($resourceId) {
                     $media['o:id'] = $resourceId;
                 }
@@ -948,7 +956,7 @@ SQL;
     }
 
     /**
-     * Deduplicate data ids for collections of items set, items, media....
+     * Deduplicate data ids for collections of items set, items, media…
      *
      * @param array $data
      * @return array
@@ -1091,7 +1099,7 @@ SQL;
 
         // Specific check when a identifier is required.
         elseif (!in_array($args['action'], [self::ACTION_CREATE, self::ACTION_SKIP])) {
-            if (empty($args['identifier_property'])) {
+            if (empty($args['identifier_properties'])) {
                 $this->hasErr = true;
                 $this->logger->err(new Message('The action "%s" requires a resource identifier property.', // @translate
                     $args['action']));

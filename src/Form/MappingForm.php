@@ -266,21 +266,22 @@ class MappingForm extends Form
             ]);
 
             $basicSettingsFieldset->add([
-                'name' => 'identifier_property',
+                'name' => 'identifier_properties',
                 'type' => PropertySelect::class,
                 'options' => [
-                    'label' => 'Resource identifier property', // @translate
-                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources to link or to get. In all cases, it is strongly recommended to add one or more unique identifiers to all your resources.', // @translate
+                    'label' => 'Resource identifier properties', // @translate
+                    'info' => 'Use these properties, generally "Internal id" or "dcterms:identifier", to identify the existing resources to link or to get. In all cases, it is strongly recommended to add one or more unique identifiers to all your resources.', // @translate
                     'empty_option' => 'Select below', // @translate
                     'prepend_value_options' => [
-                        'internal_id' => 'Internal ID', // @translate
+                        'o:id' => 'Internal ID', // @translate
                     ],
                     'term_as_value' => true,
                 ],
                 'attributes' => [
+                    'multiple' => true,
                     'value' => $userSettings->get(
-                        'csv_import_identifier_property',
-                        $default['csv_import_identifier_property']),
+                        'csv_import_identifier_properties',
+                        $default['csv_import_identifier_properties']),
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property', // @translate
                 ],
@@ -411,7 +412,7 @@ class MappingForm extends Form
                 'required' => false,
             ]);
             $advancedSettingsInputFilter->add([
-                'name' => 'identifier_property',
+                'name' => 'identifier_properties',
                 'required' => false,
             ]);
             $advancedSettingsInputFilter->add([

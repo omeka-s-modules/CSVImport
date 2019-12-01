@@ -192,7 +192,10 @@ return [
             'csv_import_multivalue_separator' => ',',
             'csv_import_rows_by_batch' => 20,
             'csv_import_global_language' => '',
-            'csv_import_identifier_property' => 'dcterms:identifier',
+            'csv_import_identifier_properties' => [
+                'o:id',
+                'dcterms:identifier',
+            ],
             'csv_import_automap_check_names_alone' => false,
         ],
     ],
