@@ -1,7 +1,7 @@
 <?php
 namespace CSVImport\Source;
 
-/**
+/*
  * Note: Reader isn’t traversable and has no rewind, so some hacks are required.
  * Nevertheless, the library is quick and efficient and the module uses it only
  * as recommended (as stream ahead).

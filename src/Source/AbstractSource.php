@@ -164,7 +164,9 @@ abstract class AbstractSource implements SourceInterface
 
     protected function cleanRow(array $row)
     {
-        return array_map(function ($v) { return trim($v); }, $row);
+        return array_map(function ($v) {
+            return trim($v);
+        }, $row);
     }
 
     public function clean()
