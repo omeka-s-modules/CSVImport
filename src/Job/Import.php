@@ -214,7 +214,9 @@ class Import extends AbstractJob
     {
         $data = [];
         foreach ($rows as $row) {
-            if (!array_filter($row, function ($v) { return strlen($v); })) {
+            if (!array_filter($row, function ($v) {
+                return strlen($v);
+            })) {
                 $this->emptyLines++;
                 continue;
             }
@@ -1138,7 +1140,7 @@ SQL;
                     }, $result);
                     if ($itemIds) {
                         $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
-                        $query = $entityManager ->createQuery(
+                        $query = $entityManager->createQuery(
                             sprintf('SELECT COUNT(media.id) FROM Omeka\Entity\Media media WHERE media.item IN (%s)',
                                 implode(',', $itemIds)));
                         $total = $query->getSingleScalarResult();

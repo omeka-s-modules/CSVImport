@@ -70,9 +70,10 @@ class PropertyMapping extends AbstractMapping
                     if (empty($multivalueMap[$index])) {
                         $values = [trim($values)];
                     } else {
-
                         $values = explode($multivalueSeparator, $values);
-                        $values = array_map(function ($v) { return trim($v); }, $values);
+                        $values = array_map(function ($v) {
+                            return trim($v);
+                        }, $values);
                     }
                     $values = array_filter($values, 'strlen');
                     foreach ($values as $value) {
