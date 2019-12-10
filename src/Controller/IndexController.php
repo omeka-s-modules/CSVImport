@@ -142,9 +142,11 @@ class IndexController extends AbstractActionController
             $form = $this->getForm(MappingForm::class, $mappingOptions);
             $form->setData($post);
             if ($form->isValid()) {
-                // Flatten basic and advanced settings back into single level
-                $post = array_merge($post, $post['basic-settings'], $post['advanced-settings']);
-                unset($post['basic-settings'], $post['advanced-settings']);
+                if (isset($post['basic-settings']) || isset($post['advanced-settings'])) {
+                    // Flatten basic and advanced settings back into single level
+                    $post = array_merge($post, $post['basic-settings'], $post['advanced-settings']);
+                    unset($post['basic-settings'], $post['advanced-settings']);
+                }
 
                 $args = $this->cleanArgs($post);
                 $this->saveUserSettings($args);
