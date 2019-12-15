@@ -977,17 +977,40 @@ SQL;
     {
         // Base to normalize data in order to deduplicate them in one pass.
         $base = [];
-        $base['literal'] = ['property_id' => 0, 'type' => 'literal', '@language' => '', '@value' => ''];
-        $base['resource'] = ['property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
-        $base['url'] = ['property_id' => 0, 'type' => 'url', '@id' => 0, 'o:label' => ''];
+
+        $base['literal'] = ['is_public' => true, 'property_id' => 0, 'type' => 'literal', '@language' => null, '@value' => ''];
+        $base['resource'] = ['is_public' => true, 'property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
+        $base['uri'] = ['is_public' => true, 'o:label' => null, 'property_id' => 0, 'type' => 'uri', '@id' => ''];
         foreach ($values as $key => $value) {
             $values[$key] = array_values(
                 // Deduplicate values.
-                array_map('unserialize', array_unique(array_map('serialize',
+                array_map('unserialize', array_unique(array_map(
+                    'serialize',
                     // Normalize values.
                     array_map(function ($v) use ($base) {
-                        return array_replace($base[$v['type']], array_intersect_key($v, $base[$v['type']]));
-            }, $value)))));
+                        // Data types "resource" and "uri" have "@id" (in json).
+                        $mainType = array_key_exists('value_resource_id', $v)
+                            ? 'resource'
+                            : (array_key_exists('@id', $v) ? 'uri' : 'literal');
+                        // Keep order and meaning keys.
+                        $r = array_replace($base[$mainType], array_intersect_key($v, $base[$mainType]));
+                        $r['is_public'] = (bool) $r['is_public'];
+                        switch ($mainType) {
+                            case 'literal':
+                                if (empty($r['@language'])) {
+                                    $r['@language'] = null;
+                                }
+                                break;
+                            case 'uri':
+                                if (empty($r['o:label'])) {
+                                    $r['o:label'] = null;
+                                }
+                                break;
+                        }
+                        return $r;
+                    }, $value)
+                )))
+            );
         }
         return $values;
     }
