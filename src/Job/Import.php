@@ -800,11 +800,11 @@ SQL;
      */
     protected function removeEmptyData(array $data)
     {
-        // Data are updated in place.
-        foreach ($data as $name => &$metadata) {
+        foreach ($data as $name => $metadata) {
             switch ($name) {
                 case 'o:resource_template':
                 case 'o:resource_class':
+                case 'o:thumbnail':
                 case 'o:owner':
                 case 'o:item':
                     if (empty($metadata) || empty($metadata['o:id'])) {
@@ -823,6 +823,7 @@ SQL;
                 case 'o:ingester':
                 case 'o:source':
                 case 'ingest_filename':
+                case 'o:size':
                     unset($data[$name]);
                     break;
                 case 'o:is_public':
@@ -831,12 +832,12 @@ SQL;
                         unset($data[$name]);
                     }
                     break;
+                // Properties.
                 default:
-                    if (is_array($metadata)) {
-                        if (empty($metadata)) {
-                            unset($data[$name]);
-                        }
+                    if (is_array($metadata) && empty($metadata)) {
+                        unset($data[$name]);
                     }
+                    break;
             }
         }
         return $data;
