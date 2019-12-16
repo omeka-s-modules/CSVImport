@@ -56,25 +56,36 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
     }
 
     /**
-     * Find a list of resource ids from a list of identifiers.
+     * Find a list of resource ids from a list of identifiers (or one id).
      *
      * When there are true duplicates and case insensitive duplicates, the first
      * case sensitive is returned, else the first case insensitive resource.
+     *
+     * All identifiers are returned, even without id.
      *
      * @todo Manage Media source html.
      *
      * @param array|string $identifiers Identifiers should be unique. If a
      * string is sent, the result will be the resource.
      * @param string|int|array $identifierName Property as integer or term,
-     * media ingester or "internal_id", or an array with multiple conditions.
+     * "o:id", a media ingester (url or file), or an associative array with
+     * multiple conditions (for media source). May be a list of identifier
+     * metadata names, in which case the identifiers are searched in a list of
+     * properties and/or in internal ids.
      * @param string $resourceType The resource type if any.
-     * @return array|int|null Associative array with the identifiers as key and the ids
-     * or null as value. Order is kept, but duplicate identifiers are removed.
-     * If $identifiers is a string, return directly the resource id, or null.
+     * @return array|int|null|Object Associative array with the identifiers as key
+     * and the ids or null as value. Order is kept, but duplicate identifiers
+     * are removed. If $identifiers is a string, return directly the resource
+     * id, or null.
      */
     public function __invoke($identifiers, $identifierName, $resourceType = null)
     {
-        $isSingle = is_string($identifiers);
+        $isSingle = !is_array($identifiers);
+
+        if (empty($identifierName)) {
+            return $isSingle ? null : [];
+        }
+
         if ($isSingle) {
             $identifiers = [$identifiers];
         }
@@ -85,119 +96,283 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             return $isSingle ? null : [];
         }
 
+        $args = $this->normalizeArgs($identifierName, $resourceType);
+        if (empty($args)) {
+            return $isSingle ? null : [];
+        }
+        list($identifierTypeNames, $resourceType, $itemId) = $args;
+
+        foreach ($identifierTypeNames as $identifierType => $identifierName) {
+            $result = $this->findResources($identifierType, $identifiers, $identifierName, $resourceType, $itemId);
+            if (empty($result)) {
+                continue;
+            }
+            return $isSingle ? reset($result) : $result;
+        }
+        return $isSingle ? null : [];
+    }
+
+    protected function findResources($identifierType, array $identifiers, $identifierName, $resourceType, $itemId)
+    {
+        switch ($identifierType) {
+            case 'o:id':
+                return $this->findResourcesFromInternalIds($identifiers, $resourceType);
+            case 'property':
+                if (!is_array($identifierName)) {
+                    $identifierName = [$identifierName];
+                }
+                return $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
+            case 'media_source':
+                if (is_array($identifierName)) {
+                    $identifierName = reset($identifierName);
+                }
+                return $this->findResourcesFromMediaSource($identifiers, $identifierName, $itemId);
+        }
+    }
+
+    protected function normalizeArgs($identifierName, $resourceType)
+    {
         $identifierType = null;
-        // Process identifierName as an array.
+        $identifierTypeName = null;
+        $itemId = null;
+
+        // Process identifier metadata names as an array.
         if (is_array($identifierName)) {
             if (isset($identifierName['o:ingester'])) {
                 // TODO Currently, the media source cannot be html.
                 if ($identifierName['o:ingester'] === 'html') {
-                    return $isSingle ? null : [];
+                    return null;
                 }
                 $identifierType = 'media_source';
+                $identifierTypeName = $identifierName['o:ingester'];
                 $resourceType = 'media';
                 $itemId = empty($identifierName['o:item']['o:id']) ? null : $identifierName['o:item']['o:id'];
-                $identifierName = $identifierName['o:ingester'];
+            } else {
+                return $this->normalizeMultipleIdentifierMetadata($identifierName, $resourceType);
             }
         }
-        // Here, identifierName is a string or an integer.
-        elseif (in_array($identifierName, ['internal_id'])) {
-            $identifierType = 'internal_id';
+        // Next, identifierName is a string or an integer.
+        elseif ($identifierName === 'o:id') {
+            $identifierType = 'o:id';
+            $identifierTypeName = 'o:id';
         } elseif (is_numeric($identifierName)) {
             $identifierType = 'property';
-            $identifierName = (int) $identifierName;
+            // No check of the property id for quicker process.
+            $identifierTypeName = (int) $identifierName;
+        } elseif (in_array($identifierName, ['url', 'file'])) {
+            $identifierType = 'media_source';
+            $identifierTypeName = $identifierName;
+            $resourceType = 'media';
+            $itemId = null;
         } else {
-            $result = $this->api
+            $properties = $this->api
                 ->search('properties', ['term' => $identifierName])->getContent();
-            $identifierType = 'property';
-            $identifierName = $result ? $result[0]->id() : null;
-        }
-        if (empty($identifierName)) {
-            return $isSingle ? null : [];
-        }
-
-        if (!empty($resourceType)) {
-            $resourceTypes = [
-                'item_sets' => \Omeka\Entity\ItemSet::class,
-                'items' => \Omeka\Entity\Item::class,
-                'media' => \Omeka\Entity\Media::class,
-                'resources' => '',
-                // Avoid a check and make the plugin more flexible.
-                'Omeka\Entity\ItemSet' => \Omeka\Entity\ItemSet::class,
-                'Omeka\Entity\Item' => \Omeka\Entity\Item::class,
-                'Omeka\Entity\Media' => \Omeka\Entity\Media::class,
-                'Omeka\Entity\Resource' => '',
-            ];
-            if (!isset($resourceTypes[$resourceType])) {
-                return $isSingle ? null : [];
+            if ($properties) {
+                $identifierType = 'property';
+                $identifierTypeName = $properties[0]->id();
             }
-            $resourceType = $resourceTypes[$resourceType];
         }
 
-        switch ($identifierType) {
-            case 'internal_id':
-                $result = $this->findResourcesFromInternalIds($identifiers, $resourceType);
-                break;
-            case 'property':
-                $result = $this->findResourcesFromPropertyIds($identifiers, $identifierName, $resourceType);
-                break;
-            case 'media_source':
-                $result = $this->findResourcesFromMediaSource($identifiers, $identifierName, $itemId);
-                break;
+        if (empty($identifierTypeName)) {
+            return null;
         }
 
-        return $isSingle ? ($result ? reset($result) : null) : $result;
+        if ($resourceType) {
+            $resourceType = $this->normalizeResourceType($resourceType);
+            if (is_null($resourceType)) {
+                return null;
+            }
+        }
+
+        return [
+            [$identifierType => $identifierTypeName],
+            $resourceType,
+            $itemId,
+        ];
     }
 
-    protected function findResourcesFromInternalIds($identifiers, $resourceType)
+    protected function normalizeMultipleIdentifierMetadata($identifierNames, $resourceType)
     {
+        $identifierTypeNames = [];
+        foreach ($identifierNames as $identifierName) {
+            $args = $this->normalizeArgs($identifierName, $resourceType);
+            if ($args) {
+                list($identifierTypeName) = $args;
+                $identifierName = reset($identifierTypeName);
+                $identifierType = key($identifierTypeName);
+                switch ($identifierType) {
+                    case 'o:id':
+                    case 'media_source':
+                        $identifierTypeNames[$identifierType] = $identifierName;
+                        break;
+                    default:
+                        $identifierTypeNames[$identifierType][] = $identifierName;
+                        break;
+                }
+            }
+        }
+        if (!$identifierTypeNames) {
+            return null;
+        }
+
+        if ($resourceType) {
+            $resourceType = $this->normalizeResourceType($resourceType);
+            if (is_null($resourceType)) {
+                return null;
+            }
+        }
+
+        return [
+            $identifierTypeNames,
+            $resourceType,
+            null,
+        ];
+    }
+
+    protected function normalizeResourceType($resourceType)
+    {
+        $resourceTypes = [
+            'items' => \Omeka\Entity\Item::class,
+            'item_sets' => \Omeka\Entity\ItemSet::class,
+            'media' => \Omeka\Entity\Media::class,
+            'resources' => '',
+            'resource' => '',
+            'resource:item' => \Omeka\Entity\Item::class,
+            'resource:itemset' => \Omeka\Entity\ItemSet::class,
+            'resource:media' => \Omeka\Entity\Media::class,
+            // Avoid a check and make the plugin more flexible.
+            \Omeka\Entity\Item::class => \Omeka\Entity\Item::class,
+            \Omeka\Entity\ItemSet::class => \Omeka\Entity\ItemSet::class,
+            \Omeka\Entity\Media::class => \Omeka\Entity\Media::class,
+            \Omeka\Entity\Resource::class => '',
+            'o:item' => \Omeka\Entity\Item::class,
+            'o:item_set' => \Omeka\Entity\ItemSet::class,
+            'o:media' => \Omeka\Entity\Media::class,
+            // Other resource types.
+            'item' => \Omeka\Entity\Item::class,
+            'item_set' => \Omeka\Entity\ItemSet::class,
+            'item-set' => \Omeka\Entity\ItemSet::class,
+            'itemset' => \Omeka\Entity\ItemSet::class,
+            'resource:item_set' => \Omeka\Entity\ItemSet::class,
+            'resource:item-set' => \Omeka\Entity\ItemSet::class,
+        ];
+        return isset($resourceTypes[$resourceType])
+            ? $resourceTypes[$resourceType]
+            : null;
+    }
+
+    protected function findResourcesFromInternalIds(array $ids, $resourceType)
+    {
+        $ids = array_filter(array_map('intval', $ids));
+        if (empty($ids)) {
+            return [];
+        }
+
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
-        $identifiers = array_map('intval', $identifiers);
-        $quotedIdentifiers = implode(',', $identifiers);
-        $qb = $conn->createQueryBuilder()
+
+        $qb = $conn->createQueryBuilder();
+        $expr = $qb->expr();
+        $qb
             ->select('resource.id')
             ->from('resource', 'resource')
-            // ->andWhere('resource.id in (:ids)')
-            // ->setParameter(':ids', $identifiers)
-            ->andWhere("resource.id in ($quotedIdentifiers)")
             ->addOrderBy('resource.id', 'ASC');
+
+        $parameters = [];
+        if (count($ids) === 1) {
+            $qb
+                ->andWhere($expr->eq('resource.id', ':id'));
+            $parameters['id'] = reset($ids);
+        } else {
+            // Warning: there is a difference between qb / dbal and qb / orm for
+            // "in" in qb, when a placeholder is used, there should be one
+            // placeholder for each value for expr->in().
+            $placeholders = [];
+            foreach (array_values($ids) as $key => $value) {
+                $placeholder = 'id_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('resource.id', $placeholders));
+        }
+
         if ($resourceType) {
             $qb
-                ->andWhere('resource.resource_type = :resource_type')
-                ->setParameter(':resource_type', $resourceType);
+                ->andWhere($expr->eq('resource.resource_type', ':resource_type'));
+            $parameters['resource_type'] = $resourceType;
         }
+
+        $qb
+            ->setParameters($parameters);
+
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
         $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
 
         // Reorder the result according to the input (simpler in php and there
         // is no duplicated identifiers).
-        return array_replace(array_fill_keys($identifiers, null), array_combine($result, $result));
+        return array_replace(array_fill_keys($ids, null), array_combine($result, $result));
     }
 
-    protected function findResourcesFromPropertyIds($identifiers, $identifierPropertyId, $resourceType)
+    protected function findResourcesFromPropertyIds(array $identifiers, array $propertyIds, $resourceType)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
 
-        // Search in multiple resource types in one time.
-        $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
-        $quotedIdentifiers = implode(',', $quotedIdentifiers);
-        $qb = $conn->createQueryBuilder()
-            ->select('value.value as identifier', 'value.resource_id as id')
+        $qb = $conn->createQueryBuilder();
+        $expr = $qb->expr();
+        $qb
+            ->select('value.value AS identifier', 'value.resource_id AS id')
             ->from('value', 'value')
             ->leftJoin('value', 'resource', 'resource', 'value.resource_id = resource.id')
-            ->andwhere('value.property_id = :property_id')
-            ->setParameter(':property_id', $identifierPropertyId)
-            // ->andWhere('value.value in (:values)')
-            // ->setParameter(':values', $identifiers)
-            ->andWhere("value.value in ($quotedIdentifiers)")
+            // ->andWhere($expr->in('value.property_id', $propertyIds))
+            // ->andWhere($expr->in('value.value', $identifiers))
             ->addOrderBy('resource.id', 'ASC')
             ->addOrderBy('value.id', 'ASC');
+
+        $parameters = [];
+        if (count($identifiers) === 1) {
+            $qb
+                ->andWhere($expr->eq('value.value', ':identifier'));
+            $parameters['identifier'] = reset($identifiers);
+        } else {
+            // Warning: there is a difference between qb / dbal and qb / orm for
+            // "in" in qb, when a placeholder is used, there should be one
+            // placeholder for each value for expr->in().
+            $placeholders = [];
+            foreach (array_values($identifiers) as $key => $value) {
+                $placeholder = 'value_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('value.value', $placeholders));
+        }
+
+        if (count($propertyIds) === 1) {
+            $qb
+                ->andWhere($expr->eq('value.property_id', ':property_id'));
+            $parameters['property_id'] = reset($propertyIds);
+        } else {
+            $placeholders = [];
+            foreach (array_values($propertyIds) as $key => $value) {
+                $placeholder = 'property_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('value.property_id', $placeholders));
+        }
+
         if ($resourceType) {
             $qb
-                ->andWhere('resource.resource_type = :resource_type')
-                ->setParameter(':resource_type', $resourceType);
+                ->andWhere($expr->eq('resource.resource_type', ':resource_type'));
+            $parameters['resource_type'] = $resourceType;
         }
+
+        $qb
+            ->setParameters($parameters);
+
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
         // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
         // replaces the first id by later ids in case of true duplicates.
@@ -206,28 +381,50 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         return $this->cleanResult($identifiers, $result);
     }
 
-    protected function findResourcesFromMediaSource($identifiers, $ingesterName, $itemId = null)
+    protected function findResourcesFromMediaSource(array $identifiers, $ingesterName, $itemId = null)
     {
         // The api manager doesn't manage this type of search.
         $conn = $this->connection;
 
-        // Search in multiple resource types in one time.
-        $quotedIdentifiers = array_map([$conn, 'quote'], $identifiers);
-        $quotedIdentifiers = implode(',', $quotedIdentifiers);
-        $qb = $conn->createQueryBuilder()
-            ->select('media.source as identifier', 'media.id as id')
+        $qb = $conn->createQueryBuilder();
+        $expr = $qb->expr();
+        $qb
+            ->select('media.source AS identifier', 'media.id AS id')
             ->from('media', 'media')
-            ->andwhere('media.ingester = :ingester')
-            ->setParameter(':ingester', $ingesterName)
-            // ->andWhere('media.source in (:sources)')
-            // ->setParameter(':sources', $identifiers)
-            ->andwhere("media.source in ($quotedIdentifiers)")
+            ->andWhere('media.ingester = :ingester')
+            // ->andWhere('media.source IN (' . implode(',', array_map([$conn, 'quote'], $identifiers)) . ')')
             ->addOrderBy('media.id', 'ASC');
+
+        $parameters = [];
+        $parameters['ingester'] = $ingesterName;
+
+        if (count($identifiers) === 1) {
+            $qb
+                ->andWhere($expr->eq('media.source', ':identifier'));
+            $parameters['identifier'] = reset($identifiers);
+        } else {
+            // Warning: there is a difference between qb / dbal and qb / orm for
+            // "in" in qb, when a placeholder is used, there should be one
+            // placeholder for each value for expr->in().
+            $placeholders = [];
+            foreach (array_values($identifiers) as $key => $value) {
+                $placeholder = 'value_' . $key;
+                $parameters[$placeholder] = $value;
+                $placeholders[] = ':' . $placeholder;
+            }
+            $qb
+                ->andWhere($expr->in('media.source', $placeholders));
+        }
+
         if ($itemId) {
             $qb
-                ->andWhere('media.item_id = :item_id')
-                ->setParameter(':item_id', $itemId);
+                ->andWhere($expr->eq('media.item_id', ':item_id'));
+            $parameters['item_id'] = $itemId;
         }
+
+        $qb
+            ->setParameters($parameters);
+
         $stmt = $conn->executeQuery($qb, $qb->getParameters());
         // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
         // replaces the first id by later ids in case of true duplicates.
@@ -238,9 +435,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
 
     /**
      * Reorder the result according to the input (simpler in php and there is no
-     * duplicated identifiers). When there are true duplicates, it returns the
-     * first. When there are case insensitive duplicates, it returns the first
-     * too.
+     * duplicated identifiers).
      *
      * @param array $identifiers
      * @param array $result
@@ -265,9 +460,9 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             }
             // Look for the first case insensitive result.
             $lowerKey = strtolower($key);
-            foreach ($lowerResult as $resultValue) {
-                if ($resultValue['identifier'] == $lowerKey) {
-                    $cleanedResult[$key] = $resultValue['id'];
+            foreach ($lowerResult as $lowerResultValue) {
+                if ($lowerResultValue['identifier'] == $lowerKey) {
+                    $cleanedResult[$key] = $lowerResultValue['id'];
                     continue 2;
                 }
             }

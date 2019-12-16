@@ -265,6 +265,28 @@ class MappingForm extends Form
                 ],
             ]);
 
+            $basicSettingsFieldset->add([
+                'name' => 'identifier_properties',
+                'type' => PropertySelect::class,
+                'options' => [
+                    'label' => 'Resource identifier properties', // @translate
+                    'info' => 'Use these properties, generally "Internal id" or "dcterms:identifier", to identify the existing resources to link or to get. In all cases, it is strongly recommended to add one or more unique identifiers to all your resources.', // @translate
+                    'empty_option' => 'Select below', // @translate
+                    'prepend_value_options' => [
+                        'o:id' => 'Internal ID', // @translate
+                    ],
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'multiple' => true,
+                    'value' => $userSettings->get(
+                        'csv_import_identifier_properties',
+                        $default['csv_import_identifier_properties']),
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property', // @translate
+                ],
+            ]);
+
             $this->add([
                 'type' => 'fieldset',
                 'name' => 'advanced-settings',
@@ -318,27 +340,6 @@ class MappingForm extends Form
                     'type' => 'Number',
                 ]);
             }
-
-            $advancedSettingsFieldset->add([
-                'name' => 'identifier_property',
-                'type' => PropertySelect::class,
-                'options' => [
-                    'label' => 'Resource identifier property', // @translate
-                    'info' => 'Use this property, generally "dcterms:identifier", to identify the existing resources, so it will be possible to update them. One column of the file must map the selected property. In all cases, it is strongly recommended to add one ore more unique identifiers to all your resources.', // @translate
-                    'empty_option' => 'Select below', // @translate
-                    'prepend_value_options' => [
-                        'internal_id' => 'Internal ID', // @translate
-                    ],
-                    'term_as_value' => true,
-                ],
-                'attributes' => [
-                    'value' => $userSettings->get(
-                        'csv_import_identifier_property',
-                        $default['csv_import_identifier_property']),
-                    'class' => 'action-option chosen-select',
-                    'data-placeholder' => 'Select a property', // @translate
-                ],
-            ]);
 
             $advancedSettingsFieldset->add([
                 'name' => 'action_unidentified',
@@ -411,7 +412,7 @@ class MappingForm extends Form
                 'required' => false,
             ]);
             $advancedSettingsInputFilter->add([
-                'name' => 'identifier_property',
+                'name' => 'identifier_properties',
                 'required' => false,
             ]);
             $advancedSettingsInputFilter->add([
