@@ -187,7 +187,7 @@ class CsvFile extends AbstractSource
     {
         if ($this->iterator) {
             $this->iterator->setFlags(SplFileObject::READ_CSV | SplFileObject::READ_AHEAD
-                | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+                | SplFileObject::SKIP_EMPTY);
             $this->iterator->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
         }
     }
