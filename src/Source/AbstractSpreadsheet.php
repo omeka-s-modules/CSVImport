@@ -155,7 +155,7 @@ abstract class AbstractSpreadsheet extends AbstractSource
 
         $this->reader
             // ->setTempFolder($this->config['temp_dir'])
-            ->setShouldFormatDates(false);
+            ->setShouldFormatDates(true);
 
         foreach ($this->reader->getSheetIterator() as $sheet) {
             $this->iterator = $sheet->getRowIterator();
