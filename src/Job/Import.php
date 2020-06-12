@@ -260,6 +260,8 @@ class Import extends AbstractJob
             case self::ACTION_REVISE:
             case self::ACTION_UPDATE:
             case self::ACTION_REPLACE:
+                $originalIdentityMap = $this->getServiceLocator()->get('Omeka\EntityManager')->getUnitOfWork()->getIdentityMap();
+
                 $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
                 $identifiers = $this->extractIdentifiers($data);
                 $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
@@ -293,6 +295,7 @@ class Import extends AbstractJob
                     $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
                 }
                 $this->update($dataToProcess, $idsToProcess, $args['action']);
+                $this->detachAllNewEntities($originalIdentityMap);
                 break;
 
             case self::ACTION_DELETE:
@@ -1181,6 +1184,28 @@ SQL;
         $response = $this->api->update('csvimport_imports', $this->importRecord->id(), $csvImportJson);
         if ($this->source) {
             $this->source->clean();
+        }
+    }
+
+    /**
+     * Given an old copy of the Doctrine identity map, reset
+     * the entity manager to that state by detaching all entities that
+     * did not exist in the prior state.
+     *
+     * @internal This is a copy-paste of the functionality from the abstract entity adapter
+     *
+     * @param array $oldIdentityMap
+     */
+    protected function detachAllNewEntities(array $oldIdentityMap)
+    {
+        $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
+        $identityMap = $entityManager->getUnitOfWork()->getIdentityMap();
+        foreach ($identityMap as $entityClass => $entities) {
+            foreach ($entities as $idHash => $entity) {
+                if (!isset($oldIdentityMap[$entityClass][$idHash])) {
+                    $entityManager->detach($entity);
+                }
+            }
         }
     }
 }
