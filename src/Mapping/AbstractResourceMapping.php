@@ -3,8 +3,8 @@ namespace CSVImport\Mapping;
 
 use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use Omeka\Stdlib\Message;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Renderer\PhpRenderer;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\View\Renderer\PhpRenderer;
 
 abstract class AbstractResourceMapping extends AbstractMapping
 {

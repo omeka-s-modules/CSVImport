@@ -2,8 +2,8 @@
 namespace CSVImport\Mapping;
 
 use Omeka\Api\Manager as ApiManager;
-use Zend\Log\Logger;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\Log\Logger;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 
 abstract class AbstractMapping implements MappingInterface
 {

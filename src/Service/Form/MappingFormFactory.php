@@ -3,7 +3,7 @@ namespace CSVImport\Service\Form;
 
 use CSVImport\Form\MappingForm;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class MappingFormFactory implements FactoryInterface
 {

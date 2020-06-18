@@ -3,7 +3,7 @@ namespace CSVImport\Service\ControllerPlugin;
 
 use CSVImport\Mvc\Controller\Plugin\AutomapHeadersToMetadata;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class AutomapHeadersToMetadataFactory implements FactoryInterface
 {

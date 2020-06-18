@@ -1,8 +1,8 @@
 <?php
 namespace CSVImport\Mapping;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Renderer\PhpRenderer;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\View\Renderer\PhpRenderer;
 
 interface MappingInterface
 {
