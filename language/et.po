@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rivo Zängov <eraser@eraser.ee>, 2018
-# Moon Ika <m8nika@gmail.com>, 2019
+# Moon Ika, 2020
+# Rivo Zängov <eraser@eraser.ee>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-08 11:15-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Moon Ika <m8nika@gmail.com>, 2019\n"
+"Last-Translator: Rivo Zängov <eraser@eraser.ee>, 2020\n"
 "Language-Team: Estonian (https://www.transifex.com/omeka/teams/14184/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,15 +84,15 @@ msgstr "Seosta Omeka S andmed"
 
 #: view/csv-import/index/map.phtml:29
 msgid "Basic Settings"
-msgstr ""
+msgstr "Põhiseaded"
 
 #: view/csv-import/index/map.phtml:30
 msgid "Advanced Settings"
-msgstr ""
+msgstr "Laiendatud seaded"
 
 #: view/csv-import/index/map.phtml:44
 msgid "Resource type column"
-msgstr ""
+msgstr "Ressursi liigi veerg"
 
 #: view/csv-import/index/map.phtml:48
 #: view/csv-import/mapping-sidebar/item.phtml:11
@@ -137,7 +137,7 @@ msgstr "Keel:"
 
 #: view/csv-import/index/map.phtml:105
 msgid "Private values"
-msgstr ""
+msgstr "Privaatsed väärtused"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -149,7 +149,7 @@ msgstr "Tühista"
 
 #: view/csv-import/index/past-imports.phtml:24
 msgid "Action"
-msgstr ""
+msgstr "Toiming"
 
 #: view/csv-import/index/past-imports.phtml:26
 msgid "Result"
@@ -158,7 +158,7 @@ msgstr "Tulemus"
 #: view/csv-import/index/past-imports.phtml:51
 #: view/csv-import/index/past-imports.phtml:86
 msgid "Job details"
-msgstr ""
+msgstr "Töö üksikasjad"
 
 #: view/csv-import/index/past-imports.phtml:63
 msgid ""
@@ -189,12 +189,12 @@ msgstr ""
 #: view/csv-import/mapping-sidebar/item.phtml:14
 #: view/csv-import/mapping-sidebar/media.phtml:14
 msgid "Internal ID"
-msgstr ""
+msgstr "Sisemine ID"
 
 #: view/csv-import/mapping-sidebar/media-source.phtml:3
 #: view/csv-import/mapping-sidebar/media-source.phtml:6
 msgid "Media source"
-msgstr ""
+msgstr "Meedia allikas"
 
 #: view/csv-import/mapping-sidebar/media.phtml:3
 msgid "Media-specific data"
@@ -213,11 +213,11 @@ msgstr ""
 #: view/csv-import/mapping-sidebar/resource.phtml:3
 #: view/csv-import/mapping-sidebar/resource.phtml:7
 msgid "Generic data"
-msgstr ""
+msgstr "Üldised andmed"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:9
 msgid "Resource template (by label)"
-msgstr ""
+msgstr "Ressursi mall (sildi järgi)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:10
 msgid "Resource class (by term)"
@@ -229,7 +229,7 @@ msgstr "Omanik (e-posti järgi)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:14
 msgid "Visibility public/private"
-msgstr ""
+msgstr "Avalikult nähtav/privaatne"
 
 #: view/csv-import/mapping-sidebar/user.phtml:3
 msgid "Users info"
@@ -329,7 +329,7 @@ msgstr ""
 
 #: src/Form/ImportForm.php:142
 msgid "A note about the purpose or source of this import"
-msgstr ""
+msgstr "Märkus selle importimise eesmärgi või allika kohta"
 
 #: src/Form/MappingForm.php:86
 msgid ""
@@ -474,7 +474,7 @@ msgstr ""
 
 #: src/Job/Import.php:16
 msgid "create"
-msgstr ""
+msgstr "loo"
 
 #: src/Job/Import.php:17
 msgid "append"
@@ -482,11 +482,11 @@ msgstr ""
 
 #: src/Job/Import.php:18
 msgid "revise"
-msgstr ""
+msgstr "vaata üle"
 
 #: src/Job/Import.php:19
 msgid "update"
-msgstr ""
+msgstr "uuenda"
 
 #: src/Job/Import.php:20
 msgid "replace"
@@ -494,7 +494,7 @@ msgstr "asenda"
 
 #: src/Job/Import.php:21
 msgid "delete"
-msgstr ""
+msgstr "kustuta"
 
 #: src/Job/Import.php:22
 msgid "skip"
@@ -506,7 +506,7 @@ msgstr "Fail paistab olevat tühi."
 
 #: src/Job/Import.php:154 src/Controller/IndexController.php:108
 msgid "The file is not valid."
-msgstr ""
+msgstr "See pole korrektne fail."
 
 #: src/Job/Import.php:190
 #, php-format
@@ -569,7 +569,7 @@ msgstr ""
 
 #: src/Job/Import.php:1070
 msgid "action"
-msgstr ""
+msgstr "toiming"
 
 #: src/Job/Import.php:1077
 #, php-format
@@ -622,7 +622,7 @@ msgstr "Allikas on tühi."
 
 #: src/Source/AbstractSource.php:85
 msgid "No file to process."
-msgstr ""
+msgstr "Pole faili, mida töödelda."
 
 #: src/Source/AbstractSource.php:92
 msgid "The rows are not all the same number of columns."
@@ -650,7 +650,7 @@ msgstr "Kasutaja info"
 
 #: src/Mapping/MediaMapping.php:8
 msgid "Media data"
-msgstr ""
+msgstr "Meedia andmed"
 
 #: src/Mapping/ItemSetMapping.php:8
 msgid "Item set data"

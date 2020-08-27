@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Naosuke Okamoto, 2019
+# Naosuke Okamoto, 2020
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-08 11:15-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Naosuke Okamoto, 2019\n"
+"Last-Translator: Naosuke Okamoto, 2020\n"
 "Language-Team: Japanese (https://www.transifex.com/omeka/teams/14184/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +49,7 @@ msgstr "これにより、基本的なインポート設定の言語設定が上
 
 #: view/common/options-sidebar.phtml:40
 msgid "Import values as private"
-msgstr ""
+msgstr "非公開の値としてインポート"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -136,7 +136,7 @@ msgstr "言語："
 
 #: view/csv-import/index/map.phtml:105
 msgid "Private values"
-msgstr ""
+msgstr "非公開の値"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -197,7 +197,7 @@ msgstr "メディアソース"
 
 #: view/csv-import/mapping-sidebar/media.phtml:3
 msgid "Media-specific data"
-msgstr ""
+msgstr "メディア固有のデータ"
 
 #: view/csv-import/mapping-sidebar/media.phtml:7
 msgid "Item (by selected property)"
@@ -213,7 +213,7 @@ msgstr ""
 #: view/csv-import/mapping-sidebar/resource.phtml:3
 #: view/csv-import/mapping-sidebar/resource.phtml:7
 msgid "Generic data"
-msgstr ""
+msgstr "一般データ"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:9
 msgid "Resource template (by label)"
@@ -225,11 +225,11 @@ msgstr ""
 
 #: view/csv-import/mapping-sidebar/resource.phtml:12
 msgid "Owner (by email address)"
-msgstr ""
+msgstr "所有者（メールアドレスによる）"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:14
 msgid "Visibility public/private"
-msgstr ""
+msgstr "公開表示／非公開表示"
 
 #: view/csv-import/mapping-sidebar/user.phtml:3
 msgid "Users info"
@@ -319,13 +319,13 @@ msgstr ""
 
 #: src/Form/ImportForm.php:126
 msgid "Automap with simple labels"
-msgstr ""
+msgstr "単純なラベルを使用した自動マップ"
 
 #: src/Form/ImportForm.php:127
 msgid ""
 "If checked, column headings that match property labels will be mapped "
 "automatically (for example, \"Title\" to dcterms:title)."
-msgstr ""
+msgstr "オンにすると、プロパティラベルに一致する列見出しが自動的にマップされます（たとえば、「タイトル」をdcterms：titleに）。"
 
 #: src/Form/ImportForm.php:142
 msgid "A note about the purpose or source of this import"
@@ -341,12 +341,12 @@ msgstr "インポートしたすべてのリソースにリソーステンプレ
 msgid ""
 "Assign a resource class to all imported resources. Specific mappings can "
 "override this setting."
-msgstr ""
+msgstr "インポートしたすべてのリソースにリソースクラスを割り当てます。 特定のマッピングはこの設定を上書きできます。"
 
 #: src/Form/MappingForm.php:130
 msgid ""
 "If not set, the default owner for new resources will be the current user."
-msgstr ""
+msgstr "設定されていない場合、新しいリソースのデフォルトの所有者は現在のユーザーになります。"
 
 #: src/Form/MappingForm.php:138 src/Form/MappingForm.php:144
 msgid "Select a user"
@@ -356,7 +356,7 @@ msgstr "ユーザーを選択"
 msgid ""
 "Set visibility for all imported resources. Specific mappings can override "
 "this setting."
-msgstr ""
+msgstr "インポートされたすべてのリソースを表示するかを設定します。 特定のマッピングは、この設定をオーバーライドできます。"
 
 #: src/Form/MappingForm.php:172
 msgid "Open/closed to additions"
