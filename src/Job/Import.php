@@ -193,7 +193,7 @@ class Import extends AbstractJob
             $data = $this->mapRows($rows);
             $this->processBatchData($data);
             $offset += $this->rowsByBatch;
-        };
+        }
 
         if ($this->emptyLines) {
             $this->logger->info(new Message('%d empty lines were skipped.', // @translate
@@ -994,7 +994,7 @@ SQL;
                     // Normalize values.
                     array_map(function ($v) use ($base) {
                         return array_replace($base[$v['type']], array_intersect_key($v, $base[$v['type']]));
-            }, $value)))));
+                    }, $value)))));
         }
         return $values;
     }

@@ -123,7 +123,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                     $value['value'] = $automap->id();
                     $value['label'] = $controller->translate($automap->label());
                     $value['class'] = 'property';
-                    $value['special'] = ' data-property-id="' . $automap->id(). '"';
+                    $value['special'] = ' data-property-id="' . $automap->id() . '"';
                     $value['multiple'] = true;
                     $result[$index] = $value;
                 }
@@ -153,11 +153,11 @@ class AutomapHeadersToMetadata extends AbstractPlugin
             }
             foreach ($properties as $property) {
                 $result['names'][$property->term()] = $property;
-                $name = $vocabulary->label() .  ':' . $property->label();
+                $name = $vocabulary->label() . ':' . $property->label();
                 if (isset($result['labels'][$name])) {
-                    $result['labels'][$vocabulary->label() .  ':' . $property->label() . ' (#' . $property->id() . ')'] = $property;
+                    $result['labels'][$vocabulary->label() . ':' . $property->label() . ' (#' . $property->id() . ')'] = $property;
                 } else {
-                    $result['labels'][$vocabulary->label() .  ':' . $property->label()] = $property;
+                    $result['labels'][$vocabulary->label() . ':' . $property->label()] = $property;
                 }
             }
         }
