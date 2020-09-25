@@ -1,7 +1,7 @@
 <?php
 namespace CSVImport\Mapping;
 
-use Zend\View\Renderer\PhpRenderer;
+use Laminas\View\Renderer\PhpRenderer;
 
 class ItemSetMapping extends AbstractResourceMapping
 {

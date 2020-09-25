@@ -10,8 +10,8 @@ use Omeka\Media\Ingester\Manager;
 use Omeka\Service\Exception\ConfigException;
 use Omeka\Settings\UserSettings;
 use Omeka\Stdlib\Message;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
@@ -249,7 +249,7 @@ class IndexController extends AbstractActionController
         // First reorder mappings: for ergonomic reasons, it’s cleaner to keep
         // the buttons of modules after the default ones. This is only needed in
         // the mapping form. The default order is set in this module config too,
-        // before Zend merge.
+        // before Laminas merge.
         $config = include dirname(dirname(__DIR__)) . '/config/module.config.php';
         $defaultOrder = $config['csv_import']['mappings'];
         $mappings = $this->config['csv_import']['mappings'];

@@ -31,7 +31,7 @@ namespace CSVImport\Mvc\Controller\Plugin;
 
 use Doctrine\DBAL\Connection;
 use Omeka\Api\Manager as ApiManager;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 
 class FindResourcesFromIdentifiers extends AbstractPlugin
 {

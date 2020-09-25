@@ -2,7 +2,7 @@
 namespace CSVImport\Form;
 
 use Omeka\Settings\UserSettings;
-use Zend\Form\Form;
+use Laminas\Form\Form;
 
 class ImportForm extends Form
 {

@@ -8,7 +8,7 @@ use finfo;
 use Omeka\Api\Manager;
 use Omeka\Job\AbstractJob;
 use Omeka\Stdlib\Message;
-use Zend\Log\Logger;
+use Laminas\Log\Logger;
 
 class Import extends AbstractJob
 {

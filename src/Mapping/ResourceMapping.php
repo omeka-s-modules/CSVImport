@@ -2,7 +2,7 @@
 namespace CSVImport\Mapping;
 
 use Omeka\Stdlib\Message;
-use Zend\View\Renderer\PhpRenderer;
+use Laminas\View\Renderer\PhpRenderer;
 
 class ResourceMapping extends AbstractResourceMapping
 {

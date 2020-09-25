@@ -3,7 +3,7 @@ namespace CSVImport\Service\Controller;
 
 use CSVImport\Controller\IndexController;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class IndexControllerFactory implements FactoryInterface
 {

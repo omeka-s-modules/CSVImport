@@ -6,7 +6,7 @@ use Omeka\Form\Element\ItemSetSelect;
 use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Omeka\Form\Element\ResourceClassSelect;
-use Zend\Form\Form;
+use Laminas\Form\Form;
 
 class MappingForm extends Form
 {

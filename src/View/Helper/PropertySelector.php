@@ -1,7 +1,7 @@
 <?php
 namespace CSVImport\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\View\Helper\AbstractHelper;
 
 class PropertySelector extends AbstractHelper
 {
