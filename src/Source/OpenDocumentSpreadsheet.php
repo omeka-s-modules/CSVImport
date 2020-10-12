@@ -19,13 +19,14 @@ class OpenDocumentSpreadsheet extends AbstractSpreadsheet
         $result = true;
         $headers = $this->getHeaders();
         $number = count($headers);
+        /** @var \Box\Spout\Common\Entity\Row $row */
         foreach ($iterator as $row) {
-            if ($row && count($row) !== $number) {
+            if ($row && $row->getNumCells() !== $number) {
                 // When old columns are removed on the right, the flag may not
                 // have been reset, so the default number of columns is always
                 // the same, even if all columns are empty on the right. So,
                 // check if all the columns on the right are empty.
-                $rightColumns = array_slice($row, $number, null, true);
+                $rightColumns = array_slice($row->toArray(), $number, null, true);
                 if (array_filter(array_map('trim', $rightColumns), 'strlen')) {
                     $result = false;
                     break;
