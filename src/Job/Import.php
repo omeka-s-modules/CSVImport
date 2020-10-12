@@ -99,7 +99,7 @@ class Import extends AbstractJob
 
     public function perform()
     {
-        ini_set('auto_detect_line_endings', true);
+        ini_set('auto_detect_line_endings', '1');
         $services = $this->getServiceLocator();
         $this->api = $services->get('Omeka\ApiManager');
         $this->logger = $services->get('Omeka\Logger');
