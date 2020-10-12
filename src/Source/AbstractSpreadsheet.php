@@ -6,7 +6,8 @@ namespace CSVImport\Source;
  * Nevertheless, the library is quick and efficient and the module uses it only
  * as recommended (as stream ahead).
  */
-use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Common\Type;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Box\Spout\Reader\ReaderInterface;
 use Omeka\Stdlib\Message;
 
@@ -49,8 +50,9 @@ abstract class AbstractSpreadsheet extends AbstractSource
         $result = true;
         $headers = $this->getHeaders();
         $number = count($headers);
+        /** @var \Box\Spout\Common\Entity\Row $row */
         foreach ($iterator as $row) {
-            if ($row && count($row) !== $number) {
+            if ($row && $row->getNumCells() !== $number) {
                 $result = false;
                 break;
             }
@@ -60,18 +62,13 @@ abstract class AbstractSpreadsheet extends AbstractSource
         return $result;
     }
 
-    /**
-     * @todo Currently, empty rows are not counted in spreadsheets.
-     *
-     * {@inheritDoc}
-     * @see \CSVImport\Source\AbstractSource::countRows()
-     */
     public function countRows()
     {
+        // Reset is required because XmlReader is ahead only.
         $this->reset();
         $iterator = $this->getIterator();
         if (empty($iterator)) {
-            return;
+            return null;
         }
         $count = 0;
         foreach ($iterator as $row) {
@@ -84,14 +81,14 @@ abstract class AbstractSpreadsheet extends AbstractSource
     public function getRows($offset = 0, $limit = -1)
     {
         if (empty($limit)) {
-            return;
+            return null;
         }
         if ($offset < $this->position) {
             $this->reset();
         }
         $iterator = $this->getIterator();
         if (empty($iterator) || !$iterator->valid()) {
-            return;
+            return null;
         }
 
         $rows = [];
@@ -99,13 +96,14 @@ abstract class AbstractSpreadsheet extends AbstractSource
         $rowOffset = $offset;
         $hasRows = false;
         while ($iterator->valid()) {
+            /** @var \Box\Spout\Common\Entity\Row $row */
             $row = $iterator->current();
             if (is_null($row)) {
                 $iterator->next();
                 continue;
             }
             if ($rowOffset == $this->position) {
-                $rows[] = $this->cleanRow($row);
+                $rows[] = $this->cleanRow($row->toArray());
                 ++$count;
                 ++$rowOffset;
                 $hasRows = true;
@@ -146,11 +144,18 @@ abstract class AbstractSpreadsheet extends AbstractSource
             $this->reset();
         }
 
-        $this->reader = ReaderFactory::create($this->readerType);
+        switch ($this->readerType) {
+            case Type::CSV:
+                $this->reader = ReaderEntityFactory::createCSVReader();
+                break;
+            case Type::ODS:
+                $this->reader = ReaderEntityFactory::createODSReader();
+                break;
+        }
         try {
             $this->reader->open($this->source);
         } catch (\Box\Spout\Common\Exception\IOException $e) {
-            return;
+            return null;
         }
 
         $this->reader
