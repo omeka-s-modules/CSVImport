@@ -7,6 +7,7 @@ class HtmlMediaIngesterAdapter implements MediaIngesterAdapterInterface
     {
         $mediaDatumJson = [];
         $mediaDatumJson['html'] = $mediaDatum;
+        $mediaDatumJson['o:source'] = null;
         return $mediaDatumJson;
     }
 }
