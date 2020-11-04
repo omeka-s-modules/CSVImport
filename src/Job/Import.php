@@ -583,8 +583,8 @@ class Import extends AbstractJob
         // WHERE item_id IN (SELECT item_id FROM `media` WHERE id IN (%s) GROUP BY item_id ORDER BY item_id ASC)
         $conn->exec('SET @item_id = 0; SET @rank = 1;');
         $query = <<<'SQL'
-SELECT id, rank FROM (
-    SELECT id, @rank := IF(@item_id = item_id, @rank + 1, 1) AS rank, @item_id := item_id AS item
+SELECT id, `rank` FROM (
+    SELECT id, @rank := IF(@item_id = item_id, @rank + 1, 1) AS `rank`, @item_id := item_id AS item
     FROM media
     WHERE item_id IN (%s)
     ORDER BY item_id ASC, -position DESC, id ASC
