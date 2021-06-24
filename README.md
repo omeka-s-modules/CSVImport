@@ -35,7 +35,8 @@ See online issues on the [Omeka forum] and the [module issues] page on GitHub.
 License
 -------
 
-This plugin is published under [GNU/GPL v3].
+The Corporation for Digital Scholarship distributes the Omeka source code under the GNU General Public License, version 3 (GPLv3). The full text
+of this license is given in the license file.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
@@ -48,13 +49,19 @@ Contact
 
 Current maintainers:
 
-* Roy Rosenzweig Center for History and New Media
+* Omeka Team
 * Daniel Berthereau (see [Daniel-KM] on GitHub)
 
 Copyright
 ---------
+* CSVImport is Copyright © 2015-present Corporation for Digital Scholarship, Vienna, Virginia, USA http://digitalscholar.org
 
-* Copyright Roy Rosenzweig Center for History and New Media, 2015-2019
+The Omeka name is a registered trademark of the Corporation for Digital Scholarship.
+
+Third-party copyright in this distribution is noted where applicable.
+
+All rights not expressly granted are reserved.
+
 * Copyright Daniel Berthereau, 2017-2019
 
 [CSV Import]: https://github.com/Omeka-s-modules/CSVImport
