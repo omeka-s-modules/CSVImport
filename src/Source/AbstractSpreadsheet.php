@@ -152,6 +152,10 @@ abstract class AbstractSpreadsheet extends AbstractSource
                 $this->reader = ReaderEntityFactory::createODSReader();
                 break;
         }
+
+        // Important, else next rows will be skipped.
+        $this->reader->setShouldPreserveEmptyRows(true);
+
         try {
             $this->reader->open($this->source);
         } catch (\Box\Spout\Common\Exception\IOException $e) {
