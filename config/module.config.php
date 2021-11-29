@@ -139,6 +139,7 @@ return [
         'sources' => [
             'application/vnd.oasis.opendocument.spreadsheet' => Source\OpenDocumentSpreadsheet::class,
             'text/csv' => Source\CsvFile::class,
+            'application/csv' => Source\CsvFile::class,
             'text/tab-separated-values' => Source\TsvFile::class,
         ],
         'mappings' => [
