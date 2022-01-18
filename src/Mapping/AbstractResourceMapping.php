@@ -139,6 +139,13 @@ abstract class AbstractResourceMapping extends AbstractMapping
                 $data['o:item_set'][] = ['o:id' => (int) $id];
             }
         }
+
+        if (!empty($this->args['o:site'])) {
+            $data['o:site'] = [];
+            foreach ($this->args['o:site'] as $id) {
+                $data['o:site'][] = ['o:id' => (int) $id];
+            }
+        }
     }
 
     protected function processGlobalArgsMedia()

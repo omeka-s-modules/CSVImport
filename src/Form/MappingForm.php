@@ -6,6 +6,7 @@ use Omeka\Form\Element\ItemSetSelect;
 use Omeka\Form\Element\PropertySelect;
 use Omeka\Form\Element\ResourceSelect;
 use Omeka\Form\Element\ResourceClassSelect;
+use Omeka\Form\Element\SiteSelect;
 use Laminas\Form\Form;
 
 class MappingForm extends Form
@@ -197,6 +198,21 @@ class MappingForm extends Form
                             ],
                         ],
                     ]);
+
+                    $basicSettingsFieldset->add([
+                        'name' => 'o:site',
+                        'type' => SiteSelect::class,
+                        'attributes' => [
+                            'id' => 'select-sites',
+                            'class' => 'chosen-select',
+                            'multiple' => true,
+                            'data-placeholder' => 'Select sites', // @translate
+                            'value' => $this->getDefaultSiteIds(),
+                        ],
+                        'options' => [
+                            'label' => 'Sites', // @translate
+                        ],
+                    ]);
                     break;
 
                 case 'resources':
@@ -228,6 +244,21 @@ class MappingForm extends Form
                                 'resource' => 'item_sets',
                                 'query' => [],
                             ],
+                        ],
+                    ]);
+
+                    $basicSettingsFieldset->add([
+                        'name' => 'o:site',
+                        'type' => SiteSelect::class,
+                        'attributes' => [
+                            'id' => 'select-sites',
+                            'class' => 'chosen-select',
+                            'multiple' => true,
+                            'data-placeholder' => 'Select sites', // @translate
+                            'value' => $this->getDefaultSiteIds(),
+                        ],
+                        'options' => [
+                            'label' => 'Sites for items', // @translate
                         ],
                     ]);
                     break;
@@ -419,6 +450,21 @@ class MappingForm extends Form
                 'required' => false,
             ]);
         }
+    }
+
+    private function getDefaultSiteIds()
+    {
+        $serviceLocator = $this->getServiceLocator();
+        $api = $serviceLocator->get('Omeka\ApiManager');
+        $userSettings = $serviceLocator->get('Omeka\Settings\User');
+
+        $globalDefaultSites = $api->search('sites', ['assign_new_items' => true])->getContent();
+        $userDefaultSiteIds = $userSettings->get('default_item_sites', []);
+        $globalDefaultSiteIds = [];
+        foreach ($globalDefaultSites as $siteRepresentation) {
+            $globalDefaultSiteIds[] = $siteRepresentation->id();
+        }
+        return array_merge($userDefaultSiteIds, $globalDefaultSiteIds);
     }
 
     public function setServiceLocator($serviceLocator)
