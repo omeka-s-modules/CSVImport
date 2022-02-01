@@ -10,10 +10,11 @@ class IndexControllerFactory implements FactoryInterface
     public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
     {
         $mediaIngesterManager = $serviceLocator->get('Omeka\Media\Ingester\Manager');
-        $config = $serviceLocator->get('Config');
+        $config = $serviceLocator->get('CSVImport\Config');
         $userSettings = $serviceLocator->get('Omeka\Settings\User');
+        $tempDir = $serviceLocator->get('Config')['temp_dir'];
 
-        $indexController = new IndexController($config, $mediaIngesterManager, $userSettings);
+        $indexController = new IndexController($config, $mediaIngesterManager, $userSettings, $tempDir);
         return $indexController;
     }
 }

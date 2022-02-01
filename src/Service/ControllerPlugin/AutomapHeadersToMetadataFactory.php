@@ -9,9 +9,8 @@ class AutomapHeadersToMetadataFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
     {
-        $config = $serviceLocator->get('Config');
         $plugin = new AutomapHeadersToMetadata();
-        $plugin->setConfigCsvImport($config['csv_import']);
+        $plugin->setConfigCsvImport($serviceLocator->get('CSVImport\Config'));
         return $plugin;
     }
 }

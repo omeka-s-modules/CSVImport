@@ -142,8 +142,8 @@ class PropertyMapping extends AbstractMapping
     {
         $dataTypeAdapters = [];
 
-        $config = $this->getServiceLocator()->get('Config');
-        $dataTypeConfig = $config['csv_import']['data_types'];
+        $config = $this->getServiceLocator()->get('CSVImport\Config');
+        $dataTypeConfig = $config['data_types'];
         foreach ($dataTypeConfig as $id => $configEntry) {
             $dataTypeAdapters[$id] = $configEntry['adapter'];
         }
