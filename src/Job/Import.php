@@ -105,7 +105,7 @@ class Import extends AbstractJob
         $this->logger = $services->get('Omeka\Logger');
         $this->findResourcesFromIdentifiers = $services->get('ControllerPluginManager')
             ->get('findResourcesFromIdentifiers');
-        $config = $services->get('Config');
+        $config = $services->get('CSVImport\Config');
 
         $this->args = $this->job->getArgs();
         $args = &$this->args;
@@ -116,7 +116,7 @@ class Import extends AbstractJob
         $this->importResource = $this->resourceType === 'resources';
 
         $this->mappings = [];
-        $mappingClasses = $config['csv_import']['mappings'][$this->resourceType];
+        $mappingClasses = $config['mappings'][$this->resourceType];
         foreach ($mappingClasses as $mappingClass) {
             $mapping = new $mappingClass();
             $mapping->init($args, $services);
@@ -1049,7 +1049,7 @@ SQL;
             }
         }
 
-        $sources = $this->getServiceLocator()->get('Config')['csv_import']['sources'];
+        $sources = $this->getServiceLocator()->get('CSVImport\Config')['sources'];
         if (!isset($sources[$mediaType])) {
             return;
         }

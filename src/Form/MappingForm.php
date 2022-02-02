@@ -18,8 +18,8 @@ class MappingForm extends Form
         $resourceType = $this->getOption('resource_type');
         $serviceLocator = $this->getServiceLocator();
         $userSettings = $serviceLocator->get('Omeka\Settings\User');
-        $config = $serviceLocator->get('Config');
-        $default = $config['csv_import']['user_settings'];
+        $config = $serviceLocator->get('CSVImport\Config');
+        $default = $config['user_settings'];
         $acl = $serviceLocator->get('Omeka\Acl');
 
         $this->add([

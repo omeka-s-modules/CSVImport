@@ -49,6 +49,11 @@ return [
             'csvimport_imports' => Api\Adapter\ImportAdapter::class,
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            'CSVImport\Config' => Service\ConfigFactory::class,
+        ],
+    ],
     'router' => [
         'routes' => [
             'admin' => [
