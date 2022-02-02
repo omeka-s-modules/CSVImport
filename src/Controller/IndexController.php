@@ -425,8 +425,9 @@ class IndexController extends AbstractActionController
             if (!isset($this->tempDir)) {
                 throw new ConfigException('Missing temporary directory configuration');
             }
+            $tempDir = $this->tempDir;
         }
-        $this->tempPath = tempnam($this->tempDir, 'omeka');
+        $this->tempPath = tempnam($tempDir, 'omeka');
         return $this->tempPath;
     }
 
