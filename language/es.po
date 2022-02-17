@@ -7,6 +7,7 @@
 # María Jesús Colmenero <mjcolmenero@gmail.com>, 2018
 # Darío Hereñú, 2019
 # Carlos Rivera <Robertohernande9z9@hotmail.com>, 2019
+# Alfonso Montejo <almontejor@gmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-08 11:15-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Carlos Rivera <Robertohernande9z9@hotmail.com>, 2019\n"
+"Last-Translator: Alfonso Montejo <almontejor@gmail.com>, 2021\n"
 "Language-Team: Spanish (https://www.transifex.com/omeka/teams/14184/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,7 +56,7 @@ msgstr ""
 
 #: view/common/options-sidebar.phtml:40
 msgid "Import values as private"
-msgstr ""
+msgstr "Importar valores como privados"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -142,7 +143,7 @@ msgstr "Idioma"
 
 #: view/csv-import/index/map.phtml:105
 msgid "Private values"
-msgstr ""
+msgstr "Valores privados"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -179,15 +180,15 @@ msgstr "Deshacer %s"
 
 #: view/csv-import/index/past-imports.phtml:82
 msgid "Undo in progress"
-msgstr "Deshacer en proceso"
+msgstr "Deshacer el proceso"
 
 #: view/csv-import/mapping-sidebar/item-set.phtml:3
 msgid "Item set-specific data"
-msgstr ""
+msgstr "Datos específicos del conjunto de fichas"
 
 #: view/csv-import/mapping-sidebar/item.phtml:3
 msgid "Item-specific data"
-msgstr ""
+msgstr "Datos específicos de la ficha"
 
 #: view/csv-import/mapping-sidebar/item.phtml:7
 msgid "Item set (by selected property)"
@@ -205,7 +206,7 @@ msgstr "Origen del medio"
 
 #: view/csv-import/mapping-sidebar/media.phtml:3
 msgid "Media-specific data"
-msgstr ""
+msgstr "Datos específicos del medio"
 
 #: view/csv-import/mapping-sidebar/media.phtml:7
 msgid "Item (by selected property)"
@@ -385,7 +386,7 @@ msgstr ""
 
 #: src/Form/MappingForm.php:172
 msgid "Open/closed to additions"
-msgstr ""
+msgstr "Abierto/cerrado a incorporaciones"
 
 #: src/Form/MappingForm.php:173 src/Form/MappingForm.php:208
 msgid ""
@@ -401,7 +402,7 @@ msgstr "Cerrado"
 
 #: src/Form/MappingForm.php:207
 msgid "Item sets open/closed to additions"
-msgstr ""
+msgstr "Conjuntos de fichas abiertos/cerrados a incorporaciones"
 
 #: src/Form/MappingForm.php:226
 msgid "Item sets for items"
@@ -598,7 +599,7 @@ msgstr "Medio ha crear no está asociado a un elemento (%s)."
 
 #: src/Job/Import.php:495
 msgid "unknown ingester"
-msgstr ""
+msgstr "forma de incorporación desconocida"
 
 #: src/Job/Import.php:620
 msgid "A resource type is required to import a resource."
@@ -754,4 +755,4 @@ msgstr "Datos del elemento"
 
 #: config/module.config.php:178
 msgid "Omeka resource (by ID)"
-msgstr ""
+msgstr "Recurso de Omeka (por ID)"

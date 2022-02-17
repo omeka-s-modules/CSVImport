@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Hong Zhang <zhangh@unlv.nevada.edu>, 2018
+# Hong Zhang <zhangh@unlv.nevada.edu>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-08 11:15-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Hong Zhang <zhangh@unlv.nevada.edu>, 2018\n"
+"Last-Translator: Hong Zhang <zhangh@unlv.nevada.edu>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/omeka/teams/14184/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,21 +23,21 @@ msgstr ""
 
 #: view/common/mapping-sidebar.phtml:4
 msgid "Add mapping: "
-msgstr ""
+msgstr "添加匹配："
 
 #: view/common/options-sidebar.phtml:4
 msgid "Batch edit column options:"
-msgstr ""
+msgstr "批量编辑列选项："
 
 #: view/common/options-sidebar.phtml:5
 msgid "Column options:"
-msgstr ""
+msgstr "列选项："
 
 #: view/common/options-sidebar.phtml:7
 msgid ""
 "Highlighted options will apply to selected column headers. Reset an option "
 "to cancel changes."
-msgstr ""
+msgstr "加亮选项将被用到选中的列头标。重置一个选项以取消改动。"
 
 #: view/common/options-sidebar.phtml:11
 msgid "Use multivalue separator"
@@ -49,7 +49,7 @@ msgstr "在基本导入设置中，这将优先于语言设置。"
 
 #: view/common/options-sidebar.phtml:40
 msgid "Import values as private"
-msgstr ""
+msgstr "导入值为私有的"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -62,20 +62,20 @@ msgstr "CSV导入"
 
 #: view/csv-import/index/map.phtml:13
 msgid "mixed resources"
-msgstr ""
+msgstr "混合资源"
 
 #: view/csv-import/index/map.phtml:14
 msgid "users"
-msgstr ""
+msgstr "用户"
 
 #: view/csv-import/index/map.phtml:17
 #, php-format
 msgid "Import settings for %s"
-msgstr ""
+msgstr "为%s导入设置"
 
 #: view/csv-import/index/map.phtml:18
 msgid "Import settings"
-msgstr ""
+msgstr "导入设置"
 
 #: view/csv-import/index/map.phtml:28
 msgid "Map to Omeka S data"
@@ -83,15 +83,15 @@ msgstr "匹配到Omeka S数据"
 
 #: view/csv-import/index/map.phtml:29
 msgid "Basic Settings"
-msgstr ""
+msgstr "基本设置"
 
 #: view/csv-import/index/map.phtml:30
 msgid "Advanced Settings"
-msgstr ""
+msgstr "高级设置"
 
 #: view/csv-import/index/map.phtml:44
 msgid "Resource type column"
-msgstr ""
+msgstr "资源类型列"
 
 #: view/csv-import/index/map.phtml:48
 #: view/csv-import/mapping-sidebar/item.phtml:11
@@ -100,15 +100,15 @@ msgstr ""
 #: view/csv-import/mapping-sidebar/resource.phtml:8
 #: view/csv-import/mapping-sidebar/user.phtml:7
 msgid "Select below"
-msgstr ""
+msgstr "在下面选择"
 
 #: view/csv-import/index/map.phtml:57
 msgid "Batch edit options"
-msgstr ""
+msgstr "批量编辑选项"
 
 #: view/csv-import/index/map.phtml:62
 msgid "Column"
-msgstr ""
+msgstr "列"
 
 #: view/csv-import/index/map.phtml:63
 msgid "Mappings"
@@ -116,15 +116,15 @@ msgstr "匹配"
 
 #: view/csv-import/index/map.phtml:71
 msgid "Select column"
-msgstr ""
+msgstr "选择列"
 
 #: view/csv-import/index/map.phtml:74
 msgid "Add mapping"
-msgstr ""
+msgstr "添加匹配"
 
 #: view/csv-import/index/map.phtml:85
 msgid "Remove mapping"
-msgstr "移除匹配"
+msgstr "取消匹配"
 
 #: view/csv-import/index/map.phtml:97
 msgid "Multivalue"
@@ -136,11 +136,11 @@ msgstr "语言："
 
 #: view/csv-import/index/map.phtml:105
 msgid "Private values"
-msgstr ""
+msgstr "私有值"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
-msgstr "以往的导入"
+msgstr "过去的导入"
 
 #: view/csv-import/index/past-imports.phtml:20
 msgid "Undo"
@@ -148,16 +148,16 @@ msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:24
 msgid "Action"
-msgstr ""
+msgstr "操作"
 
 #: view/csv-import/index/past-imports.phtml:26
 msgid "Result"
-msgstr ""
+msgstr "结果"
 
 #: view/csv-import/index/past-imports.phtml:51
 #: view/csv-import/index/past-imports.phtml:86
 msgid "Job details"
-msgstr ""
+msgstr "任务细节"
 
 #: view/csv-import/index/past-imports.phtml:63
 msgid ""
@@ -171,64 +171,64 @@ msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:82
 msgid "Undo in progress"
-msgstr "撤销操作正在进行"
+msgstr ""
 
 #: view/csv-import/mapping-sidebar/item-set.phtml:3
 msgid "Item set-specific data"
-msgstr ""
+msgstr "条目集特定数据"
 
 #: view/csv-import/mapping-sidebar/item.phtml:3
 msgid "Item-specific data"
-msgstr ""
+msgstr "条目特定数据"
 
 #: view/csv-import/mapping-sidebar/item.phtml:7
 msgid "Item set (by selected property)"
-msgstr ""
+msgstr "条目集（按选定属性）"
 
 #: view/csv-import/mapping-sidebar/item.phtml:14
 #: view/csv-import/mapping-sidebar/media.phtml:14
 msgid "Internal ID"
-msgstr ""
+msgstr "内部ID"
 
 #: view/csv-import/mapping-sidebar/media-source.phtml:3
 #: view/csv-import/mapping-sidebar/media-source.phtml:6
 msgid "Media source"
-msgstr ""
+msgstr "媒体来源"
 
 #: view/csv-import/mapping-sidebar/media.phtml:3
 msgid "Media-specific data"
-msgstr ""
+msgstr "媒体特定数据"
 
 #: view/csv-import/mapping-sidebar/media.phtml:7
 msgid "Item (by selected property)"
-msgstr ""
+msgstr "条目（按选定属性）"
 
 #: view/csv-import/mapping-sidebar/media.phtml:8
 msgid ""
 "There must be an item identifier to create a media. This is generally "
 "\"dcterms:identifier\", but it may be an internal id."
-msgstr ""
+msgstr "创建媒体必须有一个条目识别码。这通常是“dcterms:identifier”，不过也可能是内部编号。"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:3
 #: view/csv-import/mapping-sidebar/resource.phtml:7
 msgid "Generic data"
-msgstr ""
+msgstr "通用数据"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:9
 msgid "Resource template (by label)"
-msgstr ""
+msgstr "资源模板（按标签）"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:10
 msgid "Resource class (by term)"
-msgstr ""
+msgstr "资源类（按术语）"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:12
 msgid "Owner (by email address)"
-msgstr ""
+msgstr "所有者（按电子邮件地址）"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:14
 msgid "Visibility public/private"
-msgstr ""
+msgstr "可见性公开/私密"
 
 #: view/csv-import/mapping-sidebar/user.phtml:3
 msgid "Users info"
@@ -236,73 +236,73 @@ msgstr "用户信息"
 
 #: src/Form/ImportForm.php:15
 msgid "comma"
-msgstr ""
+msgstr "逗号"
 
 #: src/Form/ImportForm.php:16
 msgid "semi-colon"
-msgstr ""
+msgstr "分号"
 
 #: src/Form/ImportForm.php:17
 msgid "colon"
-msgstr ""
+msgstr "冒号"
 
 #: src/Form/ImportForm.php:18
 msgid "tabulation"
-msgstr ""
+msgstr "制表"
 
 #: src/Form/ImportForm.php:19
 msgid "carriage return"
-msgstr ""
+msgstr "回车"
 
 #: src/Form/ImportForm.php:20
 msgid "space"
-msgstr ""
+msgstr "空格"
 
 #: src/Form/ImportForm.php:21
 msgid "pipe"
-msgstr ""
+msgstr "管道"
 
 #: src/Form/ImportForm.php:32
 msgid "double quote"
-msgstr ""
+msgstr "双引号"
 
 #: src/Form/ImportForm.php:33
 msgid "single quote"
-msgstr ""
+msgstr "单引号"
 
 #: src/Form/ImportForm.php:34
 msgid "hash"
-msgstr ""
+msgstr "散列"
 
 #: src/Form/ImportForm.php:58
 msgid "Spreadsheet (csv, tsv or ods)"
-msgstr ""
+msgstr "电子表格（csv，tsv或ods）"
 
 #: src/Form/ImportForm.php:59
 msgid ""
 "The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant"
 " formats."
-msgstr ""
+msgstr "要上传的CSV，TSV或ODS文件。推荐LibreOffice以兼容格式。"
 
 #: src/Form/ImportForm.php:78
 msgid "CSV column delimiter"
-msgstr ""
+msgstr "CSV列分隔符"
 
 #: src/Form/ImportForm.php:79
 msgid ""
 "A single character that will be used to separate columns in the csv file."
-msgstr ""
+msgstr "在csv文件中用来分隔列的单个字符。"
 
 #: src/Form/ImportForm.php:93
 msgid "CSV column enclosure"
-msgstr ""
+msgstr "CSV的列界限符"
 
 #: src/Form/ImportForm.php:94
 msgid ""
 "A single character that will be used to separate columns in the csv file. "
 "The enclosure can be omitted when the content does not contain the "
 "delimiter."
-msgstr ""
+msgstr "在csv文件中用来分隔列的单个字符。当内容不包含分隔符时，界限符可以省略。"
 
 #: src/Form/ImportForm.php:106
 msgid "Import type"
@@ -314,17 +314,17 @@ msgstr "被导入数据的类型"
 
 #: src/Form/ImportForm.php:112
 msgid "Mixed resources"
-msgstr ""
+msgstr "混合资源"
 
 #: src/Form/ImportForm.php:126
 msgid "Automap with simple labels"
-msgstr ""
+msgstr "用简单标签自动匹配"
 
 #: src/Form/ImportForm.php:127
 msgid ""
 "If checked, column headings that match property labels will be mapped "
 "automatically (for example, \"Title\" to dcterms:title)."
-msgstr ""
+msgstr "如果点选的话，能匹配到属性标签的列标头将自动匹配（例如：“标题”至dcterms:title）。"
 
 #: src/Form/ImportForm.php:142
 msgid "A note about the purpose or source of this import"
@@ -334,50 +334,50 @@ msgstr "关于该导入的目的或来源的注释"
 msgid ""
 "Assign a resource template to all imported resources. Specific mappings can "
 "override this setting."
-msgstr ""
+msgstr "给所有导入的资源指定一个资源模板。特定的匹配可以优先于此设置。"
 
 #: src/Form/MappingForm.php:109
 msgid ""
 "Assign a resource class to all imported resources. Specific mappings can "
 "override this setting."
-msgstr ""
+msgstr "给所有导入的资源指定一个资源类。特定的匹配可以优先于此设置。"
 
 #: src/Form/MappingForm.php:130
 msgid ""
 "If not set, the default owner for new resources will be the current user."
-msgstr ""
+msgstr "如果不设置，新资源的默认拥有者将是当前用户。"
 
 #: src/Form/MappingForm.php:138 src/Form/MappingForm.php:144
 msgid "Select a user"
-msgstr ""
+msgstr "选择一个用户"
 
 #: src/Form/MappingForm.php:155
 msgid ""
 "Set visibility for all imported resources. Specific mappings can override "
 "this setting."
-msgstr ""
+msgstr "给所有导入的资源指定可见性。特定的匹配可以优先于此设置。"
 
 #: src/Form/MappingForm.php:172
 msgid "Open/closed to additions"
-msgstr ""
+msgstr "开放 / 关闭给添加的"
 
 #: src/Form/MappingForm.php:173 src/Form/MappingForm.php:208
 msgid ""
 "Set whether imported item sets are open to additions. Specific mappings can "
 "override this setting."
-msgstr ""
+msgstr "设定导入的条目集是否开放给添加。特定的匹配可以优先于此设置。"
 
 #: src/Form/MappingForm.php:176 src/Form/MappingForm.php:211
 msgid "Closed"
-msgstr ""
+msgstr "已关闭"
 
 #: src/Form/MappingForm.php:207
 msgid "Item sets open/closed to additions"
-msgstr ""
+msgstr "条目集是开放 / 关闭给添加的"
 
 #: src/Form/MappingForm.php:226
 msgid "Item sets for items"
-msgstr ""
+msgstr "用于条目的条目集"
 
 #: src/Form/MappingForm.php:240
 msgid "Multivalue separator"
@@ -395,42 +395,42 @@ msgstr "应用于所有导入的字面数据的语言设置。单独属性的匹
 
 #: src/Form/MappingForm.php:280 src/Form/MappingForm.php:352
 msgid "Create a new resource"
-msgstr ""
+msgstr "创建新资源"
 
 #: src/Form/MappingForm.php:281
 msgid "Append data to the resource"
-msgstr ""
+msgstr "给资源附加数据"
 
 #: src/Form/MappingForm.php:282
 msgid "Revise data of the resource"
-msgstr ""
+msgstr "修改资源数据"
 
 #: src/Form/MappingForm.php:283
 msgid "Update data of the resource"
-msgstr ""
+msgstr "更新数据资源"
 
 #: src/Form/MappingForm.php:284
 msgid "Replace all data of the resource"
-msgstr ""
+msgstr "更新该数据的所有资源"
 
 #: src/Form/MappingForm.php:285
 msgid "Delete the resource"
-msgstr ""
+msgstr "删除该资源"
 
 #: src/Form/MappingForm.php:293
 msgid ""
 "By default, an import creates new resources. Select from this dropdown to "
 "choose an alternate action for the import. For more information on each "
 "action, see the documentation."
-msgstr ""
+msgstr "导入会默认创建新资源。从这个下拉菜单里为导入选择一个备用操作。每个操作的更多信息，请看手册。"
 
 #: src/Form/MappingForm.php:307
 msgid "Resource identifier column"
-msgstr ""
+msgstr "资源识别码列"
 
 #: src/Form/MappingForm.php:326
 msgid "Resource identifier property"
-msgstr ""
+msgstr "资源识别码属性"
 
 #: src/Form/MappingForm.php:327
 msgid ""
@@ -439,10 +439,11 @@ msgid ""
 " file must map the selected property. In all cases, it is strongly "
 "recommended to add one ore more unique identifiers to all your resources."
 msgstr ""
+"使用该属性，通常是“dcterms:identifier”，来识别现有资源，这样就可以更新它们。文件的某列必须匹配选定属性。在所有情况下，强烈建议给你的所有资源添加一个或多个唯一识别码。"
 
 #: src/Form/MappingForm.php:348
 msgid "Action on unidentified resources"
-msgstr ""
+msgstr "对未识别资源的操作"
 
 #: src/Form/MappingForm.php:349
 msgid ""
@@ -451,20 +452,21 @@ msgid ""
 "\"Replace\"). This option is not used when the main action is \"Create\", "
 "\"Delete\" or \"Skip\"."
 msgstr ""
+"当一个资源不存在但是当动作被应用到一个现有资源时（“附加”，“更新”，或“替换”），此选项决定了该如何做。当主功能是“创建”，“删除”或”跳过“时，此选项不会被应用。"
 
 #: src/Form/MappingForm.php:351
 msgid "Skip the row"
-msgstr ""
+msgstr "跳过该行"
 
 #: src/Form/MappingForm.php:366
 msgid "Number of rows to process by batch"
-msgstr ""
+msgstr "批量处理的行数"
 
 #: src/Form/MappingForm.php:367
 msgid ""
 "By default, rows are processed by 20. In some cases, to set a value of 1 may"
 " avoid issues."
-msgstr ""
+msgstr "行是默认按照20个处理。在某些情况下，设置为 1 可以避免一些问题。"
 
 #: src/Job/Undo.php:22
 #, php-format
@@ -473,81 +475,81 @@ msgstr ""
 
 #: src/Job/Import.php:16
 msgid "create"
-msgstr ""
+msgstr "创建"
 
 #: src/Job/Import.php:17
 msgid "append"
-msgstr ""
+msgstr "附加"
 
 #: src/Job/Import.php:18
 msgid "revise"
-msgstr ""
+msgstr "修改"
 
 #: src/Job/Import.php:19
 msgid "update"
-msgstr ""
+msgstr "更新"
 
 #: src/Job/Import.php:20
 msgid "replace"
-msgstr ""
+msgstr "替换"
 
 #: src/Job/Import.php:21
 msgid "delete"
-msgstr ""
+msgstr "删除"
 
 #: src/Job/Import.php:22
 msgid "skip"
-msgstr ""
+msgstr "跳过"
 
 #: src/Job/Import.php:145
 msgid "The file seems empty."
-msgstr ""
+msgstr "文件看起来是空的。"
 
 #: src/Job/Import.php:154 src/Controller/IndexController.php:108
 msgid "The file is not valid."
-msgstr ""
+msgstr "文件是无效的。"
 
 #: src/Job/Import.php:190
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
-msgstr ""
+msgstr "“导入”任务已终止。处理了%d行。"
 
 #: src/Job/Import.php:201
 #, php-format
 msgid "%d empty lines were skipped."
-msgstr ""
+msgstr "%d空行被跳过了。"
 
 #: src/Job/Import.php:279 src/Job/Import.php:307
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
 "skipped: \"%s\"."
-msgstr ""
+msgstr "此识别码没有和一个资源联系起来，在此跳过：“%s”。"
 
 #: src/Job/Import.php:405
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
-msgstr ""
+msgstr "目前不支持对%s的更新模式“%s”。"
 
 #: src/Job/Import.php:439
 #, php-format
 msgid "%d %s were updated (%s): %s."
-msgstr ""
+msgstr "%d%s已更新（%s）：%s。"
 
 #: src/Job/Import.php:442
 #, php-format
 msgid "None of the %d %s were updated (%s)."
-msgstr ""
+msgstr "%d%s均未更新（%s）。"
 
 #: src/Job/Import.php:475
 #, php-format
 msgid "%d %s were removed: %s."
-msgstr ""
+msgstr "%d%s已被删除：%s。"
 
 #: src/Job/Import.php:493
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
-msgstr ""
+msgstr "创建的媒介没有附加到一个条目上（%s）。"
 
 #: src/Job/Import.php:495
 msgid "unknown ingester"
@@ -555,52 +557,52 @@ msgstr ""
 
 #: src/Job/Import.php:620
 msgid "A resource type is required to import a resource."
-msgstr ""
+msgstr "为导入资源，资源类型是必需的。"
 
 #: src/Job/Import.php:1045
 msgid "Resource type is empty."
-msgstr ""
+msgstr "资源类型为空。"
 
 #: src/Job/Import.php:1050
 #, php-format
 msgid "Resource type \"%s\" is not managed."
-msgstr ""
+msgstr "资源类型“%s”未被管理。"
 
 #: src/Job/Import.php:1070
 msgid "action"
-msgstr ""
+msgstr "操作"
 
 #: src/Job/Import.php:1077
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
-msgstr ""
+msgstr "“%s”操作要求一个资源识别码属性。"
 
 #: src/Job/Import.php:1082
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
-msgstr ""
+msgstr "目前对资源类型“%s”没有可用的操作“%s”。"
 
 #: src/Job/Import.php:1090
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
-msgstr ""
+msgstr "对未识别资源的操作“%s”是未管理的。"
 
 #: src/Controller/IndexController.php:91
 msgid "The format of the source cannot be detected."
-msgstr ""
+msgstr "无法检测到资源格式。"
 
 #: src/Controller/IndexController.php:115
 msgid "The file has no headers."
-msgstr ""
+msgstr "文件没有文件头。"
 
 #: src/Controller/IndexController.php:156
 #, php-format
 msgid "Importing in background (%sjob #%d%s)"
-msgstr ""
+msgstr "后台导入（%s任务#%d%s）"
 
 #: src/Controller/IndexController.php:169
 msgid "Invalid settings."
-msgstr ""
+msgstr "无效设置。"
 
 #: src/Controller/IndexController.php:187
 #, php-format
@@ -609,77 +611,77 @@ msgstr ""
 
 #: src/Source/CsvFile.php:84
 msgid "File is not UTF-8 encoded."
-msgstr ""
+msgstr "文件不是UTF-8编码的。"
 
 #: src/Source/AbstractSource.php:74
 msgid "The source is undefined."
-msgstr ""
+msgstr "该资源未定义。"
 
 #: src/Source/AbstractSource.php:79
 msgid "The source is empty."
-msgstr ""
+msgstr "来源是空的。"
 
 #: src/Source/AbstractSource.php:85
 msgid "No file to process."
-msgstr ""
+msgstr "无待处理文件。"
 
 #: src/Source/AbstractSource.php:92
 msgid "The rows are not all the same number of columns."
-msgstr ""
+msgstr "各行不都包含相同列数。"
 
 #: src/Source/AbstractSpreadsheet.php:33
 #, php-format
 msgid ""
 "To process import of a %s file, the php extensions \"zip\" and \"xml\" are "
 "required."
-msgstr ""
+msgstr "为了处理%s文件的导入，要求php后缀“zip”和“xml”。"
 
 #: src/Mapping/ResourceMapping.php:9
 msgid "Resource data"
-msgstr ""
+msgstr "资源数据"
 
 #: src/Mapping/ResourceMapping.php:64
 #, php-format
 msgid "\"%s\" is not a valid resource type."
-msgstr ""
+msgstr "“%s”不是一个有效的资源类型。"
 
 #: src/Mapping/UserMapping.php:8
 msgid "User info"
-msgstr ""
+msgstr "用户信息"
 
 #: src/Mapping/MediaMapping.php:8
 msgid "Media data"
-msgstr ""
+msgstr "媒介数据"
 
 #: src/Mapping/ItemSetMapping.php:8
 msgid "Item set data"
-msgstr ""
+msgstr "条目集数据"
 
 #: src/Mapping/AbstractResourceMapping.php:226
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
-msgstr ""
+msgstr "“%s”（%s）不是一个有效的条目集。"
 
 #: src/Mapping/AbstractResourceMapping.php:248
 #, php-format
 msgid "An item identifier is required to process action \"%s\"."
-msgstr ""
+msgstr "需要一个条目识别码来处理“%s”操作。"
 
 #: src/Mapping/AbstractResourceMapping.php:261
 #, php-format
 msgid "\"%s\" (%s) is not a valid item identifier."
-msgstr ""
+msgstr "“%s”（%s）不是一个有效的条目识别码。"
 
 #: src/Mapping/AbstractResourceMapping.php:275
 #, php-format
 msgid "\"%s\" (%s) is not a valid resource identifier."
-msgstr ""
+msgstr "“%s”（%s）不是一个有效的资源识别码。"
 
 #: src/Mapping/AbstractResourceMapping.php:289
 #: src/Mapping/AbstractResourceMapping.php:296
 #, php-format
 msgid "\"%s\" is not a valid Resource Template name."
-msgstr ""
+msgstr "“%s”不是一个有效的资源模板名称。"
 
 #: src/Mapping/AbstractResourceMapping.php:309
 #: src/Mapping/AbstractResourceMapping.php:318
@@ -687,13 +689,13 @@ msgstr ""
 msgid ""
 "\"%s\" is not a valid resource class. Resource Classes must be a Class found"
 " on the Vocabularies page."
-msgstr ""
+msgstr "“%s”不是一个有效的资源类。资源类必须是在词汇页上的。"
 
 #: src/Mapping/AbstractResourceMapping.php:332
 #: src/Mapping/AbstractResourceMapping.php:339
 #, php-format
 msgid "\"%s\" is not a valid user email address."
-msgstr ""
+msgstr "“%s”不是一个有效的用户电子邮件地址。"
 
 #: src/Mapping/ItemMapping.php:8
 msgid "Item data"
@@ -701,4 +703,4 @@ msgstr "条目数据"
 
 #: config/module.config.php:178
 msgid "Omeka resource (by ID)"
-msgstr ""
+msgstr "Omeka资源（按ID）"

@@ -6,7 +6,7 @@
 # Translators:
 # Latino Imparato <latino.imparato@gmail.com>, 2018
 # Tommaso Vitale, 2019
-# Pietro Valocchi <pietro_valocchi@yahoo.it>, 2019
+# Pietro <pietro_valocchi@yahoo.it>, 2019
 # Giorgio Comai <g@giorgiocomai.eu>, 2019
 # 
 #, fuzzy
