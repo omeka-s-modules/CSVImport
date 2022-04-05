@@ -431,6 +431,10 @@ class MappingForm extends Form
                 'name' => 'o:item_set',
                 'required' => false,
             ]);
+            $basicSettingsInputFilter->add([
+                'name' => 'o:site',
+                'required' => false,
+            ]);
 
             $advancedSettingsInputFilter = $inputFilter->get('advanced-settings');
             $advancedSettingsInputFilter->add([
