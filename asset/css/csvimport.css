@@ -140,9 +140,11 @@ li.option.delete {
     margin: 3px;
 }
 
-input.value-language[type="text"] {
+.sidebar input.value-language[type="text"].active {
     display: block;
     margin: 3px;
+    background-color: #fff;
+    padding: 6px;
 }
 
 li.column-multivalue {
