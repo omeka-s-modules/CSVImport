@@ -1014,6 +1014,10 @@ SQL;
                                 }
                                 break;
                         }
+                        // Bring over annotations untouched, if present
+                        if (isset($v['@annotation'])) {
+                            $r['@annotation'] = $v['@annotation'];
+                        }
                         return $r;
                     }, $value)
                 )))
