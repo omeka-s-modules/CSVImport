@@ -4,8 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Naosuke Okamoto, 2020
-# Tatsuro YOKOTA <hidaruma@outlook.jp>, 2022
+# Martin Slavík <martin.d.slavik@gmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -14,89 +13,89 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-17 13:26-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Tatsuro YOKOTA <hidaruma@outlook.jp>, 2022\n"
-"Language-Team: Japanese (https://www.transifex.com/omeka/teams/14184/ja/)\n"
+"Last-Translator: Martin Slavík <martin.d.slavik@gmail.com>, 2022\n"
+"Language-Team: Czech (https://www.transifex.com/omeka/teams/14184/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: view/common/mapping-sidebar.phtml:4
 msgid "Add mapping: "
-msgstr "マッピングを追加："
+msgstr "Přidat mapování: "
 
 #: view/common/options-sidebar.phtml:4
 msgid "Batch edit column options:"
-msgstr "一括編集の列オプション："
+msgstr ""
 
 #: view/common/options-sidebar.phtml:5
 msgid "Column options:"
-msgstr "列オプション："
+msgstr ""
 
 #: view/common/options-sidebar.phtml:7
 msgid ""
 "Highlighted options will apply to selected column headers. Reset an option "
 "to cancel changes."
-msgstr "強調表示されているオプションは、選択した列見出しに適用されます。 変更をキャンセルするには、オプションをリセットしてください。"
+msgstr ""
 
 #: view/common/options-sidebar.phtml:11
 msgid "Use multivalue separator"
-msgstr "多値セパレータを使用する"
+msgstr ""
 
 #: view/common/options-sidebar.phtml:21
 msgid "This will override language settings in basic import settings."
-msgstr "これにより、基本的なインポート設定の言語設定が上書きされます。"
+msgstr ""
 
 #: view/common/options-sidebar.phtml:29
 msgid "Data type"
-msgstr ""
+msgstr "Typ dat"
 
 #: view/common/options-sidebar.phtml:40
 msgid "Import values as private"
-msgstr "非公開の値としてインポート"
+msgstr "Importovat hodnoty jako soukromé"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
-msgstr "インポート設定"
+msgstr "Nastavení importu"
 
 #: view/csv-import/index/index.phtml:8 view/csv-import/index/map.phtml:20
 #: view/csv-import/index/past-imports.phtml:7
 msgid "CSV Import"
-msgstr "CSVインポート"
+msgstr "CSV Import"
 
 #: view/csv-import/index/map.phtml:13
 msgid "mixed resources"
-msgstr "混在したリソース"
+msgstr ""
 
 #: view/csv-import/index/map.phtml:14
 msgid "users"
-msgstr "ユーザー"
+msgstr "uživatelů"
 
 #: view/csv-import/index/map.phtml:17
 #, php-format
 msgid "Import settings for %s"
-msgstr "%s のインポート設定"
+msgstr ""
 
 #: view/csv-import/index/map.phtml:18
 msgid "Import settings"
-msgstr "インポート設定"
+msgstr "Nastavení importu"
 
 #: view/csv-import/index/map.phtml:28
 msgid "Map to Omeka S data"
-msgstr "Omeka Sデータへのマップ"
+msgstr "Mapovat na Omeka S data"
 
 #: view/csv-import/index/map.phtml:30
 msgid "Basic Settings"
-msgstr "基本設定"
+msgstr "Základní nastavení"
 
 #: view/csv-import/index/map.phtml:31
 msgid "Advanced Settings"
-msgstr "高度な設定"
+msgstr "Pokročilé nastavení"
 
 #: view/csv-import/index/map.phtml:46
 msgid "Resource type column"
-msgstr "リソースタイプ列"
+msgstr "Sloupec s typem zdroje"
 
 #: view/csv-import/index/map.phtml:50
 #: view/csv-import/mapping-sidebar/item.phtml:11
@@ -105,167 +104,167 @@ msgstr "リソースタイプ列"
 #: view/csv-import/mapping-sidebar/resource.phtml:8
 #: view/csv-import/mapping-sidebar/user.phtml:7
 msgid "Select below"
-msgstr "下から選択"
+msgstr "Vybrat níže"
 
 #: view/csv-import/index/map.phtml:60
 msgid "Batch edit options"
-msgstr "一括編集オプション"
+msgstr "Možnosti dávkových úprav"
 
 #: view/csv-import/index/map.phtml:70
 msgid "Column"
-msgstr "列"
+msgstr "Sloupec"
 
 #: view/csv-import/index/map.phtml:72
 msgid "Mappings"
-msgstr "マッピング"
+msgstr "Mapování"
 
 #: view/csv-import/index/map.phtml:81
 msgid "Select column"
-msgstr "列を選択"
+msgstr "Vybrat sloupec"
 
 #: view/csv-import/index/map.phtml:85
 msgid "Add mapping"
-msgstr "マッピングの追加"
+msgstr "Přidat mapování"
 
 #: view/csv-import/index/map.phtml:98
 msgid "Remove mapping"
-msgstr "マッピングの削除"
+msgstr "Odstranit mapování "
 
 #: view/csv-import/index/map.phtml:110
 msgid "Multivalue"
-msgstr "多値"
+msgstr "Více hodnot"
 
 #: view/csv-import/index/map.phtml:114
 msgid "Language:"
-msgstr "言語："
+msgstr "Jazyk:"
 
 #: view/csv-import/index/map.phtml:118
 msgid "Private values"
-msgstr "非公開の値"
+msgstr "Soukromé hdnoty"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
-msgstr "過去のインポート"
+msgstr "Poslední importy"
 
 #: view/csv-import/index/past-imports.phtml:20
 msgid "Undo"
-msgstr "元に戻す"
+msgstr "Vrátit zpět"
 
 #: view/csv-import/index/past-imports.phtml:24
 msgid "Action"
-msgstr ""
+msgstr "Akce"
 
 #: view/csv-import/index/past-imports.phtml:26
 msgid "Result"
-msgstr "結果"
+msgstr "Výsledek"
 
 #: view/csv-import/index/past-imports.phtml:51
 #: view/csv-import/index/past-imports.phtml:86
 msgid "Job details"
-msgstr "ジョブ詳細"
+msgstr "Podrobnosti úlohy"
 
 #: view/csv-import/index/past-imports.phtml:63
 msgid ""
 "Problems were detected with the import. Check the job's log for details."
-msgstr "インポートで問題が検出されました。 ジョブのログで詳細を確認してください。"
+msgstr ""
+"Byly zjištěny problémy s importem. Podrobnosti naleznete v protokolu úlohy."
 
 #: view/csv-import/index/past-imports.phtml:78
 #, php-format
 msgid "Undone %s"
-msgstr "%s を元に戻す"
+msgstr "Vráceno zpět %s"
 
 #: view/csv-import/index/past-imports.phtml:82
 msgid "Undo in progress"
-msgstr "元に戻すよう処理しています"
+msgstr "Probíhá vracení změn"
 
 #: view/csv-import/mapping-sidebar/item-set.phtml:3
 msgid "Item set-specific data"
-msgstr ""
+msgstr "Data specifická pro sadu položek"
 
 #: view/csv-import/mapping-sidebar/item.phtml:3
 msgid "Item-specific data"
-msgstr ""
+msgstr "Data specifická pro položku"
 
 #: view/csv-import/mapping-sidebar/item.phtml:7
 msgid "Item set (by selected property)"
-msgstr "アイテムセット（選択したプロパティによる）"
+msgstr "Sada položek (podle vybrané vlastnosti)"
 
 #: view/csv-import/mapping-sidebar/item.phtml:14
 #: view/csv-import/mapping-sidebar/media.phtml:14
 msgid "Internal ID"
-msgstr "内部ID"
+msgstr "Vnitřní ID"
 
 #: view/csv-import/mapping-sidebar/media-source.phtml:3
 #: view/csv-import/mapping-sidebar/media-source.phtml:6
 msgid "Media source"
-msgstr "メディアソース"
+msgstr "Zdroje media"
 
 #: view/csv-import/mapping-sidebar/media.phtml:3
 msgid "Media-specific data"
-msgstr "メディア固有のデータ"
+msgstr "Data specifická pro medium"
 
 #: view/csv-import/mapping-sidebar/media.phtml:7
 msgid "Item (by selected property)"
-msgstr "アイテム（選択したプロパティによる）"
+msgstr "Položka (podle vybrané vlastnosti)"
 
 #: view/csv-import/mapping-sidebar/media.phtml:8
 msgid ""
 "There must be an item identifier to create a media. This is generally "
 "\"dcterms:identifier\", but it may be an internal id."
 msgstr ""
-"メディアを作成するためのアイテム識別子がなければなりません。 これは通常「dcterms：identifier」ですが、内部IDでもかまいません。"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:3
 #: view/csv-import/mapping-sidebar/resource.phtml:7
 msgid "Generic data"
-msgstr "一般データ"
+msgstr "Obecná data"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:9
 msgid "Resource template (by label)"
-msgstr "リソーステンプレート（ラベルごと）"
+msgstr "Šablona zdroje (podle štítku)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:10
 msgid "Resource class (by term)"
-msgstr "リソーステンプレート（用語ごと）"
+msgstr "Třída zdroje (podle termínu)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:12
 msgid "Owner (by email address)"
-msgstr "所有者（メールアドレスによる）"
+msgstr "Vlastník (podle e-mailu)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:14
 msgid "Visibility public/private"
-msgstr "公開表示／非公開表示"
+msgstr "Viditelnost veřejná/soukromá"
 
 #: view/csv-import/mapping-sidebar/user.phtml:3
 #: view/csv-import/mapping-sidebar/user.phtml:6
 msgid "Users info"
-msgstr "ユーザー情報"
+msgstr ""
 
 #: src/Mapping/ItemSetMapping.php:8
 msgid "Item set data"
-msgstr "アイテムセットデータ"
+msgstr ""
 
 #: src/Mapping/UserMapping.php:8
 msgid "User info"
-msgstr "ユーザー情報"
+msgstr ""
 
 #: src/Mapping/ItemMapping.php:8
 msgid "Item data"
-msgstr "アイテムデータ"
+msgstr ""
 
 #: src/Mapping/ResourceMapping.php:9
 msgid "Resource data"
-msgstr "リソースデータ"
+msgstr ""
 
 #: src/Mapping/ResourceMapping.php:64
 #, php-format
 msgid "\"%s\" is not a valid resource type."
-msgstr "\"%s\" は有効なリソース型ではありません。"
+msgstr ""
 
 #: src/Mapping/AbstractResourceMapping.php:235
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
-msgstr "\"%s\" （%s） は有効なアイテムセットではありません。"
+msgstr ""
 
 #: src/Mapping/AbstractResourceMapping.php:257
 #, php-format
@@ -275,7 +274,7 @@ msgstr ""
 #: src/Mapping/AbstractResourceMapping.php:270
 #, php-format
 msgid "\"%s\" (%s) is not a valid item identifier."
-msgstr "\"%s\" （%s）は有効なアイテムIDではありません。"
+msgstr ""
 
 #: src/Mapping/AbstractResourceMapping.php:284
 #, php-format
@@ -308,7 +307,7 @@ msgstr ""
 
 #: src/Source/CsvFile.php:84
 msgid "File is not UTF-8 encoded."
-msgstr "ファイルはUTF-8エンコーディングではありません。"
+msgstr ""
 
 #: src/Source/AbstractSpreadsheet.php:34
 #, php-format
@@ -335,49 +334,49 @@ msgstr ""
 
 #: src/Job/Import.php:15
 msgid "create"
-msgstr ""
+msgstr "vytvořit"
 
 #: src/Job/Import.php:16
 msgid "append"
-msgstr ""
+msgstr "přidat"
 
 #: src/Job/Import.php:17
 msgid "revise"
-msgstr ""
+msgstr "revidovat"
 
 #: src/Job/Import.php:18
 msgid "update"
-msgstr ""
+msgstr "aktualizovat"
 
 #: src/Job/Import.php:19
 msgid "replace"
-msgstr ""
+msgstr "nahradit"
 
 #: src/Job/Import.php:20
 msgid "delete"
-msgstr ""
+msgstr "smazat"
 
 #: src/Job/Import.php:21
 msgid "skip"
-msgstr ""
+msgstr "přeskočit"
 
 #: src/Job/Import.php:144
 msgid "The file seems empty."
-msgstr ""
+msgstr "Soubor vypadá prázdný."
 
 #: src/Job/Import.php:153 src/Controller/IndexController.php:114
 msgid "The file is not valid."
-msgstr ""
+msgstr "Soubor není platný."
 
 #: src/Job/Import.php:188
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
-msgstr ""
+msgstr "Úloha \"Importovat\" byla přerušena: počet zpracovaných řádků: %d."
 
 #: src/Job/Import.php:199
 #, php-format
 msgid "%d empty lines were skipped."
-msgstr ""
+msgstr "Počet přeskočených řádků:%d."
 
 #: src/Job/Import.php:281 src/Job/Import.php:310
 #, php-format
@@ -456,28 +455,28 @@ msgstr ""
 msgid ""
 "Assign a resource template to all imported resources. Specific mappings can "
 "override this setting."
-msgstr "インポートしたすべてのリソースにリソーステンプレートを割り当てます。 特定のマッピングはこの設定を上書きできます。"
+msgstr ""
 
 #: src/Form/MappingForm.php:110
 msgid ""
 "Assign a resource class to all imported resources. Specific mappings can "
 "override this setting."
-msgstr "インポートしたすべてのリソースにリソースクラスを割り当てます。 特定のマッピングはこの設定を上書きできます。"
+msgstr ""
 
 #: src/Form/MappingForm.php:131
 msgid ""
 "If not set, the default owner for new resources will be the current user."
-msgstr "設定されていない場合、新しいリソースのデフォルトの所有者は現在のユーザーになります。"
+msgstr ""
 
 #: src/Form/MappingForm.php:139 src/Form/MappingForm.php:145
 msgid "Select a user"
-msgstr "ユーザーを選択"
+msgstr ""
 
 #: src/Form/MappingForm.php:156
 msgid ""
 "Set visibility for all imported resources. Specific mappings can override "
 "this setting."
-msgstr "インポートされたすべてのリソースを表示するかを設定します。 特定のマッピングは、この設定をオーバーライドできます。"
+msgstr ""
 
 #: src/Form/MappingForm.php:173
 msgid "Open/closed to additions"
@@ -507,41 +506,41 @@ msgstr ""
 
 #: src/Form/MappingForm.php:271
 msgid "Multivalue separator"
-msgstr "多値セパレータ"
+msgstr ""
 
 #: src/Form/MappingForm.php:272
 msgid "The separator to use for columns with multiple values"
-msgstr "複数の値を持つ列に使用する区切り記号"
+msgstr ""
 
 #: src/Form/MappingForm.php:288
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
-msgstr "ここの設定は、基本インポート設定の対応する設定を上書きします。"
+msgstr ""
 
 #: src/Form/MappingForm.php:311 src/Form/MappingForm.php:382
 msgid "Create a new resource"
-msgstr "新規リソースの作成"
+msgstr ""
 
 #: src/Form/MappingForm.php:312
 msgid "Append data to the resource"
-msgstr "リソースにデータを追加"
+msgstr ""
 
 #: src/Form/MappingForm.php:313
 msgid "Revise data of the resource"
-msgstr "リソースのデータを修正"
+msgstr ""
 
 #: src/Form/MappingForm.php:314
 msgid "Update data of the resource"
-msgstr "リソースのデータを更新"
+msgstr ""
 
 #: src/Form/MappingForm.php:315
 msgid "Replace all data of the resource"
-msgstr "リソースの全データを入れ替え"
+msgstr ""
 
 #: src/Form/MappingForm.php:316
 msgid "Delete the resource"
-msgstr "リソースを削除"
+msgstr ""
 
 #: src/Form/MappingForm.php:324
 msgid ""
@@ -594,81 +593,81 @@ msgstr ""
 
 #: src/Form/ImportForm.php:15
 msgid "comma"
-msgstr "カンマ"
+msgstr ""
 
 #: src/Form/ImportForm.php:16
 msgid "semi-colon"
-msgstr "セミコロン"
+msgstr ""
 
 #: src/Form/ImportForm.php:17
 msgid "colon"
-msgstr "コロン"
+msgstr ""
 
 #: src/Form/ImportForm.php:18
 msgid "tabulation"
-msgstr "タブ"
+msgstr ""
 
 #: src/Form/ImportForm.php:19
 msgid "carriage return"
-msgstr "改行コード"
+msgstr ""
 
 #: src/Form/ImportForm.php:20
 msgid "space"
-msgstr "スペース"
+msgstr ""
 
 #: src/Form/ImportForm.php:21
 msgid "pipe"
-msgstr "パイプ"
+msgstr ""
 
 #: src/Form/ImportForm.php:32
 msgid "double quote"
-msgstr "ダブルクォーテーション"
+msgstr ""
 
 #: src/Form/ImportForm.php:33
 msgid "single quote"
-msgstr "シングルクォーテーション"
+msgstr ""
 
 #: src/Form/ImportForm.php:34
 msgid "hash"
-msgstr "ハッシュ"
+msgstr ""
 
 #: src/Form/ImportForm.php:58
 msgid "Spreadsheet (csv, tsv or ods)"
-msgstr "スプレッドシート（CSV, TSV または ODS）"
+msgstr ""
 
 #: src/Form/ImportForm.php:59
 msgid ""
 "The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant"
 " formats."
-msgstr "アップロードするCSV、TSV、またはODSファイル。 LibreOfficeは準拠フォーマットに推奨されています。"
+msgstr ""
 
 #: src/Form/ImportForm.php:78
 msgid "CSV column delimiter"
-msgstr "CSV列区切り文字"
+msgstr ""
 
 #: src/Form/ImportForm.php:79
 msgid ""
 "A single character that will be used to separate columns in the csv file."
-msgstr "csvファイルの列を区切るために使用される単一の文字。"
+msgstr ""
 
 #: src/Form/ImportForm.php:93
 msgid "CSV column enclosure"
-msgstr "CSVの列エンクロージャ（括り）"
+msgstr ""
 
 #: src/Form/ImportForm.php:94
 msgid ""
 "A single character that will be used to separate columns in the csv file. "
 "The enclosure can be omitted when the content does not contain the "
 "delimiter."
-msgstr "csvファイルの列を区切るために使用される単一の文字。 内容に区切り文字が含まれていない場合は、エンクロージャを省略できます。"
+msgstr ""
 
 #: src/Form/ImportForm.php:106
 msgid "Import type"
-msgstr "インポートタイプ"
+msgstr ""
 
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
-msgstr "インポートされるデータのタイプ"
+msgstr ""
 
 #: src/Form/ImportForm.php:112
 msgid "Mixed resources"
@@ -676,17 +675,17 @@ msgstr ""
 
 #: src/Form/ImportForm.php:125
 msgid "Automap with simple labels"
-msgstr "単純なラベルを使用した自動マップ"
+msgstr ""
 
 #: src/Form/ImportForm.php:126
 msgid ""
 "If checked, column headings that match property labels will be mapped "
 "automatically (for example, \"Title\" to dcterms:title)."
-msgstr "オンにすると、プロパティラベルに一致する列見出しが自動的にマップされます（たとえば、「タイトル」をdcterms：titleに）。"
+msgstr ""
 
 #: src/Form/ImportForm.php:141
 msgid "A note about the purpose or source of this import"
-msgstr "このインポートの目的またはインポート元に関する注釈"
+msgstr ""
 
 #: src/Controller/IndexController.php:97
 msgid "The format of the source cannot be detected."
