@@ -155,6 +155,10 @@ li.column-multivalue {
     display: block;
 }
 
+fieldset.section input.value-language[type="text"] {
+    display: block;
+}
+
 .csv-import-job-param,
 .csv-import-job-log {
     font-size: smaller;
