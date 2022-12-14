@@ -453,34 +453,40 @@ msgstr "\"%s\" ekintzak baliabidearen identifikatzaile propietatea behar du."
 #: src/Job/Import.php:1107
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
-msgstr ""
+msgstr "\"%s\" ekintza ez dago erabilgarri \"%s\" baliabide motarentzat une honetan."
 
 #: src/Job/Import.php:1115
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
-msgstr ""
+msgstr "\"%s\" ekintza identifikatu gabeko baliabideentzat ez da kudeatzen."
 
 #: src/Job/Undo.php:22
 #, php-format
 msgid "The job \"Undo\" was stopped: %d/%d resources processed."
-msgstr ""
+msgstr "\"Desegin\" lana gelditu egin da: %d/%d baliabide prozesatu dira."
 
 #: src/Form/MappingForm.php:87
 msgid ""
 "Assign a resource template to all imported resources. Specific mappings can "
 "override this setting."
 msgstr ""
+"Esleitu baliabide txantiloia inportatutaiko baliabide guztientzat. Mapaketa "
+"zehatzek ezarpen hau gainidatzi dezakete."
 
 #: src/Form/MappingForm.php:110
 msgid ""
 "Assign a resource class to all imported resources. Specific mappings can "
 "override this setting."
 msgstr ""
+"Esleitu baliabide klasea inportatutako baliabide guztientzat. Mapaketa "
+"zehatzek ezarpen hau gainidatzi dezakete."
 
 #: src/Form/MappingForm.php:131
 msgid ""
 "If not set, the default owner for new resources will be the current user."
 msgstr ""
+"Ez bada ezartzen, baliabide berrien defektuzko jabea uneko erabiltzailea "
+"izango da."
 
 #: src/Form/MappingForm.php:139 src/Form/MappingForm.php:145
 msgid "Select a user"
@@ -491,6 +497,8 @@ msgid ""
 "Set visibility for all imported resources. Specific mappings can override "
 "this setting."
 msgstr ""
+"Ezarri ikusgaitasuna inportatutako baliabide guztientzat. Mapaketa zehatzek "
+"ezarpen hau gainidatzi dezakete."
 
 #: src/Form/MappingForm.php:173
 msgid "Open/closed to additions"
@@ -501,6 +509,8 @@ msgid ""
 "Set whether imported item sets are open to additions. Specific mappings can "
 "override this setting."
 msgstr ""
+"Ezarri inportatutako elementu multzoak adizioetarako irekita dauden ala ez. "
+"Mapaketa zehatzek ezarpen hau gainidatzi dezakete."
 
 #: src/Form/MappingForm.php:177 src/Form/MappingForm.php:227
 msgid "Closed"
@@ -508,53 +518,55 @@ msgstr "Itxita"
 
 #: src/Form/MappingForm.php:223
 msgid "Item sets open/closed to additions"
-msgstr ""
+msgstr "Elementu multzoak irekita/itxita adizioentzat"
 
 #: src/Form/MappingForm.php:242
 msgid "Item sets for items"
-msgstr ""
+msgstr "Elementuentzat elementu multzoak"
 
 #: src/Form/MappingForm.php:261
 msgid "Sites for items"
-msgstr ""
+msgstr "Elementuen atariak"
 
 #: src/Form/MappingForm.php:271
 msgid "Multivalue separator"
-msgstr ""
+msgstr "Balio anizkoitz banatzailea"
 
 #: src/Form/MappingForm.php:272
 msgid "The separator to use for columns with multiple values"
-msgstr ""
+msgstr "Erabiliko den banatzailea balio anizkoitzat dituzten zutabeentzat"
 
 #: src/Form/MappingForm.php:288
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
 msgstr ""
+"Inportatutako informazio literalari aplikatu beharreko hizkuntza ezarpena. "
+"Bakarkako propietate mapaketek ezarpen hau gainidatzi dezakete."
 
 #: src/Form/MappingForm.php:311 src/Form/MappingForm.php:382
 msgid "Create a new resource"
-msgstr ""
+msgstr "Sortu baliabide berria"
 
 #: src/Form/MappingForm.php:312
 msgid "Append data to the resource"
-msgstr ""
+msgstr "Gehitu informazioa baliabideari"
 
 #: src/Form/MappingForm.php:313
 msgid "Revise data of the resource"
-msgstr ""
+msgstr "Berrikusi baliabidearen informazioa"
 
 #: src/Form/MappingForm.php:314
 msgid "Update data of the resource"
-msgstr ""
+msgstr "Eguneratu baliabidearen informazioa"
 
 #: src/Form/MappingForm.php:315
 msgid "Replace all data of the resource"
-msgstr ""
+msgstr "Ordezkatu baliabidearen informazio guztia"
 
 #: src/Form/MappingForm.php:316
 msgid "Delete the resource"
-msgstr ""
+msgstr "Ezabatu baliabidea"
 
 #: src/Form/MappingForm.php:324
 msgid ""
@@ -562,14 +574,17 @@ msgid ""
 "choose an alternate action for the import. For more information on each "
 "action, see the documentation."
 msgstr ""
+"Defektuz, inportazioak baliabide berriak sortzen ditu. Hautatu inportazio "
+"ekintzarentza ordezko ekintza goitibehera zerrenda honetatik. Akzio "
+"bakoitzaren informazio gehiago jasotzeko, ikusi dokumentazioa. "
 
 #: src/Form/MappingForm.php:338
 msgid "Resource identifier column"
-msgstr ""
+msgstr "Baliabide identifikatzailearen zutabea"
 
 #: src/Form/MappingForm.php:357
 msgid "Resource identifier property"
-msgstr ""
+msgstr "Baliabide identifikatzailearen propietatea"
 
 #: src/Form/MappingForm.php:358
 msgid ""
@@ -578,10 +593,15 @@ msgid ""
 " file must map the selected property. In all cases, it is strongly "
 "recommended to add one ore more unique identifiers to all your resources."
 msgstr ""
+"Erabili propietate hau, orokorki \"dcterms:identifier\", existitzen diren "
+"baliabideak identifikatzeko, berauek eguneratzea posible izan dadin. "
+"Fitxategiko zutabe bat hautatutako propietatearekin bat etorri behar da. "
+"Kasu guztietan, bereziki gomendatzen da baliabide guztiei identifikatzaile "
+"esklusibo bat baino gehiago gehitzea."
 
 #: src/Form/MappingForm.php:378
 msgid "Action on unidentified resources"
-msgstr ""
+msgstr "Identifikatu gabeko baliabideentzako ekintza"
 
 #: src/Form/MappingForm.php:379
 msgid ""
@@ -590,83 +610,91 @@ msgid ""
 "\"Replace\"). This option is not used when the main action is \"Create\", "
 "\"Delete\" or \"Skip\"."
 msgstr ""
+"Aukera honek zehazten du zer egin baliabidea ez denean existitzen baina "
+"akzioa existitzen den baliabide batena denean (\"Gehitu\", \"Aldatu\", edo "
+"\"Ordezkatu\"). Aukera hau ez da erabiltzen akzioa nagusia \"Sortu\", "
+"\"Ezabatu\" edo \"Salto\" denean."
 
 #: src/Form/MappingForm.php:381
 msgid "Skip the row"
-msgstr ""
+msgstr "Errenkada saltatu"
 
 #: src/Form/MappingForm.php:396
 msgid "Number of rows to process by batch"
-msgstr ""
+msgstr "Sortan prozesatuko diren errenkada kopurua"
 
 #: src/Form/MappingForm.php:397
 msgid ""
 "By default, rows are processed by 20. In some cases, to set a value of 1 may"
 " avoid issues."
 msgstr ""
+"Defektuz, errenkadak 20naka prozesatzen dira. Kasu batzuetan, balioa 1era "
+"jartzeak arazoak ekidin ditzake."
 
 #: src/Form/ImportForm.php:15
 msgid "comma"
-msgstr ""
+msgstr "koma"
 
 #: src/Form/ImportForm.php:16
 msgid "semi-colon"
-msgstr ""
+msgstr "puntu eta koma"
 
 #: src/Form/ImportForm.php:17
 msgid "colon"
-msgstr ""
+msgstr "bi puntu"
 
 #: src/Form/ImportForm.php:18
 msgid "tabulation"
-msgstr ""
+msgstr "tabulazioa"
 
 #: src/Form/ImportForm.php:19
 msgid "carriage return"
-msgstr ""
+msgstr "orga-itzulera"
 
 #: src/Form/ImportForm.php:20
 msgid "space"
-msgstr ""
+msgstr "hutsunea"
 
 #: src/Form/ImportForm.php:21
 msgid "pipe"
-msgstr ""
+msgstr "tutu"
 
 #: src/Form/ImportForm.php:32
 msgid "double quote"
-msgstr ""
+msgstr "komatxo bikoitza"
 
 #: src/Form/ImportForm.php:33
 msgid "single quote"
-msgstr ""
+msgstr "komatxo bakuna"
 
 #: src/Form/ImportForm.php:34
 msgid "hash"
-msgstr ""
+msgstr "hash"
 
 #: src/Form/ImportForm.php:58
 msgid "Spreadsheet (csv, tsv or ods)"
-msgstr ""
+msgstr "Kalkulu orria (csv, tsv edo ods)"
 
 #: src/Form/ImportForm.php:59
 msgid ""
 "The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant"
 " formats."
 msgstr ""
+"Kargatu beharreko CSV, TSV edo ODS fitxategia. LIbreoffice gomendatzen da "
+"formatu egokiak emateko."
 
 #: src/Form/ImportForm.php:78
 msgid "CSV column delimiter"
-msgstr ""
+msgstr "CSV zutabe mugatzailea"
 
 #: src/Form/ImportForm.php:79
 msgid ""
 "A single character that will be used to separate columns in the csv file."
-msgstr ""
+msgstr "CSV fitxategiko zutabeak bereizteko erabiliko den karakterea."
 
 #: src/Form/ImportForm.php:93
 msgid "CSV column enclosure"
-msgstr ""
+msgstr "CSV zutabearen itxitura"
 
 #: src/Form/ImportForm.php:94
 msgid ""
@@ -674,55 +702,60 @@ msgid ""
 "The enclosure can be omitted when the content does not contain the "
 "delimiter."
 msgstr ""
+"Karaktere bakuna csv fitxategiko zutabeak bereizteko erabiliko dena. "
+"Bereiztailea edukiaren parte ez denean, itxitura definizioa zehaztu gabe "
+"utzi daiteke."
 
 #: src/Form/ImportForm.php:106
 msgid "Import type"
-msgstr ""
+msgstr "Inportazio mota"
 
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
-msgstr ""
+msgstr "Inportatuko den datu mota"
 
 #: src/Form/ImportForm.php:112
 msgid "Mixed resources"
-msgstr ""
+msgstr "Baliabide nahasiak"
 
 #: src/Form/ImportForm.php:125
 msgid "Automap with simple labels"
-msgstr ""
+msgstr "Egin automapaketa oinarrizko etiketekin"
 
 #: src/Form/ImportForm.php:126
 msgid ""
 "If checked, column headings that match property labels will be mapped "
 "automatically (for example, \"Title\" to dcterms:title)."
 msgstr ""
+"Aukeratuta badago, etiketa propietateekin bat egiten duten zutabe goiburuak "
+"automatikoki mapatuko dira (adibidez, \"Title\" dcterms:title-rekin)."
 
 #: src/Form/ImportForm.php:141
 msgid "A note about the purpose or source of this import"
-msgstr ""
+msgstr "Inportazio honen helburu edo iturburuaren inguruko oharra"
 
 #: src/Controller/IndexController.php:97
 msgid "The format of the source cannot be detected."
-msgstr ""
+msgstr "Ezin da iturburuaren formatua detektatu."
 
 #: src/Controller/IndexController.php:121
 msgid "The file has no headers."
-msgstr ""
+msgstr "Fitxategiak ez du goibururik."
 
 #: src/Controller/IndexController.php:164
 #, php-format
 msgid "Importing in background (%sjob #%d%s)"
-msgstr ""
+msgstr "Atzeko planoan inportatzen (%s lana # %d %s)"
 
 #: src/Controller/IndexController.php:177
 msgid "Invalid settings."
-msgstr ""
+msgstr "Ezarpen baliogabeak."
 
 #: src/Controller/IndexController.php:195
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
-msgstr ""
+msgstr "Bertan behera uztea martxan hurrengo lanetan: %s"
 
 #: config/module.config.php:184
 msgid "Omeka resource (by ID)"
-msgstr ""
+msgstr "Omeka baliabidea (ID arabera)"

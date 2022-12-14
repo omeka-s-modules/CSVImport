@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: view/common/mapping-sidebar.phtml:4
 msgid "Add mapping: "
@@ -56,7 +56,7 @@ msgstr ""
 
 #: view/common/options-sidebar.phtml:29
 msgid "Data type"
-msgstr ""
+msgstr "Type de donnée"
 
 #: view/common/options-sidebar.phtml:40
 msgid "Import values as private"
@@ -533,7 +533,7 @@ msgstr "Collections pour les contenus"
 
 #: src/Form/MappingForm.php:261
 msgid "Sites for items"
-msgstr ""
+msgstr "Sites pour les contenus"
 
 #: src/Form/MappingForm.php:271
 msgid "Multivalue separator"
