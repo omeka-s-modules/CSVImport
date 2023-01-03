@@ -189,6 +189,7 @@ return [
             'url' => MediaIngesterAdapter\UrlMediaIngesterAdapter::class,
             'html' => MediaIngesterAdapter\HtmlMediaIngesterAdapter::class,
             'iiif' => null,
+            'iiif_presentation' => null,
             'oembed' => null,
             'youtube' => null,
         ],
