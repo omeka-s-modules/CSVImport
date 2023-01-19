@@ -1,0 +1,717 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Rubén Alcaraz Martínez <rubenalcarazmartinez@gmail.com>, 2023
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-02-17 13:26-0500\n"
+"PO-Revision-Date: 2017-09-14 20:14+0000\n"
+"Last-Translator: Rubén Alcaraz Martínez <rubenalcarazmartinez@gmail.com>, 2023\n"
+"Language-Team: Catalan (Spain) (https://www.transifex.com/omeka/teams/14184/ca_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: view/common/mapping-sidebar.phtml:4
+msgid "Add mapping: "
+msgstr ""
+
+#: view/common/options-sidebar.phtml:4
+msgid "Batch edit column options:"
+msgstr "Opcions d'edició en lot de les columnes:"
+
+#: view/common/options-sidebar.phtml:5
+msgid "Column options:"
+msgstr "Opcions de les columnes:"
+
+#: view/common/options-sidebar.phtml:7
+msgid ""
+"Highlighted options will apply to selected column headers. Reset an option "
+"to cancel changes."
+msgstr ""
+
+#: view/common/options-sidebar.phtml:11
+msgid "Use multivalue separator"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:21
+msgid "This will override language settings in basic import settings."
+msgstr ""
+
+#: view/common/options-sidebar.phtml:29
+msgid "Data type"
+msgstr "Tipus de dada"
+
+#: view/common/options-sidebar.phtml:40
+msgid "Import values as private"
+msgstr ""
+
+#: view/csv-import/index/index.phtml:8
+msgid "Import Settings"
+msgstr "Importa els paràmetres"
+
+#: view/csv-import/index/index.phtml:8 view/csv-import/index/map.phtml:20
+#: view/csv-import/index/past-imports.phtml:7
+msgid "CSV Import"
+msgstr "CSV Import"
+
+#: view/csv-import/index/map.phtml:13
+msgid "mixed resources"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:14
+msgid "users"
+msgstr "usuaris"
+
+#: view/csv-import/index/map.phtml:17
+#, php-format
+msgid "Import settings for %s"
+msgstr "Importa els paràmetres per %s"
+
+#: view/csv-import/index/map.phtml:18
+msgid "Import settings"
+msgstr "Importa els paràmetres"
+
+#: view/csv-import/index/map.phtml:28
+msgid "Map to Omeka S data"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:30
+msgid "Basic Settings"
+msgstr "Paràmetres bàsics"
+
+#: view/csv-import/index/map.phtml:31
+msgid "Advanced Settings"
+msgstr "Paràmetres avançats"
+
+#: view/csv-import/index/map.phtml:46
+msgid "Resource type column"
+msgstr "Columna del tipus de recurs"
+
+#: view/csv-import/index/map.phtml:50
+#: view/csv-import/mapping-sidebar/item.phtml:11
+#: view/csv-import/mapping-sidebar/media-source.phtml:7
+#: view/csv-import/mapping-sidebar/media.phtml:12
+#: view/csv-import/mapping-sidebar/resource.phtml:8
+#: view/csv-import/mapping-sidebar/user.phtml:7
+msgid "Select below"
+msgstr "Seleccioneu a continuació"
+
+#: view/csv-import/index/map.phtml:60
+msgid "Batch edit options"
+msgstr "Opcions d'edició en lot"
+
+#: view/csv-import/index/map.phtml:70
+msgid "Column"
+msgstr "Columna"
+
+#: view/csv-import/index/map.phtml:72
+msgid "Mappings"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:81
+msgid "Select column"
+msgstr "Seleccioneu una columna"
+
+#: view/csv-import/index/map.phtml:85
+msgid "Add mapping"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:98
+msgid "Remove mapping"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:110
+msgid "Multivalue"
+msgstr "Multivalor"
+
+#: view/csv-import/index/map.phtml:114
+msgid "Language:"
+msgstr "Idioma:"
+
+#: view/csv-import/index/map.phtml:118
+msgid "Private values"
+msgstr "Valors privats"
+
+#: view/csv-import/index/past-imports.phtml:7
+msgid "Past Imports"
+msgstr "Importacions anteriors"
+
+#: view/csv-import/index/past-imports.phtml:20
+msgid "Undo"
+msgstr "Desfer"
+
+#: view/csv-import/index/past-imports.phtml:24
+msgid "Action"
+msgstr "Acció"
+
+#: view/csv-import/index/past-imports.phtml:26
+msgid "Result"
+msgstr "Resultat"
+
+#: view/csv-import/index/past-imports.phtml:51
+#: view/csv-import/index/past-imports.phtml:86
+msgid "Job details"
+msgstr "Detall de la tasca"
+
+#: view/csv-import/index/past-imports.phtml:63
+msgid ""
+"Problems were detected with the import. Check the job's log for details."
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:78
+#, php-format
+msgid "Undone %s"
+msgstr ""
+
+#: view/csv-import/index/past-imports.phtml:82
+msgid "Undo in progress"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item-set.phtml:3
+msgid "Item set-specific data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item.phtml:3
+msgid "Item-specific data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item.phtml:7
+msgid "Item set (by selected property)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/item.phtml:14
+#: view/csv-import/mapping-sidebar/media.phtml:14
+msgid "Internal ID"
+msgstr "ID intern"
+
+#: view/csv-import/mapping-sidebar/media-source.phtml:3
+#: view/csv-import/mapping-sidebar/media-source.phtml:6
+msgid "Media source"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media.phtml:3
+msgid "Media-specific data"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media.phtml:7
+msgid "Item (by selected property)"
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/media.phtml:8
+msgid ""
+"There must be an item identifier to create a media. This is generally "
+"\"dcterms:identifier\", but it may be an internal id."
+msgstr ""
+
+#: view/csv-import/mapping-sidebar/resource.phtml:3
+#: view/csv-import/mapping-sidebar/resource.phtml:7
+msgid "Generic data"
+msgstr "Dades genèriques"
+
+#: view/csv-import/mapping-sidebar/resource.phtml:9
+msgid "Resource template (by label)"
+msgstr "Plantilla del recurs (per etiqueta)"
+
+#: view/csv-import/mapping-sidebar/resource.phtml:10
+msgid "Resource class (by term)"
+msgstr "Classe del recurs (per terme)"
+
+#: view/csv-import/mapping-sidebar/resource.phtml:12
+msgid "Owner (by email address)"
+msgstr "Propietari (per email)"
+
+#: view/csv-import/mapping-sidebar/resource.phtml:14
+msgid "Visibility public/private"
+msgstr "Visibilitat pública / privada"
+
+#: view/csv-import/mapping-sidebar/user.phtml:3
+#: view/csv-import/mapping-sidebar/user.phtml:6
+msgid "Users info"
+msgstr "Info dels usuaris"
+
+#: src/Mapping/ItemSetMapping.php:8
+msgid "Item set data"
+msgstr ""
+
+#: src/Mapping/UserMapping.php:8
+msgid "User info"
+msgstr "Informació de l'usuari"
+
+#: src/Mapping/ItemMapping.php:8
+msgid "Item data"
+msgstr ""
+
+#: src/Mapping/ResourceMapping.php:9
+msgid "Resource data"
+msgstr ""
+
+#: src/Mapping/ResourceMapping.php:64
+#, php-format
+msgid "\"%s\" is not a valid resource type."
+msgstr "\"%s\" no és un tipus de recurs vàlid."
+
+#: src/Mapping/AbstractResourceMapping.php:235
+#, php-format
+msgid "\"%s\" (%s) is not a valid item set."
+msgstr "\"%s\" (%s) no és un conjunt de recursos vàlid."
+
+#: src/Mapping/AbstractResourceMapping.php:257
+#, php-format
+msgid "An item identifier is required to process action \"%s\"."
+msgstr "Es requereix un identificador per a l'acció \"%s\"."
+
+#: src/Mapping/AbstractResourceMapping.php:270
+#, php-format
+msgid "\"%s\" (%s) is not a valid item identifier."
+msgstr "\"%s\" (%s) no és un identificador vàlid."
+
+#: src/Mapping/AbstractResourceMapping.php:284
+#, php-format
+msgid "\"%s\" (%s) is not a valid resource identifier."
+msgstr "\"%s\" (%s) no és un identificador per al recurs vàlid."
+
+#: src/Mapping/AbstractResourceMapping.php:298
+#: src/Mapping/AbstractResourceMapping.php:305
+#, php-format
+msgid "\"%s\" is not a valid Resource Template name."
+msgstr "\"%s\" no és un nom vàlid per a la plantilla del recurs."
+
+#: src/Mapping/AbstractResourceMapping.php:318
+#: src/Mapping/AbstractResourceMapping.php:327
+#, php-format
+msgid ""
+"\"%s\" is not a valid resource class. Resource Classes must be a Class found"
+" on the Vocabularies page."
+msgstr ""
+"\"%s\" no és una classe vàlida per al recurs. Les classes dels recursos han "
+"d'existir en algun dels vocabularis."
+
+#: src/Mapping/AbstractResourceMapping.php:341
+#: src/Mapping/AbstractResourceMapping.php:348
+#, php-format
+msgid "\"%s\" is not a valid user email address."
+msgstr "\"%s\" no és un email vàlid."
+
+#: src/Mapping/MediaMapping.php:8
+msgid "Media data"
+msgstr ""
+
+#: src/Source/CsvFile.php:84
+msgid "File is not UTF-8 encoded."
+msgstr "El fitxer no té la codificació UTF-8."
+
+#: src/Source/AbstractSpreadsheet.php:34
+#, php-format
+msgid ""
+"To process import of a %s file, the php extensions \"zip\" and \"xml\" are "
+"required."
+msgstr ""
+
+#: src/Source/AbstractSource.php:74
+msgid "The source is undefined."
+msgstr ""
+
+#: src/Source/AbstractSource.php:79
+msgid "The source is empty."
+msgstr "La font és buida."
+
+#: src/Source/AbstractSource.php:85
+msgid "No file to process."
+msgstr "Cap fitxer per processar."
+
+#: src/Source/AbstractSource.php:92
+msgid "The rows are not all the same number of columns."
+msgstr "No totes les files coincideixen amb el nombre de columnes."
+
+#: src/Job/Import.php:15
+msgid "create"
+msgstr "crea"
+
+#: src/Job/Import.php:16
+msgid "append"
+msgstr ""
+
+#: src/Job/Import.php:17
+msgid "revise"
+msgstr "revisa"
+
+#: src/Job/Import.php:18
+msgid "update"
+msgstr "actualitza"
+
+#: src/Job/Import.php:19
+msgid "replace"
+msgstr "reemplaça"
+
+#: src/Job/Import.php:20
+msgid "delete"
+msgstr "suprimeix"
+
+#: src/Job/Import.php:21
+msgid "skip"
+msgstr "salta"
+
+#: src/Job/Import.php:144
+msgid "The file seems empty."
+msgstr "El fitxer sembla que estigui buit."
+
+#: src/Job/Import.php:153 src/Controller/IndexController.php:114
+msgid "The file is not valid."
+msgstr "El fitxer no és vàlid."
+
+#: src/Job/Import.php:188
+#, php-format
+msgid "The job \"Import\" was stopped: %d rows processed."
+msgstr "La tasca \"Importa\" s'ha aturat: %d files processades."
+
+#: src/Job/Import.php:199
+#, php-format
+msgid "%d empty lines were skipped."
+msgstr "%d les línies en blanc s'obviaran."
+
+#: src/Job/Import.php:281 src/Job/Import.php:310
+#, php-format
+msgid ""
+"The following identifiers are not associated with a resource and were "
+"skipped: \"%s\"."
+msgstr ""
+
+#: src/Job/Import.php:408
+#, php-format
+msgid "The update mode \"%s\" is unsupported for %s currently."
+msgstr ""
+
+#: src/Job/Import.php:442
+#, php-format
+msgid "%d %s were updated (%s): %s."
+msgstr "%d %s s'han actualitzat (%s): %s."
+
+#: src/Job/Import.php:445
+#, php-format
+msgid "None of the %d %s were updated (%s)."
+msgstr "Cap dels %d %s s'han actualitzat (%s)."
+
+#: src/Job/Import.php:478
+#, php-format
+msgid "%d %s were removed: %s."
+msgstr "%d %s s'han suprimit: %s."
+
+#: src/Job/Import.php:496
+#, php-format
+msgid "A media to create is not attached to an item (%s)."
+msgstr ""
+
+#: src/Job/Import.php:498
+msgid "unknown ingester"
+msgstr ""
+
+#: src/Job/Import.php:623
+msgid "A resource type is required to import a resource."
+msgstr "S'ha d'indicar un tipus de recurs per importar un recurs."
+
+#: src/Job/Import.php:1070
+msgid "Resource type is empty."
+msgstr "El tipus de recurs està buit."
+
+#: src/Job/Import.php:1075
+#, php-format
+msgid "Resource type \"%s\" is not managed."
+msgstr ""
+
+#: src/Job/Import.php:1095
+msgid "action"
+msgstr "acció"
+
+#: src/Job/Import.php:1102
+#, php-format
+msgid "The action \"%s\" requires a resource identifier property."
+msgstr ""
+
+#: src/Job/Import.php:1107
+#, php-format
+msgid "The action \"%s\" is not available for resource type \"%s\" currently."
+msgstr ""
+
+#: src/Job/Import.php:1115
+#, php-format
+msgid "The action \"%s\" for unidentified resources is not managed."
+msgstr ""
+
+#: src/Job/Undo.php:22
+#, php-format
+msgid "The job \"Undo\" was stopped: %d/%d resources processed."
+msgstr "La tasca \"Desfer\" s'ha aturat: %d/%d recursos processats."
+
+#: src/Form/MappingForm.php:87
+msgid ""
+"Assign a resource template to all imported resources. Specific mappings can "
+"override this setting."
+msgstr ""
+
+#: src/Form/MappingForm.php:110
+msgid ""
+"Assign a resource class to all imported resources. Specific mappings can "
+"override this setting."
+msgstr ""
+
+#: src/Form/MappingForm.php:131
+msgid ""
+"If not set, the default owner for new resources will be the current user."
+msgstr ""
+
+#: src/Form/MappingForm.php:139 src/Form/MappingForm.php:145
+msgid "Select a user"
+msgstr "Seleccioneu un usuari"
+
+#: src/Form/MappingForm.php:156
+msgid ""
+"Set visibility for all imported resources. Specific mappings can override "
+"this setting."
+msgstr ""
+
+#: src/Form/MappingForm.php:173
+msgid "Open/closed to additions"
+msgstr ""
+
+#: src/Form/MappingForm.php:174 src/Form/MappingForm.php:224
+msgid ""
+"Set whether imported item sets are open to additions. Specific mappings can "
+"override this setting."
+msgstr ""
+
+#: src/Form/MappingForm.php:177 src/Form/MappingForm.php:227
+msgid "Closed"
+msgstr "Tancat"
+
+#: src/Form/MappingForm.php:223
+msgid "Item sets open/closed to additions"
+msgstr ""
+
+#: src/Form/MappingForm.php:242
+msgid "Item sets for items"
+msgstr ""
+
+#: src/Form/MappingForm.php:261
+msgid "Sites for items"
+msgstr "Llocs per als recursos"
+
+#: src/Form/MappingForm.php:271
+msgid "Multivalue separator"
+msgstr "Separador multivalor"
+
+#: src/Form/MappingForm.php:272
+msgid "The separator to use for columns with multiple values"
+msgstr ""
+
+#: src/Form/MappingForm.php:288
+msgid ""
+"Language setting to apply to all imported literal data. Individual property "
+"mappings can override the setting here."
+msgstr ""
+
+#: src/Form/MappingForm.php:311 src/Form/MappingForm.php:382
+msgid "Create a new resource"
+msgstr "Crea un nou recurs"
+
+#: src/Form/MappingForm.php:312
+msgid "Append data to the resource"
+msgstr ""
+
+#: src/Form/MappingForm.php:313
+msgid "Revise data of the resource"
+msgstr "Revisa les dades del recurs"
+
+#: src/Form/MappingForm.php:314
+msgid "Update data of the resource"
+msgstr "Actualitza les dades del recurs"
+
+#: src/Form/MappingForm.php:315
+msgid "Replace all data of the resource"
+msgstr "Reemplaça totes les dades del recurs"
+
+#: src/Form/MappingForm.php:316
+msgid "Delete the resource"
+msgstr "Suprimeix el recurs"
+
+#: src/Form/MappingForm.php:324
+msgid ""
+"By default, an import creates new resources. Select from this dropdown to "
+"choose an alternate action for the import. For more information on each "
+"action, see the documentation."
+msgstr ""
+
+#: src/Form/MappingForm.php:338
+msgid "Resource identifier column"
+msgstr "Columna amb l'identificador del recurs"
+
+#: src/Form/MappingForm.php:357
+msgid "Resource identifier property"
+msgstr "Propietat amb l'identificador del recurs"
+
+#: src/Form/MappingForm.php:358
+msgid ""
+"Use this property, generally \"dcterms:identifier\", to identify the "
+"existing resources, so it will be possible to update them. One column of the"
+" file must map the selected property. In all cases, it is strongly "
+"recommended to add one ore more unique identifiers to all your resources."
+msgstr ""
+
+#: src/Form/MappingForm.php:378
+msgid "Action on unidentified resources"
+msgstr ""
+
+#: src/Form/MappingForm.php:379
+msgid ""
+"This option determines what to do when a resource does not exist but the "
+"action applies to an existing resource (\"Append\", \"Update\", or "
+"\"Replace\"). This option is not used when the main action is \"Create\", "
+"\"Delete\" or \"Skip\"."
+msgstr ""
+
+#: src/Form/MappingForm.php:381
+msgid "Skip the row"
+msgstr "Salta la fila"
+
+#: src/Form/MappingForm.php:396
+msgid "Number of rows to process by batch"
+msgstr "Nombre de files per processar en lot"
+
+#: src/Form/MappingForm.php:397
+msgid ""
+"By default, rows are processed by 20. In some cases, to set a value of 1 may"
+" avoid issues."
+msgstr ""
+
+#: src/Form/ImportForm.php:15
+msgid "comma"
+msgstr "coma"
+
+#: src/Form/ImportForm.php:16
+msgid "semi-colon"
+msgstr "punt i coma"
+
+#: src/Form/ImportForm.php:17
+msgid "colon"
+msgstr "dos punts"
+
+#: src/Form/ImportForm.php:18
+msgid "tabulation"
+msgstr "tabulació"
+
+#: src/Form/ImportForm.php:19
+msgid "carriage return"
+msgstr "salt de línia"
+
+#: src/Form/ImportForm.php:20
+msgid "space"
+msgstr "espai"
+
+#: src/Form/ImportForm.php:21
+msgid "pipe"
+msgstr ""
+
+#: src/Form/ImportForm.php:32
+msgid "double quote"
+msgstr "Cometes dobles"
+
+#: src/Form/ImportForm.php:33
+msgid "single quote"
+msgstr "Cometes simples"
+
+#: src/Form/ImportForm.php:34
+msgid "hash"
+msgstr ""
+
+#: src/Form/ImportForm.php:58
+msgid "Spreadsheet (csv, tsv or ods)"
+msgstr "Full de càlcul (csv, tsv o ods)"
+
+#: src/Form/ImportForm.php:59
+msgid ""
+"The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant"
+" formats."
+msgstr ""
+"El fitxer CSV, TSV o ODS per carregar. El format recomanat és l'ODS del "
+"LibreOffice."
+
+#: src/Form/ImportForm.php:78
+msgid "CSV column delimiter"
+msgstr "Delimitador de les columnes"
+
+#: src/Form/ImportForm.php:79
+msgid ""
+"A single character that will be used to separate columns in the csv file."
+msgstr ""
+
+#: src/Form/ImportForm.php:93
+msgid "CSV column enclosure"
+msgstr ""
+
+#: src/Form/ImportForm.php:94
+msgid ""
+"A single character that will be used to separate columns in the csv file. "
+"The enclosure can be omitted when the content does not contain the "
+"delimiter."
+msgstr ""
+
+#: src/Form/ImportForm.php:106
+msgid "Import type"
+msgstr "Tipus d'importació"
+
+#: src/Form/ImportForm.php:107
+msgid "The type of data being imported"
+msgstr ""
+
+#: src/Form/ImportForm.php:112
+msgid "Mixed resources"
+msgstr ""
+
+#: src/Form/ImportForm.php:125
+msgid "Automap with simple labels"
+msgstr ""
+
+#: src/Form/ImportForm.php:126
+msgid ""
+"If checked, column headings that match property labels will be mapped "
+"automatically (for example, \"Title\" to dcterms:title)."
+msgstr ""
+
+#: src/Form/ImportForm.php:141
+msgid "A note about the purpose or source of this import"
+msgstr ""
+
+#: src/Controller/IndexController.php:97
+msgid "The format of the source cannot be detected."
+msgstr "No s'ha pogut detectar el format de la font."
+
+#: src/Controller/IndexController.php:121
+msgid "The file has no headers."
+msgstr "El fitxer no té capçaleres."
+
+#: src/Controller/IndexController.php:164
+#, php-format
+msgid "Importing in background (%sjob #%d%s)"
+msgstr ""
+
+#: src/Controller/IndexController.php:177
+msgid "Invalid settings."
+msgstr "Paràmetres invàlids"
+
+#: src/Controller/IndexController.php:195
+#, php-format
+msgid "Undo in progress in the following jobs: %s"
+msgstr ""
+
+#: config/module.config.php:184
+msgid "Omeka resource (by ID)"
+msgstr "Recurs Omeka (per ID)"
