@@ -555,10 +555,9 @@ class Import extends AbstractJob
         foreach ($resources as $resource) {
             // "Batch Create" returns a reference and "Create" a representation.
             if ($resource->resourceName() === 'media') {
-                $mediaIds[] = $resource->id();
+                $mediaIds[] = (int) $resource->id();
             }
         }
-        $mediaIds = array_map('intval', $mediaIds);
         if (empty($mediaIds)) {
             return;
         }
@@ -566,7 +565,7 @@ class Import extends AbstractJob
         $services = $this->getServiceLocator();
         $conn = $services->get('Omeka\Connection');
 
-        // Get the item ids first to avoid a sort issue with the subquery below.
+        // Get the item ids first to avoid a sort issue with the subquery below
         $qb = $conn->createQueryBuilder();
         $qb
             ->select('media.item_id')
@@ -574,24 +573,33 @@ class Import extends AbstractJob
             ->where($qb->expr()->in('id', $mediaIds))
             ->groupBy('media.item_id')
             ->orderBy('media.item_id', 'ASC');
-        $stmt = $conn->executeQuery($qb, $qb->getParameters());
-        $itemIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $itemIds = $qb->execute()->fetchFirstColumn();
 
-        // Get the media rank by item in one query even when position is set.
-        // Note: in the subquery, the variable item_id should be set after rank.
-        // If the media ids are used, a sort issue appears:
-        // WHERE item_id IN (SELECT item_id FROM `media` WHERE id IN (%s) GROUP BY item_id ORDER BY item_id ASC)
-        $conn->exec('SET @item_id = 0; SET @rank = 1;');
-        $query = <<<'SQL'
-SELECT id, `rank` FROM (
-    SELECT id, @rank := IF(@item_id = item_id, @rank + 1, 1) AS `rank`, @item_id := item_id AS item
-    FROM media
-    WHERE item_id IN (%s)
-    ORDER BY item_id ASC, -position DESC, id ASC
-) AS media_rank;
-SQL;
-        $stmt = $conn->query(sprintf($query, implode(',', $itemIds)));
-        $mediaRanks = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+        // Get all media IDs for the affected items in the proper order
+        $qb = $conn->createQueryBuilder();
+        $qb
+            ->select('item_id', 'id')
+            ->from('media')
+            ->where($qb->expr()->in('item_id', $itemIds))
+            ->orderBy('item_id', 'ASC')
+            ->addOrderBy('-position', 'DESC')
+            ->addOrderBy('id', 'ASC');
+        $mediaInOrder = $qb->execute()->fetchAllAssociative();
+
+        // Get correct position for each media
+        $mediaRanks = [];
+        $currentItemId = null;
+        $position = null;
+        foreach ($mediaInOrder as $mediaData) {
+            if ($mediaData['item_id'] !== $currentItemId) {
+                $position = 1;
+                $currentItemId = $mediaData['item_id'];
+            } else {
+                $position++;
+            }
+
+            $mediaRanks[$mediaData['id']] = $position;
+        }
 
         // Update positions of the updated media.
         $entityManager = $services->get('Omeka\EntityManager');
