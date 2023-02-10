@@ -1,5 +1,5 @@
 {
     "require": {
-        "box/spout": "^3.1"
+        "openspout/openspout": "^3.7"
     }
 }
