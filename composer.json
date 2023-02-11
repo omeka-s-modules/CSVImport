@@ -1,5 +1,8 @@
 {
     "require": {
         "openspout/openspout": "^3.7"
+    },
+    "config": {
+        "platform": {"php": "7.4"}
     }
 }
