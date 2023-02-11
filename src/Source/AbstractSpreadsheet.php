@@ -83,6 +83,7 @@ abstract class AbstractSpreadsheet extends AbstractSource
         if (empty($limit)) {
             return null;
         }
+
         if ($offset < $this->position) {
             $this->reset();
         }
@@ -96,10 +97,14 @@ abstract class AbstractSpreadsheet extends AbstractSource
         $rowOffset = $offset;
         $hasRows = false;
         while ($iterator->valid()) {
-            /** @var \OpenSpout\Common\Entity\Row $row */
-            $row = $iterator->current();
-            if (is_null($row)) {
-                $iterator->next();
+            // Account for the iterator being used without first being rewound
+            // (OpenSpout returns null in this case against its own type
+            // hint, causing a TypeError)
+            try {
+                /** @var \OpenSpout\Common\Entity\Row $row */
+                $row = $iterator->current();
+            } catch (\TypeError $e) {
+                $iterator->rewind();
                 continue;
             }
             if ($rowOffset == $this->position) {
