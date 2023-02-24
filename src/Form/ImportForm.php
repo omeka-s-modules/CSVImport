@@ -142,7 +142,6 @@ class ImportForm extends Form
             ],
             'attributes' => [
                 'id' => 'comment',
-                'class' => 'input-body',
             ],
         ]);
 

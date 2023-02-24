@@ -273,7 +273,6 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'multivalue_separator',
-                    'class' => 'input-body',
                     'value' => $userSettings->get(
                         'csv_import_multivalue_separator',
                         $default['csv_import_multivalue_separator']),
@@ -289,7 +288,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'global_language',
-                    'class' => 'input-body value-language',
+                    'class' => 'value-language',
                     'value' => $userSettings->get(
                         'csv_import_global_language',
                         $default['csv_import_global_language']),
