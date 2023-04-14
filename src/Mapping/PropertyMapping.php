@@ -76,6 +76,14 @@ class PropertyMapping extends AbstractMapping
 
                 $privateValues = !empty($privateValuesMap[$index]);
 
+                $language = null;
+                if ($globalLanguage !== '') {
+                    $language = $globalLanguage;
+                }
+                if (isset($languageMap[$index])) {
+                    $language = $languageMap[$index];
+                }
+
                 foreach ($propertyMap[$index] as $propertyTerm => $propertyId) {
                     foreach ($values as $value) {
                         $valueData = [];
@@ -96,6 +104,9 @@ class PropertyMapping extends AbstractMapping
                                     'type' => $type,
                                     'o:label' => $valueLabel,
                                 ];
+                                if ($language) {
+                                    $valueData['o:lang'] = $language;
+                                }
                                 break;
 
                             case 'resource':
@@ -107,18 +118,14 @@ class PropertyMapping extends AbstractMapping
                                 break;
 
                             case 'literal':
-                                $literalPropertyJson = [
+                                $valueData = [
                                     '@value' => $value,
                                     'property_id' => $propertyId,
                                     'type' => $type,
                                 ];
-                                if ($globalLanguage !== '') {
-                                    $literalPropertyJson['@language'] = $globalLanguage;
+                                if ($language) {
+                                    $valueData['@language'] = $language;
                                 }
-                                if (isset($languageMap[$index])) {
-                                    $literalPropertyJson['@language'] = $languageMap[$index];
-                                }
-                                $valueData = $literalPropertyJson;
                                 break;
                         }
 
