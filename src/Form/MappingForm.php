@@ -288,7 +288,7 @@ class MappingForm extends Form
                 ],
                 'attributes' => [
                     'id' => 'global_language',
-                    'class' => 'value-language',
+                    'class' => 'validate-language',
                     'value' => $userSettings->get(
                         'csv_import_global_language',
                         $default['csv_import_global_language']),

@@ -66,7 +66,6 @@
 
         $('.column-header + .actions a').on('click', function(e) {
             e.preventDefault();
-            $('.property-mapping input.value-language').val('');
             if (activeElement !== null) {
                 activeElement.removeClass('active');
             }
@@ -359,20 +358,6 @@
             e.preventDefault();
             e.stopPropagation();
             $(this).parents('li.mapping').remove();
-        });
-
-        /*
-         * Modified from resource-form.js in core
-         */
-
-        $(document).on('keyup', 'input.value-language', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if ('' === this.value || Omeka.langIsValid(this.value)) {
-                this.setCustomValidity('');
-            } else {
-                this.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
-            }
         });
 
         function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
