@@ -320,7 +320,7 @@ class MappingForm extends Form
                 'type' => 'select',
                 'options' => [
                     'label' => 'Action', // @translate
-                    'info' => 'By default, an import creates new resources. Select from this dropdown to choose an alternate action for the import. For more information on each action, see <a href="https://omeka.org/s/docs/user-manual/modules/csvimport/#media-import-advanced-settings">the documentation</a>.', // @translate
+                    'info' => 'By default, an import creates new resources. Select from this dropdown to choose an alternate action for the import. For more information on each action, see <a href="https://omeka.org/s/docs/user-manual/modules/csvimport/#media-import-advanced-settings" target="_blank">the documentation</a>.', // @translate
                     'value_options' => $valueOptions,
                     'escape_info' => false,
                 ],
