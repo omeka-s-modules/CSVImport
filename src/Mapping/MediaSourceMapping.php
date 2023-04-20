@@ -19,9 +19,6 @@ class MediaSourceMapping extends AbstractMapping
         $this->setHasErr(false);
         $data = [];
 
-        $this->findResourceFromIdentifier = $this->getServiceLocator()->get('ControllerPluginManager')
-            ->get('findResourceFromIdentifier');
-
         // First, pull in the global settings.
         $resourceType = $this->args['resource_type'];
         $isMedia = $resourceType === 'media';
