@@ -307,12 +307,12 @@ class MappingForm extends Form
             $advancedSettingsFieldset = $this->get('advanced-settings');
 
             $valueOptions = [
-                Import::ACTION_CREATE => 'Create a new resource (Each row in the CSV will become a new resource)', // @translate
-                Import::ACTION_APPEND => 'Append data to the resource (Add new data to the resource, based on an identifier for an existing resource)', // @translate
-                Import::ACTION_REVISE => 'Revise data of the resource (Replace existing data of the resource with data from the CSV, except if the corresponding cell in the CSV is empty)', // @translate
-                Import::ACTION_UPDATE => 'Update data of the resource (Replace existing data of the resource with data from the CSV, even when the corresponding cell in the CSV is empty)', // @translate
-                Import::ACTION_REPLACE => 'Replace all data of the resource (Remove all properties of the resource, and fill with new information from the CSV)', // @translate
-                Import::ACTION_DELETE => 'Delete the resource (Delete all resources matched by the identifier)', // @translate
+                Import::ACTION_CREATE => 'Create (Each row in the CSV will become a new resource)', // @translate
+                Import::ACTION_APPEND => 'Append (Add new data to the resource, based on an identifier for an existing resource)', // @translate
+                Import::ACTION_REVISE => 'Revise (Replace existing fields of the resource with data from the CSV, except if the corresponding cell in the CSV is empty)', // @translate
+                Import::ACTION_UPDATE => 'Update (Replace existing fields of the resource with data from the CSV, even when the corresponding cell in the CSV is empty)', // @translate
+                Import::ACTION_REPLACE => 'Replace (Remove all properties of the resource, then add new information from the CSV)', // @translate
+                Import::ACTION_DELETE => 'Delete (Delete any resources matched by the identifiers)', // @translate
             ];
 
             $advancedSettingsFieldset->add([
