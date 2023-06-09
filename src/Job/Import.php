@@ -1232,13 +1232,18 @@ class Import extends AbstractJob
     protected function detachAllNewEntities(array $oldIdentityMap)
     {
         $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
-        $identityMap = $entityManager->getUnitOfWork()->getIdentityMap();
+        $uow = $entityManager->getUnitOfWork();
+        $identityMap = $uow->getIdentityMap();
         foreach ($identityMap as $entityClass => $entities) {
             foreach ($entities as $idHash => $entity) {
                 if (!isset($oldIdentityMap[$entityClass][$idHash])) {
                     $entityManager->detach($entity);
                 }
             }
+        }
+        $scheduledInsertions = $uow->getScheduledEntityInsertions();
+        foreach ($scheduledInsertions as $entity) {
+            $entityManager->detach($entity);
         }
     }
 }
