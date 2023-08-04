@@ -6,6 +6,7 @@ use CSVImport\Mvc\Controller\Plugin\FindResourcesFromIdentifiers;
 use CSVImport\Source\SourceInterface;
 use finfo;
 use Omeka\Api\Manager;
+use Omeka\Entity;
 use Omeka\Job\AbstractJob;
 use Omeka\Stdlib\Message;
 use Laminas\Log\Logger;
@@ -176,6 +177,11 @@ class Import extends AbstractJob
         ) {
             $this->rowsByBatch = 1;
         }
+
+        // Detach entities that can cause problems with the flush-detach cycle later
+        // in the import. This is currently only relevant for import jobs run with
+        // the Synchronous strategy
+        $this->detachProblematicEntities();
 
         $this->emptyLines = 0;
 
@@ -1244,6 +1250,38 @@ class Import extends AbstractJob
         $scheduledInsertions = $uow->getScheduledEntityInsertions();
         foreach ($scheduledInsertions as $entity) {
             $entityManager->detach($entity);
+        }
+    }
+
+    /**
+     * Detach entities that cause issues with imports due to later detachments
+     *
+     * Currently this is Resource and ResourceTemplate entities: when running
+     * synchronously there are templates and resources loaded to build the
+     * import form elements for item set and template selection, and because
+     * the templates reference template properties (and the resources reference
+     * the templates), having them initially in the EM before the process starts
+     * causes "new entity found" errors, and sometimes unique constraint
+     * violations.
+     *
+     * To prevent this, we can detach all these before the job starts, so any
+     * resources, templates, template properties loaded during the import will
+     * be periodically detached more similarly to the usual situation with a
+     * job running in the background.
+     */
+    protected function detachProblematicEntities()
+    {
+        $problematicEntities = [Entity\Resource::class, Entity\ResourceTemplate::class];
+        $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
+        $uow = $entityManager->getUnitOfWork();
+        $identityMap = $uow->getIdentityMap();
+        foreach ($problematicEntities as $entityClass) {
+            if (!isset($identityMap[$entityClass])) {
+                continue;
+            }
+            foreach ($identityMap[$entityClass] as $entity) {
+                $entityManager->detach($entity);
+            }
         }
     }
 }
