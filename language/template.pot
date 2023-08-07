@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-20 16:42-0400\n"
+"POT-Creation-Date: 2023-08-07 15:00-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -335,116 +335,116 @@ msgstr ""
 msgid "The rows are not all the same number of columns."
 msgstr ""
 
-#: src/Job/Import.php:15
+#: src/Job/Import.php:16
 msgid "create"
 msgstr ""
 
-#: src/Job/Import.php:16
+#: src/Job/Import.php:17
 msgid "append"
 msgstr ""
 
-#: src/Job/Import.php:17
+#: src/Job/Import.php:18
 msgid "revise"
 msgstr ""
 
-#: src/Job/Import.php:18
+#: src/Job/Import.php:19
 msgid "update"
 msgstr ""
 
-#: src/Job/Import.php:19
+#: src/Job/Import.php:20
 msgid "replace"
 msgstr ""
 
-#: src/Job/Import.php:20
+#: src/Job/Import.php:21
 msgid "delete"
 msgstr ""
 
-#: src/Job/Import.php:21
+#: src/Job/Import.php:22
 msgid "skip"
 msgstr ""
 
-#: src/Job/Import.php:143
+#: src/Job/Import.php:144
 msgid "The file seems empty."
 msgstr ""
 
-#: src/Job/Import.php:152 src/Controller/IndexController.php:114
+#: src/Job/Import.php:153 src/Controller/IndexController.php:114
 msgid "The file is not valid."
 msgstr ""
 
-#: src/Job/Import.php:187
+#: src/Job/Import.php:193
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr ""
 
-#: src/Job/Import.php:198
+#: src/Job/Import.php:204
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr ""
 
-#: src/Job/Import.php:280 src/Job/Import.php:309
+#: src/Job/Import.php:286 src/Job/Import.php:315
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
 "skipped: \"%s\"."
 msgstr ""
 
-#: src/Job/Import.php:407
+#: src/Job/Import.php:413
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr ""
 
-#: src/Job/Import.php:441
+#: src/Job/Import.php:447
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr ""
 
-#: src/Job/Import.php:444
+#: src/Job/Import.php:450
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr ""
 
-#: src/Job/Import.php:477
+#: src/Job/Import.php:483
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr ""
 
-#: src/Job/Import.php:495
+#: src/Job/Import.php:501
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr ""
 
-#: src/Job/Import.php:497
+#: src/Job/Import.php:503
 msgid "unknown ingester"
 msgstr ""
 
-#: src/Job/Import.php:622
+#: src/Job/Import.php:636
 msgid "A resource type is required to import a resource."
 msgstr ""
 
-#: src/Job/Import.php:1073
+#: src/Job/Import.php:1087
 msgid "Resource type is empty."
 msgstr ""
 
-#: src/Job/Import.php:1078
+#: src/Job/Import.php:1092
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr ""
 
-#: src/Job/Import.php:1098
+#: src/Job/Import.php:1112
 msgid "action"
 msgstr ""
 
-#: src/Job/Import.php:1105
+#: src/Job/Import.php:1119
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr ""
 
-#: src/Job/Import.php:1110
+#: src/Job/Import.php:1124
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr ""
 
-#: src/Job/Import.php:1118
+#: src/Job/Import.php:1132
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr ""
@@ -521,28 +521,36 @@ msgid ""
 "mappings can override the setting here."
 msgstr ""
 
-#: src/Form/MappingForm.php:310 src/Form/MappingForm.php:382
-msgid "Create a new resource"
+#: src/Form/MappingForm.php:310
+msgid "Create (Each row in the CSV will become a new resource)"
 msgstr ""
 
 #: src/Form/MappingForm.php:311
-msgid "Append data to the resource"
+msgid ""
+"Append (Add new data to the resource, based on an identifier for an existing "
+"resource)"
 msgstr ""
 
 #: src/Form/MappingForm.php:312
-msgid "Revise data of the resource"
+msgid ""
+"Revise (Replace existing fields of the resource with data from the CSV, "
+"except if the corresponding cell in the CSV is empty)"
 msgstr ""
 
 #: src/Form/MappingForm.php:313
-msgid "Update data of the resource"
+msgid ""
+"Update (Replace existing fields of the resource with data from the CSV, even "
+"when the corresponding cell in the CSV is empty)"
 msgstr ""
 
 #: src/Form/MappingForm.php:314
-msgid "Replace all data of the resource"
+msgid ""
+"Replace (Remove all properties of the resource, then add new information "
+"from the CSV)"
 msgstr ""
 
 #: src/Form/MappingForm.php:315
-msgid "Delete the resource"
+msgid "Delete (Delete any resources matched by the identifiers)"
 msgstr ""
 
 #: src/Form/MappingForm.php:323
@@ -583,6 +591,10 @@ msgstr ""
 
 #: src/Form/MappingForm.php:381
 msgid "Skip the row"
+msgstr ""
+
+#: src/Form/MappingForm.php:382
+msgid "Create a new resource"
 msgstr ""
 
 #: src/Form/MappingForm.php:396
