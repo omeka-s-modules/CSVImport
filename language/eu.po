@@ -11,10 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-17 13:26-0500\n"
+"POT-Creation-Date: 2023-08-07 15:00-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Iametza Interaktiboa, 2022\n"
-"Language-Team: Basque (https://www.transifex.com/omeka/teams/14184/eu/)\n"
+"Language-Team: Basque (https://app.transifex.com/omeka/teams/14184/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -63,45 +63,53 @@ msgstr "Inportatu balioak pribatu moduan"
 msgid "Import Settings"
 msgstr "Inportatu Ezarpenak"
 
-#: view/csv-import/index/index.phtml:8 view/csv-import/index/map.phtml:20
+#: view/csv-import/index/index.phtml:8 view/csv-import/index/map.phtml:19
 #: view/csv-import/index/past-imports.phtml:7
 msgid "CSV Import"
 msgstr "Inportatu CSV"
 
-#: view/csv-import/index/map.phtml:13
+#: view/csv-import/index/map.phtml:9
+msgid "items"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:10
+msgid "item sets"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:12
 msgid "mixed resources"
 msgstr "baliabide mistoak"
 
-#: view/csv-import/index/map.phtml:14
+#: view/csv-import/index/map.phtml:13
 msgid "users"
 msgstr "erabiltzaileak"
 
-#: view/csv-import/index/map.phtml:17
+#: view/csv-import/index/map.phtml:16
 #, php-format
 msgid "Import settings for %s"
 msgstr "Inportatu ezarpenak honentzat: %s"
 
-#: view/csv-import/index/map.phtml:18
+#: view/csv-import/index/map.phtml:17
 msgid "Import settings"
 msgstr "Inportatu ezarpenak"
 
-#: view/csv-import/index/map.phtml:28
+#: view/csv-import/index/map.phtml:27
 msgid "Map to Omeka S data"
 msgstr "Omeka S datuetara mapeatu"
 
-#: view/csv-import/index/map.phtml:30
+#: view/csv-import/index/map.phtml:29
 msgid "Basic Settings"
 msgstr "Oinarrizko ezarpenak"
 
-#: view/csv-import/index/map.phtml:31
+#: view/csv-import/index/map.phtml:30
 msgid "Advanced Settings"
 msgstr "Ezarpen aurreratuak"
 
-#: view/csv-import/index/map.phtml:46
+#: view/csv-import/index/map.phtml:45
 msgid "Resource type column"
 msgstr "Zutabearen baliabide mota"
 
-#: view/csv-import/index/map.phtml:50
+#: view/csv-import/index/map.phtml:49
 #: view/csv-import/mapping-sidebar/item.phtml:11
 #: view/csv-import/mapping-sidebar/media-source.phtml:7
 #: view/csv-import/mapping-sidebar/media.phtml:12
@@ -110,39 +118,39 @@ msgstr "Zutabearen baliabide mota"
 msgid "Select below"
 msgstr "Hautatu hurrengoa"
 
-#: view/csv-import/index/map.phtml:60
+#: view/csv-import/index/map.phtml:59
 msgid "Batch edit options"
 msgstr "Sorta edizio aukerak"
 
-#: view/csv-import/index/map.phtml:70
+#: view/csv-import/index/map.phtml:69
 msgid "Column"
 msgstr "Zutabea"
 
-#: view/csv-import/index/map.phtml:72
+#: view/csv-import/index/map.phtml:71
 msgid "Mappings"
 msgstr "Mapaketak"
 
-#: view/csv-import/index/map.phtml:81
+#: view/csv-import/index/map.phtml:80
 msgid "Select column"
 msgstr "Hautatu zutabea"
 
-#: view/csv-import/index/map.phtml:85
+#: view/csv-import/index/map.phtml:84
 msgid "Add mapping"
 msgstr "Gehitu mapaketa"
 
-#: view/csv-import/index/map.phtml:98
+#: view/csv-import/index/map.phtml:97
 msgid "Remove mapping"
 msgstr "Kendu mapaketa"
 
-#: view/csv-import/index/map.phtml:110
+#: view/csv-import/index/map.phtml:109
 msgid "Multivalue"
 msgstr "Balio anizkoitza"
 
-#: view/csv-import/index/map.phtml:114
+#: view/csv-import/index/map.phtml:113
 msgid "Language:"
 msgstr "Hizkuntza:"
 
-#: view/csv-import/index/map.phtml:118
+#: view/csv-import/index/map.phtml:117
 msgid "Private values"
 msgstr "Balio pribatuak"
 
@@ -269,34 +277,34 @@ msgstr "Baliabide datua"
 msgid "\"%s\" is not a valid resource type."
 msgstr "\"%s\" ez da baliabide mota egokia."
 
-#: src/Mapping/AbstractResourceMapping.php:235
+#: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
 msgstr "\"%s\" (%s) ez da elementu multzo egokia."
 
-#: src/Mapping/AbstractResourceMapping.php:257
+#: src/Mapping/AbstractResourceMapping.php:262
 #, php-format
 msgid "An item identifier is required to process action \"%s\"."
 msgstr "Elementu identifikatzailea beharrezkoa da \"%s\" ekintza burutzeko."
 
-#: src/Mapping/AbstractResourceMapping.php:270
+#: src/Mapping/AbstractResourceMapping.php:275
 #, php-format
 msgid "\"%s\" (%s) is not a valid item identifier."
 msgstr "\"%s\" (%s) ez da elementu identifikatzaile egokia."
 
-#: src/Mapping/AbstractResourceMapping.php:284
+#: src/Mapping/AbstractResourceMapping.php:289
 #, php-format
 msgid "\"%s\" (%s) is not a valid resource identifier."
 msgstr "\"%s\" (%s) ez da baliabide identifikatzaile egokia."
 
-#: src/Mapping/AbstractResourceMapping.php:298
-#: src/Mapping/AbstractResourceMapping.php:305
+#: src/Mapping/AbstractResourceMapping.php:303
+#: src/Mapping/AbstractResourceMapping.php:310
 #, php-format
 msgid "\"%s\" is not a valid Resource Template name."
 msgstr "\"%s\" ez da baliabide txantiloi izen egokia."
 
-#: src/Mapping/AbstractResourceMapping.php:318
-#: src/Mapping/AbstractResourceMapping.php:327
+#: src/Mapping/AbstractResourceMapping.php:323
+#: src/Mapping/AbstractResourceMapping.php:332
 #, php-format
 msgid ""
 "\"%s\" is not a valid resource class. Resource Classes must be a Class found"
@@ -305,8 +313,8 @@ msgstr ""
 "\"%s\" ez da baliabide klase egokia. Baliabide Klaseak, Hiztegien orriko "
 "Klase bat izan behar du."
 
-#: src/Mapping/AbstractResourceMapping.php:341
-#: src/Mapping/AbstractResourceMapping.php:348
+#: src/Mapping/AbstractResourceMapping.php:346
+#: src/Mapping/AbstractResourceMapping.php:353
 #, php-format
 msgid "\"%s\" is not a valid user email address."
 msgstr "\"%s\" ez da erabiltzaile posta elektroniko egokia."
@@ -344,31 +352,31 @@ msgstr "Ez dago fitxategirik prozesatzeko."
 msgid "The rows are not all the same number of columns."
 msgstr "Ilara guztiek ez dute zutabe kopuru bera."
 
-#: src/Job/Import.php:15
+#: src/Job/Import.php:16
 msgid "create"
 msgstr "sortu"
 
-#: src/Job/Import.php:16
+#: src/Job/Import.php:17
 msgid "append"
 msgstr "gehitu"
 
-#: src/Job/Import.php:17
+#: src/Job/Import.php:18
 msgid "revise"
 msgstr "errebisatu"
 
-#: src/Job/Import.php:18
+#: src/Job/Import.php:19
 msgid "update"
 msgstr "eguneratu"
 
-#: src/Job/Import.php:19
+#: src/Job/Import.php:20
 msgid "replace"
 msgstr "ordezkatu"
 
-#: src/Job/Import.php:20
+#: src/Job/Import.php:21
 msgid "delete"
 msgstr "ezabatu"
 
-#: src/Job/Import.php:21
+#: src/Job/Import.php:22
 msgid "skip"
 msgstr "saltatu"
 
@@ -380,17 +388,17 @@ msgstr "Fitxategia hutsik dagoela dirudi."
 msgid "The file is not valid."
 msgstr "Fitxategia ez da egokia."
 
-#: src/Job/Import.php:188
+#: src/Job/Import.php:193
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr "\"Inportatu\" lana gelditu egin da: %d ilara prozesatu dira."
 
-#: src/Job/Import.php:199
+#: src/Job/Import.php:204
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr "%d lerro huts saltatu dira."
 
-#: src/Job/Import.php:281 src/Job/Import.php:310
+#: src/Job/Import.php:286 src/Job/Import.php:315
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
@@ -399,63 +407,63 @@ msgstr ""
 "Hurrengo identifikatzialeek ez dute baliabiderik lotuta eta saltatu egin "
 "dira: \"%s\"."
 
-#: src/Job/Import.php:408
+#: src/Job/Import.php:413
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr "\"%s\" eguneraketa modua, une honetan %sk ez du onartzen.  "
 
-#: src/Job/Import.php:442
+#: src/Job/Import.php:447
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr "%d %s eguneratuak izan dira (%s): %s."
 
-#: src/Job/Import.php:445
+#: src/Job/Import.php:450
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr "%d %s tik ez da ezer eguneratu (%s)."
 
-#: src/Job/Import.php:478
+#: src/Job/Import.php:483
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr "%d %s ezabatuak izan dira: %s."
 
-#: src/Job/Import.php:496
+#: src/Job/Import.php:501
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr "Sortu beharreko multimedia ez dago elementu bati lotuta (%s)."
 
-#: src/Job/Import.php:498
+#: src/Job/Import.php:503
 msgid "unknown ingester"
 msgstr "txertatzeko modu ez ezaguna"
 
-#: src/Job/Import.php:623
+#: src/Job/Import.php:636
 msgid "A resource type is required to import a resource."
 msgstr "Baliabide mota zehaztea beharrezkoa da baliabideak inportatzeko."
 
-#: src/Job/Import.php:1070
+#: src/Job/Import.php:1087
 msgid "Resource type is empty."
 msgstr "Baliabide mota hutsik dago."
 
-#: src/Job/Import.php:1075
+#: src/Job/Import.php:1092
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr "\"%s\" baliabide mota ez da kudeatzen."
 
-#: src/Job/Import.php:1095
+#: src/Job/Import.php:1112
 msgid "action"
 msgstr "ekintza"
 
-#: src/Job/Import.php:1102
+#: src/Job/Import.php:1119
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr "\"%s\" ekintzak baliabidearen identifikatzaile propietatea behar du."
 
-#: src/Job/Import.php:1107
+#: src/Job/Import.php:1124
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr "\"%s\" ekintza ez dago erabilgarri \"%s\" baliabide motarentzat une honetan."
 
-#: src/Job/Import.php:1115
+#: src/Job/Import.php:1132
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr "\"%s\" ekintza identifikatu gabeko baliabideentzat ez da kudeatzen."
@@ -536,7 +544,7 @@ msgstr "Balio anizkoitz banatzailea"
 msgid "The separator to use for columns with multiple values"
 msgstr "Erabiliko den banatzailea balio anizkoitzat dituzten zutabeentzat"
 
-#: src/Form/MappingForm.php:288
+#: src/Form/MappingForm.php:287
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
@@ -544,39 +552,46 @@ msgstr ""
 "Inportatutako informazio literalari aplikatu beharreko hizkuntza ezarpena. "
 "Bakarkako propietate mapaketek ezarpen hau gainidatzi dezakete."
 
-#: src/Form/MappingForm.php:311 src/Form/MappingForm.php:382
-msgid "Create a new resource"
-msgstr "Sortu baliabide berria"
+#: src/Form/MappingForm.php:310
+msgid "Create (Each row in the CSV will become a new resource)"
+msgstr ""
+
+#: src/Form/MappingForm.php:311
+msgid ""
+"Append (Add new data to the resource, based on an identifier for an existing"
+" resource)"
+msgstr ""
 
 #: src/Form/MappingForm.php:312
-msgid "Append data to the resource"
-msgstr "Gehitu informazioa baliabideari"
+msgid ""
+"Revise (Replace existing fields of the resource with data from the CSV, "
+"except if the corresponding cell in the CSV is empty)"
+msgstr ""
 
 #: src/Form/MappingForm.php:313
-msgid "Revise data of the resource"
-msgstr "Berrikusi baliabidearen informazioa"
+msgid ""
+"Update (Replace existing fields of the resource with data from the CSV, even"
+" when the corresponding cell in the CSV is empty)"
+msgstr ""
 
 #: src/Form/MappingForm.php:314
-msgid "Update data of the resource"
-msgstr "Eguneratu baliabidearen informazioa"
+msgid ""
+"Replace (Remove all properties of the resource, then add new information "
+"from the CSV)"
+msgstr ""
 
 #: src/Form/MappingForm.php:315
-msgid "Replace all data of the resource"
-msgstr "Ordezkatu baliabidearen informazio guztia"
+msgid "Delete (Delete any resources matched by the identifiers)"
+msgstr ""
 
-#: src/Form/MappingForm.php:316
-msgid "Delete the resource"
-msgstr "Ezabatu baliabidea"
-
-#: src/Form/MappingForm.php:324
+#: src/Form/MappingForm.php:323
 msgid ""
 "By default, an import creates new resources. Select from this dropdown to "
 "choose an alternate action for the import. For more information on each "
-"action, see the documentation."
+"action, see <a href=\"https://omeka.org/s/docs/user-"
+"manual/modules/csvimport/#media-import-advanced-settings\" "
+"target=\"_blank\">the documentation</a>."
 msgstr ""
-"Defektuz, inportazioak baliabide berriak sortzen ditu. Hautatu inportazio "
-"ekintzarentza ordezko ekintza goitibehera zerrenda honetatik. Akzio "
-"bakoitzaren informazio gehiago jasotzeko, ikusi dokumentazioa. "
 
 #: src/Form/MappingForm.php:338
 msgid "Resource identifier column"
@@ -618,6 +633,10 @@ msgstr ""
 #: src/Form/MappingForm.php:381
 msgid "Skip the row"
 msgstr "Errenkada saltatu"
+
+#: src/Form/MappingForm.php:382
+msgid "Create a new resource"
+msgstr "Sortu baliabide berria"
 
 #: src/Form/MappingForm.php:396
 msgid "Number of rows to process by batch"
@@ -751,7 +770,7 @@ msgstr "Atzeko planoan inportatzen (%s lana # %d %s)"
 msgid "Invalid settings."
 msgstr "Ezarpen baliogabeak."
 
-#: src/Controller/IndexController.php:195
+#: src/Controller/IndexController.php:193
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr "Bertan behera uztea martxan hurrengo lanetan: %s"

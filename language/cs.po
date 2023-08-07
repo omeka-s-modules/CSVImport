@@ -11,10 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-17 13:26-0500\n"
+"POT-Creation-Date: 2023-08-07 15:00-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Martin Slavík <martin.d.slavik@gmail.com>, 2022\n"
-"Language-Team: Czech (https://www.transifex.com/omeka/teams/14184/cs/)\n"
+"Language-Team: Czech (https://app.transifex.com/omeka/teams/14184/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -59,45 +59,53 @@ msgstr "Importovat hodnoty jako soukromé"
 msgid "Import Settings"
 msgstr "Nastavení importu"
 
-#: view/csv-import/index/index.phtml:8 view/csv-import/index/map.phtml:20
+#: view/csv-import/index/index.phtml:8 view/csv-import/index/map.phtml:19
 #: view/csv-import/index/past-imports.phtml:7
 msgid "CSV Import"
 msgstr "CSV Import"
 
-#: view/csv-import/index/map.phtml:13
+#: view/csv-import/index/map.phtml:9
+msgid "items"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:10
+msgid "item sets"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:12
 msgid "mixed resources"
 msgstr ""
 
-#: view/csv-import/index/map.phtml:14
+#: view/csv-import/index/map.phtml:13
 msgid "users"
 msgstr "uživatelů"
 
-#: view/csv-import/index/map.phtml:17
+#: view/csv-import/index/map.phtml:16
 #, php-format
 msgid "Import settings for %s"
 msgstr ""
 
-#: view/csv-import/index/map.phtml:18
+#: view/csv-import/index/map.phtml:17
 msgid "Import settings"
 msgstr "Nastavení importu"
 
-#: view/csv-import/index/map.phtml:28
+#: view/csv-import/index/map.phtml:27
 msgid "Map to Omeka S data"
 msgstr "Mapovat na Omeka S data"
 
-#: view/csv-import/index/map.phtml:30
+#: view/csv-import/index/map.phtml:29
 msgid "Basic Settings"
 msgstr "Základní nastavení"
 
-#: view/csv-import/index/map.phtml:31
+#: view/csv-import/index/map.phtml:30
 msgid "Advanced Settings"
 msgstr "Pokročilé nastavení"
 
-#: view/csv-import/index/map.phtml:46
+#: view/csv-import/index/map.phtml:45
 msgid "Resource type column"
 msgstr "Sloupec s typem zdroje"
 
-#: view/csv-import/index/map.phtml:50
+#: view/csv-import/index/map.phtml:49
 #: view/csv-import/mapping-sidebar/item.phtml:11
 #: view/csv-import/mapping-sidebar/media-source.phtml:7
 #: view/csv-import/mapping-sidebar/media.phtml:12
@@ -106,39 +114,39 @@ msgstr "Sloupec s typem zdroje"
 msgid "Select below"
 msgstr "Vybrat níže"
 
-#: view/csv-import/index/map.phtml:60
+#: view/csv-import/index/map.phtml:59
 msgid "Batch edit options"
 msgstr "Možnosti dávkových úprav"
 
-#: view/csv-import/index/map.phtml:70
+#: view/csv-import/index/map.phtml:69
 msgid "Column"
 msgstr "Sloupec"
 
-#: view/csv-import/index/map.phtml:72
+#: view/csv-import/index/map.phtml:71
 msgid "Mappings"
 msgstr "Mapování"
 
-#: view/csv-import/index/map.phtml:81
+#: view/csv-import/index/map.phtml:80
 msgid "Select column"
 msgstr "Vybrat sloupec"
 
-#: view/csv-import/index/map.phtml:85
+#: view/csv-import/index/map.phtml:84
 msgid "Add mapping"
 msgstr "Přidat mapování"
 
-#: view/csv-import/index/map.phtml:98
+#: view/csv-import/index/map.phtml:97
 msgid "Remove mapping"
 msgstr "Odstranit mapování "
 
-#: view/csv-import/index/map.phtml:110
+#: view/csv-import/index/map.phtml:109
 msgid "Multivalue"
 msgstr "Více hodnot"
 
-#: view/csv-import/index/map.phtml:114
+#: view/csv-import/index/map.phtml:113
 msgid "Language:"
 msgstr "Jazyk:"
 
-#: view/csv-import/index/map.phtml:118
+#: view/csv-import/index/map.phtml:117
 msgid "Private values"
 msgstr "Soukromé hdnoty"
 
@@ -261,42 +269,42 @@ msgstr ""
 msgid "\"%s\" is not a valid resource type."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:235
+#: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:257
+#: src/Mapping/AbstractResourceMapping.php:262
 #, php-format
 msgid "An item identifier is required to process action \"%s\"."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:270
+#: src/Mapping/AbstractResourceMapping.php:275
 #, php-format
 msgid "\"%s\" (%s) is not a valid item identifier."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:284
+#: src/Mapping/AbstractResourceMapping.php:289
 #, php-format
 msgid "\"%s\" (%s) is not a valid resource identifier."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:298
-#: src/Mapping/AbstractResourceMapping.php:305
+#: src/Mapping/AbstractResourceMapping.php:303
+#: src/Mapping/AbstractResourceMapping.php:310
 #, php-format
 msgid "\"%s\" is not a valid Resource Template name."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:318
-#: src/Mapping/AbstractResourceMapping.php:327
+#: src/Mapping/AbstractResourceMapping.php:323
+#: src/Mapping/AbstractResourceMapping.php:332
 #, php-format
 msgid ""
 "\"%s\" is not a valid resource class. Resource Classes must be a Class found"
 " on the Vocabularies page."
 msgstr ""
 
-#: src/Mapping/AbstractResourceMapping.php:341
-#: src/Mapping/AbstractResourceMapping.php:348
+#: src/Mapping/AbstractResourceMapping.php:346
+#: src/Mapping/AbstractResourceMapping.php:353
 #, php-format
 msgid "\"%s\" is not a valid user email address."
 msgstr ""
@@ -332,31 +340,31 @@ msgstr ""
 msgid "The rows are not all the same number of columns."
 msgstr ""
 
-#: src/Job/Import.php:15
+#: src/Job/Import.php:16
 msgid "create"
 msgstr "vytvořit"
 
-#: src/Job/Import.php:16
+#: src/Job/Import.php:17
 msgid "append"
 msgstr "přidat"
 
-#: src/Job/Import.php:17
+#: src/Job/Import.php:18
 msgid "revise"
 msgstr "revidovat"
 
-#: src/Job/Import.php:18
+#: src/Job/Import.php:19
 msgid "update"
 msgstr "aktualizovat"
 
-#: src/Job/Import.php:19
+#: src/Job/Import.php:20
 msgid "replace"
 msgstr "nahradit"
 
-#: src/Job/Import.php:20
+#: src/Job/Import.php:21
 msgid "delete"
 msgstr "smazat"
 
-#: src/Job/Import.php:21
+#: src/Job/Import.php:22
 msgid "skip"
 msgstr "přeskočit"
 
@@ -368,80 +376,80 @@ msgstr "Soubor vypadá prázdný."
 msgid "The file is not valid."
 msgstr "Soubor není platný."
 
-#: src/Job/Import.php:188
+#: src/Job/Import.php:193
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr "Úloha \"Importovat\" byla přerušena: počet zpracovaných řádků: %d."
 
-#: src/Job/Import.php:199
+#: src/Job/Import.php:204
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr "Počet přeskočených řádků:%d."
 
-#: src/Job/Import.php:281 src/Job/Import.php:310
+#: src/Job/Import.php:286 src/Job/Import.php:315
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
 "skipped: \"%s\"."
 msgstr ""
 
-#: src/Job/Import.php:408
+#: src/Job/Import.php:413
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr ""
 
-#: src/Job/Import.php:442
+#: src/Job/Import.php:447
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr ""
 
-#: src/Job/Import.php:445
+#: src/Job/Import.php:450
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr ""
 
-#: src/Job/Import.php:478
+#: src/Job/Import.php:483
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr ""
 
-#: src/Job/Import.php:496
+#: src/Job/Import.php:501
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr ""
 
-#: src/Job/Import.php:498
+#: src/Job/Import.php:503
 msgid "unknown ingester"
 msgstr ""
 
-#: src/Job/Import.php:623
+#: src/Job/Import.php:636
 msgid "A resource type is required to import a resource."
 msgstr ""
 
-#: src/Job/Import.php:1070
+#: src/Job/Import.php:1087
 msgid "Resource type is empty."
 msgstr ""
 
-#: src/Job/Import.php:1075
+#: src/Job/Import.php:1092
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr ""
 
-#: src/Job/Import.php:1095
+#: src/Job/Import.php:1112
 msgid "action"
 msgstr ""
 
-#: src/Job/Import.php:1102
+#: src/Job/Import.php:1119
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr ""
 
-#: src/Job/Import.php:1107
+#: src/Job/Import.php:1124
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr ""
 
-#: src/Job/Import.php:1115
+#: src/Job/Import.php:1132
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr ""
@@ -512,41 +520,51 @@ msgstr ""
 msgid "The separator to use for columns with multiple values"
 msgstr ""
 
-#: src/Form/MappingForm.php:288
+#: src/Form/MappingForm.php:287
 msgid ""
 "Language setting to apply to all imported literal data. Individual property "
 "mappings can override the setting here."
 msgstr ""
 
-#: src/Form/MappingForm.php:311 src/Form/MappingForm.php:382
-msgid "Create a new resource"
+#: src/Form/MappingForm.php:310
+msgid "Create (Each row in the CSV will become a new resource)"
+msgstr ""
+
+#: src/Form/MappingForm.php:311
+msgid ""
+"Append (Add new data to the resource, based on an identifier for an existing"
+" resource)"
 msgstr ""
 
 #: src/Form/MappingForm.php:312
-msgid "Append data to the resource"
+msgid ""
+"Revise (Replace existing fields of the resource with data from the CSV, "
+"except if the corresponding cell in the CSV is empty)"
 msgstr ""
 
 #: src/Form/MappingForm.php:313
-msgid "Revise data of the resource"
+msgid ""
+"Update (Replace existing fields of the resource with data from the CSV, even"
+" when the corresponding cell in the CSV is empty)"
 msgstr ""
 
 #: src/Form/MappingForm.php:314
-msgid "Update data of the resource"
+msgid ""
+"Replace (Remove all properties of the resource, then add new information "
+"from the CSV)"
 msgstr ""
 
 #: src/Form/MappingForm.php:315
-msgid "Replace all data of the resource"
+msgid "Delete (Delete any resources matched by the identifiers)"
 msgstr ""
 
-#: src/Form/MappingForm.php:316
-msgid "Delete the resource"
-msgstr ""
-
-#: src/Form/MappingForm.php:324
+#: src/Form/MappingForm.php:323
 msgid ""
 "By default, an import creates new resources. Select from this dropdown to "
 "choose an alternate action for the import. For more information on each "
-"action, see the documentation."
+"action, see <a href=\"https://omeka.org/s/docs/user-"
+"manual/modules/csvimport/#media-import-advanced-settings\" "
+"target=\"_blank\">the documentation</a>."
 msgstr ""
 
 #: src/Form/MappingForm.php:338
@@ -579,6 +597,10 @@ msgstr ""
 
 #: src/Form/MappingForm.php:381
 msgid "Skip the row"
+msgstr ""
+
+#: src/Form/MappingForm.php:382
+msgid "Create a new resource"
 msgstr ""
 
 #: src/Form/MappingForm.php:396
@@ -704,7 +726,7 @@ msgstr ""
 msgid "Invalid settings."
 msgstr ""
 
-#: src/Controller/IndexController.php:195
+#: src/Controller/IndexController.php:193
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr ""
