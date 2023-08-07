@@ -328,7 +328,7 @@ class IndexController extends AbstractActionController
         // Check the identifier property.
         if (array_key_exists('identifier_property', $args)) {
             $identifierProperty = $args['identifier_property'];
-            if (empty($identifierProperty) && $identifierProperty !== 'internal_id') {
+            if (empty($identifierProperty) && $identifierProperty !== 'o:id') {
                 $properties = $api->search('properties', ['term' => $identifierProperty])->getContent();
                 if (empty($properties)) {
                     $args['identifier_property'] = null;
