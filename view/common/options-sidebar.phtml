@@ -30,6 +30,7 @@
             <div class="option-inputs">
                 <select id="column-data-type" data-column-option="column-data-type">
                 <?php foreach ($dataTypes as $id => $label): ?>
+                    <?php if ($id === 'literal') { $id = ''; } ?>
                     <option value="<?php echo $this->escapeHtml($id); ?>"><?php echo $this->translate($label); ?></option>
                 <?php endforeach; ?>
                 </select>
@@ -42,6 +43,22 @@
                 <input type="checkbox" data-column-option="column-private-values" id="private-values">
             </div>
             <a href="#" class="reset-link"><?php echo $this->translate('Reset'); ?></a>
+        </div>
+        <div class="resource-identifier-property option">
+            <label for="resource-identifier-property"><?php echo $this->translate('Resource identifier property'); ?></label>
+            <div class="option-inputs">
+                <?php echo $this->propertySelect([
+                    'name' => 'resource-identifier-property',
+                    'attributes' => [
+                        'id' => 'resource-identifier-property',
+                        'data-column-option' => 'column-resource-identifier-property',
+                    ],
+                    'options' => [
+                        'empty_option' => 'Internal ID',
+                        'term_as_value' => true,
+                   ],
+                ]); ?>
+            </div>
         </div>
     </div>
     <div class="confirm-panel">
