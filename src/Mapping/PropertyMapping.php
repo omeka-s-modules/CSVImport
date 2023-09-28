@@ -3,6 +3,7 @@ namespace CSVImport\Mapping;
 
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\View\Renderer\PhpRenderer;
+use Omeka\Stdlib\Message;
 
 class PropertyMapping extends AbstractMapping
 {
@@ -130,7 +131,7 @@ class PropertyMapping extends AbstractMapping
                                         $value = $resourceId;
                                     } else {
                                         $this->logger->err(new Message('"%s" (%s) is not a valid resource.', // @translate
-                                            $identifier, $identifierProperty));
+                                            $value, $identifierProperty));
                                         $this->setHasErr(true);
                                         break;
                                     }
