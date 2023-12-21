@@ -607,14 +607,16 @@ class Import extends AbstractJob
         }
 
         // Update positions of the updated media.
-        $entityManager = $services->get('Omeka\EntityManager');
-        $mediaRepository = $entityManager->getRepository(\Omeka\Entity\Media::class);
-        $medias = $mediaRepository->findById(array_keys($mediaRanks));
-        foreach ($medias as $media) {
-            $rank = $mediaRanks[$media->getId()];
-            $media->setPosition($rank);
+        $conn->beginTransaction();
+        try {
+            $updateQuery = 'UPDATE media SET position = ? WHERE id = ?';
+            foreach ($mediaRanks as $id => $rank) {
+                $conn->executeQuery($updateQuery, [$rank, $id], ['integer', 'integer']);
+            }
+            $conn->commit();
+        } catch (\Exception $e) {
+            $conn->rollBack();
         }
-        $entityManager->flush();
     }
 
     /**
