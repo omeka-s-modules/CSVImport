@@ -616,6 +616,7 @@ class Import extends AbstractJob
             $conn->commit();
         } catch (\Exception $e) {
             $conn->rollBack();
+            throw $e;
         }
     }
 
