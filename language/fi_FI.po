@@ -5,6 +5,7 @@
 # 
 # Translators:
 # Kai Metsävainio <kai.metsavainio@gmail.com>, 2021
+# Matti Lassila <matti.lassila@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-08-07 15:00-0400\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Kai Metsävainio <kai.metsavainio@gmail.com>, 2021\n"
+"Last-Translator: Matti Lassila <matti.lassila@gmail.com>, 2023\n"
 "Language-Team: Finnish (Finland) (https://app.transifex.com/omeka/teams/14184/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +52,7 @@ msgstr "Tämä ohittaa kieliasetukset tuonnin perusasetuksissa."
 
 #: view/common/options-sidebar.phtml:29
 msgid "Data type"
-msgstr ""
+msgstr "Tietotyyppi"
 
 #: view/common/options-sidebar.phtml:40
 msgid "Import values as private"
@@ -68,11 +69,11 @@ msgstr "CSV-tuonti"
 
 #: view/csv-import/index/map.phtml:9
 msgid "items"
-msgstr ""
+msgstr "aineistot"
 
 #: view/csv-import/index/map.phtml:10
 msgid "item sets"
-msgstr ""
+msgstr "kokoelmat"
 
 #: view/csv-import/index/map.phtml:12
 msgid "mixed resources"
@@ -231,7 +232,7 @@ msgstr "Yleiset tiedot"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:9
 msgid "Resource template (by label)"
-msgstr ""
+msgstr "Tallennuspohja"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:10
 msgid "Resource class (by term)"
@@ -424,11 +425,11 @@ msgstr ""
 
 #: src/Job/Import.php:503
 msgid "unknown ingester"
-msgstr ""
+msgstr "Tuntematon tallentaja"
 
 #: src/Job/Import.php:636
 msgid "A resource type is required to import a resource."
-msgstr ""
+msgstr "Aineiston tuonti vaatii aineiston tyypin"
 
 #: src/Job/Import.php:1087
 msgid "Resource type is empty."
@@ -637,7 +638,7 @@ msgstr "sarkain"
 
 #: src/Form/ImportForm.php:19
 msgid "carriage return"
-msgstr "vaununpalautus"
+msgstr "rivinvaihto"
 
 #: src/Form/ImportForm.php:20
 msgid "space"
@@ -715,11 +716,11 @@ msgstr ""
 
 #: src/Form/ImportForm.php:141
 msgid "A note about the purpose or source of this import"
-msgstr ""
+msgstr "Huomautus siirron tarkoituksesta tai lähteestä"
 
 #: src/Controller/IndexController.php:97
 msgid "The format of the source cannot be detected."
-msgstr ""
+msgstr "Lähteen muotoa ei voitu tunnistaa."
 
 #: src/Controller/IndexController.php:121
 msgid "The file has no headers."
