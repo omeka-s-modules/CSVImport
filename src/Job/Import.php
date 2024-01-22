@@ -98,6 +98,11 @@ class Import extends AbstractJob
      */
     protected $emptyLines;
 
+    /**
+     * @var array
+     */
+    protected $originalIdentityMap;
+
     public function perform()
     {
         $services = $this->getServiceLocator();
@@ -182,6 +187,7 @@ class Import extends AbstractJob
         // in the import. This is currently only relevant for import jobs run with
         // the Synchronous strategy
         $this->detachProblematicEntities();
+        $this->originalIdentityMap = $this->getServiceLocator()->get('Omeka\EntityManager')->getUnitOfWork()->getIdentityMap();
 
         $this->emptyLines = 0;
 
@@ -264,8 +270,6 @@ class Import extends AbstractJob
             case self::ACTION_REVISE:
             case self::ACTION_UPDATE:
             case self::ACTION_REPLACE:
-                $originalIdentityMap = $this->getServiceLocator()->get('Omeka\EntityManager')->getUnitOfWork()->getIdentityMap();
-
                 $findResourcesFromIdentifiers = $this->findResourcesFromIdentifiers;
                 $identifiers = $this->extractIdentifiers($data);
                 $ids = $findResourcesFromIdentifiers($identifiers, $this->identifierPropertyId, $this->resourceType);
@@ -299,7 +303,7 @@ class Import extends AbstractJob
                     $dataToProcess = $this->identifyMedias($dataToProcess, $idsToProcess);
                 }
                 $this->update($dataToProcess, $idsToProcess, $args['action']);
-                $this->detachAllNewEntities($originalIdentityMap);
+                $this->detachAllNewEntities();
                 break;
 
             case self::ACTION_DELETE:
@@ -1235,17 +1239,15 @@ class Import extends AbstractJob
      * did not exist in the prior state.
      *
      * @internal This is a copy-paste of the functionality from the abstract entity adapter
-     *
-     * @param array $oldIdentityMap
      */
-    protected function detachAllNewEntities(array $oldIdentityMap)
+    protected function detachAllNewEntities()
     {
         $entityManager = $this->getServiceLocator()->get('Omeka\EntityManager');
         $uow = $entityManager->getUnitOfWork();
         $identityMap = $uow->getIdentityMap();
         foreach ($identityMap as $entityClass => $entities) {
             foreach ($entities as $idHash => $entity) {
-                if (!isset($oldIdentityMap[$entityClass][$idHash])) {
+                if (!isset($this->originalIdentityMap[$entityClass][$idHash])) {
                     $entityManager->detach($entity);
                 }
             }
