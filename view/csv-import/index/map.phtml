@@ -102,20 +102,29 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                     </ul>
                 </td>
                 <td class="element-options">
-                    <ul class='options'>
-                        <li class='column-data-type option' style='display:none;'><span class="option-label"></span>
-                            <input type="hidden" name="column-data-type[<?php echo $index; ?>]" class="column-option column-data-type" value="literal">
+                    <ul class="options">
+                        <li class="column-data-type option">
+                            <?php echo $this->translate('Data type:'); ?>
+                            <span class="option-label"></span>
+                            <input type="hidden" name="column-data-type[<?php echo $index; ?>]" data-option-name="data-type" value="" disabled>
                         </li>
-                        <li class='column-multivalue option' style='display:none;'><?php echo $this->translate("Multivalue"); ?>
-                            <input type='hidden' disabled='disabled' value='1' class='column-option column-multivalue' name='column-multivalue[<?php echo $index; ?>]'></input>
+                        <li class="column-multivalue option">
+                            <?php echo $this->translate("Multivalue"); ?>
+                            <input type="hidden" name="column-multivalue[<?php echo $index; ?>]" data-option-name="multivalue" value="1" disabled>
                         </li>
-
-                        <li class='column-language option' style='display:none;'><?php echo $this->translate("Language:"); echo"&nbsp;"; ?>
-                            <span class='column-language'></span>
-                            <input type='hidden' disabled='disabled' value='' class='column-option column-language' name='column-language[<?php echo $index; ?>]'></input>
+                        <li class="column-language option">
+                            <?php echo $this->translate("Language:"); ?>
+                            <span class="column-language"></span>
+                            <input type="hidden" name="column-language[<?php echo $index; ?>]" data-option-name="language" value="" disabled>
                         </li>
-                        <li class="column-private-values option" style="display:none;"><?php echo $this->translate("Private values"); ?>
-                            <input type="hidden" value="1" class="column-option column-private-values" name="column-private-values[<?php echo $index; ?>]" disabled>
+                        <li class="column-private-values option">
+                            <?php echo $this->translate("Private values"); ?>
+                            <input type="hidden" name="column-private-values[<?php echo $index; ?>]" data-option-name="private-values" value="1" disabled>
+                        </li>
+                        <li class="column-resource-identifier-property option">
+                            <?php echo $this->translate("Resource identifier property:"); ?>
+                            <span class="option-label"></span>
+                            <input type="hidden" name="column-resource-identifier-property[<?php echo $index; ?>]" data-option-name="resource-identifier-property" value="" disabled>
                         </li>
                     </ul>
                 </td>

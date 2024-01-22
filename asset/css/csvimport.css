@@ -81,8 +81,8 @@ ul.options {
     margin: 0;
 }
 
-ul.options li {
-    display: flex;
+ul.options > li:not(.active) {
+    display: none;
 }
 
 li {
