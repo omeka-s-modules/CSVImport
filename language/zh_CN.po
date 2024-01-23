@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-07 15:00-0400\n"
+"POT-Creation-Date: 2024-01-23 16:19-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Hong Zhang <zhangh@unlv.nevada.edu>, 2021\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/omeka/teams/14184/zh_CN/)\n"
@@ -51,9 +51,13 @@ msgstr "在基本导入设置中，这将优先于语言设置。"
 msgid "Data type"
 msgstr ""
 
-#: view/common/options-sidebar.phtml:40
+#: view/common/options-sidebar.phtml:41
 msgid "Import values as private"
 msgstr "导入值为私有的"
+
+#: view/common/options-sidebar.phtml:48
+msgid "Resource identifier property"
+msgstr "资源识别码属性"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -138,17 +142,25 @@ msgstr "添加匹配"
 msgid "Remove mapping"
 msgstr "取消匹配"
 
-#: view/csv-import/index/map.phtml:109
+#: view/csv-import/index/map.phtml:107
+msgid "Data type:"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
 msgstr "多值"
 
-#: view/csv-import/index/map.phtml:113
+#: view/csv-import/index/map.phtml:116
 msgid "Language:"
 msgstr "语言："
 
-#: view/csv-import/index/map.phtml:117
+#: view/csv-import/index/map.phtml:121
 msgid "Private values"
 msgstr "私有值"
+
+#: view/csv-import/index/map.phtml:125
+msgid "Resource identifier property:"
+msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -268,6 +280,11 @@ msgstr "资源数据"
 msgid "\"%s\" is not a valid resource type."
 msgstr "“%s”不是一个有效的资源类型。"
 
+#: src/Mapping/PropertyMapping.php:133
+#, php-format
+msgid "\"%s\" (%s) is not a valid resource."
+msgstr ""
+
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
@@ -367,88 +384,88 @@ msgstr "删除"
 msgid "skip"
 msgstr "跳过"
 
-#: src/Job/Import.php:144
+#: src/Job/Import.php:149
 msgid "The file seems empty."
 msgstr "文件看起来是空的。"
 
-#: src/Job/Import.php:153 src/Controller/IndexController.php:114
+#: src/Job/Import.php:158 src/Controller/IndexController.php:114
 msgid "The file is not valid."
 msgstr "文件是无效的。"
 
-#: src/Job/Import.php:193
+#: src/Job/Import.php:199
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr "“导入”任务已终止。处理了%d行。"
 
-#: src/Job/Import.php:204
+#: src/Job/Import.php:210
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr "%d空行被跳过了。"
 
-#: src/Job/Import.php:286 src/Job/Import.php:315
+#: src/Job/Import.php:290 src/Job/Import.php:319
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
 "skipped: \"%s\"."
 msgstr "此识别码没有和一个资源联系起来，在此跳过：“%s”。"
 
-#: src/Job/Import.php:413
+#: src/Job/Import.php:417
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr "目前不支持对%s的更新模式“%s”。"
 
-#: src/Job/Import.php:447
+#: src/Job/Import.php:451
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr "%d%s已更新（%s）：%s。"
 
-#: src/Job/Import.php:450
+#: src/Job/Import.php:454
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr "%d%s均未更新（%s）。"
 
-#: src/Job/Import.php:483
+#: src/Job/Import.php:487
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr "%d%s已被删除：%s。"
 
-#: src/Job/Import.php:501
+#: src/Job/Import.php:505
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr "创建的媒介没有附加到一个条目上（%s）。"
 
-#: src/Job/Import.php:503
+#: src/Job/Import.php:507
 msgid "unknown ingester"
 msgstr ""
 
-#: src/Job/Import.php:636
+#: src/Job/Import.php:643
 msgid "A resource type is required to import a resource."
 msgstr "为导入资源，资源类型是必需的。"
 
-#: src/Job/Import.php:1087
+#: src/Job/Import.php:1094
 msgid "Resource type is empty."
 msgstr "资源类型为空。"
 
-#: src/Job/Import.php:1092
+#: src/Job/Import.php:1099
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr "资源类型“%s”未被管理。"
 
-#: src/Job/Import.php:1112
+#: src/Job/Import.php:1119
 msgid "action"
 msgstr "操作"
 
-#: src/Job/Import.php:1119
+#: src/Job/Import.php:1126
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr "“%s”操作要求一个资源识别码属性。"
 
-#: src/Job/Import.php:1124
+#: src/Job/Import.php:1131
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr "目前对资源类型“%s”没有可用的操作“%s”。"
 
-#: src/Job/Import.php:1132
+#: src/Job/Import.php:1139
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr "对未识别资源的操作“%s”是未管理的。"
@@ -570,10 +587,6 @@ msgstr ""
 msgid "Resource identifier column"
 msgstr "资源识别码列"
 
-#: src/Form/MappingForm.php:357
-msgid "Resource identifier property"
-msgstr "资源识别码属性"
-
 #: src/Form/MappingForm.php:358
 msgid ""
 "Use this property, generally \"dcterms:identifier\", to identify the "
@@ -684,10 +697,6 @@ msgid ""
 "delimiter."
 msgstr "在csv文件中用来分隔列的单个字符。当内容不包含分隔符时，界限符可以省略。"
 
-#: src/Form/ImportForm.php:106
-msgid "Import type"
-msgstr "导入类型"
-
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
 msgstr "被导入数据的类型"
@@ -731,7 +740,3 @@ msgstr "无效设置。"
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr ""
-
-#: config/module.config.php:184
-msgid "Omeka resource (by ID)"
-msgstr "Omeka资源（按ID）"

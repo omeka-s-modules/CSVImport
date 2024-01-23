@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-07 15:00-0400\n"
+"POT-Creation-Date: 2024-01-23 16:19-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Giorgio Comai <g@giorgiocomai.eu>, 2023\n"
 "Language-Team: Italian (https://app.transifex.com/omeka/teams/14184/it/)\n"
@@ -58,9 +58,13 @@ msgstr ""
 msgid "Data type"
 msgstr "Tipo di dati"
 
-#: view/common/options-sidebar.phtml:40
+#: view/common/options-sidebar.phtml:41
 msgid "Import values as private"
 msgstr "Importa valori come privati"
+
+#: view/common/options-sidebar.phtml:48
+msgid "Resource identifier property"
+msgstr "Proprietà dell'identificatore della risorsa"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -145,17 +149,25 @@ msgstr "Aggiungi mappatura"
 msgid "Remove mapping"
 msgstr "Elimina mappatura"
 
-#: view/csv-import/index/map.phtml:109
+#: view/csv-import/index/map.phtml:107
+msgid "Data type:"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
 msgstr "Multivalore"
 
-#: view/csv-import/index/map.phtml:113
+#: view/csv-import/index/map.phtml:116
 msgid "Language:"
 msgstr "Lingua:"
 
-#: view/csv-import/index/map.phtml:117
+#: view/csv-import/index/map.phtml:121
 msgid "Private values"
 msgstr "Valori privati"
+
+#: view/csv-import/index/map.phtml:125
+msgid "Resource identifier property:"
+msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -280,6 +292,11 @@ msgstr "I dati della risorsa"
 msgid "\"%s\" is not a valid resource type."
 msgstr "\"%s\" non è valido il tipo di risorsa."
 
+#: src/Mapping/PropertyMapping.php:133
+#, php-format
+msgid "\"%s\" (%s) is not a valid resource."
+msgstr ""
+
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
@@ -383,25 +400,25 @@ msgstr "elimina"
 msgid "skip"
 msgstr "salta"
 
-#: src/Job/Import.php:144
+#: src/Job/Import.php:149
 msgid "The file seems empty."
 msgstr "Il file sembra vuoto."
 
-#: src/Job/Import.php:153 src/Controller/IndexController.php:114
+#: src/Job/Import.php:158 src/Controller/IndexController.php:114
 msgid "The file is not valid."
 msgstr "Il file non è valido."
 
-#: src/Job/Import.php:193
+#: src/Job/Import.php:199
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr "Il lavoro \"Importazione\" è stato arrestato: %drighe esaminati."
 
-#: src/Job/Import.php:204
+#: src/Job/Import.php:210
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr "%d linee vuote sono state saltate."
 
-#: src/Job/Import.php:286 src/Job/Import.php:315
+#: src/Job/Import.php:290 src/Job/Import.php:319
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
@@ -410,65 +427,65 @@ msgstr ""
 "Gli identificatori successivi non sono collegati alla risorsa e sono stati "
 "saltati: \"%s\"."
 
-#: src/Job/Import.php:413
+#: src/Job/Import.php:417
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr "La modalità aggiornata \"%s\" non è supportato alla %s attualmente."
 
-#: src/Job/Import.php:447
+#: src/Job/Import.php:451
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr "%d %s  sono stati aggiornati (%s): %s."
 
-#: src/Job/Import.php:450
+#: src/Job/Import.php:454
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr "Nessuno di %d %s è stato aggionato (%s)."
 
-#: src/Job/Import.php:483
+#: src/Job/Import.php:487
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr "%d %s sono stati eliminati: %s."
 
-#: src/Job/Import.php:501
+#: src/Job/Import.php:505
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr "Il materiale per creare non è stato allegato al contenuto (%s)"
 
-#: src/Job/Import.php:503
+#: src/Job/Import.php:507
 msgid "unknown ingester"
 msgstr "ingester sconosciuto"
 
-#: src/Job/Import.php:636
+#: src/Job/Import.php:643
 msgid "A resource type is required to import a resource."
 msgstr "Un tipo di risorsa è richiesto per importare la risorsa."
 
-#: src/Job/Import.php:1087
+#: src/Job/Import.php:1094
 msgid "Resource type is empty."
 msgstr "Il tipo di risorsa è vuoto."
 
-#: src/Job/Import.php:1092
+#: src/Job/Import.php:1099
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr "La risorsa tipo \"%s\" non è gestita."
 
-#: src/Job/Import.php:1112
+#: src/Job/Import.php:1119
 msgid "action"
 msgstr "azione"
 
-#: src/Job/Import.php:1119
+#: src/Job/Import.php:1126
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr "L'azione \"%s\" richiede un identificatore di risorsa."
 
-#: src/Job/Import.php:1124
+#: src/Job/Import.php:1131
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr ""
 "L'azione \"%s\" non è disponibile per il momento per il tipo di risorsa "
 "\"%s\" ."
 
-#: src/Job/Import.php:1132
+#: src/Job/Import.php:1139
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr "L'azione \"%s\" per le risorse sconosciute non è riuscita."
@@ -607,10 +624,6 @@ msgstr ""
 msgid "Resource identifier column"
 msgstr "Colonna che identifica la risorsa"
 
-#: src/Form/MappingForm.php:357
-msgid "Resource identifier property"
-msgstr "Proprietà dell'identificatore della risorsa"
-
 #: src/Form/MappingForm.php:358
 msgid ""
 "Use this property, generally \"dcterms:identifier\", to identify the "
@@ -736,10 +749,6 @@ msgstr ""
 " carattere di chiusura può essere omesso se il contenuto non contiene il "
 "carattere di delimitazione."
 
-#: src/Form/ImportForm.php:106
-msgid "Import type"
-msgstr "Tipo di importazione"
-
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
 msgstr "Il tipo di dati che viene importato"
@@ -786,7 +795,3 @@ msgstr "Impostazioni non valide."
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr "Annullamento in esecuzione nei seguenti lavori: %s "
-
-#: config/module.config.php:184
-msgid "Omeka resource (by ID)"
-msgstr "Risorsa Omeka (per ID)"

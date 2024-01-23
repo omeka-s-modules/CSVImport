@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-07 15:00-0400\n"
+"POT-Creation-Date: 2024-01-23 16:19-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Alfonso Montejo <almontejor@gmail.com>, 2023\n"
 "Language-Team: Spanish (https://app.transifex.com/omeka/teams/14184/es/)\n"
@@ -58,9 +58,13 @@ msgstr ""
 msgid "Data type"
 msgstr "Tipo de datoz"
 
-#: view/common/options-sidebar.phtml:40
+#: view/common/options-sidebar.phtml:41
 msgid "Import values as private"
 msgstr "Importar valores como privados"
+
+#: view/common/options-sidebar.phtml:48
+msgid "Resource identifier property"
+msgstr "Propiedad del identificador de recurso"
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -145,17 +149,25 @@ msgstr "Agregar mapeado"
 msgid "Remove mapping"
 msgstr "Quitar mapeado"
 
-#: view/csv-import/index/map.phtml:109
+#: view/csv-import/index/map.phtml:107
+msgid "Data type:"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
 msgstr "Multivalor"
 
-#: view/csv-import/index/map.phtml:113
+#: view/csv-import/index/map.phtml:116
 msgid "Language:"
 msgstr "Idioma"
 
-#: view/csv-import/index/map.phtml:117
+#: view/csv-import/index/map.phtml:121
 msgid "Private values"
 msgstr "Valores privados"
+
+#: view/csv-import/index/map.phtml:125
+msgid "Resource identifier property:"
+msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -280,6 +292,11 @@ msgstr "Dato del recurso"
 msgid "\"%s\" is not a valid resource type."
 msgstr "\"%s\" no es un tipo de recurso válido."
 
+#: src/Mapping/PropertyMapping.php:133
+#, php-format
+msgid "\"%s\" (%s) is not a valid resource."
+msgstr ""
+
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
@@ -383,25 +400,25 @@ msgstr "borrar"
 msgid "skip"
 msgstr "omitir"
 
-#: src/Job/Import.php:144
+#: src/Job/Import.php:149
 msgid "The file seems empty."
 msgstr "El archivo parece estar vacío."
 
-#: src/Job/Import.php:153 src/Controller/IndexController.php:114
+#: src/Job/Import.php:158 src/Controller/IndexController.php:114
 msgid "The file is not valid."
 msgstr "El archivo no es válido."
 
-#: src/Job/Import.php:193
+#: src/Job/Import.php:199
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr "La tarea \"Importar\" fue interrumpida: %d filas procesadas."
 
-#: src/Job/Import.php:204
+#: src/Job/Import.php:210
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr "%d líneas vacías fueron omitidas."
 
-#: src/Job/Import.php:286 src/Job/Import.php:315
+#: src/Job/Import.php:290 src/Job/Import.php:319
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
@@ -410,65 +427,65 @@ msgstr ""
 "No están asociados a un recurso, por tanto se omitieron los identificadores "
 "siguientes: \"%s\"."
 
-#: src/Job/Import.php:413
+#: src/Job/Import.php:417
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr "El modo de actualización \"%s\" no es compatible para %s actualmente."
 
-#: src/Job/Import.php:447
+#: src/Job/Import.php:451
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr "%d %s fueron actualizadas (%s): %s."
 
-#: src/Job/Import.php:450
+#: src/Job/Import.php:454
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr "Ninguno de los %d %s se actualizó (%s)."
 
-#: src/Job/Import.php:483
+#: src/Job/Import.php:487
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr "%d %s fueron quitadas: %s."
 
-#: src/Job/Import.php:501
+#: src/Job/Import.php:505
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr "Medio ha crear no está asociado a un elemento (%s)."
 
-#: src/Job/Import.php:503
+#: src/Job/Import.php:507
 msgid "unknown ingester"
 msgstr "forma de incorporación desconocida"
 
-#: src/Job/Import.php:636
+#: src/Job/Import.php:643
 msgid "A resource type is required to import a resource."
 msgstr "Se requiere un tipo de recurso para importar un recurso."
 
-#: src/Job/Import.php:1087
+#: src/Job/Import.php:1094
 msgid "Resource type is empty."
 msgstr "El tipo de recurso está vacío."
 
-#: src/Job/Import.php:1092
+#: src/Job/Import.php:1099
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr "El tipo de recurso \"%s\" no se gestiona."
 
-#: src/Job/Import.php:1112
+#: src/Job/Import.php:1119
 msgid "action"
 msgstr "acción"
 
-#: src/Job/Import.php:1119
+#: src/Job/Import.php:1126
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr "La acción \"%s\" requiere una propiedad de identificador de recursos."
 
-#: src/Job/Import.php:1124
+#: src/Job/Import.php:1131
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr ""
 "La acción \"%s\" no está disponible para el tipo de recurso \"%s\" "
 "actualmente."
 
-#: src/Job/Import.php:1132
+#: src/Job/Import.php:1139
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr "Acción \"%s\" para recursos no identificados no se gestiona."
@@ -608,10 +625,6 @@ msgstr ""
 msgid "Resource identifier column"
 msgstr "Columna identificador de recurso"
 
-#: src/Form/MappingForm.php:357
-msgid "Resource identifier property"
-msgstr "Propiedad del identificador de recurso"
-
 #: src/Form/MappingForm.php:358
 msgid ""
 "Use this property, generally \"dcterms:identifier\", to identify the "
@@ -735,10 +748,6 @@ msgstr ""
 "Un solo carácter que se usará para separar las columnas en el archivo CSV. "
 "El limitante se puede omitir cuando el contenido no contiene el delimitador."
 
-#: src/Form/ImportForm.php:106
-msgid "Import type"
-msgstr "Tipo de importación"
-
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
 msgstr "El tipo de datos siendo importado"
@@ -785,7 +794,3 @@ msgstr "Ajustes no válidos."
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr "Anular progreso en las siguientes tareas: %s"
-
-#: config/module.config.php:184
-msgid "Omeka resource (by ID)"
-msgstr "Recurso de Omeka (por ID)"

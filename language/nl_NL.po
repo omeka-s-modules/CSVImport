@@ -2,38 +2,44 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+# Translators:
+# Vincent <vincent@stedema.nl>, 2024
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-23 16:19-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2017-09-14 20:14+0000\n"
+"Last-Translator: Vincent <vincent@stedema.nl>, 2024\n"
+"Language-Team: Dutch (Netherlands) (https://app.transifex.com/omeka/teams/14184/nl_NL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl_NL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: view/common/mapping-sidebar.phtml:4
 msgid "Add mapping: "
-msgstr ""
+msgstr "Mapping toevoegen"
 
 #: view/common/options-sidebar.phtml:4
 msgid "Batch edit column options:"
-msgstr ""
+msgstr "Kolomopties in bulk bewerken:"
 
 #: view/common/options-sidebar.phtml:5
 msgid "Column options:"
-msgstr ""
+msgstr "Kolomopties:"
 
 #: view/common/options-sidebar.phtml:7
 msgid ""
 "Highlighted options will apply to selected column headers. Reset an option "
 "to cancel changes."
 msgstr ""
+"De gemarkeerde opties worden toegepast op de geselecteerde kolomkoppen. Stel"
+" een optie opnieuw in om de wijzigingen te annuleren."
 
 #: view/common/options-sidebar.phtml:11
 msgid "Use multivalue separator"
@@ -78,7 +84,7 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:13
 msgid "users"
-msgstr ""
+msgstr "gebruikers"
 
 #: view/csv-import/index/map.phtml:16
 #, php-format
@@ -95,11 +101,11 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:29
 msgid "Basic Settings"
-msgstr ""
+msgstr "Basisinstellingen"
 
 #: view/csv-import/index/map.phtml:30
 msgid "Advanced Settings"
-msgstr ""
+msgstr "Geavanceerde instellingen"
 
 #: view/csv-import/index/map.phtml:45
 msgid "Resource type column"
@@ -120,7 +126,7 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:69
 msgid "Column"
-msgstr ""
+msgstr "Kolom"
 
 #: view/csv-import/index/map.phtml:71
 msgid "Mappings"
@@ -132,11 +138,11 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:84
 msgid "Add mapping"
-msgstr ""
+msgstr "Mapping toevoegen"
 
 #: view/csv-import/index/map.phtml:97
 msgid "Remove mapping"
-msgstr ""
+msgstr "Mapping verwijderen"
 
 #: view/csv-import/index/map.phtml:107
 msgid "Data type:"
@@ -148,7 +154,7 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:116
 msgid "Language:"
-msgstr ""
+msgstr "Taal:"
 
 #: view/csv-import/index/map.phtml:121
 msgid "Private values"
@@ -311,8 +317,8 @@ msgstr ""
 #: src/Mapping/AbstractResourceMapping.php:332
 #, php-format
 msgid ""
-"\"%s\" is not a valid resource class. Resource Classes must be a Class found "
-"on the Vocabularies page."
+"\"%s\" is not a valid resource class. Resource Classes must be a Class found"
+" on the Vocabularies page."
 msgstr ""
 
 #: src/Mapping/AbstractResourceMapping.php:346
@@ -544,8 +550,8 @@ msgstr ""
 
 #: src/Form/MappingForm.php:311
 msgid ""
-"Append (Add new data to the resource, based on an identifier for an existing "
-"resource)"
+"Append (Add new data to the resource, based on an identifier for an existing"
+" resource)"
 msgstr ""
 
 #: src/Form/MappingForm.php:312
@@ -556,8 +562,8 @@ msgstr ""
 
 #: src/Form/MappingForm.php:313
 msgid ""
-"Update (Replace existing fields of the resource with data from the CSV, even "
-"when the corresponding cell in the CSV is empty)"
+"Update (Replace existing fields of the resource with data from the CSV, even"
+" when the corresponding cell in the CSV is empty)"
 msgstr ""
 
 #: src/Form/MappingForm.php:314
@@ -574,8 +580,9 @@ msgstr ""
 msgid ""
 "By default, an import creates new resources. Select from this dropdown to "
 "choose an alternate action for the import. For more information on each "
-"action, see <a href=\"https://omeka.org/s/docs/user-manual/modules/csvimport/"
-"#media-import-advanced-settings\" target=\"_blank\">the documentation</a>."
+"action, see <a href=\"https://omeka.org/s/docs/user-"
+"manual/modules/csvimport/#media-import-advanced-settings\" "
+"target=\"_blank\">the documentation</a>."
 msgstr ""
 
 #: src/Form/MappingForm.php:338
@@ -585,8 +592,8 @@ msgstr ""
 #: src/Form/MappingForm.php:358
 msgid ""
 "Use this property, generally \"dcterms:identifier\", to identify the "
-"existing resources, so it will be possible to update them. One column of the "
-"file must map the selected property. In all cases, it is strongly "
+"existing resources, so it will be possible to update them. One column of the"
+" file must map the selected property. In all cases, it is strongly "
 "recommended to add one ore more unique identifiers to all your resources."
 msgstr ""
 
@@ -604,131 +611,144 @@ msgstr ""
 
 #: src/Form/MappingForm.php:381
 msgid "Skip the row"
-msgstr ""
+msgstr "Rij overslaan"
 
 #: src/Form/MappingForm.php:382
 msgid "Create a new resource"
-msgstr ""
+msgstr "Nieuw object aanmaken"
 
 #: src/Form/MappingForm.php:396
 msgid "Number of rows to process by batch"
-msgstr ""
+msgstr "Aantal te verwerken rijen per batch"
 
 #: src/Form/MappingForm.php:397
 msgid ""
-"By default, rows are processed by 20. In some cases, to set a value of 1 may "
-"avoid issues."
+"By default, rows are processed by 20. In some cases, to set a value of 1 may"
+" avoid issues."
 msgstr ""
+"Standaard worden rijen per 20 verwerkt. In sommige gevallen is het aan te "
+"raden om dit aantal op 1 in te stellen om problemen tijdens het importeren "
+"te voorkomen."
 
 #: src/Form/ImportForm.php:15
 msgid "comma"
-msgstr ""
+msgstr "komma"
 
 #: src/Form/ImportForm.php:16
 msgid "semi-colon"
-msgstr ""
+msgstr "puntkomma"
 
 #: src/Form/ImportForm.php:17
 msgid "colon"
-msgstr ""
+msgstr "dubbele punt"
 
 #: src/Form/ImportForm.php:18
 msgid "tabulation"
-msgstr ""
+msgstr "tab"
 
 #: src/Form/ImportForm.php:19
 msgid "carriage return"
-msgstr ""
+msgstr "regelafbreking"
 
 #: src/Form/ImportForm.php:20
 msgid "space"
-msgstr ""
+msgstr "spatie"
 
 #: src/Form/ImportForm.php:21
 msgid "pipe"
-msgstr ""
+msgstr "verticaal streepje"
 
 #: src/Form/ImportForm.php:32
 msgid "double quote"
-msgstr ""
+msgstr "dubbele aanhalingstekens"
 
 #: src/Form/ImportForm.php:33
 msgid "single quote"
-msgstr ""
+msgstr "enkel aanhalingsteken"
 
 #: src/Form/ImportForm.php:34
 msgid "hash"
-msgstr ""
+msgstr "hekje"
 
 #: src/Form/ImportForm.php:58
 msgid "Spreadsheet (csv, tsv or ods)"
-msgstr ""
+msgstr "Spreadsheet (csv, tsv of ods)"
 
 #: src/Form/ImportForm.php:59
 msgid ""
-"The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant "
-"formats."
+"The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant"
+" formats."
 msgstr ""
+"Het te uploaden bestand in CSV, TSV of ODS-formaat. Voor het aanmaken van "
+"bestanden die voldoen aan standaarden wordt LibreOffice geadviseerd."
 
 #: src/Form/ImportForm.php:78
 msgid "CSV column delimiter"
-msgstr ""
+msgstr "CSV kolomscheidingsteken"
 
 #: src/Form/ImportForm.php:79
 msgid ""
 "A single character that will be used to separate columns in the csv file."
 msgstr ""
+"Een enkelvoudig teken waarmee de kolommen in het CSV-bestand worden "
+"gescheiden."
 
 #: src/Form/ImportForm.php:93
 msgid "CSV column enclosure"
-msgstr ""
+msgstr "CSV scheidingsteken voor tekst"
 
 #: src/Form/ImportForm.php:94
 msgid ""
 "A single character that will be used to separate columns in the csv file. "
-"The enclosure can be omitted when the content does not contain the delimiter."
+"The enclosure can be omitted when the content does not contain the "
+"delimiter."
 msgstr ""
+"Een enkelvoudig teken dat alle tekst van een kolom omsluit. Het teken kan "
+"achterwege blijven wanneer de tekst geen kolomscheidingsteken bevat."
 
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
-msgstr ""
+msgstr "Het soort data dat geïmporteerd zal worden."
 
 #: src/Form/ImportForm.php:112
 msgid "Mixed resources"
-msgstr ""
+msgstr "Gemengde objecten"
 
 #: src/Form/ImportForm.php:125
 msgid "Automap with simple labels"
-msgstr ""
+msgstr "Automatisch mappen met eenvoudige labels"
 
 #: src/Form/ImportForm.php:126
 msgid ""
 "If checked, column headings that match property labels will be mapped "
 "automatically (for example, \"Title\" to dcterms:title)."
 msgstr ""
+"Wanneer deze optie aangevinkt is worden kolomkoppen die overeenkomen met "
+"eigenschapslabels automatisch gemapt (bijvoorbeeld \"Title\" naar "
+"dcterms:title)."
 
 #: src/Form/ImportForm.php:141
 msgid "A note about the purpose or source of this import"
-msgstr ""
+msgstr "Een opmerking betreffende het doel of de bron van deze import."
 
 #: src/Controller/IndexController.php:97
 msgid "The format of the source cannot be detected."
-msgstr ""
+msgstr "Het formaat van het bronbestand kan niet worden vastgesteld."
 
 #: src/Controller/IndexController.php:121
 msgid "The file has no headers."
-msgstr ""
+msgstr "Het bestand heeft geen kolomkoppen."
 
 #: src/Controller/IndexController.php:164
 #, php-format
 msgid "Importing in background (%sjob #%d%s)"
-msgstr ""
+msgstr "Aan het importeren op de achtergrond (%sjob #%d%s)"
 
 #: src/Controller/IndexController.php:177
 msgid "Invalid settings."
-msgstr ""
+msgstr "Onjuiste instellingen."
 
 #: src/Controller/IndexController.php:193
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
-msgstr ""
+msgstr "Wijzigingen ongedaan aan het maken voor de volgende jobs: %s"

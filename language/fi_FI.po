@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-07 15:00-0400\n"
+"POT-Creation-Date: 2024-01-23 16:19-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Matti Lassila <matti.lassila@gmail.com>, 2023\n"
 "Language-Team: Finnish (Finland) (https://app.transifex.com/omeka/teams/14184/fi_FI/)\n"
@@ -54,9 +54,13 @@ msgstr "Tämä ohittaa kieliasetukset tuonnin perusasetuksissa."
 msgid "Data type"
 msgstr "Tietotyyppi"
 
-#: view/common/options-sidebar.phtml:40
+#: view/common/options-sidebar.phtml:41
 msgid "Import values as private"
 msgstr "Tuo arvot yksityisiksi"
+
+#: view/common/options-sidebar.phtml:48
+msgid "Resource identifier property"
+msgstr ""
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -141,17 +145,25 @@ msgstr "Lisää mappaus"
 msgid "Remove mapping"
 msgstr "Poista mappaus"
 
-#: view/csv-import/index/map.phtml:109
+#: view/csv-import/index/map.phtml:107
+msgid "Data type:"
+msgstr ""
+
+#: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
 msgstr "Moniarvo"
 
-#: view/csv-import/index/map.phtml:113
+#: view/csv-import/index/map.phtml:116
 msgid "Language:"
 msgstr "Kieli:"
 
-#: view/csv-import/index/map.phtml:117
+#: view/csv-import/index/map.phtml:121
 msgid "Private values"
 msgstr "Yksityiset arvot"
+
+#: view/csv-import/index/map.phtml:125
+msgid "Resource identifier property:"
+msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -272,6 +284,11 @@ msgstr "Aineiston tiedot"
 msgid "\"%s\" is not a valid resource type."
 msgstr ""
 
+#: src/Mapping/PropertyMapping.php:133
+#, php-format
+msgid "\"%s\" (%s) is not a valid resource."
+msgstr ""
+
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
@@ -373,88 +390,88 @@ msgstr "poista"
 msgid "skip"
 msgstr "ohita"
 
-#: src/Job/Import.php:144
+#: src/Job/Import.php:149
 msgid "The file seems empty."
 msgstr "Tiedosto näyttää olevan tyhjä."
 
-#: src/Job/Import.php:153 src/Controller/IndexController.php:114
+#: src/Job/Import.php:158 src/Controller/IndexController.php:114
 msgid "The file is not valid."
 msgstr "Tiedosto ei kelpaa."
 
-#: src/Job/Import.php:193
+#: src/Job/Import.php:199
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
 msgstr "Tuonti lopetettiin: %d riviä käsiteltiin."
 
-#: src/Job/Import.php:204
+#: src/Job/Import.php:210
 #, php-format
 msgid "%d empty lines were skipped."
 msgstr "%d tyhjää riviä ohitettin."
 
-#: src/Job/Import.php:286 src/Job/Import.php:315
+#: src/Job/Import.php:290 src/Job/Import.php:319
 #, php-format
 msgid ""
 "The following identifiers are not associated with a resource and were "
 "skipped: \"%s\"."
 msgstr "Seuraavat tunnisteet eivät liity resurssiin ja ne ohitetaan: \"%s\"."
 
-#: src/Job/Import.php:413
+#: src/Job/Import.php:417
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
 msgstr "Päivitystilaa \"%s\" ei tällä hetkellä tueta kohteelle %s."
 
-#: src/Job/Import.php:447
+#: src/Job/Import.php:451
 #, php-format
 msgid "%d %s were updated (%s): %s."
 msgstr "%d %s päivitettiin (%s): %s."
 
-#: src/Job/Import.php:450
+#: src/Job/Import.php:454
 #, php-format
 msgid "None of the %d %s were updated (%s)."
 msgstr "Mitään %d %s ei päivitetty (%s)."
 
-#: src/Job/Import.php:483
+#: src/Job/Import.php:487
 #, php-format
 msgid "%d %s were removed: %s."
 msgstr "%d %s poistettiin: %s."
 
-#: src/Job/Import.php:501
+#: src/Job/Import.php:505
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
 msgstr ""
 
-#: src/Job/Import.php:503
+#: src/Job/Import.php:507
 msgid "unknown ingester"
 msgstr "Tuntematon tallentaja"
 
-#: src/Job/Import.php:636
+#: src/Job/Import.php:643
 msgid "A resource type is required to import a resource."
 msgstr "Aineiston tuonti vaatii aineiston tyypin"
 
-#: src/Job/Import.php:1087
+#: src/Job/Import.php:1094
 msgid "Resource type is empty."
 msgstr "Aineiston tyyppi on tyhjä."
 
-#: src/Job/Import.php:1092
+#: src/Job/Import.php:1099
 #, php-format
 msgid "Resource type \"%s\" is not managed."
 msgstr ""
 
-#: src/Job/Import.php:1112
+#: src/Job/Import.php:1119
 msgid "action"
 msgstr "toiminto"
 
-#: src/Job/Import.php:1119
+#: src/Job/Import.php:1126
 #, php-format
 msgid "The action \"%s\" requires a resource identifier property."
 msgstr ""
 
-#: src/Job/Import.php:1124
+#: src/Job/Import.php:1131
 #, php-format
 msgid "The action \"%s\" is not available for resource type \"%s\" currently."
 msgstr ""
 
-#: src/Job/Import.php:1132
+#: src/Job/Import.php:1139
 #, php-format
 msgid "The action \"%s\" for unidentified resources is not managed."
 msgstr ""
@@ -576,10 +593,6 @@ msgstr ""
 msgid "Resource identifier column"
 msgstr ""
 
-#: src/Form/MappingForm.php:357
-msgid "Resource identifier property"
-msgstr ""
-
 #: src/Form/MappingForm.php:358
 msgid ""
 "Use this property, generally \"dcterms:identifier\", to identify the "
@@ -692,10 +705,6 @@ msgid ""
 "delimiter."
 msgstr ""
 
-#: src/Form/ImportForm.php:106
-msgid "Import type"
-msgstr "Tuonnin tyyppi"
-
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
 msgstr "Tuotavan tiedon tyyppi"
@@ -739,7 +748,3 @@ msgstr "Virheelliset asetukset"
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
 msgstr "Kumoamista suoritetaan seuraavissa tehtävissä: %s"
-
-#: config/module.config.php:184
-msgid "Omeka resource (by ID)"
-msgstr "Omeka-aineisto (ID)"
