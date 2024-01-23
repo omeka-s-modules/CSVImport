@@ -264,12 +264,13 @@ li.column-multivalue {
     align-items: center;
 }
 
-.one-line label {
+.one-line > label, .one-line > div.option-info {
     width: calc(100% - 1em);
 }
 
 .sidebar span.description {
     width: 100%;
+    font-size: 14px;
 }
 
 .resource-type-select ~ .mapping {
