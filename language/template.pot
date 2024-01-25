@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,20 +39,25 @@ msgstr ""
 msgid "Use multivalue separator"
 msgstr ""
 
-#: view/common/options-sidebar.phtml:21
-msgid "This will override language settings in basic import settings."
-msgstr ""
-
-#: view/common/options-sidebar.phtml:29
-msgid "Data type"
-msgstr ""
-
-#: view/common/options-sidebar.phtml:41
+#: view/common/options-sidebar.phtml:20
 msgid "Import values as private"
 msgstr ""
 
-#: view/common/options-sidebar.phtml:48
+#: view/common/options-sidebar.phtml:28
+msgid "This will override language settings in basic import settings."
+msgstr ""
+
+#: view/common/options-sidebar.phtml:35
+msgid "Data type"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:47
 msgid "Resource identifier property"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:48
+msgid ""
+"This only takes effect when using the \"Omeka resource\" data type above."
 msgstr ""
 
 #: view/csv-import/index/index.phtml:8
