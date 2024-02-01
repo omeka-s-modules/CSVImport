@@ -404,7 +404,7 @@
             }
 
             if (valid && lang != '') {
-                var languageInput = activeElement.find('input.column-language');
+                var languageInput = activeElement.find('li.column-language input');
                 languageInput.val(lang);
                 setOptionStatus(activeElement.find('li.column-language'), true);
                 activeElement.find('span.column-language').html(lang);
