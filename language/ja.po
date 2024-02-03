@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Tatsuro YOKOTA <hidaruma@outlook.jp>, 2022\n"
 "Language-Team: Japanese (https://app.transifex.com/omeka/teams/14184/ja/)\n"
@@ -44,20 +44,24 @@ msgstr "強調表示されているオプションは、選択した列見出し
 msgid "Use multivalue separator"
 msgstr "多値セパレータを使用する"
 
-#: view/common/options-sidebar.phtml:21
-msgid "This will override language settings in basic import settings."
-msgstr "これにより、基本的なインポート設定の言語設定が上書きされます。"
-
-#: view/common/options-sidebar.phtml:29
-msgid "Data type"
-msgstr ""
-
-#: view/common/options-sidebar.phtml:41
+#: view/common/options-sidebar.phtml:20
 msgid "Import values as private"
 msgstr "非公開の値としてインポート"
 
-#: view/common/options-sidebar.phtml:48
+#: view/common/options-sidebar.phtml:28
+msgid "This will override language settings in basic import settings."
+msgstr "これにより、基本的なインポート設定の言語設定が上書きされます。"
+
+#: view/common/options-sidebar.phtml:35
+msgid "Data type"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:47
 msgid "Resource identifier property"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:48
+msgid "This only takes effect when using the \"Omeka resource\" data type above."
 msgstr ""
 
 #: view/csv-import/index/index.phtml:8

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Hong Zhang <zhangh@unlv.nevada.edu>, 2021\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/omeka/teams/14184/zh_CN/)\n"
@@ -43,21 +43,25 @@ msgstr "加亮选项将被用到选中的列头标。重置一个选项以取消
 msgid "Use multivalue separator"
 msgstr "使用多值分隔符"
 
-#: view/common/options-sidebar.phtml:21
-msgid "This will override language settings in basic import settings."
-msgstr "在基本导入设置中，这将优先于语言设置。"
-
-#: view/common/options-sidebar.phtml:29
-msgid "Data type"
-msgstr ""
-
-#: view/common/options-sidebar.phtml:41
+#: view/common/options-sidebar.phtml:20
 msgid "Import values as private"
 msgstr "导入值为私有的"
 
-#: view/common/options-sidebar.phtml:48
+#: view/common/options-sidebar.phtml:28
+msgid "This will override language settings in basic import settings."
+msgstr "在基本导入设置中，这将优先于语言设置。"
+
+#: view/common/options-sidebar.phtml:35
+msgid "Data type"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:47
 msgid "Resource identifier property"
 msgstr "资源识别码属性"
+
+#: view/common/options-sidebar.phtml:48
+msgid "This only takes effect when using the \"Omeka resource\" data type above."
+msgstr ""
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Tzvetan Tzvetanski <ceibg.org@gmail.com>, 2021\n"
 "Language-Team: Bulgarian (Bulgaria) (https://app.transifex.com/omeka/teams/14184/bg_BG/)\n"
@@ -45,22 +45,26 @@ msgstr ""
 msgid "Use multivalue separator"
 msgstr "Използвайте многозначен разделител"
 
-#: view/common/options-sidebar.phtml:21
+#: view/common/options-sidebar.phtml:20
+msgid "Import values as private"
+msgstr "Импортиране на стойности като частни"
+
+#: view/common/options-sidebar.phtml:28
 msgid "This will override language settings in basic import settings."
 msgstr ""
 "Това ще замени езиковите настройки в основните настройки за импортиране."
 
-#: view/common/options-sidebar.phtml:29
+#: view/common/options-sidebar.phtml:35
 msgid "Data type"
 msgstr ""
 
-#: view/common/options-sidebar.phtml:41
-msgid "Import values as private"
-msgstr "Импортиране на стойности като частни"
-
-#: view/common/options-sidebar.phtml:48
+#: view/common/options-sidebar.phtml:47
 msgid "Resource identifier property"
 msgstr "Свойство на идентификатора на ресурса"
+
+#: view/common/options-sidebar.phtml:48
+msgid "This only takes effect when using the \"Omeka resource\" data type above."
+msgstr ""
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"

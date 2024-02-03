@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Vincent <vincent@stedema.nl>, 2024\n"
 "Language-Team: Dutch (Netherlands) (https://app.transifex.com/omeka/teams/14184/nl_NL/)\n"
@@ -31,34 +31,38 @@ msgstr "Kolomopties in bulk bewerken:"
 
 #: view/common/options-sidebar.phtml:5
 msgid "Column options:"
-msgstr "Kolomopties:"
+msgstr "Kolominstellingen:"
 
 #: view/common/options-sidebar.phtml:7
 msgid ""
 "Highlighted options will apply to selected column headers. Reset an option "
 "to cancel changes."
 msgstr ""
-"De gemarkeerde opties worden toegepast op de geselecteerde kolomkoppen. Stel"
-" een optie opnieuw in om de wijzigingen te annuleren."
+"De gemarkeerde instellingen worden toegepast op de geselecteerde "
+"kolomkoppen. Stel een optie opnieuw in om de wijzigingen te annuleren."
 
 #: view/common/options-sidebar.phtml:11
 msgid "Use multivalue separator"
-msgstr ""
+msgstr "Gebruik scheidingsteken meervoudige waarden"
 
-#: view/common/options-sidebar.phtml:21
+#: view/common/options-sidebar.phtml:20
+msgid "Import values as private"
+msgstr "Importeer waarden als afgeschermd"
+
+#: view/common/options-sidebar.phtml:28
 msgid "This will override language settings in basic import settings."
 msgstr ""
 
-#: view/common/options-sidebar.phtml:29
+#: view/common/options-sidebar.phtml:35
 msgid "Data type"
 msgstr ""
 
-#: view/common/options-sidebar.phtml:41
-msgid "Import values as private"
+#: view/common/options-sidebar.phtml:47
+msgid "Resource identifier property"
 msgstr ""
 
 #: view/common/options-sidebar.phtml:48
-msgid "Resource identifier property"
+msgid "This only takes effect when using the \"Omeka resource\" data type above."
 msgstr ""
 
 #: view/csv-import/index/index.phtml:8
@@ -89,15 +93,15 @@ msgstr "gebruikers"
 #: view/csv-import/index/map.phtml:16
 #, php-format
 msgid "Import settings for %s"
-msgstr ""
+msgstr "Instellingen voor %s importeren"
 
 #: view/csv-import/index/map.phtml:17
 msgid "Import settings"
-msgstr ""
+msgstr "Instellingen importeren"
 
 #: view/csv-import/index/map.phtml:27
 msgid "Map to Omeka S data"
-msgstr ""
+msgstr "Naar Omeka S data mappen"
 
 #: view/csv-import/index/map.phtml:29
 msgid "Basic Settings"
@@ -109,7 +113,7 @@ msgstr "Geavanceerde instellingen"
 
 #: view/csv-import/index/map.phtml:45
 msgid "Resource type column"
-msgstr ""
+msgstr "Objecttype-kolom"
 
 #: view/csv-import/index/map.phtml:49
 #: view/csv-import/mapping-sidebar/item.phtml:11
@@ -118,11 +122,11 @@ msgstr ""
 #: view/csv-import/mapping-sidebar/resource.phtml:8
 #: view/csv-import/mapping-sidebar/user.phtml:7
 msgid "Select below"
-msgstr ""
+msgstr "Selecteer hieronder"
 
 #: view/csv-import/index/map.phtml:59
 msgid "Batch edit options"
-msgstr ""
+msgstr "Bulkbewerkingsopties"
 
 #: view/csv-import/index/map.phtml:69
 msgid "Column"
@@ -134,7 +138,7 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:80
 msgid "Select column"
-msgstr ""
+msgstr "Selecteer kolom"
 
 #: view/csv-import/index/map.phtml:84
 msgid "Add mapping"
@@ -170,7 +174,7 @@ msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:20
 msgid "Undo"
-msgstr ""
+msgstr "Ongedaan maken"
 
 #: view/csv-import/index/past-imports.phtml:24
 msgid "Action"
@@ -178,7 +182,7 @@ msgstr ""
 
 #: view/csv-import/index/past-imports.phtml:26
 msgid "Result"
-msgstr ""
+msgstr "Resultaat"
 
 #: view/csv-import/index/past-imports.phtml:51
 #: view/csv-import/index/past-imports.phtml:86
@@ -193,11 +197,11 @@ msgstr ""
 #: view/csv-import/index/past-imports.phtml:78
 #, php-format
 msgid "Undone %s"
-msgstr ""
+msgstr "%songedaan gemaakt"
 
 #: view/csv-import/index/past-imports.phtml:82
 msgid "Undo in progress"
-msgstr ""
+msgstr "Bezig met ongedaan maken"
 
 #: view/csv-import/mapping-sidebar/item-set.phtml:3
 msgid "Item set-specific data"
@@ -250,7 +254,7 @@ msgstr ""
 
 #: view/csv-import/mapping-sidebar/resource.phtml:12
 msgid "Owner (by email address)"
-msgstr ""
+msgstr "Eigenaar (op e-mailadres)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:14
 msgid "Visibility public/private"
@@ -259,7 +263,7 @@ msgstr ""
 #: view/csv-import/mapping-sidebar/user.phtml:3
 #: view/csv-import/mapping-sidebar/user.phtml:6
 msgid "Users info"
-msgstr ""
+msgstr "Gebruikersinformatie"
 
 #: src/Mapping/ItemSetMapping.php:8
 msgid "Item set data"
@@ -325,7 +329,7 @@ msgstr ""
 #: src/Mapping/AbstractResourceMapping.php:353
 #, php-format
 msgid "\"%s\" is not a valid user email address."
-msgstr ""
+msgstr "\"%s\" is geen geldig e-mailadres voor een gebruiker"
 
 #: src/Mapping/MediaMapping.php:8
 msgid "Media data"
@@ -333,7 +337,7 @@ msgstr ""
 
 #: src/Source/CsvFile.php:84
 msgid "File is not UTF-8 encoded."
-msgstr ""
+msgstr "Het bestand heeft geen UTF-8-indeling"
 
 #: src/Source/AbstractSpreadsheet.php:34
 #, php-format
@@ -341,6 +345,8 @@ msgid ""
 "To process import of a %s file, the php extensions \"zip\" and \"xml\" are "
 "required."
 msgstr ""
+"De PHP-extensies \"zip\" en \"xml\" zijn benodigd om een %sbestand te kunnen"
+" importeren."
 
 #: src/Source/AbstractSource.php:74
 msgid "The source is undefined."
@@ -348,61 +354,61 @@ msgstr ""
 
 #: src/Source/AbstractSource.php:79
 msgid "The source is empty."
-msgstr ""
+msgstr "Het bronbestand is leeg"
 
 #: src/Source/AbstractSource.php:85
 msgid "No file to process."
-msgstr ""
+msgstr "Geen bestand om te verwerken."
 
 #: src/Source/AbstractSource.php:92
 msgid "The rows are not all the same number of columns."
-msgstr ""
+msgstr "De rijen hebben niet allemaal hetzelfde aantal kolommen."
 
 #: src/Job/Import.php:16
 msgid "create"
-msgstr ""
+msgstr "aanmaken"
 
 #: src/Job/Import.php:17
 msgid "append"
-msgstr ""
+msgstr "toevoegen"
 
 #: src/Job/Import.php:18
 msgid "revise"
-msgstr ""
+msgstr "herzien"
 
 #: src/Job/Import.php:19
 msgid "update"
-msgstr ""
+msgstr "bijwerken"
 
 #: src/Job/Import.php:20
 msgid "replace"
-msgstr ""
+msgstr "vervangen"
 
 #: src/Job/Import.php:21
 msgid "delete"
-msgstr ""
+msgstr "verwijderen"
 
 #: src/Job/Import.php:22
 msgid "skip"
-msgstr ""
+msgstr "overslaan"
 
 #: src/Job/Import.php:149
 msgid "The file seems empty."
-msgstr ""
+msgstr "Het bestand lijkt leeg te zijn."
 
 #: src/Job/Import.php:158 src/Controller/IndexController.php:114
 msgid "The file is not valid."
-msgstr ""
+msgstr "Het bestand is ongeldig."
 
 #: src/Job/Import.php:199
 #, php-format
 msgid "The job \"Import\" was stopped: %d rows processed."
-msgstr ""
+msgstr "De opdracht \"importeren\" werd gestopt: %d rijen verwerkt."
 
 #: src/Job/Import.php:210
 #, php-format
 msgid "%d empty lines were skipped."
-msgstr ""
+msgstr "%d lege regels werden overgeslagen."
 
 #: src/Job/Import.php:290 src/Job/Import.php:319
 #, php-format
@@ -410,26 +416,28 @@ msgid ""
 "The following identifiers are not associated with a resource and were "
 "skipped: \"%s\"."
 msgstr ""
+"De volgende identificatiekenmerken konden niet gekoppeld worden aan een "
+"object en zijn overgeslagen: \"%s\"."
 
 #: src/Job/Import.php:417
 #, php-format
 msgid "The update mode \"%s\" is unsupported for %s currently."
-msgstr ""
+msgstr "De bijwerk-modus \"%s\" wordt voor %s momenteel niet ondersteund."
 
 #: src/Job/Import.php:451
 #, php-format
 msgid "%d %s were updated (%s): %s."
-msgstr ""
+msgstr "%d%s zijn geüpdatet (%s): %s."
 
 #: src/Job/Import.php:454
 #, php-format
 msgid "None of the %d %s were updated (%s)."
-msgstr ""
+msgstr "Geen van de %d %szijn geüpdatet (%s)."
 
 #: src/Job/Import.php:487
 #, php-format
 msgid "%d %s were removed: %s."
-msgstr ""
+msgstr "%d %s zijn verwijderd: %s."
 
 #: src/Job/Import.php:505
 #, php-format
@@ -442,16 +450,16 @@ msgstr ""
 
 #: src/Job/Import.php:643
 msgid "A resource type is required to import a resource."
-msgstr ""
+msgstr "Om een object te kunnen importeren is een objecttype verplicht."
 
 #: src/Job/Import.php:1094
 msgid "Resource type is empty."
-msgstr ""
+msgstr "Objecttype is leeg."
 
 #: src/Job/Import.php:1099
 #, php-format
 msgid "Resource type \"%s\" is not managed."
-msgstr ""
+msgstr "Objecttype \"%s\" wordt niet beheerd."
 
 #: src/Job/Import.php:1119
 msgid "action"
@@ -475,7 +483,7 @@ msgstr ""
 #: src/Job/Undo.php:22
 #, php-format
 msgid "The job \"Undo\" was stopped: %d/%d resources processed."
-msgstr ""
+msgstr "De opdracht \"Ongedaan maken\" is gestopt: %d/%d objecten verwerkt."
 
 #: src/Form/MappingForm.php:87
 msgid ""
@@ -496,7 +504,7 @@ msgstr ""
 
 #: src/Form/MappingForm.php:139 src/Form/MappingForm.php:145
 msgid "Select a user"
-msgstr ""
+msgstr "Selecteer een gebruiker"
 
 #: src/Form/MappingForm.php:156
 msgid ""
@@ -516,7 +524,7 @@ msgstr ""
 
 #: src/Form/MappingForm.php:177 src/Form/MappingForm.php:227
 msgid "Closed"
-msgstr ""
+msgstr "Gesloten"
 
 #: src/Form/MappingForm.php:223
 msgid "Item sets open/closed to additions"
@@ -532,11 +540,12 @@ msgstr ""
 
 #: src/Form/MappingForm.php:271
 msgid "Multivalue separator"
-msgstr ""
+msgstr "Scheidingsteken meervoudige waarden"
 
 #: src/Form/MappingForm.php:272
 msgid "The separator to use for columns with multiple values"
 msgstr ""
+"Scheidingsteken dat gebruikt wordt voor kolommen met meervoudige waarden"
 
 #: src/Form/MappingForm.php:287
 msgid ""
@@ -547,34 +556,46 @@ msgstr ""
 #: src/Form/MappingForm.php:310
 msgid "Create (Each row in the CSV will become a new resource)"
 msgstr ""
+"Aanmaken (Voor elke rij in het CSV-bestand wordt een nieuw object "
+"aangemaakt)"
 
 #: src/Form/MappingForm.php:311
 msgid ""
 "Append (Add new data to the resource, based on an identifier for an existing"
 " resource)"
 msgstr ""
+"Toevoegen (Voeg nieuwe gegevens aan het object toe, op basis van een "
+"identificatiekenmerk voor een bestaand object)"
 
 #: src/Form/MappingForm.php:312
 msgid ""
 "Revise (Replace existing fields of the resource with data from the CSV, "
 "except if the corresponding cell in the CSV is empty)"
 msgstr ""
+"Herzien (Vervang de gegevens van bestaande velden van het object met "
+"gegevens uit het CSV-bestand, tenzij de waarde in het CSV-bestand leeg is)"
 
 #: src/Form/MappingForm.php:313
 msgid ""
 "Update (Replace existing fields of the resource with data from the CSV, even"
 " when the corresponding cell in the CSV is empty)"
 msgstr ""
+"Bijwerken (Vervang de gegevens van bestaande velden van het object met "
+"gegevens uit het CSV-bestand, ook als de waarde in het CSV-bestand leeg is)"
 
 #: src/Form/MappingForm.php:314
 msgid ""
 "Replace (Remove all properties of the resource, then add new information "
 "from the CSV)"
 msgstr ""
+"Vervangen (Verwijder alle eigenschappen van het object om daarna nieuwe "
+"gegevens uit het CSV-bestand toe te voegen)"
 
 #: src/Form/MappingForm.php:315
 msgid "Delete (Delete any resources matched by the identifiers)"
 msgstr ""
+"Verwijderen (Verwijder objecten op basis van een overeenkomend "
+"identificatiekenmerk)"
 
 #: src/Form/MappingForm.php:323
 msgid ""
@@ -584,10 +605,15 @@ msgid ""
 "manual/modules/csvimport/#media-import-advanced-settings\" "
 "target=\"_blank\">the documentation</a>."
 msgstr ""
+"Standaard maakt een import nieuwe objecten aan. Gebruik het keuzemenu om een"
+" alternatieve verwerkingsmethode van de import te kiezen. Zie <a "
+"href=\"https://omeka.org/s/docs/user-manual/modules/csvimport/#media-import-"
+"advanced-settings\" target=\"_blank\">de documentatie</a>voor meer "
+"informatie over de verschillende verwerkingsmethoden."
 
 #: src/Form/MappingForm.php:338
 msgid "Resource identifier column"
-msgstr ""
+msgstr "Kolom met identificatiekenmerk van het object"
 
 #: src/Form/MappingForm.php:358
 msgid ""
@@ -596,10 +622,15 @@ msgid ""
 " file must map the selected property. In all cases, it is strongly "
 "recommended to add one ore more unique identifiers to all your resources."
 msgstr ""
+"Gebruik deze eigenschap, doorgaans \"dcterms:identifier\", om bestaande "
+"objecten te identificeren, zodat ze geüpdatet kunnen worden. Een kolom in "
+"het bestand moet overeenkomen met de ingestelde eigenschap. Het wordt "
+"geadviseerd om altijd een of meer unieke identificatiekenmerken toe te "
+"voegen aan objecten.   "
 
 #: src/Form/MappingForm.php:378
 msgid "Action on unidentified resources"
-msgstr ""
+msgstr "Verwerking van ongeïdentificeerde objecten"
 
 #: src/Form/MappingForm.php:379
 msgid ""
@@ -626,9 +657,9 @@ msgid ""
 "By default, rows are processed by 20. In some cases, to set a value of 1 may"
 " avoid issues."
 msgstr ""
-"Standaard worden rijen per 20 verwerkt. In sommige gevallen is het aan te "
-"raden om dit aantal op 1 in te stellen om problemen tijdens het importeren "
-"te voorkomen."
+"Standaard worden rijen per 20 verwerkt. In voorkomende gevallen is het aan "
+"te raden om dit aantal op 1 in te stellen om problemen tijdens het "
+"importeren te voorkomen."
 
 #: src/Form/ImportForm.php:15
 msgid "comma"

@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Matti Lassila <matti.lassila@gmail.com>, 2023\n"
 "Language-Team: Finnish (Finland) (https://app.transifex.com/omeka/teams/14184/fi_FI/)\n"
@@ -46,20 +46,24 @@ msgstr ""
 msgid "Use multivalue separator"
 msgstr "Käytä moniarvoerotinta"
 
-#: view/common/options-sidebar.phtml:21
-msgid "This will override language settings in basic import settings."
-msgstr "Tämä ohittaa kieliasetukset tuonnin perusasetuksissa."
-
-#: view/common/options-sidebar.phtml:29
-msgid "Data type"
-msgstr "Tietotyyppi"
-
-#: view/common/options-sidebar.phtml:41
+#: view/common/options-sidebar.phtml:20
 msgid "Import values as private"
 msgstr "Tuo arvot yksityisiksi"
 
-#: view/common/options-sidebar.phtml:48
+#: view/common/options-sidebar.phtml:28
+msgid "This will override language settings in basic import settings."
+msgstr "Tämä ohittaa kieliasetukset tuonnin perusasetuksissa."
+
+#: view/common/options-sidebar.phtml:35
+msgid "Data type"
+msgstr "Tietotyyppi"
+
+#: view/common/options-sidebar.phtml:47
 msgid "Resource identifier property"
+msgstr ""
+
+#: view/common/options-sidebar.phtml:48
+msgid "This only takes effect when using the \"Omeka resource\" data type above."
 msgstr ""
 
 #: view/csv-import/index/index.phtml:8

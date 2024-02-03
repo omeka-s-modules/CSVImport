@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 16:19-0500\n"
+"POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
 "Last-Translator: Iametza Interaktiboa, 2022\n"
 "Language-Team: Basque (https://app.transifex.com/omeka/teams/14184/eu/)\n"
@@ -45,23 +45,27 @@ msgstr ""
 msgid "Use multivalue separator"
 msgstr "Erabili balio anizkoitz banatzailea"
 
-#: view/common/options-sidebar.phtml:21
+#: view/common/options-sidebar.phtml:20
+msgid "Import values as private"
+msgstr "Inportatu balioak pribatu moduan"
+
+#: view/common/options-sidebar.phtml:28
 msgid "This will override language settings in basic import settings."
 msgstr ""
 "Honek hizkuntza ezarpenak gainidatziko ditu oinarrizko inportazio "
 "ezarpenetan."
 
-#: view/common/options-sidebar.phtml:29
+#: view/common/options-sidebar.phtml:35
 msgid "Data type"
 msgstr "Datu mota"
 
-#: view/common/options-sidebar.phtml:41
-msgid "Import values as private"
-msgstr "Inportatu balioak pribatu moduan"
-
-#: view/common/options-sidebar.phtml:48
+#: view/common/options-sidebar.phtml:47
 msgid "Resource identifier property"
 msgstr "Baliabide identifikatzailearen propietatea"
+
+#: view/common/options-sidebar.phtml:48
+msgid "This only takes effect when using the \"Omeka resource\" data type above."
+msgstr ""
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
