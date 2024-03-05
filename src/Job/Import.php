@@ -517,6 +517,8 @@ class Import extends AbstractJob
      * To be used with rows that contain a media source.
      * The identifiers of media themselves are found as standard resources.
      *
+     * Also, check for validity of the primary media if it's being set.
+     *
      * @param array $data
      * @param array $ids All the ids must exists and the order must be the same
      * than data.
@@ -527,10 +529,21 @@ class Import extends AbstractJob
         $findResourceFromIdentifier = $this->findResourcesFromIdentifiers;
         foreach ($data as $key => &$entityJson) {
             if (empty($entityJson['o:media'])) {
+                if (!empty($entityJson['o:primary_media'])) {
+                    unset($entityJson['o:primary_media']);
+                }
                 continue;
+            }
+            $primaryMediaId = null;
+            $primaryMediaValid = false;
+            if (!empty($entityJson['o:primary_media']['o:id'])) {
+                $primaryMediaId = (int) $entityJson['o:primary_media']['o:id'];
             }
             foreach ($entityJson['o:media'] as &$media) {
                 if (!empty($media['o:id'])) {
+                    if ((int) $media['o:id'] === $primaryMediaId) {
+                        $primaryMediaValid = true;
+                    }
                     continue;
                 }
                 if (empty($media['o:source']) || empty($media['o:ingester'])) {
@@ -544,6 +557,13 @@ class Import extends AbstractJob
                 if ($resourceId) {
                     $media['o:id'] = $resourceId;
                 }
+            }
+
+            // If the primary media being set isn't one of the media being set,
+            // drop the primary media (typically this means we're deleting the
+            // current primary media)
+            if ($primaryMediaId && !$primaryMediaValid) {
+                $entityJson['o:primary_media'] = null;
             }
         }
         return $data;
