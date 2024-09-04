@@ -1,4 +1,4 @@
-CSV Import (module for Omeka S)
+CSV Import
 ===============================
 
 The CSV Import module allows you to import items, item sets, media, and users into your Omeka S install from a CSV (comma-separated values), TSV (tab-separated values), or ODS (OpenDocument Spreadsheet) file. This module is only available to Global Administrator and Supervisor users.
