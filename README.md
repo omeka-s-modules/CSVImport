@@ -1,11 +1,42 @@
 CSV Import (module for Omeka S)
 ===============================
 
-[CSV Import] is a module for [Omeka S] and will allow users to import Entities from a simple CSV (comma separated value) file, and then map the CSV column data to Entity. Each row in the file represents metadata for a single Entity.
+The CSV Import module allows you to import items, item sets, media, and users into your Omeka S install from a CSV (comma-separated values), TSV (tab-separated values), or ODS (OpenDocument Spreadsheet) file. This module is only available to Global Administrator and Supervisor users.
 
-Furthermore, it’s possible to import directly files in formats [TSV] (tab separated value), a simpler and more efficient format, and [ODS] (OpenDocument Spreadsheet, the ISO standard office format for spreadsheets, managed by [LibreOffice] and a lot of other tools) directly.
+You can also use CSV Import to modify existing items by adding extra metadata, replacing or deleting existing metadata, and deleting items. These are advanced features and must be used with caution. 
 
-Most often, the import will create new Omeka S items. It is also possible to import item sets, media and users, and other modules can add other import types. It’s possible to import mixed resources in one file too.
+CSV Import requires your Omeka S installation to have PHP working in order to run background import jobs. Before using CSV Import, you should confirm that PHP is being recognized from the System Information page. 
+
+To ingest media with CSV Import, the material must be online already and accessible via a URL or format-specific identifier. You cannot upload files from your computer using this module. 
+
+Your CSV file must have a header row in order for the module to process it correctly, so you may need to add a row at the top with column names.
+
+If you have multiple inputs for a single property, you can separate them with a secondary multivalue separator. For example, a work with multiple authors (E.B. White and William Strunk Jr.) with the column for Creator containing "E.B. White;William Strunk Jr" has a semicolon (;) as the multivalue separator. 
+
+To find the terms you should use for your column headers, go to the Vocabularies tab from the admin dashboard. Click on the number of properties for the vocabulary you want to use (for example, Dublin Core).
+
+In the table of vocabulary properties, there is a column for Term. Use the Term as the column heading for the property you want to automap in CSV Import. For example, "dcterms:abstract" would automap to the Dublin Core property "Abstract" and "foaf:firstName" would automap to the Friend of a Friend property "firstName". You can manually map each column to its corresponding property, and you are required to manually map non-metadata columns, such as the file URL for upload.
+
+When ingesting media, choose the intended sourcing method from the dropdown:
+
+- HTML
+- IIIF image (link)
+- IIIF presentation (link)
+- oEmbed (link)
+- URL
+- YouTube (link)
+- Other options may appear here based on your active modules, such as File Sideload.
+
+## Advanced features
+
+The "Action" setting allows you to change the action of process from a straight import to one of the following options:
+
+- Create a new resource: Default option. Each row in the CSV will become a new resource (default import).
+- Append data to the resource: Add new data to the resource, based on an identifier for an existing resource. (Cannot be undone.) This option allows you to supply multiple values for the same item; each row will be appended (that is, you can append one title to an item in one row, and append another title to the same item in another row). Note that you cannot supply resource template or class assignations in the rows of your CSV with an Append process; you will get an error.
+- Revise data of the resource: Replace existing data of the resource with data from the CSV, except if the corresponding cell in the CSV is empty. (Cannot be undone.)
+- Update data of the resource: Replace existing data of the resource with data from the CSV, even when the corresponding cell in the CSV is empty. (Cannot be undone.)
+- Replace all data of the resource: Remove all properties of the resource, and fill with new information from the sheet. (Cannot be undone.)
+- Delete the resource: Delete all matching resources. (Cannot be undone.)
 
 See the [Omeka S user manual](http://omeka.org/s/docs/user-manual/modules/csvimport/) for user documentation.
 
