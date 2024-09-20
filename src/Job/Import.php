@@ -900,12 +900,10 @@ class Import extends AbstractJob
     protected function mergeMetadata(array $currentData, array $newData, $keepIfNull = false)
     {
         // Merge properties.
-        // Current values are cleaned too, because they have the property label.
-        // So they are deduplicated too.
         $currentValues = $this->extractPropertyValuesFromResource($currentData);
         $newValues = $this->extractPropertyValuesFromResource($newData);
-        $mergedValues = array_merge_recursive($currentValues, $newValues);
-        $merged = $this->deduplicatePropertyValues($mergedValues);
+        $newValues = $this->deduplicateNewPropertyValues($currentValues, $newValues);
+        $merged = array_merge_recursive($currentValues, $newValues);
 
         // Merge lists of ids.
         $names = ['o:item_set', 'o:item', 'o:media'];
@@ -1020,50 +1018,43 @@ class Import extends AbstractJob
      * @param array $values
      * @return array
      */
-    protected function deduplicatePropertyValues($values)
+    protected function deduplicateNewPropertyValues($currentValues, $newValues)
     {
-        // Base to normalize data in order to deduplicate them in one pass.
-        $base = [];
-
-        $base['literal'] = ['is_public' => true, 'property_id' => 0, 'type' => 'literal', '@language' => null, '@value' => ''];
-        $base['resource'] = ['is_public' => true, 'property_id' => 0, 'type' => 'resource', 'value_resource_id' => 0];
-        $base['uri'] = ['is_public' => true, 'o:label' => null, 'property_id' => 0, 'type' => 'uri', '@id' => ''];
-        foreach ($values as $key => $value) {
-            $values[$key] = array_values(
-                // Deduplicate values.
-                array_map('unserialize', array_unique(array_map(
-                    'serialize',
-                    // Normalize values.
-                    array_map(function ($v) use ($base) {
-                        // Data types "resource" and "uri" have "@id" (in json).
-                        $mainType = array_key_exists('value_resource_id', $v)
-                            ? 'resource'
-                            : (array_key_exists('@id', $v) ? 'uri' : 'literal');
-                        // Keep order and meaning keys.
-                        $r = array_replace($base[$mainType], array_intersect_key($v, $base[$mainType]));
-                        $r['is_public'] = (bool) $r['is_public'];
-                        switch ($mainType) {
-                            case 'literal':
-                                if (empty($r['@language'])) {
-                                    $r['@language'] = null;
-                                }
-                                break;
-                            case 'uri':
-                                if (empty($r['o:label'])) {
-                                    $r['o:label'] = null;
-                                }
-                                break;
-                        }
-                        // Bring over annotations untouched, if present
-                        if (isset($v['@annotation'])) {
-                            $r['@annotation'] = $v['@annotation'];
-                        }
-                        return $r;
-                    }, $value)
-                )))
-            );
+        $existingValues = [];
+        $getUniqueKey = function ($value) {
+            // resource
+            if (array_key_exists('value_resource_id', $value)) {
+                return (int) $value['value_resource_id'];
+            }
+            // uri
+            if (array_key_exists('@id', $value)) {
+                return $value['@id'];
+            }
+            // literal
+            return $value['@value'];
+        };
+        foreach ($currentValues as $currentTermValues) {
+            foreach ($currentTermValues as $value) {
+                $type = $value['type'];
+                $propertyId = $value['property_id'];
+                $uniqueKey = $getUniqueKey($value);
+                $existingValues[$type][$propertyId][$uniqueKey] = true;
+            }
         }
-        return $values;
+
+        foreach ($newValues as $term => $newTermValues) {
+            foreach ($newTermValues as $subkey => $value) {
+                $type = $value['type'];
+                $propertyId = $value['property_id'];
+                $uniqueKey = $getUniqueKey($value);
+
+                if (!$type || !$propertyId || !$uniqueKey || isset($existingValues[$type][$propertyId][$uniqueKey])) {
+                    unset($newValues[$term][$subkey]);
+                }
+            }
+        }
+
+        return $newValues;
     }
 
     /**
