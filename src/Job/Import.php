@@ -1048,7 +1048,7 @@ class Import extends AbstractJob
                 $propertyId = $value['property_id'];
                 $uniqueKey = $getUniqueKey($value);
 
-                if (!$type || !$propertyId || !$uniqueKey || isset($existingValues[$type][$propertyId][$uniqueKey])) {
+                if (!$type || !$propertyId || !isset($uniqueKey) || isset($existingValues[$type][$propertyId][$uniqueKey])) {
                     unset($newValues[$term][$subkey]);
                 }
             }
