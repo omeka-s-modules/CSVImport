@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Deidson Rafael Trindade <drafael@usp.br>, 2023
+# Deidson Rafael Trindade <drafael@usp.br>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Deidson Rafael Trindade <drafael@usp.br>, 2023\n"
+"Last-Translator: Deidson Rafael Trindade <drafael@usp.br>, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/omeka/teams/14184/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -65,7 +65,7 @@ msgstr "Coluna de identificador de recurso"
 
 #: view/common/options-sidebar.phtml:48
 msgid "This only takes effect when using the \"Omeka resource\" data type above."
-msgstr ""
+msgstr "Isso só entra em vigor ao usar o tipo de dados \"recurso Omeka\" acima."
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -78,11 +78,11 @@ msgstr "Importação de CSV"
 
 #: view/csv-import/index/map.phtml:9
 msgid "items"
-msgstr ""
+msgstr "itens"
 
 #: view/csv-import/index/map.phtml:10
 msgid "item sets"
-msgstr ""
+msgstr "Coleções"
 
 #: view/csv-import/index/map.phtml:12
 msgid "mixed resources"
@@ -152,7 +152,7 @@ msgstr "Remover mapeamento"
 
 #: view/csv-import/index/map.phtml:107
 msgid "Data type:"
-msgstr ""
+msgstr "Tipo de dados:"
 
 #: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
@@ -168,7 +168,7 @@ msgstr "Valores privados"
 
 #: view/csv-import/index/map.phtml:125
 msgid "Resource identifier property:"
-msgstr ""
+msgstr "Propriedade do identificador de recursos:"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -295,7 +295,7 @@ msgstr "\"%s\" não é um tipo de recurso válido."
 #: src/Mapping/PropertyMapping.php:133
 #, php-format
 msgid "\"%s\" (%s) is not a valid resource."
-msgstr ""
+msgstr "\"%s\" (%s) não é um recurso válido."
 
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
@@ -575,35 +575,44 @@ msgstr ""
 
 #: src/Form/MappingForm.php:310
 msgid "Create (Each row in the CSV will become a new resource)"
-msgstr ""
+msgstr "Criar (cada linha no CSV se tornará um novo recurso)"
 
 #: src/Form/MappingForm.php:311
 msgid ""
 "Append (Add new data to the resource, based on an identifier for an existing"
 " resource)"
 msgstr ""
+"Anexar (adicionar novos dados ao recurso, com base em um identificador de um"
+" recurso existente)"
 
 #: src/Form/MappingForm.php:312
 msgid ""
 "Revise (Replace existing fields of the resource with data from the CSV, "
 "except if the corresponding cell in the CSV is empty)"
 msgstr ""
+"Revisar (Substitua os campos existentes do recurso pelos dados do CSV, "
+"exceto se a célula correspondente no CSV estiver vazia)"
 
 #: src/Form/MappingForm.php:313
 msgid ""
 "Update (Replace existing fields of the resource with data from the CSV, even"
 " when the corresponding cell in the CSV is empty)"
 msgstr ""
+"Atualização (substitua os campos existentes do recurso pelos dados do CSV, "
+"mesmo quando a célula correspondente no CSV estiver vazia)"
 
 #: src/Form/MappingForm.php:314
 msgid ""
 "Replace (Remove all properties of the resource, then add new information "
 "from the CSV)"
 msgstr ""
+"Substituir (remova todas as propriedades do recurso e adicione novas "
+"informações do CSV)"
 
 #: src/Form/MappingForm.php:315
 msgid "Delete (Delete any resources matched by the identifiers)"
 msgstr ""
+"Excluir (exclua todos os recursos correspondentes aos identificadores)"
 
 #: src/Form/MappingForm.php:323
 msgid ""
@@ -613,6 +622,11 @@ msgid ""
 "manual/modules/csvimport/#media-import-advanced-settings\" "
 "target=\"_blank\">the documentation</a>."
 msgstr ""
+"Por padrão, uma importação cria novos recursos. Selecione neste menu "
+"suspenso para escolher uma ação alternativa para a importação. Para obter "
+"mais informações sobre cada ação, consulte <a "
+"href=\"https://omeka.org/s/docs/user-manual/modules/csvimport/#media-import-"
+"advanced-settings\" target=\"_blank\">a documentação</a>."
 
 #: src/Form/MappingForm.php:338
 msgid "Resource identifier column"

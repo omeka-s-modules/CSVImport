@@ -7,7 +7,7 @@
 # Latino Imparato <latino.imparato@gmail.com>, 2018
 # Tommaso Vitale, 2019
 # Pietro <pietro_valocchi@yahoo.it>, 2019
-# Giorgio Comai <g@giorgiocomai.eu>, 2023
+# Giorgio Comai <g@giorgiocomai.eu>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-25 15:33-0500\n"
 "PO-Revision-Date: 2017-09-14 20:14+0000\n"
-"Last-Translator: Giorgio Comai <g@giorgiocomai.eu>, 2023\n"
+"Last-Translator: Giorgio Comai <g@giorgiocomai.eu>, 2024\n"
 "Language-Team: Italian (https://app.transifex.com/omeka/teams/14184/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,6 +69,8 @@ msgstr "Proprietà dell'identificatore della risorsa"
 #: view/common/options-sidebar.phtml:48
 msgid "This only takes effect when using the \"Omeka resource\" data type above."
 msgstr ""
+"Questo ha effetto solo quando si utilizza il tipo di dati \"risorsa Omeka\" "
+"qui sopra."
 
 #: view/csv-import/index/index.phtml:8
 msgid "Import Settings"
@@ -155,7 +157,7 @@ msgstr "Elimina mappatura"
 
 #: view/csv-import/index/map.phtml:107
 msgid "Data type:"
-msgstr ""
+msgstr "Tipo di dati:"
 
 #: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
@@ -171,7 +173,7 @@ msgstr "Valori privati"
 
 #: view/csv-import/index/map.phtml:125
 msgid "Resource identifier property:"
-msgstr ""
+msgstr "Proprietà che identifica la risorsa:"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -264,7 +266,7 @@ msgstr "Classe della risorsa (per termine)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:12
 msgid "Owner (by email address)"
-msgstr "Proprietario  (indirizzo email)"
+msgstr "Proprietario (indirizzo email)"
 
 #: view/csv-import/mapping-sidebar/resource.phtml:14
 msgid "Visibility public/private"
@@ -281,35 +283,36 @@ msgstr "Dati della collezione"
 
 #: src/Mapping/UserMapping.php:8
 msgid "User info"
-msgstr "Utente info"
+msgstr "Informazioni utente"
 
 #: src/Mapping/ItemMapping.php:8
 msgid "Item data"
-msgstr "I dati del contenuto"
+msgstr "Dati del contenuto"
 
 #: src/Mapping/ResourceMapping.php:9
 msgid "Resource data"
-msgstr "I dati della risorsa"
+msgstr "Dati della risorsa"
 
 #: src/Mapping/ResourceMapping.php:64
 #, php-format
 msgid "\"%s\" is not a valid resource type."
-msgstr "\"%s\" non è valido il tipo di risorsa."
+msgstr "\"%s\" non è un tipo di risorsa valido."
 
 #: src/Mapping/PropertyMapping.php:133
 #, php-format
 msgid "\"%s\" (%s) is not a valid resource."
-msgstr ""
+msgstr "\"%s\" (%s) non è una risorsa valida."
 
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
 msgid "\"%s\" (%s) is not a valid item set."
-msgstr "\"%s\" (%s) non è valido il set di contenuto."
+msgstr "\"%s\" (%s) non è una collezione valida."
 
 #: src/Mapping/AbstractResourceMapping.php:262
 #, php-format
 msgid "An item identifier is required to process action \"%s\"."
-msgstr "Un identificatore di contenuto è richiesto per azione di processo \"%s\"."
+msgstr ""
+"Un identificatore di contenuto è richiesto per processare l'azione \"%s\"."
 
 #: src/Mapping/AbstractResourceMapping.php:275
 #, php-format
@@ -345,7 +348,7 @@ msgstr "\"%s\" non è un indirizzo email di utente valido"
 
 #: src/Mapping/MediaMapping.php:8
 msgid "Media data"
-msgstr "I dati di media"
+msgstr "Dati del media"
 
 #: src/Source/CsvFile.php:84
 msgid "File is not UTF-8 encoded."
@@ -580,35 +583,43 @@ msgstr ""
 
 #: src/Form/MappingForm.php:310
 msgid "Create (Each row in the CSV will become a new resource)"
-msgstr ""
+msgstr "Crea (ogni nuova riga del file CSV diventa una nuova risorsa)"
 
 #: src/Form/MappingForm.php:311
 msgid ""
 "Append (Add new data to the resource, based on an identifier for an existing"
 " resource)"
 msgstr ""
+"Aggiungi (aggiungi nuovi dati alla risorsa, basandosi su un identificatore "
+"di una risorsa esistente)"
 
 #: src/Form/MappingForm.php:312
 msgid ""
 "Revise (Replace existing fields of the resource with data from the CSV, "
 "except if the corresponding cell in the CSV is empty)"
 msgstr ""
+"Revisiona (sostituisci campi di risorsa esistenti con i dati inclusi nel "
+"CSV, ad eccezione di quando la cella corrispondente nel CSV è vuota)"
 
 #: src/Form/MappingForm.php:313
 msgid ""
 "Update (Replace existing fields of the resource with data from the CSV, even"
 " when the corresponding cell in the CSV is empty)"
 msgstr ""
+"Aggiorna (sostituisci campi di risorsa esistenti con i dati inclusi nel CSV "
+"anche quando la cella corrispondente nel CSV è vuota)"
 
 #: src/Form/MappingForm.php:314
 msgid ""
 "Replace (Remove all properties of the resource, then add new information "
 "from the CSV)"
 msgstr ""
+"Sostituisci (elimina tutte le proprietà della risorsa, poi aggiungi nuove "
+"informazioni dal CSV)"
 
 #: src/Form/MappingForm.php:315
 msgid "Delete (Delete any resources matched by the identifiers)"
-msgstr ""
+msgstr "Elimina (elimina tutte le risorse con identificativo corrispondente)"
 
 #: src/Form/MappingForm.php:323
 msgid ""

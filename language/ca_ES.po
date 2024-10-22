@@ -41,11 +41,11 @@ msgstr ""
 
 #: view/common/options-sidebar.phtml:11
 msgid "Use multivalue separator"
-msgstr ""
+msgstr "Usa un separador multivalor"
 
 #: view/common/options-sidebar.phtml:20
 msgid "Import values as private"
-msgstr ""
+msgstr "Importa els valors com a privats"
 
 #: view/common/options-sidebar.phtml:28
 msgid "This will override language settings in basic import settings."
@@ -82,7 +82,7 @@ msgstr "conjunts de recursos"
 
 #: view/csv-import/index/map.phtml:12
 msgid "mixed resources"
-msgstr ""
+msgstr "recursos mixtos"
 
 #: view/csv-import/index/map.phtml:13
 msgid "users"
@@ -148,7 +148,7 @@ msgstr ""
 
 #: view/csv-import/index/map.phtml:107
 msgid "Data type:"
-msgstr ""
+msgstr "Tipus de dada"
 
 #: view/csv-import/index/map.phtml:112
 msgid "Multivalue"
@@ -164,7 +164,7 @@ msgstr "Valors privats"
 
 #: view/csv-import/index/map.phtml:125
 msgid "Resource identifier property:"
-msgstr ""
+msgstr "Propietat de l'identificador del recurs:"
 
 #: view/csv-import/index/past-imports.phtml:7
 msgid "Past Imports"
@@ -191,11 +191,13 @@ msgstr "Detall de la tasca"
 msgid ""
 "Problems were detected with the import. Check the job's log for details."
 msgstr ""
+"S'han detectat problemes en la importació. Reviseu el registre del procés "
+"per saber-ne més."
 
 #: view/csv-import/index/past-imports.phtml:78
 #, php-format
 msgid "Undone %s"
-msgstr ""
+msgstr "Desfet %s"
 
 #: view/csv-import/index/past-imports.phtml:82
 msgid "Undo in progress"
@@ -287,7 +289,7 @@ msgstr "\"%s\" no és un tipus de recurs vàlid."
 #: src/Mapping/PropertyMapping.php:133
 #, php-format
 msgid "\"%s\" (%s) is not a valid resource."
-msgstr ""
+msgstr "\"%s\" (%s) no és un recurs vàlid."
 
 #: src/Mapping/AbstractResourceMapping.php:240
 #, php-format
@@ -438,7 +440,7 @@ msgstr "%d %s s'han suprimit: %s."
 #: src/Job/Import.php:505
 #, php-format
 msgid "A media to create is not attached to an item (%s)."
-msgstr ""
+msgstr "No s'adjunta cap fitxer al recurs (%s)."
 
 #: src/Job/Import.php:507
 msgid "unknown ingester"
@@ -550,35 +552,45 @@ msgstr ""
 
 #: src/Form/MappingForm.php:310
 msgid "Create (Each row in the CSV will become a new resource)"
-msgstr ""
+msgstr "Crea (Cada fila del CSV es convertirà en un recurs nou)"
 
 #: src/Form/MappingForm.php:311
 msgid ""
 "Append (Add new data to the resource, based on an identifier for an existing"
 " resource)"
 msgstr ""
+"Afegeix (Afegeix dades noves al recurs, basades en un identificador per a un"
+" recurs existent)"
 
 #: src/Form/MappingForm.php:312
 msgid ""
 "Revise (Replace existing fields of the resource with data from the CSV, "
 "except if the corresponding cell in the CSV is empty)"
 msgstr ""
+"Revisa (substitueix els camps existents del recurs amb dades del CSV, "
+"excepte si la cel·la corresponent al CSV està buida)"
 
 #: src/Form/MappingForm.php:313
 msgid ""
 "Update (Replace existing fields of the resource with data from the CSV, even"
 " when the corresponding cell in the CSV is empty)"
 msgstr ""
+"Actualitza (substitueix els camps existents del recurs amb dades del CSV, "
+"fins i tot quan la cel·la corresponent al CSV estigui buida)"
 
 #: src/Form/MappingForm.php:314
 msgid ""
 "Replace (Remove all properties of the resource, then add new information "
 "from the CSV)"
 msgstr ""
+"Reemplaça (Elimina totes les propietats del recurs i, a continuació, afegeix"
+" informació nova des del CSV)"
 
 #: src/Form/MappingForm.php:315
 msgid "Delete (Delete any resources matched by the identifiers)"
 msgstr ""
+"Suprimeix (Suprimeix qualsevol recurs que coincideixi amb els "
+"identificadors)"
 
 #: src/Form/MappingForm.php:323
 msgid ""
@@ -588,6 +600,11 @@ msgid ""
 "manual/modules/csvimport/#media-import-advanced-settings\" "
 "target=\"_blank\">the documentation</a>."
 msgstr ""
+"Per defecte, la importació crea nous recursos. Seleccioneu des d'aquest "
+"desplegable per a triar una acció alternativa per a la importació. Per a més"
+" informació sobre cada acció, consulteu la <a "
+"href=\"https://omeka.org/s/docs/user-manual/modules/csvimport/#media-import-"
+"advanced-settings\" target=\"_blank\"> documentatió</a>."
 
 #: src/Form/MappingForm.php:338
 msgid "Resource identifier column"
@@ -600,10 +617,15 @@ msgid ""
 " file must map the selected property. In all cases, it is strongly "
 "recommended to add one ore more unique identifiers to all your resources."
 msgstr ""
+"Utilitzeu aquesta propietat, generalment «dcterms:identifier», per "
+"identificar els recursos existents, de manera que sigui possible "
+"actualitzar-los. Una columna del fitxer ha de mapejar la propietat "
+"seleccionada. En tots els casos, és molt recomanable afegir un identificador"
+" únic a tots els recursos."
 
 #: src/Form/MappingForm.php:378
 msgid "Action on unidentified resources"
-msgstr ""
+msgstr "Acció sobre recursos no identificats"
 
 #: src/Form/MappingForm.php:379
 msgid ""
@@ -612,6 +634,10 @@ msgid ""
 "\"Replace\"). This option is not used when the main action is \"Create\", "
 "\"Delete\" or \"Skip\"."
 msgstr ""
+"Aquesta opció determina què fer quan un recurs no existeix, però l'acció "
+"s'aplica a un recurs existent (\"Afegeix\", \"Actualitza\", o "
+"\"Reemplaça\"). Aquesta opció no s'utilitza quan l'acció principal és "
+"«Crea», «Suprimeix» o «Omet»."
 
 #: src/Form/MappingForm.php:381
 msgid "Skip the row"
@@ -630,6 +656,8 @@ msgid ""
 "By default, rows are processed by 20. In some cases, to set a value of 1 may"
 " avoid issues."
 msgstr ""
+"Per defecte, les files es processen de 20 en 20. En alguns casos, fixar un "
+"valor d'1 pot evitar problemes."
 
 #: src/Form/ImportForm.php:15
 msgid "comma"
@@ -690,7 +718,7 @@ msgstr "Delimitador de les columnes"
 #: src/Form/ImportForm.php:79
 msgid ""
 "A single character that will be used to separate columns in the csv file."
-msgstr ""
+msgstr "Un únic caràcter que s'utilitzarà per separar columnes al fitxer CSV."
 
 #: src/Form/ImportForm.php:93
 msgid "CSV column enclosure"
@@ -702,14 +730,17 @@ msgid ""
 "The enclosure can be omitted when the content does not contain the "
 "delimiter."
 msgstr ""
+"Un únic caràcter que s'utilitzarà per separar columnes al fitxer CSV. El "
+"caràcter d'encapsulament es pot ometre quan el contingut no conté el "
+"delimitador."
 
 #: src/Form/ImportForm.php:107
 msgid "The type of data being imported"
-msgstr ""
+msgstr "El tipus de dades que s'importen"
 
 #: src/Form/ImportForm.php:112
 msgid "Mixed resources"
-msgstr ""
+msgstr "Recursos mixtos"
 
 #: src/Form/ImportForm.php:125
 msgid "Automap with simple labels"
@@ -745,4 +776,4 @@ msgstr "Paràmetres invàlids"
 #: src/Controller/IndexController.php:193
 #, php-format
 msgid "Undo in progress in the following jobs: %s"
-msgstr ""
+msgstr "S'estan desfent els processos següents: %s"
