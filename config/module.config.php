@@ -24,20 +24,27 @@ return [
         ],
     ],
     'form_elements' => [
+        'invokables' => [
+            'CSVImport\Form\MappingEditForm' => Form\MappingEditForm::class,
+            'CSVImport\Form\MappingSelectForm' => Form\MappingSelectForm::class,
+        ],
         'factories' => [
             'CSVImport\Form\ImportForm' => Service\Form\ImportFormFactory::class,
             'CSVImport\Form\MappingForm' => Service\Form\MappingFormFactory::class,
+            'CSVImport\Form\Element\MappingSelect' => Service\Form\Element\MappingSelectFactory::class,
         ],
     ],
     'controllers' => [
         'factories' => [
             'CSVImport\Controller\Index' => Service\Controller\IndexControllerFactory::class,
+            'CSVImport\Controller\Admin\Mapping' => Service\Controller\Admin\MappingControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
         'factories' => [
             'automapHeadersToMetadata' => Service\ControllerPlugin\AutomapHeadersToMetadataFactory::class,
             'findResourcesFromIdentifiers' => Service\ControllerPlugin\FindResourcesFromIdentifiersFactory::class,
+            'loadMapping' => Service\ControllerPlugin\LoadMappingFactory::class,
         ],
         'aliases' => [
             'findResourceFromIdentifier' => 'findResourcesFromIdentifiers',
@@ -47,6 +54,7 @@ return [
         'invokables' => [
             'csvimport_entities' => Api\Adapter\EntityAdapter::class,
             'csvimport_imports' => Api\Adapter\ImportAdapter::class,
+            'csvimport_mappings' => Api\Adapter\MappingAdapter::class,
         ],
     ],
     'service_manager' => [
@@ -92,6 +100,35 @@ return [
                                     ],
                                 ],
                             ],
+                            'mapping' => [
+                                'type' => 'Segment',
+                                'options' => [
+                                    'route' => '/mapping[/:action]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'CSVImport\Controller\Admin',
+                                        'controller' => 'Mapping',
+                                        'action' => 'browse',
+                                    ],
+                                ],
+                            ],
+                            'mapping-id' => [
+                                'type' => 'Segment',
+                                'options' => [
+                                    'route' => '/mapping/:id[/:action]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '\d+',
+                                    ],
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'CSVImport\Controller\Admin',
+                                        'controller' => 'Mapping',
+                                        'action' => 'show',
+                                    ],
+                                ],
+                            ],
                         ],
                     ],
                 ],
@@ -122,6 +159,10 @@ return [
                         'controller' => 'Index',
                         'action' => 'past-imports',
                         'resource' => 'CSVImport\Controller\Index',
+                    ],
+                    [
+                        'label' => 'Mappings', // @translate
+                        'route' => 'admin/csvimport/mapping',
                     ],
                 ],
             ],
