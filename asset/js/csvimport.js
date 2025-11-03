@@ -2,8 +2,9 @@
  * Initially based on Omeka S omeka2importer.js and resource-core.js.
  */
 (function ($) {
+    $(document).ready(function () { $(document).trigger('mapping:updated'); });
 
-    $(document).ready(function() {
+    $(document).on('mapping:updated', function() {
         /*
          * Init.
          */
