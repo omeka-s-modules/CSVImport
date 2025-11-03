@@ -1,0 +1,65 @@
+<?php
+$escapeHtml = $this->plugin('escapeHtml');
+$this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
+$this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
+?>
+
+<table class="batch-edit tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th> <?php echo $this->translate("Column"); ?> </th>
+            <th><?php echo $this->translate("Mappings"); ?></th>
+            <th><?php echo $this->translate("Options"); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($columns as $index=>$column): ?>
+        <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
+            <td>
+                <span class="column-header"><?php echo $escapeHtml($column); ?></span>
+            </td>
+            <td class="mapping element">
+                <ul class="mappings elements">
+                <?php if (!empty($automaps[$index])): ?>
+                    <?php if (!array_is_list($automaps[$index])): ?>
+                        <?php $value = $automaps[$index]['value']; ?>
+                        <li class="mapping <?php echo $automaps[$index]['class']; ?>"<?php echo $automaps[$index]['special']; ?>>
+                            <?php echo $this->translate($automaps[$index]['label']); ?>
+                        </li>
+                    <?php else:
+                        foreach ($automaps[$index] as $automap):?>
+                            <?php $value = $automap['value']; ?>
+                            <li class="mapping <?php echo $automap['class']; ?>"<?php echo $automap['special']; ?>>
+                                <?php echo $this->translate($automap['label']); ?>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+                </ul>
+            </td>
+            <td class="element-options">
+                <ul class="options">
+                    <li class="column-data-type option<?php if (isset($automaps[$index][0]['data-type'])) echo ' active'; ?>">
+                        <?php echo $this->translate('Data type:'); ?>
+                        <span class="option-label"><?php if (isset($automaps[$index][0]['data-type'])) echo $escapeHtml($automaps[$index][0]['data-type']); ?></span>
+                    </li>
+                    <li class="column-multivalue option<?php if (isset($automaps[$index][0]['multivalue'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Multivalue"); ?>
+                    </li>
+                    <li class="column-language option<?php if (isset($automaps[$index][0]['language'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Language:"); ?>
+                        <span class="column-language"><?php if (isset($automaps[$index][0]['language'])) echo $escapeHtml($automaps[$index][0]['language']); ?></span>
+                    </li>
+                    <li class="column-private-values option<?php if (isset($automaps[$index][0]['private-values'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Private values"); ?>
+                    </li>
+                    <li class="column-resource-identifier-property option<?php if (isset($automaps[$index][0]['resource-identifier-property'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Resource identifier property:"); ?>
+                        <span class="option-label"><?php if (isset($automaps[$index][0]['resource-identifier-property'])) echo $escapeHtml($automaps[$index][0]['resource-identifier-property']); ?></span>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

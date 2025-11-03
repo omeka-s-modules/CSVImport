@@ -1,0 +1,16 @@
+<?php $form->prepare(); ?>
+
+<?php echo $this->pageTitle($this->translate('Select mapping'), 3); ?>
+
+<?php echo $this->form()->openTag($form); ?>
+
+<?php echo $this->formCollection($form); ?>
+
+<fieldset>
+    <button type="button" id='mapping-select-button'>
+        <?php echo $this->translate('Select mapping'); ?>
+    </button>
+</fieldset>
+
+<?php echo $this->form()->closeTag($form); ?>
+
