@@ -4,6 +4,7 @@ $escapeHtml = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'no-section-hashes');
 $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImport'));
 $this->headScript()->appendFile($this->assetUrl('js/csvimport.js', 'CSVImport'));
+$this->headScript()->appendFile($this->assetUrl('js/mappingselect.js', 'CSVImport'));
 
 $resourceTypeLabels = [
     'items' => $this->translate('items'),
@@ -39,6 +40,21 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
+    <?php echo $this->hyperlink(
+        '',
+        '#', 
+        [
+            'data-sidebar-content-url' => $this->url('admin/csvimport/mapping', 
+            [
+                'controller' => 'Mapping',
+                'action' => 'selectMapping',
+            ]
+            ),
+            'class' => 'button sidebar-content',
+            'title' => $this->translate('Select mapping'),
+            'data-sidebar-selector' => '#sidebar',
+        ]
+    ); ?>
     <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
     <div class="field required">
         <div class="field-meta">
@@ -59,82 +75,20 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         <a class="inactive button" data-sidebar-selector="#column-options" id="batch-edit-options"><?php echo $this->translate('Batch edit options'); ?></a>
     </div>
     <?php endif; ?>
-    <table class="batch-edit tablesaw tablesaw-stack" data-tablesaw-mode="stack">
-        <thead>
-            <tr>
-                <th>
-                    <?php if ($resourceType !== 'users'): ?>
-                        <input type="checkbox" class="select-all" aria-label="<?php echo $this->translate('Select all'); ?>">
-                    <?php endif; ?>
-                    <?php echo $this->translate("Column"); ?>
-                </th>
-                <th><?php echo $this->translate("Mappings"); ?></th>
-                <th><?php echo $this->translate("Options"); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($columns as $index=>$column): ?>
-            <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
-                <td>
-                    <?php if ($resourceType !== 'users'): ?>
-                        <input type="checkbox" name="column[<?php echo $index; ?>]" class="column-select" value="<?php echo $this->escapeHtml($column); ?>" aria-label="<?php echo $this->translate('Select column'); ?>">
-                    <?php endif; ?>
-                    <span class="column-header"><?php echo $escapeHtml($column); ?></span>
-                    <ul class="actions">
-                        <li><a href="#" class="o-icon-add sidebar-content" data-sidebar-selector="#add-mapping" aria-label="<?php echo $this->translate('Add mapping'); ?>" title="<?php echo $this->translate('Add mapping'); ?>"></a></li>
-                        <?php if ($resourceType !== 'users'): ?>
-                        <li><a href="#" class="o-icon-configure sidebar-content" aria-label="<?php echo $this->translate('Configure'); ?>" title="<?php echo $this->translate('Configure'); ?>" data-sidebar-selector="#column-options"></a></li>
-                        <?php endif; ?>
-                    </ul>
-                </td>
-                <td class="mapping element">
-                    <ul class="mappings elements">
-                    <?php if (!empty($automaps[$index])): ?>
-                        <?php $value = $automaps[$index]['value']; ?>
-                        <li class="mapping <?php echo $automaps[$index]['class']; ?>"<?php echo $automaps[$index]['special']; ?>>
-                            <?php echo $this->translate($automaps[$index]['label']); ?>
-                            <ul class="actions">
-                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
-                            </ul>
-                            <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml(is_array($value) ? json_encode($value) : $value); ?>" type="hidden" />
-                        </li>
-                    <?php endif; ?>
-                    </ul>
-                </td>
-                <td class="element-options">
-                    <ul class="options">
-                        <li class="column-data-type option">
-                            <?php echo $this->translate('Data type:'); ?>
-                            <span class="option-label"></span>
-                            <input type="hidden" name="column-data-type[<?php echo $index; ?>]" data-option-name="data-type" value="" disabled>
-                        </li>
-                        <li class="column-multivalue option">
-                            <?php echo $this->translate("Multivalue"); ?>
-                            <input type="hidden" name="column-multivalue[<?php echo $index; ?>]" data-option-name="multivalue" value="1" disabled>
-                        </li>
-                        <li class="column-language option">
-                            <?php echo $this->translate("Language:"); ?>
-                            <span class="column-language"></span>
-                            <input type="hidden" name="column-language[<?php echo $index; ?>]" data-option-name="language" value="" disabled>
-                        </li>
-                        <li class="column-private-values option">
-                            <?php echo $this->translate("Private values"); ?>
-                            <input type="hidden" name="column-private-values[<?php echo $index; ?>]" data-option-name="private-values" value="1" disabled>
-                        </li>
-                        <li class="column-resource-identifier-property option">
-                            <?php echo $this->translate("Resource identifier property:"); ?>
-                            <span class="option-label"></span>
-                            <input type="hidden" name="column-resource-identifier-property[<?php echo $index; ?>]" data-option-name="resource-identifier-property" value="" disabled>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+    <?php echo $this->partial('common/mapping-table', ['resourceType' => $resourceType, 'columns' => $columns, 'automaps' => $automaps]); ?>
     <?php echo $this->partial('common/mapping-sidebar'); ?>
     <?php if ($resourceType !== 'users'): ?>
     <?php echo $this->partial('common/options-sidebar', ['dataTypes' => $dataTypes]); ?>
     <?php endif; ?>
 </fieldset>
 <?php echo $this->form()->closeTag($form); ?>
+
+<div id="sidebar" class="sidebar">
+    <?php echo $this->hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $this->translate('Close'),
+    ]); ?>
+    <div class="sidebar-content">
+    </div>
+</div>
+

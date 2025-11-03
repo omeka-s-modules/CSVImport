@@ -1,0 +1,87 @@
+<?php $escapeHtml = $this->plugin('escapeHtml'); ?>
+<table class="batch-edit tablesaw tablesaw-stack" data-tablesaw-mode="stack">
+    <thead>
+        <tr>
+            <th>
+                <?php if ($resourceType !== 'users'): ?>
+                    <input type="checkbox" class="select-all" aria-label="<?php echo $this->translate('Select all'); ?>">
+                <?php endif; ?>
+                <?php echo $this->translate("Column"); ?>
+            </th>
+            <th><?php echo $this->translate("Mappings"); ?></th>
+            <th><?php echo $this->translate("Options"); ?></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($columns as $index=>$column): ?>
+        <tr class="element mappable" data-element-id="<?php echo $index; ?>" data-column="<?php echo $escapeHtml($column); ?>">
+            <td>
+                <?php if ($resourceType !== 'users'): ?>
+                    <input type="checkbox" name="column[<?php echo $index; ?>]" class="column-select" value="<?php echo $this->escapeHtml($column); ?>" aria-label="<?php echo $this->translate('Select column'); ?>">
+                <?php endif; ?>
+                <span class="column-header"><?php echo $escapeHtml($column); ?></span>
+                <ul class="actions">
+                    <li><a href="#" class="o-icon-add sidebar-content" data-sidebar-selector="#add-mapping" aria-label="<?php echo $this->translate('Add mapping'); ?>" title="<?php echo $this->translate('Add mapping'); ?>"></a></li>
+                    <?php if ($resourceType !== 'users'): ?>
+                    <li><a href="#" class="o-icon-configure sidebar-content" aria-label="<?php echo $this->translate('Configure'); ?>" title="<?php echo $this->translate('Configure'); ?>" data-sidebar-selector="#column-options"></a></li>
+                    <?php endif; ?>
+                </ul>
+            </td>
+            <td class="mapping element">
+                <ul class="mappings elements">
+                <?php if (!empty($automaps[$index])): ?>
+                    <?php if (!array_is_list($automaps[$index])): ?>
+                        <?php $value = $automaps[$index]['value']; ?>
+                        <li class="mapping <?php echo $automaps[$index]['class']; ?>"<?php echo $automaps[$index]['special']; ?>>
+                            <?php echo $this->translate($automaps[$index]['label']); ?>
+                            <ul class="actions">
+                                <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
+                            </ul>
+                            <input name="column-<?php echo $automaps[$index]['name'] . '[' . $index . ']' . ($automaps[$index]['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml(is_array($value) ? json_encode($value) : $value); ?>" type="hidden" />
+                        </li>
+                    <?php else:
+                        foreach ($automaps[$index] as $automap):?>
+                            <?php $value = $automap['value']; ?>
+                            <li class="mapping <?php echo $automap['class']; ?>"<?php echo $automap['special']; ?>>
+                                <?php echo $this->translate($automap['label']); ?>
+                                <ul class="actions">
+                                    <li><a aria-label="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" title="<?php echo $escapeHtml($this->translate('Remove mapping')); ?>" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>
+                                </ul>
+                                <input name="column-<?php echo $automap['name'] . '[' . $index . ']' . ($automap['multiple'] ? '[]' : ''); ?>" value="<?php echo $escapeHtml(is_array($value) ? json_encode($value) : $value); ?>" type="hidden" />
+                            </li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+                </ul>
+            </td>
+            <td class="element-options">
+                <ul class="options">
+                    <li class="column-data-type option<?php if (isset($automaps[$index][0]['data-type'])) echo ' active'; ?>">
+                        <?php echo $this->translate('Data type:'); ?>
+                        <span class="option-label"><?php if (isset($automaps[$index][0]['data-type'])) echo $escapeHtml($automaps[$index][0]['data-type']); ?></span>
+                        <input type="hidden" name="column-data-type[<?php echo $index; ?>]" data-option-name="data-type" value="<?php if (isset($automaps[$index][0]['data-type'])) echo $escapeHtml($automaps[$index][0]['data-type']); ?>" <?php if (!isset($automaps[$index][0]['data-type'])) echo "disabled"; ?> >
+                    </li>
+                    <li class="column-multivalue option<?php if (isset($automaps[$index][0]['multivalue'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Multivalue"); ?>
+                        <input type="hidden" name="column-multivalue[<?php echo $index; ?>]" data-option-name="multivalue" value="<?php if (isset($automaps[$index][0]['multivalue'])) echo $escapeHtml($automaps[$index][0]["multivalue"]); else echo "1"; ?>" <?php if (!isset($automaps[$index][0]['multivalue'])) echo "disabled"; ?> >
+                    </li>
+                    <li class="column-language option<?php if (isset($automaps[$index][0]['language'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Language:"); ?>
+                        <span class="column-language"><?php if (isset($automaps[$index][0]['language'])) echo $escapeHtml($automaps[$index][0]['language']); ?></span>
+                        <input type="hidden" name="column-language[<?php echo $index; ?>]" data-option-name="language" value="<?php if (isset($automaps[$index][0]['language'])) echo $escapeHtml($automaps[$index][0]['language']); ?>" <?php if (!isset($automaps[$index][0]['language'])) echo "disabled"; ?> >
+                    </li>
+                    <li class="column-private-values option<?php if (isset($automaps[$index][0]['private-values'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Private values"); ?>
+                        <input type="hidden" name="column-private-values[<?php echo $index; ?>]" data-option-name="private-values" value="<?php if (isset($automaps[$index][0]['private-values'])) echo $escapeHtml($automaps[$index][0]['private-values']); else echo "1"; ?>" <?php if (!isset($automaps[$index][0]['private-values'])) echo "disabled"; ?> >
+                    </li>
+                    <li class="column-resource-identifier-property option<?php if (isset($automaps[$index][0]['resource-identifier-property'])) echo ' active'; ?>">
+                        <?php echo $this->translate("Resource identifier property:"); ?>
+                        <span class="option-label"><?php if (isset($automaps[$index][0]['resource-identifier-property'])) echo $escapeHtml($automaps[$index][0]['resource-identifier-property']); ?></span>
+                        <input type="hidden" name="column-resource-identifier-property[<?php echo $index; ?>]" data-option-name="resource-identifier-property" value="<?php if (isset($automaps[$index][0]['resource-identifier-property'])) echo $escapeHtml($automaps[$index][0]['resource-identifier-property']); ?>" <?php if (!isset($automaps[$index][0]['resource-identifier-property'])) echo "disabled"; ?> >
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
