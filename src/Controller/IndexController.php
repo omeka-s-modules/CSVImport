@@ -135,16 +135,7 @@ class IndexController extends AbstractActionController
             $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
             $automapOptions['format'] = 'form';
 
-            $autoMaps = [];
-            if (isset($post['mapping_id'])) {
-                $this->logger()->debug("Received mapping id.");
-                $autoMaps = $this->loadMapping($post['mapping_id'], 
-                                                $columns,
-                                                $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions));
-            }
-            if (empty($autoMaps)) {
-                $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
-            }
+            $autoMaps = $this->automapHeadersToMetadata($columns, $resourceType, $automapOptions);
 
             $view->setVariable('form', $form);
             $view->setVariable('resourceType', $resourceType);
@@ -172,7 +163,10 @@ class IndexController extends AbstractActionController
 
                 $args = $this->cleanArgs($post);
                 $this->saveUserSettings($args);
-                $this->saveMapping($args, []);
+                if (isset($post['save_mapping']))
+                {
+                    $this->saveMapping($args, []);
+                }
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't
@@ -485,6 +479,7 @@ class IndexController extends AbstractActionController
         // We first need to read the file to get the column names
         // Because we need to remember the column names
         $filePath = $args['filepath'];
+        $fileName = $args['filename'];
 
         // Check if file exists and is readable
         if (!file_exists($filePath) || !is_readable($filePath)) {
@@ -520,9 +515,10 @@ class IndexController extends AbstractActionController
         unset($args['media_type']);
         unset($args['resource_type']);
         unset($args['automap_check_names_alone']);
+        unset($args['save_mapping']);
 
         $this->logger()->debug(sprintf('[CSV Import: Args to be saved my mapping]' . PHP_EOL . '%s' . PHP_EOL, json_encode($args)));
 
-        $this->api()->create('csvimport_mappings', ['mapping' => json_encode($args), 'name' => 'Mapping']);
+        $this->api()->create('csvimport_mappings', ['mapping' => json_encode($args), 'name' => $fileName]);
     }
 }
