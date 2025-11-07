@@ -2,9 +2,7 @@
  * Initially based on Omeka S omeka2importer.js and resource-core.js.
  */
 (function ($) {
-    $(document).ready(function () { $(document).trigger('mapping:updated'); });
-
-    $(document).on('mapping:updated', function() {
+    $(document).ready(function() {
         /*
          * Init.
          */
@@ -20,6 +18,80 @@
 
         var batchEditCheckboxes = $('.column-select, .select-all');
         var batchEditButton = $('#batch-edit-options');
+
+        $(document).on('mapping.updated', newTable);
+
+        newTable();
+
+        function newTable() {
+            resetActiveColumns();
+
+            /*
+            * Batch edit options.
+            */
+
+            $('.batch-edit input[type="checkbox"], .batch-edit .select-all').change(function() {
+                if ($('.column-select:checked').length > 0) {
+                    batchEditButton.removeClass('inactive').addClass('active sidebar-content');
+                } else {
+                    batchEditButton.addClass('inactive').removeClass('active sidebar-content');
+                }
+            });
+
+            /*
+            * Sidebar chooser (buttons on each mappable element).
+            */
+
+            $('.column-header + .actions a').on('click', function(e) {
+                console.log("I have been triggered!");
+                e.preventDefault();
+                if (activeElement !== null) {
+                    activeElement.removeClass('active');
+                }
+                if ($('.column-select:checked').length > 0) {
+                    resetActiveColumns();
+                }
+                activeElement = $(e.target).closest('tr.mappable');
+                activeElement.addClass('active');
+
+                var actionElement = $(this);
+                $('.sidebar-chooser li').removeClass('active');
+                actionElement.parent().addClass('active');
+                var target = actionElement.data('sidebar-selector');
+
+                var sidebar = $(target);
+                if (!sidebar.hasClass('active') ) {
+                    defaultSidebarHtml = sidebar.html();
+                }
+                var columnName = activeElement.data('column');
+                if (sidebar.find('.column-name').length > 0) {
+                    $('.column-name').text(columnName);
+                } else {
+                    sidebar.find('h3').append(' <span class="column-name">' + columnName + '</span>');
+                }
+
+                var currentSidebar = $('.sidebar.active');
+                if (currentSidebar.attr('id') != target) {
+                    currentSidebar.removeClass('active');
+                    sidebar.html(defaultSidebarHtml);
+                    rebindInputs(sidebar);
+                }
+
+                Omeka.openSidebar(sidebar);
+                populateSidebar();
+            });
+
+            /*
+            * Actions on mapped columns.
+            */
+
+            // Remove mapping.
+            $('.section').on('click', 'a.remove-mapping', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                $(this).parents('li.mapping').remove();
+            });
+        };
 
         /*
          * Rebinding chosen selects and property selector after sidebar hydration.
@@ -61,47 +133,6 @@
               });
          }
 
-        /*
-         * Sidebar chooser (buttons on each mappable element).
-         */
-
-        $('.column-header + .actions a').on('click', function(e) {
-            e.preventDefault();
-            if (activeElement !== null) {
-                activeElement.removeClass('active');
-            }
-            if ($('.column-select:checked').length > 0) {
-                resetActiveColumns();
-            }
-            activeElement = $(e.target).closest('tr.mappable');
-            activeElement.addClass('active');
-
-            var actionElement = $(this);
-            $('.sidebar-chooser li').removeClass('active');
-            actionElement.parent().addClass('active');
-            var target = actionElement.data('sidebar-selector');
-
-            var sidebar = $(target);
-            if (!sidebar.hasClass('active') ) {
-                defaultSidebarHtml = sidebar.html();
-            }
-            var columnName = activeElement.data('column');
-            if (sidebar.find('.column-name').length > 0) {
-                $('.column-name').text(columnName);
-            } else {
-                sidebar.find('h3').append(' <span class="column-name">' + columnName + '</span>');
-            }
-
-            var currentSidebar = $('.sidebar.active');
-            if (currentSidebar.attr('id') != target) {
-                currentSidebar.removeClass('active');
-                sidebar.html(defaultSidebarHtml);
-                rebindInputs(sidebar);
-            }
-
-            Omeka.openSidebar(sidebar);
-            populateSidebar();
-        });
 
         function populateSidebar() {
             $('.active.element .options :input:not(:disabled)').each(function() {
@@ -120,17 +151,6 @@
             });
         }
 
-        /*
-         * Batch edit options.
-         */
-
-        $('.batch-edit input[type="checkbox"], .batch-edit .select-all').change(function() {
-            if ($('.column-select:checked').length > 0) {
-                batchEditButton.removeClass('inactive').addClass('active sidebar-content');
-            } else {
-                batchEditButton.addClass('inactive').removeClass('active sidebar-content');
-            }
-        });
 
         $(document).on('click', '#batch-edit-options.active', function() {
             defaultSidebarHtml = $('#column-options').html();
@@ -285,6 +305,7 @@
         });
 
         $(document).on('click', '#column-options .confirm-panel button', function() {
+            console.log('clicked!');
             var sidebar = $(this).parents('.sidebar');
             var languageTextInput = $('#value-language');
             var languageValue = languageTextInput.val();
@@ -341,17 +362,6 @@
             batchEditCheckboxes.prop('checked', false).prop('disabled', false);
             batchEditButton.removeClass('active sidebar-content').addClass('inactive');
         }
-
-        /*
-         * Actions on mapped columns.
-         */
-
-        // Remove mapping.
-        $('.section').on('click', 'a.remove-mapping', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $(this).parents('li.mapping').remove();
-        });
 
         function applyMappings(flagName, flagValue, flagLiClass, flagLabel) {
             var hasFlag = activeElement.find('ul.mappings li.' + flagLiClass);

@@ -6,6 +6,9 @@ $(document).ready(function() {
     var form = $(this).closest('form');
     var formData = form.serialize(); // Collect all form inputs
 
+    var sidebar = $(this).parents('.sidebar');
+    Omeka.closeSidebar(sidebar);
+
     $.ajax({
       url: form.attr('action'),
       method: 'POST',
@@ -16,9 +19,10 @@ $(document).ready(function() {
         var currentTable = $('table');
 
         // Replace only the inside of the table
-        currentTable.html(newTable.html());
+        currentTable.replaceWith(newTable);
 
-        $(document).trigger('mapping:updated');
+        $(document).trigger("enhance.tablesaw");
+        $(document).trigger('mapping.updated');
       } else {
         // alert('Received an empty or invalid response from the server.');
       }
