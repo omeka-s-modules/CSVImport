@@ -37,7 +37,7 @@ class MappingController extends AbstractActionController
             $propertiesMap[$property->id()] = $property->term();
         }
 
-        $mappingModel = $this->loadMapping($this->params('id'), [], []);
+        $mappingModel = $this->loadMapping($this->params('id'), []);
 
         $view = new ViewModel;
         $view->setVariable('propertiesMap', $propertiesMap);
@@ -75,7 +75,7 @@ class MappingController extends AbstractActionController
                 $response = $this->api()->read('csvimport_mappings', $mappingId);
                 if ($response) {
                     $view = new ViewModel([
-                        'automaps' => $this->loadMapping($mappingId, $columns, []),
+                        'automaps' => $this->loadMapping($mappingId, $columns),
                         'columns' => $columns,
                         'resourceType' => $session->resourceType,
                     ]);
@@ -145,7 +145,6 @@ class MappingController extends AbstractActionController
         $view->setTerminal(true);
         $view->setTemplate('common/delete-confirm-details');
         $view->setVariable('resource', $mappingModel);
-        // $view->setVariable('partialPath', '...')
         $view->setVariable('resourceLabel', 'Mapping'); // @translate
         return $view;
     }

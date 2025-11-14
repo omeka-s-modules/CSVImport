@@ -43,7 +43,6 @@
             */
 
             $('.column-header + .actions a').on('click', function(e) {
-                console.log("I have been triggered!");
                 e.preventDefault();
                 if (activeElement !== null) {
                     activeElement.removeClass('active');
@@ -305,7 +304,6 @@
         });
 
         $(document).on('click', '#column-options .confirm-panel button', function() {
-            console.log('clicked!');
             var sidebar = $(this).parents('.sidebar');
             var languageTextInput = $('#value-language');
             var languageValue = languageTextInput.val();

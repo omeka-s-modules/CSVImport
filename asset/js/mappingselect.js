@@ -24,7 +24,7 @@ $(document).ready(function() {
         $(document).trigger("enhance.tablesaw");
         $(document).trigger('mapping.updated');
       } else {
-        // alert('Received an empty or invalid response from the server.');
+        console.error('Received an empty or invalid response from the server.');
       }
     }
   });

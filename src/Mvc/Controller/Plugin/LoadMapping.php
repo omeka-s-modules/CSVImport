@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2025 Abel Boilevin
+ * Copyright 2025 Biblibre
  *
  * This software is governed by the CeCILL license under French law and abiding
  * by the rules of distribution of free software. You can use, modify and/or
@@ -66,7 +66,7 @@ class LoadMapping extends AbstractPlugin
     /**
      *
      */
-    public function __invoke(int $id, array $columns, array $defaultAutomap)
+    public function __invoke(int $id, array $columns)
     {
         // Fetch the mapping
         $mapping = $this->api->read('csvimport_mappings', $id)->getContent();
@@ -168,17 +168,6 @@ class LoadMapping extends AbstractPlugin
                 }
             }
         }
-
-        // default automap may be empty
-        /*
-        foreach ($defaultAutomap as $index => $property) {
-            if (!array_key_exists($index, $automap)) {
-                $automap[$index][] = $property;
-            }
-        }
-        */
-
-        // $this->logger->debug(sprintf("[Mapping loaded]" . PHP_EOL . "%s" . PHP_EOL, json_encode($automap)));
 
         return $automap;
     }
