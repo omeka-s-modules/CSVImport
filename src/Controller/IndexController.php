@@ -150,7 +150,6 @@ class IndexController extends AbstractActionController
             $view->setVariable('dataTypes', $this->getDataTypes());
 
             return $view;
-
         } else {
             $form = $this->getForm(MappingForm::class, $mappingOptions);
             $form->setData($post);
@@ -163,8 +162,7 @@ class IndexController extends AbstractActionController
 
                 $args = $this->cleanArgs($post);
                 $this->saveUserSettings($args);
-                if (isset($post['save_mapping']))
-                {
+                if (isset($post['save_mapping'])) {
                     $this->saveMapping($args, []);
                 }
                 $dispatcher = $this->jobDispatcher();
@@ -472,7 +470,6 @@ class IndexController extends AbstractActionController
 
     /**
      * Save mapping.
-     *
      */
     protected function saveMapping(array $args): void
     {

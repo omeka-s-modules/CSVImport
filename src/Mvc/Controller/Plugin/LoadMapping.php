@@ -81,8 +81,8 @@ class LoadMapping extends AbstractPlugin
         $originalColumns = $mappingValue['columns'];
         unset($mappingValue['columns']);    // so we don't iterate over it after like it's an actual mapping
 
-        // $this->logger->debug(sprintf('Old columns : ' . PHP_EOL . '%s' . PHP_EOL . 'New columns:' . PHP_EOL . '%s' . PHP_EOL, 
-                    // json_encode($originalColumns), json_encode($columns)));
+        // $this->logger->debug(sprintf('Old columns : ' . PHP_EOL . '%s' . PHP_EOL . 'New columns:' . PHP_EOL . '%s' . PHP_EOL,
+        // json_encode($originalColumns), json_encode($columns)));
 
         // Find the mapping between old column indexes and current columns, according to name matching
         $oldToNewColumn = [];
@@ -94,8 +94,7 @@ class LoadMapping extends AbstractPlugin
                     $oldToNewColumn[strval($columnMapping)] = $index;
                 }
             }
-        }
-        else {
+        } else {
             foreach ($originalColumns as $index => $column) {
                 $oldToNewColumn[strval($index)] = $index;
             }
@@ -115,7 +114,7 @@ class LoadMapping extends AbstractPlugin
         /*
          * Reading each entry that was sent by the user in the form
          * The structure is complicated and undocumented.
-         */ 
+         */
         foreach ($mappingValue as $mappingValueColumnName => $mappingValueColumn) {
             $name = "";
             if (str_contains($mappingValueColumnName, 'column-')) {
@@ -133,14 +132,14 @@ class LoadMapping extends AbstractPlugin
                                 $element["special"] = " data-property-id=\"" . $subproperty . "\"";
                                 $element["label"] = explode(':', $subindex)[1] ?? $subindex;
                                 $element["value"] = $subproperty;
-                                $automap[$oldToNewColumn[$index]][] = $element;                  
+                                $automap[$oldToNewColumn[$index]][] = $element;
                             }
                         }
                     }
                 }
 
                 // these are column options. Only one per column, for data simplicity we put it in $automap[ColumnIndex][0]
-                else if ($name == "data-type"
+                elseif ($name == "data-type"
                 || $name == "multivalue"
                 || $name == "language"
                 || $name == "private-values"
@@ -168,7 +167,6 @@ class LoadMapping extends AbstractPlugin
                     }
                 }
             }
-
         }
 
         // default automap may be empty

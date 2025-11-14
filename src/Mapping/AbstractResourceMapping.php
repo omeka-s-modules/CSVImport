@@ -49,7 +49,7 @@ abstract class AbstractResourceMapping extends AbstractMapping
         // First, pull in the global settings.
         $this->processGlobalArgs();
 
-        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
+        $multivalueMap = $this->args['column-multivalue'] ?? [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             if (empty($multivalueMap[$index])) {

@@ -2,13 +2,10 @@
 namespace CSVImport\Form;
 
 use CSVImport\Form\Element\MappingSelect;
-use Omeka\Form\Element\ItemSetSelect;
 use Laminas\Form\Form;
-use Laminas\Form\Element\Hidden;
 
 class MappingSelectForm extends Form
 {
-
     public function init()
     {
         $this->setAttribute('action', '/admin/csvimport/mapping/selectMapping');

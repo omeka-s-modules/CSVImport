@@ -504,7 +504,7 @@ class Import extends AbstractJob
                 $this->hasErr = true;
                 $this->logger->err(new Message('A media to create is not attached to an item (%s).', // @translate
                     empty($entityJson['o:source'])
-                        ? (isset($entityJson['o:ingester']) ? $entityJson['o:ingester'] : 'unknown ingester') // @translate
+                        ? ($entityJson['o:ingester'] ?? 'unknown ingester') // @translate
                         : $entityJson['o:ingester'] . ': ' . $entityJson['o:source']));
             }
         }

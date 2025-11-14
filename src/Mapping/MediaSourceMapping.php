@@ -51,7 +51,7 @@ class MediaSourceMapping extends AbstractMapping
         $mediaAdapters = $config['media_ingester_adapter'];
         $action = $this->args['action'];
 
-        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
+        $multivalueMap = $this->args['column-multivalue'] ?? [];
         $multivalueSeparator = $this->args['multivalue_separator'];
         foreach ($row as $index => $values) {
             if (isset($mediaMap[$index])) {

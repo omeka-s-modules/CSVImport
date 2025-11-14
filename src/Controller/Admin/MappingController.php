@@ -4,7 +4,6 @@ namespace CSVImport\Controller\Admin;
 
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
-use Omeka\Stdlib\Message;
 use Omeka\Form\ConfirmForm;
 use CSVImport\Form\MappingEditForm;
 use CSVImport\Form\MappingSelectForm;
@@ -15,7 +14,7 @@ class MappingController extends AbstractActionController
     {
         $this->setBrowseDefaults('created');
         $response = $this->api()->search('csvimport_mappings');
-        
+
         $this->paginator($response->getTotalResults());
 
         $formDeleteSelected = $this->getForm(ConfirmForm::class);
@@ -43,13 +42,13 @@ class MappingController extends AbstractActionController
         $view = new ViewModel;
         $view->setVariable('propertiesMap', $propertiesMap);
         $view->setVariable('columns', $mappingModel['columns']);
-        unset( $mappingModel['columns']);
+        unset($mappingModel['columns']);
         $this->logger()->debug(json_encode($mappingModel));
         $view->setVariable('automaps', $mappingModel);
         return $view;
     }
 
-        /*
+    /*
      * meant for JS
      */
     public function selectMappingAction()
@@ -78,13 +77,12 @@ class MappingController extends AbstractActionController
                     $view = new ViewModel([
                         'automaps' => $this->loadMapping($mappingId, $columns, []),
                         'columns' => $columns,
-                        'resourceType' => $session->resourceType
+                        'resourceType' => $session->resourceType,
                     ]);
                     $view->setTemplate('common/mapping-table');
                     $view->setTerminal(true); // no layout
                     return $view;
-                }
-                else {
+                } else {
                     return $this->getResponse()->setStatusCode(404)->setContent('Mapping not found.'); // @translate
                 }
             }
