@@ -504,7 +504,7 @@ class Import extends AbstractJob
                 $this->hasErr = true;
                 $this->logger->err(new Message('A media to create is not attached to an item (%s).', // @translate
                     empty($entityJson['o:source'])
-                        ? (isset($entityJson['o:ingester']) ? $entityJson['o:ingester'] : 'unknown ingester') // @translate
+                        ? ($entityJson['o:ingester'] ?? 'unknown ingester') // @translate
                         : $entityJson['o:ingester'] . ': ' . $entityJson['o:source']));
             }
         }
@@ -865,11 +865,11 @@ class Import extends AbstractJob
                         unset($data[$name]);
                     }
                     break;
-                // These values are not updatable and are removed.
                 case 'o:ingester':
                 case 'o:source':
                 case 'ingest_filename':
                 case 'o:size':
+                    // These values are not updatable and are removed.
                     unset($data[$name]);
                     break;
                 case 'o:is_public':
@@ -878,8 +878,8 @@ class Import extends AbstractJob
                         unset($data[$name]);
                     }
                     break;
-                // Properties.
                 default:
+                    // Properties.
                     if (is_array($metadata) && empty($metadata)) {
                         unset($data[$name]);
                     }

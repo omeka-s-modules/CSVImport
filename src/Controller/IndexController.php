@@ -166,7 +166,7 @@ class IndexController extends AbstractActionController
                         htmlspecialchars($this->url()->fromRoute('admin/id', ['controller' => 'job', 'id' => $job->getId()]))
                     ),
                     $job->getId(),
-                   '</a>'
+                    '</a>'
                 );
                 $message->setEscapeHtml(false);
                 $this->messenger()->addSuccess($message);

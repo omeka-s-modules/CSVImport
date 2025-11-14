@@ -52,16 +52,16 @@ class ImportForm extends Form
         $defaults = $this->configCsvImport['user_settings'];
 
         $this->add([
-                'name' => 'source',
-                'type' => 'file',
-                'options' => [
-                    'label' => 'Spreadsheet (csv, tsv or ods)', // @translate
-                    'info' => 'The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
-                ],
-                'attributes' => [
-                    'id' => 'source',
-                    'required' => 'true',
-                ],
+            'name' => 'source',
+            'type' => 'file',
+            'options' => [
+                'label' => 'Spreadsheet (csv, tsv or ods)', // @translate
+                'info' => 'The CSV, TSV or ODS file to upload. LibreOffice is recommended for compliant formats.', //@translate
+            ],
+            'attributes' => [
+                'id' => 'source',
+                'required' => 'true',
+            ],
         ]);
 
         // TODO Move the specific parameters into the source class.
@@ -100,22 +100,22 @@ class ImportForm extends Form
         ]);
 
         $this->add([
-                'name' => 'resource_type',
-                'type' => 'select',
-                'options' => [
-                    'label' => 'Import type', // @translate
-                    'info' => 'The type of data being imported', // @translate
-                    'value_options' => [
-                        'items' => 'Items', // @translate
-                        'item_sets' => 'Item sets', // @translate
-                        'media' => 'Media', // @translate
-                        'resources' => 'Mixed resources', // @translate
-                        'users' => 'Users', // @translate
-                    ],
+            'name' => 'resource_type',
+            'type' => 'select',
+            'options' => [
+                'label' => 'Import type', // @translate
+                'info' => 'The type of data being imported', // @translate
+                'value_options' => [
+                    'items' => 'Items', // @translate
+                    'item_sets' => 'Item sets', // @translate
+                    'media' => 'Media', // @translate
+                    'resources' => 'Mixed resources', // @translate
+                    'users' => 'Users', // @translate
                 ],
-                'attributes' => [
-                    'value' => 'items',
-                ],
+            ],
+            'attributes' => [
+                'value' => 'items',
+            ],
         ]);
 
         $this->add([

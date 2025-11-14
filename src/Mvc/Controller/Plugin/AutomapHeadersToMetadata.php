@@ -25,7 +25,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
      * @return array Associative array of the index of the headers as key and
      * the matching metadata as value. Only mapped headers are set.
      */
-    public function __invoke(array $headers, $resourceType = null, array $options = null)
+    public function __invoke(array $headers, $resourceType = null, ?array $options = null)
     {
         $automaps = [];
 
@@ -179,7 +179,7 @@ class AutomapHeadersToMetadata extends AbstractPlugin
                 '~\s*:\s*~', ':', preg_replace(
                     '~\s\s+~', ' ', trim(str_replace(
                         [' ', ' '], ' ', $v
-            ))));
+                    ))));
         }, $list);
     }
 

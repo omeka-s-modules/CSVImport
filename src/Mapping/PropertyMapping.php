@@ -58,12 +58,12 @@ class PropertyMapping extends AbstractMapping
         $dataTypeAdapters = $this->getDataTypeAdapters();
 
         // Get default option values.
-        $globalLanguage = isset($this->args['global_language']) ? $this->args['global_language'] : '';
+        $globalLanguage = $this->args['global_language'] ?? '';
 
-        $multivalueMap = isset($this->args['column-multivalue']) ? $this->args['column-multivalue'] : [];
+        $multivalueMap = $this->args['column-multivalue'] ?? [];
         $multivalueSeparator = $this->args['multivalue_separator'];
 
-        $resourceIdentifierPropertyMap = isset($this->args['column-resource-identifier-property']) ? $this->args['column-resource-identifier-property'] : [];
+        $resourceIdentifierPropertyMap = $this->args['column-resource-identifier-property'] ?? [];
         $findResourceFromIdentifier = $this->findResourceFromIdentifier;
 
         foreach ($row as $index => $values) {
@@ -106,7 +106,7 @@ class PropertyMapping extends AbstractMapping
                                 // Check if a label is provided after the url.
                                 // Note: A url has no space, but a uri may have.
                                 if (strpos($value, ' ')) {
-                                    list($valueId, $valueLabel) = explode(' ', $value, 2);
+                                    [$valueId, $valueLabel] = explode(' ', $value, 2);
                                     $valueLabel = trim($valueLabel);
                                 } else {
                                     $valueId = $value;

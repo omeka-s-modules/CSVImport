@@ -33,15 +33,15 @@ class UserMapping extends AbstractMapping
             switch ($index) {
                 case $emailIndex:
                     $userJson['o:email'] = $value;
-                break;
+                    break;
 
                 case $nameIndex:
                     $userJson['o:name'] = $value;
-                break;
+                    break;
 
                 case $roleIndex:
                     $userJson['o:role'] = $value;
-                break;
+                    break;
             }
         }
 
