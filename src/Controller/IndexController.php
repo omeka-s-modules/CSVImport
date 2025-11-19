@@ -161,10 +161,10 @@ class IndexController extends AbstractActionController
                 }
 
                 $args = $this->cleanArgs($post);
+                $session = new \Laminas\Session\Container('CsvImport');
+                $args['columns'] = $session->columns;
                 $this->saveUserSettings($args);
-                if (isset($post['save_mapping'])) {
-                    $this->saveMapping($args, []);
-                }
+
                 $dispatcher = $this->jobDispatcher();
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't
@@ -466,56 +466,5 @@ class IndexController extends AbstractActionController
                 $this->userSettings()->set($key, $settings[$name]);
             }
         }
-    }
-
-    /**
-     * Save mapping.
-     */
-    protected function saveMapping(array $args): void
-    {
-        // We first need to read the file to get the column names
-        // Because we need to remember the column names
-        $filePath = $args['filepath'];
-        $fileName = $args['filename'];
-
-        // Check if file exists and is readable
-        if (!file_exists($filePath) || !is_readable($filePath)) {
-            $this->logger()->err(sprintf("[CSV Import]: File '%s' not found when saving mapping.", $filePath)); // @translate
-        }
-
-        // Open the file for reading
-        if (($handle = fopen($filePath, 'r')) !== false) {
-            // Read the first line as CSV (header row)
-            $args['columns'] = fgetcsv($handle);
-
-            // Close file
-            fclose($handle);
-
-            // Output the column names
-            if (!$args['columns']) {
-                $this->logger()->err(sprintf("[CSV Import]: Unable to read columns when saving mapping.")); // @translate
-            }
-        } else {
-            $this->logger()->err(sprintf("[CSV Import]: File '%s' could not be opened when saving mapping.", $filePath)); // @translate
-        }
-
-        if (empty($args['columns'])) {
-            $this->logger()->err(sprintf("[CSV Import]: Unable to get columns from file '%s'.", $filePath)); // @translate
-        }
-
-        $this->logger()->debug(sprintf("[CSV Import] Column names: " . PHP_EOL . "%s" . PHP_EOL, json_encode($args["columns"])));
-
-        // don't save irrelevant data
-        unset($args['filename']);
-        unset($args['filesize']);
-        unset($args['filepath']);
-        unset($args['media_type']);
-        unset($args['resource_type']);
-        unset($args['automap_check_names_alone']);
-        unset($args['save_mapping']);
-
-        $this->logger()->debug(sprintf('[CSV Import: Args to be saved my mapping]' . PHP_EOL . '%s' . PHP_EOL, json_encode($args)));
-
-        $this->api()->create('csvimport_mappings', ['mapping' => json_encode($args), 'name' => $fileName]);
     }
 }

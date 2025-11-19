@@ -7,6 +7,7 @@ use Laminas\View\Model\ViewModel;
 use Omeka\Form\ConfirmForm;
 use CSVImport\Form\MappingEditForm;
 use CSVImport\Form\MappingSelectForm;
+use CSVImport\Form\MappingSaveForm;
 
 class MappingController extends AbstractActionController
 {
@@ -45,6 +46,76 @@ class MappingController extends AbstractActionController
         unset($mappingModel['columns']);
         $this->logger()->debug(json_encode($mappingModel));
         $view->setVariable('automaps', $mappingModel);
+        return $view;
+    }
+
+    public function saveAction()
+    {
+        $response = $this->api()->search('csvimport_mappings');
+        $mappings = $response->getContent();
+        $mappingNames = [];
+        foreach ($mappings as $mapping) {
+            $mappingNames[] = $mapping->name();
+        }
+
+        $query = $this->params()->fromQuery();
+
+        $jobId = null;
+        if ($this->getRequest()->isPost()) {
+            if (!empty($this->params()->fromPost()['job_id']))
+                $jobId = $this->params()->fromPost()['job_id'];
+            else {
+                $this->messenger()->addError('Job id not provided.'); // @translate;
+                return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
+            }
+        }
+        else {
+            if (!empty($query['job_id'])) {
+                $jobId = $query['job_id'];
+            }
+            else {
+                return $this->getResponse()->setStatusCode(404)->setContent('Job id not provided.'); // @translate
+            }
+        }
+
+        $view = new ViewModel;
+        $form = $this->getForm(MappingSaveForm::class, ['job_id' => $jobId]);
+        $view->setVariable('form', $form);
+        $view->setTerminal(true);
+        $view->setTemplate('csv-import/admin/mapping/save-mapping');
+        $view->setVariable('mappings', $mappingNames);
+
+        if ($this->getRequest()->isPost()) {
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                $job = null;
+                $job = $this->api()->read('jobs', $jobId)->getContent();
+                if (empty($job)) {
+                    $this->messenger()->addError('Could not find job with id %s.', $jobId); // @translate;
+                    return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
+                }
+
+                $args = $job->args();
+                $args['override_mapping'] = $data['override_mapping'] ?? null;
+                $args['mapping_name'] = $data['mapping_name'];
+                if (!$this->saveMapping($args)) {
+                    // TODO Keep user variables when the form is invalid.
+                    $this->messenger()->addError('A mapping with that name already exists.'); // @translate
+                    return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
+                }
+                else {
+                    $this->messenger()->addSuccess(sprintf('Mapping successfully saved as %s.', // @translate 
+                $data['mapping_name']));
+                    return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
+                }
+            }
+            $this->messenger()->addFormErrors($form);
+            return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
+        }
+
         return $view;
     }
 

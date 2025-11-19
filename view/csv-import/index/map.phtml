@@ -40,25 +40,6 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
 <?php echo $this->formCollection($form); ?>
 
 <fieldset id="mapping-data" class="section active">
-    <ul class="actions">
-        <li> <?php echo $this->hyperlink(
-                '',
-                '#', 
-                [
-                    'data-sidebar-content-url' => $this->url('admin/csvimport/mapping', 
-                    [
-                        'controller' => 'Mapping',
-                        'action' => 'selectMapping',
-                    ]
-                    ),
-                    'class' => 'o-icon-menu sidebar-content',
-                    'title' => $this->translate('Select mapping'),
-                    'data-sidebar-selector' => '#sidebar',
-                ]
-            ); ?>
-            <?php echo $this->translate('Load a saved mapping'); ?>
-        </li>
-    </ul>
     <?php if (empty($resourceType) || $resourceType === 'resources'): ?>
     <div class="field required">
         <div class="field-meta">
@@ -79,9 +60,26 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
         <div class="batch-actions">
             <a class="inactive button" data-sidebar-selector="#column-options" id="batch-edit-options"><?php echo $this->translate('Batch edit options'); ?></a>
         </div>
-        <div class="batch-edit-options">
-            <input type="checkbox" name="save_mapping" selected="true">
-            <label for="save_mapping"><?php echo $this->translate('Save this mapping'); ?></label>
+        <div>
+            <ul class="actions">
+                <li> <?php echo $this->hyperlink(
+                        '',
+                        '#', 
+                        [
+                            'data-sidebar-content-url' => $this->url('admin/csvimport/mapping', 
+                            [
+                                'controller' => 'Mapping',
+                                'action' => 'selectMapping',
+                            ]
+                            ),
+                            'class' => 'o-icon-menu sidebar-content',
+                            'title' => $this->translate('Select mapping'),
+                            'data-sidebar-selector' => '#sidebar',
+                        ]
+                    ); ?>
+                    <?php echo $this->translate('Load a saved mapping'); ?>
+                </li>
+            </ul>
         </div>
     </div>
     <?php endif; ?>

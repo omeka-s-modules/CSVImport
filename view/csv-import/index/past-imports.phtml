@@ -26,6 +26,7 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 <th><?php echo $escape($this->translate('Result'));?></th>
                 <th><?php echo $escape($this->translate('Status'));?></th>
                 <th><?php echo $escape($this->translate('Owner'));?></th>
+                <th><?php echo $escape($this->translate('Save'));?></th>
             </tr>
         </thead>
         <tbody>
@@ -103,9 +104,43 @@ $this->headLink()->appendStylesheet($this->assetUrl('css/csvimport.css', 'CSVImp
                 echo $this->hyperlink($owner->name(), $this->url('admin/id', array('controller' => 'user', 'action' => 'show', 'id' => $owner->id())));
             endif;
             ?></td>
+            <td>
+            <?php if ($isCreate) {
+                echo $this->hyperlink(
+                    '',
+                    '#',
+                    [
+                        'data-sidebar-content-url' => $this->url(
+                            'admin/csvimport/mapping',
+                            [
+                            'controller' => 'Mapping',
+                            'action' => 'save',
+                            ],
+                            [
+                                'query' => [
+                                    'job_id' => $job->id(),
+                                ],
+                            ]
+                        ),
+                        'class' => 'fa fal fa-save sidebar-content',
+                        'title' => $escape($this->translate('Save')),
+                        'data-sidebar-selector' => '#sidebar',
+                    ],
+                );
+            } ?>
+            </td>
         </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
 </form>
 <?php endif; ?>
+
+<div id="sidebar" class="sidebar">
+    <?php echo $this->hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $this->translate('Close'),
+    ]); ?>
+    <div class="sidebar-content">
+    </div>
+</div>
