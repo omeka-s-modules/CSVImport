@@ -1,0 +1,43 @@
+<?php $form->prepare(); ?>
+
+<?php echo $this->pageTitle($this->translate('Save mapping'), 3); ?>
+
+<?php echo $this->form()->openTag($form); ?>
+
+<?php echo $this->formCollection($form); ?>
+
+<fieldset>
+    <input type="submit" value="<?php echo $this->translate('Submit'); ?>" />
+</fieldset>
+
+<?php echo $this->form()->closeTag($form); ?>
+
+<script>
+(function () {
+    var mappings = [
+        <?php foreach ($mappings as $mapping) { echo '"' . $mapping . '",'; } ?>
+    ];
+
+    var mappingNameInput = document.querySelector('input[name="mapping_name"]');
+    var mappingCheckbox = document.querySelector('input[type="checkbox"][name="override_mapping"]');
+    var mappingCheckboxContainer = mappingCheckbox.closest('div');
+
+    function updateState() {
+        var value = mappingNameInput.value.trim();
+
+        if (mappings.includes(value)) {
+            mappingCheckbox.disabled = false;
+            mappingCheckbox.classList.remove('disabled-checkbox');
+        } else {
+            mappingCheckbox.disabled = true;
+            mappingCheckbox.classList.add('disabled-checkbox');
+        }
+    }
+
+    mappingNameInput.addEventListener('input', updateState);
+
+    // Run once at page load
+    updateState();
+
+})();
+</script>
