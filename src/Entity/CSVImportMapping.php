@@ -8,6 +8,14 @@ use Omeka\Entity\AbstractEntity;
 /**
  * @Entity
  * @HasLifecycleCallbacks
+ *
+ * @Table(
+ *     uniqueConstraints={
+ *         @UniqueConstraint(
+ *             columns={"name"}
+ *         )
+ *     }
+ * )
  */
 class CSVImportMapping extends AbstractEntity
 {

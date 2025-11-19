@@ -6,6 +6,7 @@ use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
 use Omeka\Stdlib\ErrorStore;
 use CSVImport\Entity\CSVImportMapping;
+use Doctrine\ORM\QueryBuilder;
 
 class MappingAdapter extends AbstractEntityAdapter
 {
@@ -46,6 +47,16 @@ class MappingAdapter extends AbstractEntityAdapter
 
         if (!$entity->getMapping()) {
             $errorStore->addError('o-module-csvimport-mapping:mapping', 'Mapping must exists.'); // @translate
+        }
+    }
+
+    public function buildQuery(QueryBuilder $qb, array $query)
+    {
+        if (isset($query['name'])) {
+            $qb->andWhere($qb->expr()->eq(
+                'omeka_root.name',
+                $this->createNamedParameter($qb, $query['name']))
+            );
         }
     }
 }

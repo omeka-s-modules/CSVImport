@@ -26,7 +26,8 @@ CREATE TABLE csvimport_mapping (
     name VARCHAR(255) NOT NULL,
     created DATETIME NOT NULL,
     mapping LONGTEXT NOT NULL COMMENT '(DC2Type:json)',
-    PRIMARY KEY(id))
+    PRIMARY KEY(id),
+    UNIQUE INDEX UNIQ_B0D508235E237E06 (name))
 DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 CREATE TABLE csvimport_import (
     id INT AUTO_INCREMENT NOT NULL,
@@ -99,7 +100,8 @@ CREATE TABLE csvimport_mapping (
     name VARCHAR(255) NOT NULL,
     created DATETIME NOT NULL,
     mapping LONGTEXT NOT NULL COMMENT '(DC2Type:json)', 
-    PRIMARY KEY(id))
+    PRIMARY KEY(id),
+    UNIQUE INDEX UNIQ_B0D508235E237E06 (name))
 DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB;
 SQL;
             $sqls = array_filter(array_map('trim', explode(';', $sql)));
