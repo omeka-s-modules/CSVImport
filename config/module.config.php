@@ -32,6 +32,7 @@ return [
             'CSVImport\Form\ImportForm' => Service\Form\ImportFormFactory::class,
             'CSVImport\Form\MappingForm' => Service\Form\MappingFormFactory::class,
             'CSVImport\Form\Element\MappingSelect' => Service\Form\Element\MappingSelectFactory::class,
+            'CSVImport\Form\MappingSaveForm' => Service\Form\MappingSaveFormFactory::class,
         ],
     ],
     'controllers' => [
@@ -45,6 +46,7 @@ return [
             'automapHeadersToMetadata' => Service\ControllerPlugin\AutomapHeadersToMetadataFactory::class,
             'findResourcesFromIdentifiers' => Service\ControllerPlugin\FindResourcesFromIdentifiersFactory::class,
             'loadMapping' => Service\ControllerPlugin\LoadMappingFactory::class,
+            'saveMapping' => Service\ControllerPlugin\SaveMappingFactory::class,
         ],
         'aliases' => [
             'findResourceFromIdentifier' => 'findResourcesFromIdentifiers',
