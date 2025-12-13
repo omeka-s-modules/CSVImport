@@ -60,6 +60,16 @@
               });
          }
 
+        function resetInput(input) {
+            switch ($(input).prop('type')) {
+                case 'text':
+                    input.value = input.defaultValue;
+                case 'checkbox':
+                    input.checked = input.defaultChecked;
+                case 'select-one':
+                    $(input).val($(input).find('option[selected]').val());
+            }
+        }
         /*
          * Sidebar chooser (buttons on each mappable element).
          */
@@ -84,39 +94,45 @@
             if (!sidebar.hasClass('active') ) {
                 defaultSidebarHtml = sidebar.html();
             }
-            var columnName = activeElement.data('column');
-            if (sidebar.find('.column-name').length > 0) {
-                $('.column-name').text(columnName);
-            } else {
-                sidebar.find('h3').append(' <span class="column-name">' + columnName + '</span>');
-            }
 
-            var currentSidebar = $('.sidebar.active');
-            if (currentSidebar.attr('id') != target) {
-                currentSidebar.removeClass('active');
+            $('.sidebar.active').removeClass('active');
+            if (target === '#add-mapping') {
                 sidebar.html(defaultSidebarHtml);
                 rebindInputs(sidebar);
             }
 
+            var columnName = activeElement.data('column');
+            sidebar.find('.column-name').text(columnName);
+
             Omeka.openSidebar(sidebar);
-            populateSidebar();
+
+            if (target === '#column-options') {
+                populateOptionsSidebar(true);
+            }
         });
 
-        function populateSidebar() {
-            $('.active.element .options :input:not(:disabled)').each(function() {
-                var optionInput = $(this);
-                var optionName = optionInput.data('optionName');
-                var sidebarOptionInput = $('#column-options .' + optionName + ' :input');
-                if (sidebarOptionInput.attr('type') == "checkbox") {
-                    sidebarOptionInput.prop('checked', true);
-                }
-                if (sidebarOptionInput.attr('type') == "text") {
-                    sidebarOptionInput.val(optionInput.val());
-                }
-                if (sidebarOptionInput.prop('type') == "select-one") {
-                    sidebarOptionInput.val(optionInput.val());
-                }
-            });
+        function populateOptionsSidebar(readInputs) {
+            var sidebar = $('#column-options');
+            sidebar.find(':input').each(function () { resetInput(this); });
+            sidebar.find('.touched').removeClass('touched');
+            sidebar.find('.batch-edit-touched').removeClass('batch-edit-touched');
+            if (readInputs) {
+                $('.active.element .options :input:not(:disabled)').each(function() {
+                    var optionInput = $(this);
+                    var optionName = optionInput.data('optionName');
+                    var sidebarOptionInput = sidebar.find('.' + optionName + ' :input');
+                    if (sidebarOptionInput.attr('type') == "checkbox") {
+                        sidebarOptionInput.prop('checked', true);
+                    }
+                    if (sidebarOptionInput.attr('type') == "text") {
+                        sidebarOptionInput.val(optionInput.val());
+                    }
+                    if (sidebarOptionInput.prop('type') == "select-one") {
+                        sidebarOptionInput.val(optionInput.val());
+                    }
+                });
+            }
+            sidebar.find('.chosen-select').trigger('chosen:updated');
         }
 
         /*
@@ -125,24 +141,21 @@
 
         $('.batch-edit input[type="checkbox"], .batch-edit .select-all').change(function() {
             if ($('.column-select:checked').length > 0) {
-                batchEditButton.removeClass('inactive').addClass('active sidebar-content');
+                batchEditButton.removeClass('inactive').addClass('active');
             } else {
-                batchEditButton.addClass('inactive').removeClass('active sidebar-content');
+                batchEditButton.addClass('inactive').removeClass('active');
             }
         });
 
         $(document).on('click', '#batch-edit-options.active', function() {
-            defaultSidebarHtml = $('#column-options').html();
+            var sidebar = $('#column-options');
             activeElements = $('.column-select:checked').parents('.mappable.element');
             activeElements.addClass('active');
-            $(this).removeClass('active sidebar-content').addClass('inactive');
+            $(this).removeClass('active').addClass('inactive');
             batchEditCheckboxes.prop('disabled', true);
-            $('#column-options').addClass('batch-edit');
-            $('.reset-link').each(function() {
-                var reset = $(this);
-                var optionInputsHtml = reset.siblings('.option-inputs').html();
-                reset.attr('data-option-inputs', optionInputsHtml);
-            });
+            sidebar.addClass('batch-edit').find('.column-name').text('');
+            Omeka.openSidebar(sidebar);
+            populateOptionsSidebar(false);
         });
 
         /*
@@ -278,9 +291,9 @@
             e.preventDefault();
             var reset = $(this);
             var columnOption = reset.parents('.option');
-            var columnOptionInputsHtml = reset.data('option-inputs');
             columnOption.removeClass('batch-edit-touched');
-            columnOption.find('.option-inputs').html(columnOptionInputsHtml);
+            columnOption.find(':input').each(function () { resetInput(this); });
+            columnOption.find('.chosen-select').trigger('chosen:updated');
         });
 
         $(document).on('click', '#column-options .confirm-panel button', function() {
@@ -294,11 +307,7 @@
             activeElements.each(function() {
                 activeElement = $(this);
                 if (languageTextInput.hasClass('touched')) {
-                    if (languageValue !== '') {
-                        setLanguage(languageValue, languageTextInput);
-                    } else {
-                        setOptionStatus(activeElement.find('li.column-language'));
-                    }
+                    setLanguage(languageValue);
                 }
 
                 sidebar.find('input[type="checkbox"]').each(function() {
@@ -331,14 +340,13 @@
             });
             Omeka.closeSidebar(sidebar);
             $('#column-options').removeClass('batch-edit');
-            sidebar.html(defaultSidebarHtml);
         });
 
         function resetActiveColumns() {
             activeElements = null;
             $('tr.mappable.active').removeClass('active');
             batchEditCheckboxes.prop('checked', false).prop('disabled', false);
-            batchEditButton.removeClass('active sidebar-content').addClass('inactive');
+            batchEditButton.removeClass('active').addClass('inactive');
         }
 
         /*
@@ -391,9 +399,6 @@
 
         function setLanguage(lang) {
             var valueLanguageElement = document.getElementById('value-language');
-            if (lang == '') {
-                valueLanguageElement.setCustomValidity(Omeka.jsTranslate('Please enter a valid language tag'));
-            }
             if (typeof valueLanguageElement.reportValidity === 'function') {
                 var valid = valueLanguageElement.reportValidity();
             } else {
@@ -403,7 +408,9 @@
                 }
             }
 
-            if (valid && lang != '') {
+            if (lang === '') {
+                setOptionStatus(activeElement.find('li.column-language'), false);
+            } else if (valid) {
                 var languageInput = activeElement.find('li.column-language input');
                 languageInput.val(lang);
                 setOptionStatus(activeElement.find('li.column-language'), true);
