@@ -64,10 +64,13 @@
             switch ($(input).prop('type')) {
                 case 'text':
                     input.value = input.defaultValue;
+                    break;
                 case 'checkbox':
                     input.checked = input.defaultChecked;
+                    break;
                 case 'select-one':
                     $(input).val($(input).find('option[selected]').val());
+                    break;
             }
         }
         /*
