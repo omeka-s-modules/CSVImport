@@ -25,28 +25,28 @@ return [
     ],
     'form_elements' => [
         'invokables' => [
-            'CSVImport\Form\MappingEditForm' => Form\MappingEditForm::class,
-            'CSVImport\Form\MappingSelectForm' => Form\MappingSelectForm::class,
+            'CSVImport\Form\MappingModelEditForm' => Form\MappingModelEditForm::class,
+            'CSVImport\Form\MappingModelSelectForm' => Form\MappingModelSelectForm::class,
         ],
         'factories' => [
             'CSVImport\Form\ImportForm' => Service\Form\ImportFormFactory::class,
-            'CSVImport\Form\MappingForm' => Service\Form\MappingFormFactory::class,
-            'CSVImport\Form\Element\MappingSelect' => Service\Form\Element\MappingSelectFactory::class,
-            'CSVImport\Form\MappingSaveForm' => Service\Form\MappingSaveFormFactory::class,
+            'CSVImport\Form\MappingModelForm' => Service\Form\MappingModelFormFactory::class,
+            'CSVImport\Form\Element\MappingModelSelect' => Service\Form\Element\MappingModelSelectFactory::class,
+            'CSVImport\Form\MappingModelSaveForm' => Service\Form\MappingModelSaveFormFactory::class,
         ],
     ],
     'controllers' => [
         'factories' => [
             'CSVImport\Controller\Index' => Service\Controller\IndexControllerFactory::class,
-            'CSVImport\Controller\Admin\Mapping' => Service\Controller\Admin\MappingControllerFactory::class,
+            'CSVImport\Controller\Admin\MappingModel' => Service\Controller\Admin\MappingModelControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
         'factories' => [
             'automapHeadersToMetadata' => Service\ControllerPlugin\AutomapHeadersToMetadataFactory::class,
             'findResourcesFromIdentifiers' => Service\ControllerPlugin\FindResourcesFromIdentifiersFactory::class,
-            'loadMapping' => Service\ControllerPlugin\LoadMappingFactory::class,
-            'saveMapping' => Service\ControllerPlugin\SaveMappingFactory::class,
+            'loadMappingModel' => Service\ControllerPlugin\LoadMappingModelFactory::class,
+            'saveMappingModel' => Service\ControllerPlugin\SaveMappingModelFactory::class,
         ],
         'aliases' => [
             'findResourceFromIdentifier' => 'findResourcesFromIdentifiers',
@@ -56,7 +56,7 @@ return [
         'invokables' => [
             'csvimport_entities' => Api\Adapter\EntityAdapter::class,
             'csvimport_imports' => Api\Adapter\ImportAdapter::class,
-            'csvimport_mappings' => Api\Adapter\MappingAdapter::class,
+            'csvimport_mapping_models' => Api\Adapter\MappingModelAdapter::class,
         ],
     ],
     'service_manager' => [
@@ -102,31 +102,31 @@ return [
                                     ],
                                 ],
                             ],
-                            'mapping' => [
+                            'mapping-model' => [
                                 'type' => 'Segment',
                                 'options' => [
-                                    'route' => '/mapping[/:action]',
+                                    'route' => '/mapping-model[/:action]',
                                     'constraints' => [
                                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                     ],
                                     'defaults' => [
                                         '__NAMESPACE__' => 'CSVImport\Controller\Admin',
-                                        'controller' => 'Mapping',
+                                        'controller' => 'MappingModel',
                                         'action' => 'browse',
                                     ],
                                 ],
                             ],
-                            'mapping-id' => [
+                            'mapping-model-id' => [
                                 'type' => 'Segment',
                                 'options' => [
-                                    'route' => '/mapping/:id[/:action]',
+                                    'route' => '/mapping-model/:id[/:action]',
                                     'constraints' => [
                                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                         'id' => '\d+',
                                     ],
                                     'defaults' => [
                                         '__NAMESPACE__' => 'CSVImport\Controller\Admin',
-                                        'controller' => 'Mapping',
+                                        'controller' => 'MappingModel',
                                         'action' => 'show',
                                     ],
                                 ],
@@ -163,8 +163,8 @@ return [
                         'resource' => 'CSVImport\Controller\Index',
                     ],
                     [
-                        'label' => 'Mappings', // @translate
-                        'route' => 'admin/csvimport/mapping',
+                        'label' => 'Mapping Models', // @translate
+                        'route' => 'admin/csvimport/mapping-model',
                     ],
                 ],
             ],
@@ -181,7 +181,7 @@ return [
         ],
     ],
     'js_translate_strings' => [
-        'Remove mapping', // @translate
+        'Remove mapping model', // @translate
     ],
     'csv_import' => [
         'sources' => [

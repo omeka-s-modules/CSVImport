@@ -34,7 +34,7 @@ use Omeka\Api\Manager as ApiManager;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Log\Logger;
 
-class LoadMapping extends AbstractPlugin
+class LoadMappingModel extends AbstractPlugin
 {
     /**
      * @var Connection
@@ -69,7 +69,7 @@ class LoadMapping extends AbstractPlugin
     public function __invoke(int $id, array $columns)
     {
         // Fetch the mapping
-        $mapping = $this->api->read('csvimport_mappings', $id)->getContent();
+        $mapping = $this->api->read('csvimport_mapping_models', $id)->getContent();
 
         if (empty($mapping)) {
             // $this->logger()->debug(sprintf('No mapping with id %s found.', $id));

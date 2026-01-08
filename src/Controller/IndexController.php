@@ -2,7 +2,7 @@
 namespace CSVImport\Controller;
 
 use CSVImport\Form\ImportForm;
-use CSVImport\Form\MappingForm;
+use CSVImport\Form\MappingModelForm;
 use CSVImport\Source\SourceInterface;
 use CSVImport\Job\Import;
 use finfo;
@@ -129,7 +129,7 @@ class IndexController extends AbstractActionController
             $session->resourceType = $resourceType;
 
             $mappingOptions['columns'] = $columns;
-            $form = $this->getForm(MappingForm::class, $mappingOptions);
+            $form = $this->getForm(MappingModelForm::class, $mappingOptions);
 
             $automapOptions = [];
             $automapOptions['check_names_alone'] = $args['automap_check_names_alone'];
@@ -151,7 +151,7 @@ class IndexController extends AbstractActionController
 
             return $view;
         } else {
-            $form = $this->getForm(MappingForm::class, $mappingOptions);
+            $form = $this->getForm(MappingModelForm::class, $mappingOptions);
             $form->setData($post);
             if ($form->isValid()) {
                 if (isset($post['basic-settings']) || isset($post['advanced-settings'])) {

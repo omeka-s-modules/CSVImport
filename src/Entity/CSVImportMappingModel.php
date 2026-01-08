@@ -17,7 +17,7 @@ use Omeka\Entity\AbstractEntity;
  *     }
  * )
  */
-class CSVImportMapping extends AbstractEntity
+class CSVImportMappingModel extends AbstractEntity
 {
     /**
      * @Id

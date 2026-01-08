@@ -21,7 +21,7 @@ class Module extends AbstractModule
     {
         $connection = $serviceLocator->get('Omeka\Connection');
         $sql = <<<'SQL'
-CREATE TABLE csvimport_mapping (
+CREATE TABLE csvimport_mapping_model (
     id INT AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
     created DATETIME NOT NULL,
@@ -68,7 +68,7 @@ ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B508814C276F75;
 ALTER TABLE csvimport_import DROP FOREIGN KEY FK_17B50881BE04EA9;
 DROP TABLE IF EXISTS csvimport_entity;
 DROP TABLE IF EXISTS csvimport_import;
-DROP TABLE IF EXISTS csvimport_mapping;
+DROP TABLE IF EXISTS csvimport_mapping_model;
 SQL;
         $sqls = array_filter(array_map('trim', explode(';', $sql)));
         foreach ($sqls as $sql) {
@@ -95,7 +95,7 @@ SQL;
         if (version_compare($oldVersion, '2.7.0', '<')) {
             $connection = $serviceLocator->get('Omeka\Connection');
             $sql = <<<'SQL'
-CREATE TABLE csvimport_mapping (
+CREATE TABLE csvimport_mapping_model (
     id INT AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL,
     created DATETIME NOT NULL,

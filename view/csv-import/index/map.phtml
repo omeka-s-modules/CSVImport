@@ -66,18 +66,18 @@ $pageTitle = isset($resourceTypeLabels[$resourceType])
                         '',
                         '#', 
                         [
-                            'data-sidebar-content-url' => $this->url('admin/csvimport/mapping', 
+                            'data-sidebar-content-url' => $this->url('admin/csvimport/mapping-model', 
                             [
-                                'controller' => 'Mapping',
-                                'action' => 'selectMapping',
+                                'controller' => 'MappingModel',
+                                'action' => 'selectMappingModel',
                             ]
                             ),
                             'class' => 'o-icon-menu sidebar-content',
-                            'title' => $this->translate('Select mapping'),
+                            'title' => $this->translate('Select mapping model'),
                             'data-sidebar-selector' => '#sidebar',
                         ]
                     ); ?>
-                    <?php echo $this->translate('Load a saved mapping'); ?>
+                    <?php echo $this->translate('Load a saved mapping model'); ?>
                 </li>
             </ul>
         </div>

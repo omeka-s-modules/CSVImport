@@ -3,11 +3,11 @@ namespace CSVImport\Api\Representation;
 
 use Omeka\Api\Representation\AbstractEntityRepresentation;
 
-class MappingRepresentation extends AbstractEntityRepresentation
+class MappingModelRepresentation extends AbstractEntityRepresentation
 {
     public function getControllerName()
     {
-        return 'mapping';
+        return 'mappingmodel';
     }
 
     public function getJsonLd()
@@ -21,7 +21,7 @@ class MappingRepresentation extends AbstractEntityRepresentation
 
     public function getJsonLdType()
     {
-        return 'o:CSVimportMapping';
+        return 'o:CSVimportMappingModel';
     }
 
     public function name()
@@ -43,7 +43,7 @@ class MappingRepresentation extends AbstractEntityRepresentation
     {
         $url = $this->getViewHelper('Url');
         return $url(
-            'admin/csvimport/mapping-id',
+            'admin/csvimport/mapping-model-id',
             [
                 'controller' => $this->getControllerName(),
                 'action' => $action,

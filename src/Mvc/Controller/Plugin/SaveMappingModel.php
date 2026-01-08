@@ -34,7 +34,7 @@ use Omeka\Api\Manager as ApiManager;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Log\Logger;
 
-class SaveMapping extends AbstractPlugin
+class SaveMappingModel extends AbstractPlugin
 {
     /**
      * @var Connection
@@ -71,10 +71,10 @@ class SaveMapping extends AbstractPlugin
         $shouldOverrideMapping = false;
         $mappingName = $args['mapping_name'];
 
-        $this->logger->debug('[CSVImport] Mapping name.');
-        $this->logger->debug(json_encode($mappingName));
+        // $this->logger->debug('[CSVImport] Mapping model name.');
+        // $this->logger->debug(json_encode($mappingName));
 
-        $alreadyExistsContent = $this->api->search('csvimport_mappings', ['name' => $mappingName])->getContent();
+        $alreadyExistsContent = $this->api->search('csvimport_mapping_models', ['name' => $mappingName])->getContent();
         if (count($alreadyExistsContent) > 0) {
             if (!empty($args['override_mapping']))
             {
@@ -82,8 +82,8 @@ class SaveMapping extends AbstractPlugin
             }
             else
             {
-                $this->logger->debug('[CSVImport] Already existing mapping.');
-                $this->logger->debug(json_encode($alreadyExistsContent));
+                // $this->logger->debug('[CSVImport] Already existing mapping model.');
+                // $this->logger->debug(json_encode($alreadyExistsContent));
                 return false;
             }
         }
@@ -96,7 +96,7 @@ class SaveMapping extends AbstractPlugin
 
             // Check if file exists and is readable
             if (!file_exists($filePath) || !is_readable($filePath)) {
-                $this->logger->err(sprintf("[CSV Import]: File '%s' not found when saving mapping.", $filePath)); // @translate
+                // $this->logger->err(sprintf("[CSV Import]: File '%s' not found when saving mapping model.", $filePath)); // @translate
             }
 
             // Open the file for reading
@@ -109,18 +109,18 @@ class SaveMapping extends AbstractPlugin
 
                 // Output the column names
                 if (!$args['columns']) {
-                    $this->logger->err(sprintf("[CSV Import]: Unable to read columns when saving mapping.")); // @translate
+                    // $this->logger->err(sprintf("[CSV Import]: Unable to read columns when saving mapping model.")); // @translate
                 }
             } else {
-                $this->logger->err(sprintf("[CSV Import]: File '%s' could not be opened when saving mapping.", $filePath)); // @translate
+                // $this->logger->err(sprintf("[CSV Import]: File '%s' could not be opened when saving mapping model.", $filePath)); // @translate
             }
 
             if (empty($args['columns'])) {
-                $this->logger->err(sprintf("[CSV Import]: Unable to get columns from file '%s'.", $filePath)); // @translate
+                // $this->logger->err(sprintf("[CSV Import]: Unable to get columns from file '%s'.", $filePath)); // @translate
             }
         }
 
-        $this->logger->debug(sprintf("[CSV Import] Column names: " . PHP_EOL . "%s" . PHP_EOL, json_encode($args["columns"])));
+        // $this->logger->debug(sprintf("[CSV Import] Column names: " . PHP_EOL . "%s" . PHP_EOL, json_encode($args["columns"])));
 
         // don't save irrelevant data
         unset($args['filename']);
@@ -132,13 +132,13 @@ class SaveMapping extends AbstractPlugin
         unset($args['mapping_name']);
         unset($args['override_mapping']);
 
-        $this->logger->debug(sprintf('[CSV Import: Args to be saved my mapping]' . PHP_EOL . '%s' . PHP_EOL, json_encode($args)));
+        // $this->logger->debug(sprintf('[CSV Import: Args to be saved my mapping model]' . PHP_EOL . '%s' . PHP_EOL, json_encode($args)));
 
         if ($shouldOverrideMapping) {
-            $this->api->update('csvimport_mappings', ['name' => $mappingName], ['mapping' => json_encode($args)], [], ['isPartial' => true]);
+            $this->api->update('csvimport_mapping_models', ['name' => $mappingName], ['mapping' => json_encode($args)], [], ['isPartial' => true]);
         }
         else {
-            $this->api->create('csvimport_mappings', ['mapping' => json_encode($args), 'name' => $mappingName]);            
+            $this->api->create('csvimport_mapping_models', ['mapping' => json_encode($args), 'name' => $mappingName]);            
         }
         
         return true;

@@ -9,7 +9,7 @@ use Omeka\Form\Element\ResourceClassSelect;
 use Omeka\Form\Element\SiteSelect;
 use Laminas\Form\Form;
 
-class MappingForm extends Form
+class MappingModelForm extends Form
 {
     protected $serviceLocator;
 
@@ -84,7 +84,7 @@ class MappingForm extends Form
                 'type' => ResourceSelect::class,
                 'options' => [
                     'label' => 'Resource template', // @translate
-                    'info' => 'Assign a resource template to all imported resources. Specific mappings can override this setting.', // @translate
+                    'info' => 'Assign a resource template to all imported resources. Specific mapping models can override this setting.', // @translate
                     'empty_option' => 'Select a template', // @translate
                     'resource_value_options' => [
                         'resource' => 'resource_templates',
@@ -107,7 +107,7 @@ class MappingForm extends Form
                 'type' => ResourceClassSelect::class,
                 'options' => [
                     'label' => 'Class', // @translate
-                    'info' => 'Assign a resource class to all imported resources. Specific mappings can override this setting.', // @translate
+                    'info' => 'Assign a resource class to all imported resources. Specific mapping models can override this setting.', // @translate
                     'empty_option' => 'Select a class', // @translate
                 ],
                 'attributes' => [
@@ -153,7 +153,7 @@ class MappingForm extends Form
                 'type' => 'radio',
                 'options' => [
                     'label' => 'Visibility', // @translate
-                    'info' => 'Set visibility for all imported resources. Specific mappings can override this setting.', // @translate
+                    'info' => 'Set visibility for all imported resources. Specific mapping models can override this setting.', // @translate
                     'value_options' => [
                         '1' => 'Public', // @translate
                         '0' => 'Private', // @translate
@@ -171,7 +171,7 @@ class MappingForm extends Form
                         'type' => 'radio',
                         'options' => [
                             'label' => 'Open/closed to additions', // @translate
-                            'info' => 'Set whether imported item sets are open to additions. Specific mappings can override this setting.', // @translate
+                            'info' => 'Set whether imported item sets are open to additions. Specific mapping models can override this setting.', // @translate
                             'value_options' => [
                                 '1' => 'Open', // @translate
                                 '0' => 'Closed', // @translate
@@ -221,7 +221,7 @@ class MappingForm extends Form
                         'type' => 'radio',
                         'options' => [
                             'label' => 'Item sets open/closed to additions', // @translate
-                            'info' => 'Set whether imported item sets are open to additions. Specific mappings can override this setting.', // @translate
+                            'info' => 'Set whether imported item sets are open to additions. Specific mapping models can override this setting.', // @translate
                             'value_options' => [
                                 '1' => 'Open', // @translate
                                 '0' => 'Closed', // @translate
@@ -284,7 +284,7 @@ class MappingForm extends Form
                 'type' => 'text',
                 'options' => [
                     'label' => 'Language', // @translate
-                    'info' => 'Language setting to apply to all imported literal data. Individual property mappings can override the setting here.', // @translate
+                    'info' => 'Language setting to apply to all imported literal data. Individual property mapping models can override the setting here.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'global_language',

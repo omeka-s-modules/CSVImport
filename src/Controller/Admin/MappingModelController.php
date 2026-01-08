@@ -5,16 +5,16 @@ namespace CSVImport\Controller\Admin;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Omeka\Form\ConfirmForm;
-use CSVImport\Form\MappingEditForm;
-use CSVImport\Form\MappingSelectForm;
-use CSVImport\Form\MappingSaveForm;
+use CSVImport\Form\MappingModelEditForm;
+use CSVImport\Form\MappingModelSelectForm;
+use CSVImport\Form\MappingModelSaveForm;
 
-class MappingController extends AbstractActionController
+class MappingModelController extends AbstractActionController
 {
     public function browseAction()
     {
         $this->setBrowseDefaults('created');
-        $response = $this->api()->search('csvimport_mappings');
+        $response = $this->api()->search('csvimport_mapping_models');
 
         $this->paginator($response->getTotalResults());
 
@@ -38,7 +38,7 @@ class MappingController extends AbstractActionController
             $propertiesMap[$property->id()] = $property->term();
         }
 
-        $mappingModel = $this->loadMapping($this->params('id'), []);
+        $mappingModel = $this->loadMappingModel($this->params('id'), []);
 
         $view = new ViewModel;
         $view->setVariable('propertiesMap', $propertiesMap);
@@ -51,7 +51,7 @@ class MappingController extends AbstractActionController
 
     public function saveAction()
     {
-        $response = $this->api()->search('csvimport_mappings');
+        $response = $this->api()->search('csvimport_mapping_models');
         $mappings = $response->getContent();
         $mappingNames = [];
         foreach ($mappings as $mapping) {
@@ -79,10 +79,10 @@ class MappingController extends AbstractActionController
         }
 
         $view = new ViewModel;
-        $form = $this->getForm(MappingSaveForm::class, ['job_id' => $jobId]);
+        $form = $this->getForm(MappingModelSaveForm::class, ['job_id' => $jobId]);
         $view->setVariable('form', $form);
         $view->setTerminal(true);
-        $view->setTemplate('csv-import/admin/mapping/save-mapping');
+        $view->setTemplate('csv-import/admin/mapping-model/save-mapping-model');
         $view->setVariable('mappings', $mappingNames);
 
         if ($this->getRequest()->isPost()) {
@@ -101,9 +101,9 @@ class MappingController extends AbstractActionController
                 $args = $job->args();
                 $args['override_mapping'] = $data['override_mapping'] ?? null;
                 $args['mapping_name'] = $data['mapping_name'];
-                if (!$this->saveMapping($args)) {
+                if (!$this->saveMappingModel($args)) {
                     // TODO Keep user variables when the form is invalid.
-                    $this->messenger()->addError('A mapping with that name already exists.'); // @translate
+                    $this->messenger()->addError('A mapping model with that name already exists.'); // @translate
                     return $this->redirect()->toRoute('admin/csvimport/past-imports', ['action' => 'browse'], true);
                 }
                 else {
@@ -122,16 +122,16 @@ class MappingController extends AbstractActionController
     /*
      * meant for JS
      */
-    public function selectMappingAction()
+    public function selectMappingModelAction()
     {
-        $response = $this->api()->search('csvimport_mappings');
+        $response = $this->api()->search('csvimport_mapping_models');
         $mappings = $response->getContent();
 
         $view = new ViewModel;
-        $form = $this->getForm(MappingSelectForm::class);
+        $form = $this->getForm(MappingModelSelectForm::class);
         $view->setVariable('form', $form);
         $view->setTerminal(true);
-        $view->setTemplate('csv-import/admin/mapping/select-mapping');
+        $view->setTemplate('csv-import/admin/mapping-model/select-mapping-model');
 
         if ($this->getRequest()->isPost()) {
             $data = $this->params()->fromPost();
@@ -143,10 +143,10 @@ class MappingController extends AbstractActionController
 
                 $columns = $session->columns;
 
-                $response = $this->api()->read('csvimport_mappings', $mappingId);
+                $response = $this->api()->read('csvimport_mapping_models', $mappingId);
                 if ($response) {
                     $view = new ViewModel([
-                        'automaps' => $this->loadMapping($mappingId, $columns),
+                        'automaps' => $this->loadMappingModel($mappingId, $columns),
                         'columns' => $columns,
                         'resourceType' => $session->resourceType,
                     ]);
@@ -154,10 +154,10 @@ class MappingController extends AbstractActionController
                     $view->setTerminal(true); // no layout
                     return $view;
                 } else {
-                    return $this->getResponse()->setStatusCode(404)->setContent('Mapping not found.'); // @translate
+                    return $this->getResponse()->setStatusCode(404)->setContent('Mapping model not found.'); // @translate
                 }
             }
-            return $this->getResponse()->setStatusCode(400)->setContent('Mapping selection form not valid.');
+            return $this->getResponse()->setStatusCode(400)->setContent('Mapping model selection form not valid.');
         }
 
         return $view;
@@ -165,11 +165,11 @@ class MappingController extends AbstractActionController
 
     public function editAction()
     {
-        $response = $this->api()->read('csvimport_mappings', $this->params('id'));
+        $response = $this->api()->read('csvimport_mapping_models', $this->params('id'));
         $mapping = $response->getContent();
 
         $view = new ViewModel;
-        $form = $this->getForm(MappingEditForm::class);
+        $form = $this->getForm(MappingModelEditForm::class);
         $form->setAttribute('action', $mapping->url('edit'));
         $form->setData([
             'model_name' => $mapping->name(),
@@ -177,7 +177,7 @@ class MappingController extends AbstractActionController
 
         $view->setVariable('form', $form);
         $view->setTerminal(true);
-        $view->setTemplate('csv-import/admin/mapping/edit');
+        $view->setTemplate('csv-import/admin/mapping-model/edit');
         $view->setVariable('mapping', $mapping);
 
         if ($this->getRequest()->isPost()) {
@@ -186,11 +186,11 @@ class MappingController extends AbstractActionController
             if ($form->isValid()) {
                 $mappingName = $form->get('model_name')->getValue();
 
-                $response = $this->api($form)->update('csvimport_mappings', $this->params('id'), ['name' => $mappingName], [], ['isPartial' => true]);
+                $response = $this->api($form)->update('csvimport_mapping_models', $this->params('id'), ['name' => $mappingName], [], ['isPartial' => true]);
                 if ($response) {
-                    $this->messenger()->addSuccess('Mapping successfully updated'); // @translate
+                    $this->messenger()->addSuccess('Mapping model successfully updated'); // @translate
                     return $this->redirect()->toRoute(
-                        'admin/csvimport/mapping',
+                        'admin/csvimport/mapping-model',
                         ['action' => 'browse'],
                         true
                     );
@@ -198,7 +198,7 @@ class MappingController extends AbstractActionController
             } else {
                 $this->messenger()->addFormErrors($form);
                 return $this->redirect()->toRoute(
-                    'admin/csvimport/mapping',
+                    'admin/csvimport/mapping-model',
                     ['action' => 'browse'],
                     true
                 );
@@ -209,7 +209,7 @@ class MappingController extends AbstractActionController
 
     public function deleteConfirmAction()
     {
-        $response = $this->api()->read('csvimport_mappings', $this->params('id'));
+        $response = $this->api()->read('csvimport_mapping_models', $this->params('id'));
         $mappingModel = $response->getContent();
 
         $view = new ViewModel;
@@ -226,16 +226,16 @@ class MappingController extends AbstractActionController
             $form = $this->getForm(ConfirmForm::class);
             $form->setData($this->getRequest()->getPost());
             if ($form->isValid()) {
-                $response = $this->api($form)->delete('csvimport_mappings', $this->params('id'));
+                $response = $this->api($form)->delete('csvimport_mapping_models', $this->params('id'));
                 if ($response) {
-                    $this->messenger()->addSuccess('Mapping successfully deleted'); // @translate
+                    $this->messenger()->addSuccess('Mapping model successfully deleted'); // @translate
                 }
             } else {
                 $this->messenger()->addFormErrors($form);
             }
         }
         return $this->redirect()->toRoute(
-            'admin/csvimport/mapping',
+            'admin/csvimport/mapping-model',
             ['action' => 'browse'],
             true
         );

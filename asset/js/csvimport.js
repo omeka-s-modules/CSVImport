@@ -13,7 +13,7 @@
         var defaultSidebarHtml = null;
 
         var actionsHtml = '<ul class="actions">'
-            + '<li><a aria-label="' + Omeka.jsTranslate('Remove mapping') + '" title="' + Omeka.jsTranslate('Remove mapping') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>'
+            + '<li><a aria-label="' + Omeka.jsTranslate('Remove mapping model') + '" title="' + Omeka.jsTranslate('Remove mapping model') + '" class="o-icon-delete remove-mapping" href="#" style="display: inline;"></a></li>'
             + '</ul>';
 
         var batchEditCheckboxes = $('.column-select, .select-all');

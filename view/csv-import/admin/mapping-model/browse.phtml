@@ -4,7 +4,7 @@ $escape = $this->plugin('escapeHtml');
 $this->htmlElement('body')->appendAttribute('class', 'mappings browse');
 ?>
 
-<?php echo $this->pageTitle($translate('Mappings'), 1, $this->translate('CSV Import')); ?>
+<?php echo $this->pageTitle($translate('Mapping models'), 1, $this->translate('CSV Import')); ?>
 
 <?php $this->trigger('view.browse.before'); ?>
 <?php if (count($mappingModels)): ?>
@@ -28,9 +28,9 @@ $this->htmlElement('body')->appendAttribute('class', 'mappings browse');
                     <li>
                         <?php echo $this->hyperlink(
                             '',
-                            $this->url('admin/csvimport/mapping-id',
+                            $this->url('admin/csvimport/mapping-model-id',
                                 [   
-                                'controller' => 'Mapping',
+                                'controller' => 'MappingModel',
                                 'action' => 'show',
                                 'id' => $model->id()
                                 ]
@@ -46,9 +46,9 @@ $this->htmlElement('body')->appendAttribute('class', 'mappings browse');
                             '',
                             '#', 
                             [
-                                'data-sidebar-content-url' => $this->url('admin/csvimport/mapping-id', 
+                                'data-sidebar-content-url' => $this->url('admin/csvimport/mapping-model-id', 
                                 [
-                                    'controller' => 'Mapping',
+                                    'controller' => 'MappingModel',
                                     'action' => 'edit',
                                     'id' => $model->id()
                                 ]
@@ -64,9 +64,9 @@ $this->htmlElement('body')->appendAttribute('class', 'mappings browse');
                             '',
                             '#', 
                             [
-                                'data-sidebar-content-url' => $this->url('admin/csvimport/mapping-id', 
+                                'data-sidebar-content-url' => $this->url('admin/csvimport/mapping-model-id', 
                                 [
-                                    'controller' => 'Mapping',
+                                    'controller' => 'MappingModel',
                                     'action' => 'deleteConfirm',
                                     'id' => $model->id()
                                 ]
@@ -99,7 +99,7 @@ $this->htmlElement('body')->appendAttribute('class', 'mappings browse');
             <h3>
                 <?php echo sprintf($translate('Delete %1$s mapping'), '<strong><span id="selected-mapping-name"></span></strong>');?>
             </h3>
-            <p><?php echo $translate('Are you sure you would like to delete this mapping ?'); ?></p>
+            <p><?php echo $translate('Are you sure you would like to delete this mapping model?'); ?></p>
             <p class="error">
                 <?php echo sprintf($translate('%1$s: this action will permanently cannot be undone.'), sprintf('<strong>%s</strong>', $translate('Warning'))); ?>
             </p>

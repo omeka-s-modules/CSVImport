@@ -4,7 +4,7 @@ namespace CSVImport\Form;
 
 use Laminas\Form\Form;
 
-class MappingEditForm extends Form
+class MappingModelEditForm extends Form
 {
     public function init()
     {

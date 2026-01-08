@@ -1,15 +1,15 @@
 <?php
 namespace CSVImport\Service\ControllerPlugin;
 
-use CSVImport\Mvc\Controller\Plugin\SaveMapping;
+use CSVImport\Mvc\Controller\Plugin\LoadMappingModel;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class SaveMappingFactory implements FactoryInterface
+class LoadMappingModelFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $services, $requestedNamed, array $options = null)
     {
-        return new SaveMapping(
+        return new LoadMappingModel(
             $services->get('Omeka\Connection'),
             $services->get('Omeka\ApiManager'),
             $services->get('Omeka\Logger')

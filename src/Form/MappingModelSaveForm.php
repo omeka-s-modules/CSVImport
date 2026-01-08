@@ -5,12 +5,12 @@ namespace CSVImport\Form;
 use Laminas\Form\Form;
 use Laminas\Form\Element\Checkbox;
 
-class MappingSaveForm extends Form
+class MappingModelSaveForm extends Form
 {
 
     public function init()
     {
-        $this->setAttribute('action', 'mapping/save');
+        $this->setAttribute('action', 'mapping-model/save');
 
         $this->add([
             'name'=> 'job_id',
@@ -24,7 +24,7 @@ class MappingSaveForm extends Form
             'name' => 'mapping_name',
             'type' => 'text',
             'options' => [
-                'label' => 'Mapping name', //@translate
+                'label' => 'Mapping model name', //@translate
             ],
             'attributes' => [
                 'required' => true,
@@ -34,7 +34,7 @@ class MappingSaveForm extends Form
             'name' => 'override_mapping',
             'type' => Checkbox::class,
             'options' => [
-                'label' => 'Override mapping if it already exists?', //@translate
+                'label' => 'Override mapping model if it already exists?', //@translate
             ],
         ]);
     }

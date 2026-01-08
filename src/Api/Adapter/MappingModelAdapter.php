@@ -5,24 +5,24 @@ use Omeka\Api\Adapter\AbstractEntityAdapter;
 use Omeka\Api\Request;
 use Omeka\Entity\EntityInterface;
 use Omeka\Stdlib\ErrorStore;
-use CSVImport\Entity\CSVImportMapping;
+use CSVImport\Entity\CSVImportMappingModel;
 use Doctrine\ORM\QueryBuilder;
 
-class MappingAdapter extends AbstractEntityAdapter
+class MappingModelAdapter extends AbstractEntityAdapter
 {
     public function getResourceName()
     {
-        return 'csvimport_mappings';
+        return 'csvimport_mapping_models';
     }
 
     public function getRepresentationClass()
     {
-        return \CSVImport\Api\Representation\MappingRepresentation::class;
+        return \CSVImport\Api\Representation\MappingModelRepresentation::class;
     }
 
     public function getEntityClass()
     {
-        return CSVImportMapping::class;
+        return CSVImportMappingModel::class;
     }
 
     public function hydrate(Request $request, EntityInterface $entity,
@@ -42,11 +42,11 @@ class MappingAdapter extends AbstractEntityAdapter
     public function validateEntity(EntityInterface $entity, ErrorStore $errorStore)
     {
         if (!$entity->getName()) {
-            $errorStore->addError('o-module-csvimport-mapping:name', 'A model must have a name to save it.'); // @translate
+            $errorStore->addError('o-module-csvimport-mappingmodel:name', 'A model must have a name to save it.'); // @translate
         }
 
         if (!$entity->getMapping()) {
-            $errorStore->addError('o-module-csvimport-mapping:mapping', 'Mapping must exists.'); // @translate
+            $errorStore->addError('o-module-csvimport-mappingmodel:mapping', 'Mapping model must exists.'); // @translate
         }
     }
 
