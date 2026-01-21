@@ -66,7 +66,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
      * @param array|string $identifiers Identifiers should be unique. If a
      * string is sent, the result will be the resource.
      * @param string|int|array $identifierName Property as integer or term,
-     * media ingester or "internal_id", or an array with multiple conditions.
+     * media ingester or "o:id", or an array with multiple conditions.
      * @param string $resourceType The resource type if any.
      * @return array|int|null Associative array with the identifiers as key and the ids
      * or null as value. Order is kept, but duplicate identifiers are removed.
@@ -100,8 +100,8 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
             }
         }
         // Here, identifierName is a string or an integer.
-        elseif (in_array($identifierName, ['internal_id'])) {
-            $identifierType = 'internal_id';
+        elseif (in_array($identifierName, ['o:id'])) {
+            $identifierType = 'o:id';
         } elseif (is_numeric($identifierName)) {
             $identifierType = 'property';
             $identifierName = (int) $identifierName;
@@ -134,7 +134,7 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
         }
 
         switch ($identifierType) {
-            case 'internal_id':
+            case 'o:id':
                 $result = $this->findResourcesFromInternalIds($identifiers, $resourceType);
                 break;
             case 'property':
