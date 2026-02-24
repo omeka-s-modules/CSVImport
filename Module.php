@@ -25,7 +25,7 @@ CREATE TABLE csvimport_import (
   id INT AUTO_INCREMENT NOT NULL,
   job_id INT NOT NULL,
   undo_job_id INT DEFAULT NULL,
-  comment VARCHAR(255) DEFAULT NULL,
+  comment LONGTEXT DEFAULT NULL,
   resource_type VARCHAR(255) NOT NULL,
   has_err TINYINT(1) NOT NULL,
   stats LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)',
@@ -70,8 +70,9 @@ SQL;
 
     public function upgrade($oldVersion, $newVersion, ServiceLocatorInterface $serviceLocator)
     {
+        $connection = $serviceLocator->get('Omeka\Connection');
+
         if (version_compare($oldVersion, '1.1.1-rc.1', '<')) {
-            $connection = $serviceLocator->get('Omeka\Connection');
             $sql = <<<'SQL'
 ALTER TABLE csvimport_import ADD stats LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)';
 UPDATE csvimport_import SET stats = CONCAT('{"processed":{"', resource_type, '":', added_count, '}}');
@@ -81,6 +82,10 @@ SQL;
             foreach ($sqls as $sql) {
                 $connection->exec($sql);
             }
+        }
+
+        if (version_compare($oldVersion, '2.6.3', '<')) {
+            $connection->executeStatement('ALTER TABLE csvimport_import MODIFY comment LONGTEXT NOT NULL');
         }
     }
 }
