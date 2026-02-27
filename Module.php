@@ -85,7 +85,7 @@ SQL;
         }
 
         if (version_compare($oldVersion, '2.6.3', '<')) {
-            $connection->executeStatement('ALTER TABLE csvimport_import MODIFY comment LONGTEXT NOT NULL');
+            $connection->executeStatement('ALTER TABLE csvimport_import MODIFY comment LONGTEXT DEFAULT NULL');
         }
     }
 }
