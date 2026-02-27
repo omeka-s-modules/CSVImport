@@ -29,7 +29,7 @@ class CSVImportImport extends AbstractEntity
     protected $undoJob;
 
     /**
-     * @Column(type="string", nullable=true)
+     * @Column(type="text", nullable=true)
      */
     protected $comment;
 
