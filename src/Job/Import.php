@@ -791,6 +791,7 @@ class Import extends AbstractJob
         $resource = $this->api->read($resourceType, $id)->getContent();
 
         // Use arrays to simplify process.
+        // TODO Don't use json_decode(json_encode()).
         $currentData = json_decode(json_encode($resource), true);
         $merged = $this->mergeMetadata($currentData, $data, true);
         $data = array_replace($data, $merged);
