@@ -1,12 +1,10 @@
 <?php
 namespace CSVImport\Source;
 
-use OpenSpout\Common\Type;
-
 class OpenDocumentSpreadsheet extends AbstractSpreadsheet
 {
     protected $mediaType = 'application/vnd.oasis.opendocument.spreadsheet';
-    protected $readerType = Type::ODS;
+    protected $readerType = 'ods';
 
     protected function checkNumberOfColumnsByRow()
     {

@@ -1,8 +1,45 @@
 {
+    "name": "omeka/csv-import",
+    "type": "omeka-s-module",
+    "description": "Module for Omeka S: Import and update content (items, item sets, media, users) from a CSV, a TSV or an ODS file.",
+    "keywords": [
+        "Omeka S",
+        "Omeka S module",
+        "import",
+        "csv",
+        "spreadsheet",
+        "bulk upload",
+        "bulk update"
+    ],
+    "license": "GPL-3.0-or-later",
+    "homepage": "https://omeka.org/s/docs/user-manual/modules/csvimport/",
+    "authors": [
+        {
+            "name": "Omeka Team"
+        },
+        {
+            "name": "Daniel Berthereau",
+            "email": "Daniel.packagist@Berthereau.net"
+        }
+    ],
+    "support": {
+        "issues": "https://forum.omeka.org/c/omeka-s/modules",
+        "forum": "https://forum.omeka.org/"
+    },
     "require": {
-        "openspout/openspout": "^3.7"
+        "openspout/openspout": "^4.25"
+    },
+    "autoload": {
+        "psr-4": {
+            "CSVImport\\": "src/"
+        }
     },
     "config": {
-        "platform": {"php": "7.4"}
+        "platform": {
+            "php": "8.1"
+        }
+    },
+    "extra": {
+        "installer-name": "CSVImport"
     }
 }
