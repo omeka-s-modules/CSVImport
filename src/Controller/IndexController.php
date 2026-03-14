@@ -160,13 +160,15 @@ class IndexController extends AbstractActionController
                 $job = $dispatcher->dispatch('CSVImport\Job\Import', $args);
                 // The CsvImport record is created in the job, so it doesn't
                 // happen until the job is done.
+                $urlPlugin = $this->url();
                 $message = new Message(
-                    'Importing in background (%sjob #%d%s)', // @translate
-                    sprintf('<a href="%s">',
-                        htmlspecialchars($this->url()->fromRoute('admin/id', ['controller' => 'job', 'id' => $job->getId()]))
-                    ),
+                    'Importing in background (job %1$s#%2$d%3$s, %4$slogs%3$s).', // @translate
+                    sprintf('<a href="%s">', htmlspecialchars($urlPlugin->fromRoute('admin/id', ['controller' => 'job', 'id' => $job->getId()]))),
                     $job->getId(),
-                    '</a>'
+                    '</a>',
+                    class_exists('Log\Module', false)
+                        ? sprintf('<a href="%1$s">', htmlspecialchars($urlPlugin->fromRoute('admin/default', ['controller' => 'log'], ['query' => ['job_id' => $job->getId()]])))
+                        : sprintf('<a href="%1$s" target="_blank" rel="noopener noreferrer">', htmlspecialchars($urlPlugin->fromRoute('admin/id', ['controller' => 'job', 'action' => 'log', 'id' => $job->getId()])))
                 );
                 $message->setEscapeHtml(false);
                 $this->messenger()->addSuccess($message);

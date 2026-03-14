@@ -156,6 +156,11 @@ abstract class AbstractSpreadsheet extends AbstractSource
                 $options->SHOULD_FORMAT_DATES = true;
                 $this->reader = new \OpenSpout\Reader\ODS\Reader($options);
                 break;
+            default:
+                throw new \LogicException((string) new Message(
+                    'Unsupported spreadsheet reader type "%s".', // @translate
+                    $this->readerType
+                ));
         }
         try {
             $this->reader->open($this->source);
