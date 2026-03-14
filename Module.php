@@ -47,7 +47,7 @@ ALTER TABLE csvimport_entity ADD CONSTRAINT FK_84D382F4BE04EA9 FOREIGN KEY (job_
 SQL;
         $sqls = array_filter(array_map('trim', explode(';', $sql)));
         foreach ($sqls as $sql) {
-            $connection->exec($sql);
+            $connection->executeStatement($sql);
         }
     }
 
@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS csvimport_import;
 SQL;
         $sqls = array_filter(array_map('trim', explode(';', $sql)));
         foreach ($sqls as $sql) {
-            $connection->exec($sql);
+            $connection->executeStatement($sql);
         }
         // User settings are not removed here: they belong to the user.
     }
@@ -79,7 +79,7 @@ ALTER TABLE csvimport_import DROP added_count;
 SQL;
             $sqls = array_filter(array_map('trim', explode(';', $sql)));
             foreach ($sqls as $sql) {
-                $connection->exec($sql);
+                $connection->executeStatement($sql);
             }
         }
     }
