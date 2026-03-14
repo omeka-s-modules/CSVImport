@@ -19,6 +19,15 @@ class Module extends AbstractModule
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
+        if (PHP_VERSION_ID < 80100) {
+            $translate = $serviceLocator->get('ControllerPluginManager')->get('translate');
+            $message = new \Omeka\Stdlib\Message(
+                $translate('The module %1$s requires PHP %2$s or later.'), // @translate
+                'CSVImport', '8.1'
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        }
+
         $connection = $serviceLocator->get('Omeka\Connection');
         $sql = <<<'SQL'
 CREATE TABLE csvimport_import (
@@ -70,6 +79,15 @@ SQL;
 
     public function upgrade($oldVersion, $newVersion, ServiceLocatorInterface $serviceLocator)
     {
+        if (PHP_VERSION_ID < 80100) {
+            $translate = $serviceLocator->get('ControllerPluginManager')->get('translate');
+            $message = new \Omeka\Stdlib\Message(
+                $translate('The module %1$s requires PHP %2$s or later.'), // @translate
+                'CSVImport', '8.1'
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        }
+
         if (version_compare($oldVersion, '1.1.1-rc.1', '<')) {
             $connection = $serviceLocator->get('Omeka\Connection');
             $sql = <<<'SQL'
