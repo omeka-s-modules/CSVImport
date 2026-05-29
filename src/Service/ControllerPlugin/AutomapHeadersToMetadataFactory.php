@@ -2,7 +2,7 @@
 namespace CSVImport\Service\ControllerPlugin;
 
 use CSVImport\Mvc\Controller\Plugin\AutomapHeadersToMetadata;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class AutomapHeadersToMetadataFactory implements FactoryInterface

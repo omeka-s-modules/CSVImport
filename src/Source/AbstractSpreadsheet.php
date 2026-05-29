@@ -7,8 +7,6 @@ namespace CSVImport\Source;
  * as recommended (as stream ahead).
  */
 use Omeka\Stdlib\Message;
-use OpenSpout\Common\Type;
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
 use OpenSpout\Reader\ReaderInterface;
 
 abstract class AbstractSpreadsheet extends AbstractSource
@@ -150,22 +148,25 @@ abstract class AbstractSpreadsheet extends AbstractSource
         }
 
         switch ($this->readerType) {
-            case Type::CSV:
-                $this->reader = ReaderEntityFactory::createCSVReader();
+            case 'csv':
+                $this->reader = new \OpenSpout\Reader\CSV\Reader();
                 break;
-            case Type::ODS:
-                $this->reader = ReaderEntityFactory::createODSReader();
+            case 'ods':
+                $options = new \OpenSpout\Reader\ODS\Options();
+                $options->SHOULD_FORMAT_DATES = true;
+                $this->reader = new \OpenSpout\Reader\ODS\Reader($options);
                 break;
+            default:
+                throw new \LogicException((string) new Message(
+                    'Unsupported spreadsheet reader type "%s".', // @translate
+                    $this->readerType
+                ));
         }
         try {
             $this->reader->open($this->source);
         } catch (\OpenSpout\Common\Exception\IOException $e) {
             return null;
         }
-
-        $this->reader
-            // ->setTempFolder($this->config['temp_dir'])
-            ->setShouldFormatDates(true);
 
         foreach ($this->reader->getSheetIterator() as $sheet) {
             $this->iterator = $sheet->getRowIterator();

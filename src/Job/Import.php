@@ -355,7 +355,7 @@ class Import extends AbstractJob
         if (count($data) == 1) {
             try {
                 $response = $this->api->create($this->resourceType, reset($data));
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->err((string) $e);
                 $response = null;
             }
@@ -440,7 +440,7 @@ class Import extends AbstractJob
                         break;
                 }
                 $updatedIds[$key] = $id;
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->err((string) $e);
                 continue;
             }
@@ -472,7 +472,7 @@ class Import extends AbstractJob
             // TODO Implement on delete cascade in the entity CSVImportEntity.
             try {
                 $response = $this->api->delete($this->resourceType, reset($ids));
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $this->logger->err((string) $e);
                 $response = null;
             }
@@ -638,7 +638,7 @@ class Import extends AbstractJob
                 $conn->executeQuery($updateQuery, [$rank, $id], ['integer', 'integer']);
             }
             $conn->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $conn->rollBack();
             throw $e;
         }
@@ -791,6 +791,7 @@ class Import extends AbstractJob
         $resource = $this->api->read($resourceType, $id)->getContent();
 
         // Use arrays to simplify process.
+        // TODO Don't use json_decode(json_encode()).
         $currentData = json_decode(json_encode($resource), true);
         $merged = $this->mergeMetadata($currentData, $data, true);
         $data = array_replace($data, $merged);

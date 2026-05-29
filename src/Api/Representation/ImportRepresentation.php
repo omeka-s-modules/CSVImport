@@ -9,7 +9,7 @@ class ImportRepresentation extends AbstractEntityRepresentation
     {
         $undoJob = $this->undoJob();
         if ($undoJob) {
-            $undoJob = $undoJob->getReference();
+            $undoJob = $undoJob->getReference()->jsonSerialize();
         }
 
         return [
@@ -17,7 +17,7 @@ class ImportRepresentation extends AbstractEntityRepresentation
             'resource_type' => $this->resourceType(),
             'has_err' => $this->hasErr(),
             'stats' => $this->stats(),
-            'o:job' => $this->job()->getReference(),
+            'o:job' => $this->job()->getReference()->jsonSerialize(),
             'o:undo_job' => $undoJob,
         ];
     }

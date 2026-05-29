@@ -3,7 +3,7 @@ namespace CSVImport\Service;
 
 use Laminas\EventManager\Event;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class ConfigFactory implements FactoryInterface
 {

@@ -19,6 +19,15 @@ class Module extends AbstractModule
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
+        if (PHP_VERSION_ID < 80100) {
+            $translate = $serviceLocator->get('ControllerPluginManager')->get('translate');
+            $message = new \Omeka\Stdlib\Message(
+                $translate('The module %1$s requires PHP %2$s or later.'), // @translate
+                'CSVImport', '8.1'
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        }
+
         $connection = $serviceLocator->get('Omeka\Connection');
         $sql = <<<'SQL'
 CREATE TABLE csvimport_import (
@@ -47,7 +56,7 @@ ALTER TABLE csvimport_entity ADD CONSTRAINT FK_84D382F4BE04EA9 FOREIGN KEY (job_
 SQL;
         $sqls = array_filter(array_map('trim', explode(';', $sql)));
         foreach ($sqls as $sql) {
-            $connection->exec($sql);
+            $connection->executeStatement($sql);
         }
     }
 
@@ -63,13 +72,22 @@ DROP TABLE IF EXISTS csvimport_import;
 SQL;
         $sqls = array_filter(array_map('trim', explode(';', $sql)));
         foreach ($sqls as $sql) {
-            $connection->exec($sql);
+            $connection->executeStatement($sql);
         }
         // User settings are not removed here: they belong to the user.
     }
 
     public function upgrade($oldVersion, $newVersion, ServiceLocatorInterface $serviceLocator)
     {
+        if (PHP_VERSION_ID < 80100) {
+            $translate = $serviceLocator->get('ControllerPluginManager')->get('translate');
+            $message = new \Omeka\Stdlib\Message(
+                $translate('The module %1$s requires PHP %2$s or later.'), // @translate
+                'CSVImport', '8.1'
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        }
+
         if (version_compare($oldVersion, '1.1.1-rc.1', '<')) {
             $connection = $serviceLocator->get('Omeka\Connection');
             $sql = <<<'SQL'
@@ -79,7 +97,7 @@ ALTER TABLE csvimport_import DROP added_count;
 SQL;
             $sqls = array_filter(array_map('trim', explode(';', $sql)));
             foreach ($sqls as $sql) {
-                $connection->exec($sql);
+                $connection->executeStatement($sql);
             }
         }
     }

@@ -166,8 +166,8 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 ->andWhere('resource.resource_type = :resource_type')
                 ->setParameter(':resource_type', $resourceType);
         }
-        $stmt = $conn->executeQuery($qb, $qb->getParameters());
-        $result = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $stmt = $conn->executeQuery($qb->getSQL(), $qb->getParameters());
+        $result = $stmt->fetchFirstColumn();
 
         // Reorder the result according to the input (simpler in php and there
         // is no duplicated identifiers).
@@ -198,10 +198,10 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 ->andWhere('resource.resource_type = :resource_type')
                 ->setParameter(':resource_type', $resourceType);
         }
-        $stmt = $conn->executeQuery($qb, $qb->getParameters());
-        // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
+        $stmt = $conn->executeQuery($qb->getSQL(), $qb->getParameters());
+        // $stmt->fetchAllKeyValue() cannot be used, because it
         // replaces the first id by later ids in case of true duplicates.
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAllAssociative();
 
         return $this->cleanResult($identifiers, $result);
     }
@@ -228,10 +228,10 @@ class FindResourcesFromIdentifiers extends AbstractPlugin
                 ->andWhere('media.item_id = :item_id')
                 ->setParameter(':item_id', $itemId);
         }
-        $stmt = $conn->executeQuery($qb, $qb->getParameters());
-        // $stmt->fetchAll(\PDO::FETCH_KEY_PAIR) cannot be used, because it
+        $stmt = $conn->executeQuery($qb->getSQL(), $qb->getParameters());
+        // $stmt->fetchAllKeyValue() cannot be used, because it
         // replaces the first id by later ids in case of true duplicates.
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAllAssociative();
 
         return $this->cleanResult($identifiers, $result);
     }
